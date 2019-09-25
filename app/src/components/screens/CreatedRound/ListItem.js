@@ -1,0 +1,147 @@
+import React, {useState, useEffect} from 'react';
+import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, Spinner, Icon} from 'native-base';
+import colors from '../../components/colors';
+import Avatar from '../roundsCreation/steps/SelectParticipants/Avatar';
+
+var months = [
+  'ENERO',
+  'FEBRERO',
+  'MARZO',
+  'ABRIL',
+  'MAYO',
+  'JUNIO',
+  'JULIO',
+  'AGOSTO',
+  'SETIEMBRE',
+  'OCTUBRE',
+  'NOVIEMBRE',
+  'DICIEMBRE',
+];
+
+export default ListItem = props => {
+  const {participant, handleNavigation} = props;
+  const {picture, name} = participant.user;
+
+  let status = '';
+  let statusIcon = null;
+
+  const payday = props.payday(participant._id);
+  let payDate = '?';
+  let payMonth = '';
+  if (payday) {
+    let newpayday = new Date(props.payday(participant._id));
+    payDate = newpayday.getDate().toString().substr(0, 3);
+    payMonth = months[newpayday.getMonth()].substr(0, 3);
+  }
+
+  switch (participant.acepted) {
+    case true:
+      status = 'Aceptado';
+      statusIcon = (
+        <Icon
+          style={[styles.statusIcon, {color: colors.mainBlue}]}
+          name="check-circle"
+          type="MaterialCommunityIcons"
+        />
+      );
+      break;
+    case false:
+      status = 'Rechazado';
+      statusIcon = (
+        <Icon
+          style={[styles.statusIcon, {color: colors.statusPurple}]}
+          name="close-circle"
+          type="MaterialCommunityIcons"
+        />
+      );
+      break;
+    default:
+      status = 'Pendiente';
+      statusIcon = (
+        <Icon
+          style={[styles.statusIcon, {color: colors.yellowStatus}]}
+          name="alert-circle"
+          type="MaterialCommunityIcons"
+        />
+      );
+  }
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => handleNavigation(participant)}>
+        <View style={styles.avatarContainer}>
+          <Avatar path={picture} />
+        </View>
+        <View style={styles.nameContainer}>
+          <Text style={styles.nameTitle}>{name}</Text>
+          <Text style={styles.statusTitle}>{status}</Text>
+        </View>
+        <View style={styles.statusContainer}>
+          <View style={styles.calendarContainer}>
+            <Text style={styles.calendarMonth}>{payMonth}</Text>
+            <Icon
+              style={styles.calendarIcon}
+              name="calendar-blank"
+              type="MaterialCommunityIcons"
+            />
+            <Text style={styles.calendarDay}>{payDate}</Text>
+          </View>
+          {statusIcon}
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  itemContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    flexDirection: 'row',
+  },
+  avatarContainer: {},
+  nameContainer: {
+    flex: 1,
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+  },
+  statusContainer: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nameTitle: {},
+  statusTitle: {
+    fontSize: 14,
+    color: colors.secondary,
+    fontWeight: '100',
+  },
+  statusIcon: {
+    fontSize: 25,
+    marginLeft: 20,
+  },
+  calendarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calendarIcon: {
+    color: colors.mainBlue,
+    fontSize: 40,
+  },
+  calendarMonth: {
+    fontSize: 12,
+    color: colors.mainBlue,
+    fontWeight: 'bold',
+  },
+  calendarDay: {
+    fontSize: 12,
+    position: 'absolute',
+    top: 31,
+  },
+});
