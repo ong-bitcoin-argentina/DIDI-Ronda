@@ -10,8 +10,9 @@ const express   = require('express'),
 
 // CONFIGS
 require('dotenv').config();
-const PORT = process.env.PORT;
 
+
+const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
 // parse application/json
 app.use(bodyParser.json())
@@ -23,10 +24,26 @@ app.use(helmet());
 
 
 /*** MIDDLEWARES ****/
-const appMiddleware = require('./middleware/app');
+const appMiddleware       = require('./middleware/app');
+
+
+// Log request on develop
+ENVIROMENT === 'dev' && app.use('/',    appMiddleware.log)
 
 // Basic auth to all api calls
-app.use('/',     appMiddleware.auth);
+app.use('/',              appMiddleware.auth);
+
+// JWT
+
+// User
+app.use('/user',          appMiddleware.jwtCheck);
+
+// Participant
+app.use('/participant',   appMiddleware.jwtCheck);
+
+// Admin
+app.use('/admin',         appMiddleware.jwtCheck);
+
 
 /*** ./MIDDLEWARES ****/
 
@@ -46,13 +63,18 @@ app.use('/admin',         admin);
 
 /*** SERVER ****/
 mongoose.set('useCreateIndex', true)
-mongoose.connect('mongodb://localhost/laronda', { useNewUrlParser: true }, (err, res) => {
-    if(err){
-      console.log('ERROR: connecting to Database. ' + err);
-    }
+mongoose.connect(`${MONGO_SERVER}/${MONGO_DATABASE}`, { useNewUrlParser: true }, (err, res) => {
+  if(err){
+    console.log('ERROR: connecting to Database. ' + err);
+  }
 
-    app.listen(PORT, () => {
-      console.log("Node server running on http://localhost:3000");
-    });
+  app.listen(PORT, () => {
+    console.log(`Node server running on http://localhost:${PORT}`);
+  });
 });
 /*** ./SERVER ****/
+
+
+/*** EXPORT FOR TESTING PURPOSE ****/
+module.exports = app;
+/*** ./EXPORT FOR TESTING PURPOSE ****/

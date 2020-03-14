@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import {Icon} from 'native-base';
 import Participants from './SelectParticipants';
-import Avatar from '../../../../../assets/img/avatar.png';
+import Avatar from '../../../../../assets/img/avatar.jpg';
 import colors from '../../../../components/colors';
 import {setParticipants} from '../../../../../actions/roundCreation';
 
@@ -26,6 +26,7 @@ const Number = props => {
   const [participants, setParticipants] = useState(props.selectedParticipants);
   const date = props.date.getDate();
   const month = months[props.date.getMonth()] || '';
+  
   return (
     <View style={[{flexDirection: 'column'}]}>
       <TouchableOpacity
@@ -56,15 +57,28 @@ const Number = props => {
         )}
         <View style={styles.participant}>
           <View style={styles.participantIdentification}>
-            <Text style={styles.participantName}>
-              {participants.length
-                ? participants[0].givenName +
-                  (participants.length > 1
-                    ? ` / ${participants[1].givenName}`
-                    : '')
-                : 'Seleccionar'}
-            </Text>
-            <Text style={styles.participantNumber}>Participante</Text>
+          <View style={{flexDirection: 'column', justiContent: 'center'}}>
+
+            <Text style={styles.participantName}>{participants.length
+                ? participants[0].givenName || participants[0].user.name : '---'}</Text>
+
+            {participants.length > 1 &&
+            <Text style={styles.participantName}> 
+            { participants[1].givenName || participants[1].user.name }
+            </Text>}
+
+            </View>
+            {!participants.length &&
+              <Text style={styles.participantNumber}>
+                {props.detail
+                  ? props.shift.status == 'pending'
+                    ? ''
+                    : props.shift.status == 'current'
+                    ? 'En curso'
+                    : 'Completada'
+                  : 'Participante'}
+              </Text>
+}
           </View>
         </View>
         <View
@@ -192,7 +206,7 @@ const styles = StyleSheet.create({
   participantName: {
     fontWeight: '500',
     color: colors.gray,
-    fontSize: 18,
+    fontSize: 14,
   },
   participantNumber: {
     color: colors.secondary,

@@ -7,11 +7,10 @@ import {
   Text,
   Animated,
   ScrollView,
-  Button,
 } from 'react-native';
 import colors from '../../../../components/colors';
-import {Icon} from 'native-base';
-import Avatar from '../../../../../assets/img/avatar.png';
+import {Icon, Button} from 'native-base';
+import Avatar from '../../../../../assets/img/avatar.jpg';
 
 class Participants extends React.Component {
   constructor(props) {
@@ -73,9 +72,16 @@ class Participants extends React.Component {
               source={{uri: contact.thumbnailPath}}
             />
           ) : (
-            <Image style={styles.contactThumbnail} source={Avatar} />
+            <Image
+              style={[
+                styles.contactThumbnail,
+                {marginRight: 0, marginBottom: 10},
+                selected && {borderColor: colors.mainBlue, borderWidth: 3},
+              ]}
+              source={Avatar}
+            />
           )}
-          <Text>{contact.givenName}</Text>
+          <Text>{ contact.givenName || contact.user.name }</Text>
         </TouchableOpacity>
       );
     });
@@ -102,12 +108,22 @@ class Participants extends React.Component {
             </Text>
             {this.props.open && (
               <Button
+                style={{
+                  backgroundColor: colors.mainBlue,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                  marginHorizontal: '10%',
+                }}
                 onPress={() => {
                   this.props.selectParticipants(
                     this.state.selectedParticipants,
                   );
-                }}
-                title={'Seleccionar'}></Button>
+                }}>
+                <Text style={{color: 'white', fontWeight: 'bold'}}>
+                  Seleccionar
+                </Text>
+              </Button>
             )}
           </View>
         )}

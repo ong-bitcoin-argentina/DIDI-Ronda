@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import ScreenContainer from '../ScreenContainer';
-import NextButton from '../../../components/NextButton';
+import ScreenContainer from '../../ScreenContainer';
+import NextButton from '../../../../components/NextButton';
 
-import colors from '../../../components/colors';
-import * as actions from '../../../../actions/roundCreation';
+import colors from '../../../../components/colors';
+import * as actions from '../../../../../actions/roundCreation';
 
 import DatePicker from './datepicker';
 import {Toast} from 'native-base';
@@ -29,25 +29,26 @@ class RoundDate extends Component {
     let confirmationDateISO = new Date(confirmationDate).toISOString();
     let paymentDateISO = new Date(paymentDate).toISOString();
 
-    let text = false;
-
     if (dateISO <= confirmationDateISO) {
-      text =
-        'La fecha de inicio debe ser posterior a la confirmacion de los participantes.';
-    }
-    if (paymentDateISO <= dateISO) {
-      text = 'La fecha de pago debe ser posterior al inicio de la ronda.';
-    }
-    if (text) {
       Toast.show({
-        text: text,
-        position: 'top',
-        type: 'warning',
+        text:
+          'La fecha de inicio debe ser posterior a la confirmacion de los participantes.',
+        buttonText: 'Okay',
       });
       return false;
     }
+
+    if (paymentDateISO <= dateISO) {
+      Toast.show({
+        text: 'La fecha de pago debe ser posterior al inicio de la ronda.',
+        buttonText: 'Okay',
+      });
+      return false;
+    }
+
     return true;
   }
+
   datesReady() {
     if (
       this.props.date != '' &&
@@ -73,8 +74,10 @@ class RoundDate extends Component {
             setDate={d => {
               this.props.setDate(d);
             }}
+            initialValue={this.props.date}
             title={'Fecha inicial'}
-            icon={'md-calendar'}
+            icon={'calendar'}
+            type={'MaterialCommunityIcons'}
           />
         </View>
 
@@ -91,6 +94,7 @@ class RoundDate extends Component {
             setDate={d => {
               this.props.setConfirmationDate(d);
             }}
+            initialValue={this.props.confirmationDate}
             title={'Confirmacion de participacion'}
             icon={'people'}
           />
@@ -98,15 +102,15 @@ class RoundDate extends Component {
             setDate={d => {
               this.props.setPaymentDate(d);
             }}
+            initialValue={this.props.paymentDate}
             title={'Primer pago de ronda'}
-            icon={'logo-usd'}
+            icon={'attach-money'}
+            type={'MaterialIcons'}
           />
         </View>
         {this.datesReady() && (
           <NextButton
-            callback={() => {
-              this.inputsValidation() && this.nextStep();
-            }}
+            callback={() => this.inputsValidation() && this.nextStep()}
           />
         )}
       </ScreenContainer>

@@ -4,6 +4,7 @@ const defaultState = {
   requestRounds: {
     loading: false,
     list: [],
+    error: null
   },
   deleteRound: {
     loading: false,
@@ -19,24 +20,42 @@ const defaultState = {
     error: null,
     round: null,
   },
+  removeParticipant: {
+    loading: false,
+    error: null,
+    round: null,
+  },
   numberDetails: {
     loading: false,
   },
+  assignParticipant: {
+    loading: false,
+    error: null,
+    round: null,
+  },
+  closeRound: {
+    error: null
+  }
 };
 
 function rounds(state = defaultState, action) {
   switch (action.type) {
-    case types.ROUNDS_REQUEST_START:
+    case types.LOAD_ROUNDS_START:
       return {
         ...state,
         requestRounds: {...state.requestRounds, loading: true},
       };
-    case types.LOAD_ROUNDS:
+    case types.LOAD_ROUNDS_SUCCEEDED:
       return {
         ...state,
-        requestRounds: {loading: false, list: action.data.roundsList},
+        requestRounds: {...state.requestRounds, loading: false, list: action.payload, error: null},
         startRound: {...state.startRound, loading: false},
         numberDetails: {...state.numberDetails, loading: false},
+      };
+    case types.LOAD_ROUNDS_FAILED:
+      return {
+        ...state,
+        requestRounds: {...state.requestRounds, loading: false, error: action.payload},
       };
     case types.DELETEROUND_REQUEST_START:
       return {
@@ -71,13 +90,6 @@ function rounds(state = defaultState, action) {
         numberDetails: {
           ...state.numberDetails,
           loading: true,
-        },
-      };
-    case types.END_ROUND_LOAD:
-      return {
-        ...state,
-        numberDetails: {
-          ...state.numberDetails,
         },
       };
     case types.START_ROUND_SUCCEEDED:
@@ -140,6 +152,98 @@ function rounds(state = defaultState, action) {
           error: action.payload,
           round: null,
         },
+      };
+    case types.REMOVE_PARTICIPANT_START:
+      return {
+        ...state,
+        removeParticipant: {
+          ...state.removeParticipant,
+          loading: true,
+          error: null,
+          round: null,
+        },
+      };
+    case types.REMOVE_PARTICIPANT_SUCCEEDED:
+      return {
+        ...state,
+        removeParticipant: {
+          ...state.removeParticipant,
+          loading: false,
+          error: null,
+          round: action.payload,
+        },
+      };
+    case types.REMOVE_PARTICIPANT_FAILED:
+      return {
+        ...state,
+        removeParticipant: {
+          ...state.removeParticipant,
+          loading: false,
+          error: action.payload,
+          round: null,
+        },
+      };
+    case types.REMOVE_CLEAN:
+      return {
+        ...state,
+        removeParticipant: {
+          ...state.removeParticipant,
+          loading: false,
+          error: null,
+          round: null,
+        },
+        startRound: {
+          ...state.startRound,
+          loading: false,
+          error: action.payload,
+          round: null,
+        },
+      };
+    case types.ASSIGN_PARTICIPANT_START:
+      return {
+        ...state,
+        assignParticipant: {
+          ...state.assignParticipant,
+          loading: true,
+          error: null,
+          round: null,
+        },
+      };
+    case types.ASSIGN_PARTICIPANT_SUCCEEDED:
+      return {
+        ...state,
+        assignParticipant: {
+          ...state.assignParticipant,
+          loading: false,
+          error: null,
+          round: action.payload,
+        },
+      };
+    case types.ASSIGN_PARTICIPANT_FAILED:
+      return {
+        ...state,
+        assignParticipant: {
+          ...state.assignParticipant,
+          loading: false,
+          error: action.payload,
+          round: null,
+        },
+      };
+    case types.CLOSE_ROUND:
+      return {
+        ...state,
+        closeRound: {
+          ...state.closeRound,
+          error: null
+        }
+      };
+    case types.CLOSE_ROUND_FAILED:
+      return {
+        ...state,
+        closeRound: {
+          ...state.closeRound,
+          error: action.payload,
+        }
       };
     default:
       return state;

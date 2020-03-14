@@ -71,23 +71,23 @@ const Tutorials = props => {
 
   handleSwipe = count => {
     if (count >= cards.length) {
-      goToHome();
+      goToRoundList();
     } else {
       nextStep(count);
     }
   };
 
-  goToHome = async () => {
+  goToRoundList = async () => {
     try {
       await AsyncStorage.setItem('tutorialFinished', 'true');
     } catch (error) {}
-    props.navigation.navigate('Home');
+    props.navigation.navigate('Rondas');
   };
   _renderItem = ({item, index}) => {
     return <TutorialCard height={CARDS_HEIGHT} item={item} />;
   };
   closeButton = (
-    <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => goToHome()}>
+    <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => goToRoundList()}>
       <Text style={styles.closeButton}>Cerrar </Text>
       <Icon style={{color: 'white'}} name="ios-close"></Icon>
     </TouchableOpacity>
@@ -116,7 +116,7 @@ const Tutorials = props => {
             nextStep(i);
           }}
           onBeforeSnapToItem={i => {
-            i == cards.length - 1 && goToHome();
+            i == cards.length - 1 && goToRoundList();
           }}
         />
       </View>

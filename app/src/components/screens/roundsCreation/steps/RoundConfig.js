@@ -117,6 +117,7 @@ const InputWithLock = props => {
           <Icon
             active
             name={props.inputIcon || props.icon}
+            type={props.inputIconFamily || null}
             style={{color: colors.secondary, position: 'absolute'}}
           />
           <Input
@@ -140,7 +141,8 @@ const InputWithLock = props => {
         </Item>
         <TouchableOpacity onPress={() => setLock(!lock)}>
           <Icon
-            name="lock"
+            type="MaterialIcons"
+            name={lock ? 'lock-outline' : 'lock-open'}
             style={{
               color: lock ? colors.mainBlue : colors.secondary,
               fontSize: 18,
@@ -193,6 +195,19 @@ const RoundConfig = props => {
     setNext(true);
   }
 
+  function navigateToNextStep() {
+    if (values.participantsQty < 2) {
+      Toast.show({
+        text: 'Deben haber 2 números o mas',
+        position: 'bottom',
+        type: 'warning',
+      });
+      return null;
+    }
+    props.setConfig({...values, frequency});
+    props.navigation.navigate('SelectParticipants');
+  }
+
   return (
     <ScreenContainer title={'Configurando la ronda'} step={2}>
       <View
@@ -214,7 +229,8 @@ const RoundConfig = props => {
         <InputWithLock
           icon={'ios-person'}
           label={'Cantidad de Numeros'}
-          inputIcon={'grid'}
+          inputIconFamily="Feather"
+          inputIcon={'hash'}
           notEmpty={val => inputReady('participantsQty', val)}
           value={val => saveValue('participantsQty', val)}
         />
@@ -226,14 +242,7 @@ const RoundConfig = props => {
           calculated={calculated}
         />
       </View>
-      {next && (
-        <NextButton
-          callback={() => {
-            props.setConfig({...values, frequency});
-            props.navigation.navigate('SelectParticipants');
-          }}
-        />
-      )}
+      {next && <NextButton callback={navigateToNextStep} />}
     </ScreenContainer>
   );
 };

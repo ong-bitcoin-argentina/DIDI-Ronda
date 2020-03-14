@@ -1,18 +1,14 @@
 //import liraries
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import Colors from '../../components/colors';
 import {Icon} from 'native-base';
-import Number from '../roundsCreation/steps/NumbersAsign/Number';
 
 export default Header = props => {
+
+  const { currentShiftPaysAmount, currentPayment } = props;
+
+
   return (
     <View style={styles.roundData}>
       <View style={styles.dataColumn}>
@@ -21,7 +17,7 @@ export default Header = props => {
             <Icon
               type="MaterialIcons"
               name="filter-tilt-shift"
-              style={{color: 'white'}}
+              style={{color: 'white', fontSize: 24}}
             />
           </View>
           <View style={styles.roundNameContainer}>
@@ -30,34 +26,52 @@ export default Header = props => {
             </Text>
           </View>
         </View>
-        <View style={styles.dataRow}>
+
+        <View style={[styles.dataRow, styles.left]}>
           <View style={styles.icon}>
-            <Icon
-              type="MaterialIcons"
-              name="bookmark-border"
-              style={{color: 'white', fontSize: 22}}
-            />
+            <Icon name="bookmark" style={{color: 'white', fontSize: 18}} />
           </View>
-          <View style={{flexDirection: 'column'}}>
-            <Text style={styles.amount}>0 de {props.paymentsQty}</Text>
-            <Text style={styles.subtitle}>#</Text>
+          <View style={{marginHorizontal: 10}}>
+            <Text style={styles.amount}>{currentPayment} de {props.paymentsQty}</Text>
+            <Text style={styles.dateSubtitle}>#</Text>
           </View>
         </View>
       </View>
+
       <View style={styles.dataColumn}>
-        <View style={styles.dataRow}>
-          <View style={styles.icon}>
-            <Icon
-              type="MaterialIcons"
-              name="attach-money"
-              style={{color: 'white'}}
-            />
+        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
+          <View style={{flexDirection: 'row', width: '80%'}}>
+            <View style={styles.icon}>
+              <Icon
+                type="MaterialIcons"
+                name="attach-money"
+                style={{color: 'white', fontSize: 24}}
+              />
+            </View>
+            <View style={styles.roundNameContainer}>
+              <Text numberOfLines={1} style={styles.amount}>
+                ${props.amount}
+              </Text>
+              <Text style={styles.dateSubtitle}>Ronda</Text>
+            </View>
           </View>
-          <View style={styles.roundNameContainer}>
-            <Text numberOfLines={1} style={styles.roundName}>
-              ${props.amount}
-            </Text>
-            <Text style={styles.subtitle}>Ronda</Text>
+        </View>
+
+        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
+          <View style={{flexDirection: 'row', width: '80%'}}>
+            <View style={styles.icon}>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="cash-usd"
+                style={{color: 'white', fontSize: 24}}
+              />
+            </View>
+            <View style={styles.roundNameContainer}>
+              <Text numberOfLines={1} style={styles.amount}>
+                {Math.floor(currentShiftPaysAmount)}
+              </Text>
+              <Text style={styles.dateSubtitle}>Recolectado</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -87,14 +101,16 @@ const styles = StyleSheet.create({
   dataRow: {
     height: '50%',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingLeft: 20,
+    alignItems: 'center',
   },
+
   dataColumn: {
     flex: 1,
     height: '100%',
     flexDirection: 'column',
+
+    paddingVertical: 10,
   },
   title: {
     paddingHorizontal: 20,
@@ -110,6 +126,7 @@ const styles = StyleSheet.create({
   roundData: {
     width: '95%',
     height: 100,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -118,16 +135,16 @@ const styles = StyleSheet.create({
   },
   icon: {
     backgroundColor: Colors.mainBlue,
-    borderRadius: 25,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
   },
   roundNameContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginHorizontal: 10,
-    width: '60%',
   },
   column: {
     flexDirection: 'column',
@@ -139,6 +156,7 @@ const styles = StyleSheet.create({
     color: Colors.lightBlue,
   },
   amount: {
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'right',
     color: 'white',
@@ -149,7 +167,7 @@ const styles = StyleSheet.create({
   roundName: {
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 14,
+    fontSize: 18,
   },
   rightActionContainer: {
     marginHorizontal: 15,
@@ -197,8 +215,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '35%',
   },
-  date: {fontSize: 12, fontWeight: '400'},
-  dateSubtitle: {fontSize: 11, color: Colors.secondary},
+  date: {fontSize: 12, fontWeight: 'bold'},
+  dateSubtitle: {fontSize: 12, color: Colors.lightGray},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
   roundState: {
     flexDirection: 'column',
@@ -220,19 +238,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: '5%',
   },
   roundInfoDate: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '35%',
   },
-  subtitle: {
-    color: Colors.secondGray,
-    fontSize: 12
-  },
-  date: {fontSize: 12, fontWeight: '400'},
-  dateSubtitle: {fontSize: 11, color: Colors.secondary},
+  date: {fontSize: 12, fontWeight: 'bold'},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
   roundState: {
     flexDirection: 'column',

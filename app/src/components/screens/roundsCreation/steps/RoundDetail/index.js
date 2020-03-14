@@ -48,11 +48,11 @@ class RoundDetail extends Component {
       }
     }
     return (
-      nextDate.getFullYear() +
+      nextDate.getDate() +
       '/' +
       nextDate.getMonth() +
       '/' +
-      nextDate.getDate()
+      nextDate.getFullYear() 
     );
   }
   selectParticipants(participants, number) {

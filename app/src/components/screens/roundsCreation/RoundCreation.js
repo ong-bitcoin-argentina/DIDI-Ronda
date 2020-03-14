@@ -9,7 +9,7 @@ import RoundName from './steps/RoundName';
 import Amount from './steps/Amount';
 import RoundConfig from './steps/RoundConfig';
 import SelectParticipants from './steps/SelectParticipants';
-import RoundDate from './date';
+import RoundDate from './steps/Date';
 import Finish from './steps/Finish';
 import NumbersAsign from './steps/NumbersAsign';
 import RoundDetail from './steps/RoundDetail';

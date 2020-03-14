@@ -1,79 +1,107 @@
 //import liraries
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import Colors from '../../components/colors';
 import {Icon} from 'native-base';
+import Arrow from '../../../assets/img/arrow.svg';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
 export default ExtraData = props => {
-  let frequency = '';
-  switch (props.frequency) {
-    case 'm':
-      frequency = 'Mensual';
-      break;
-    case 'q':
-      frequency = 'Quincenal';
-      break;
-    case 's':
-      frequency = 'Semanal';
-      break;
+
+  getCustomDate = (date) => {
+    return (
+      date.getDate() +
+      '/' +
+      (parseInt(date.getMonth()) + 1).toString() +
+      '/' +
+      date.getFullYear()
+    );
   }
+
+  const {startDate, endDate, frequency, amount, shifts} = props;
+
+  const customFrequency =
+    frequency == 'm' ? 'Mensual' : frequency == 's' ? 'Semanal' : 'Quincenal';
+
   return (
-    <View style={styles.roundInfo}>
-      <View style={styles.roundInfoDates}>
-        <View style={styles.roundInfoDate}>
-          <Icon
-            type="MaterialCommunityIcons"
-            name="calendar-range"
-            style={styles.smallIcon}
-          />
-          <View>
-            <Text style={styles.date}>{props.startDate}</Text>
+    <View style={styles.roundData}>
+      <Arrow
+        height={'100%'}
+        width={60}
+        style={{
+          position: 'absolute',
+          top: -20,
+          left: SCREEN_WIDTH * 0.5 - 50,
+        }}></Arrow>
+      <View style={styles.dataColumn}>
+        <View style={styles.dataRow}>
+          <View style={styles.icon}>
+            <Icon
+              type="MaterialCommunityIcons"
+              name="calendar-range"
+              style={{color: Colors.mainBlue, fontSize: 24}}
+            />
+          </View>
+          <View style={styles.roundNameContainer}>
+            <Text numberOfLines={1} style={styles.amount}>
+              { getCustomDate( new Date(startDate) ) }
+            </Text>
             <Text style={styles.dateSubtitle}>Inicio</Text>
           </View>
         </View>
-        <Icon
-          type="MaterialCommunityIcons"
-          name="arrow-right"
-          style={{color: Colors.secondary}}></Icon>
-        <View style={styles.roundInfoDate}>
-          <Icon
-            type="MaterialCommunityIcons"
-            name="calendar-range"
-            style={styles.smallIcon}
-          />
-          <View>
-            <Text style={styles.date}>{props.endDate}</Text>
-            <Text style={styles.dateSubtitle}>Fin</Text>
+        <View style={[styles.dataRow, styles.left]}>
+          <View style={styles.icon}>
+            <Icon
+              type="MaterialIcons"
+              name="alarm"
+              style={{color: Colors.mainBlue, fontSize: 24}}
+            />
           </View>
-        </View>
-      </View>
-      <View style={styles.roundInfoDates}>
-        <View style={styles.roundInfoDate}>
-          <Icon
-            type="MaterialIcons"
-            name="access-alarm"
-            style={styles.smallIcon}
-          />
-          <View>
-            <Text style={styles.date}>{frequency}</Text>
+          <View style={{marginHorizontal: 10}}>
+            <Text style={styles.frequencyTitle}>{customFrequency}</Text>
             <Text style={styles.dateSubtitle}>Frecuencia</Text>
           </View>
         </View>
-
-        <View style={styles.roundInfoDate}>
-          <Icon type="FontAwesome" name="money" style={styles.smallIcon} />
-          <View>
-            <Text style={styles.date}>
-              ${Math.floor(props.amount / props.shifts)}
-            </Text>
-            <Text style={styles.dateSubtitle}>Aporte</Text>
+      </View>
+      <View style={styles.dataColumn}>
+        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
+          <View style={{flexDirection: 'row', width: '80%'}}>
+            <View style={styles.icon}>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="calendar-range"
+                style={{color: Colors.mainBlue, fontSize: 24}}
+              />
+            </View>
+            <View style={styles.roundNameContainer}>
+              <Text numberOfLines={1} style={styles.amount}>
+                {getCustomDate( new Date(endDate) )}
+              </Text>
+              <Text style={styles.dateSubtitle}>Fin</Text>
+            </View>
+          </View>
+        </View>
+        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
+          <View style={{flexDirection: 'row', width: '80%'}}>
+            <View style={styles.icon}>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="cash-usd"
+                style={{color: Colors.mainBlue, fontSize: 24}}
+              />
+            </View>
+            <View style={styles.roundNameContainer}>
+              <Text numberOfLines={1} style={styles.amount}>
+                ${Math.ceil(amount / shifts)}
+              </Text>
+              <Text style={styles.dateSubtitle}>Aporte</Text>
+            </View>
           </View>
         </View>
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -95,16 +123,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundGray,
   },
   dataRow: {
-    flex: 1,
+    height: '50%',
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    justifyContent: 'center',
   },
+
   dataColumn: {
     flex: 1,
+    height: '100%',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+
+    paddingVertical: 10,
   },
   title: {
     paddingHorizontal: 20,
@@ -119,25 +149,25 @@ const styles = StyleSheet.create({
   },
   roundData: {
     width: '95%',
-    height: 140,
+    height: 100,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 5,
-    backgroundColor: Colors.mainBlue,
+    backgroundColor: Colors.backgroundGray,
   },
   icon: {
-    backgroundColor: Colors.mainBlue,
-    borderRadius: 25,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
   },
   roundNameContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginHorizontal: 10,
-    width: '40%',
   },
   column: {
     flexDirection: 'column',
@@ -149,16 +179,20 @@ const styles = StyleSheet.create({
     color: Colors.lightBlue,
   },
   amount: {
+    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'right',
-    color: 'white',
+  },
+  frequencyTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   roundUsers: {
     color: 'white',
   },
   roundName: {
     fontWeight: 'bold',
-    color: 'white',
-    fontSize: 14,
+    fontSize: 16,
   },
   rightActionContainer: {
     marginHorizontal: 15,
@@ -206,8 +240,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '35%',
   },
-  date: {fontSize: 12, fontWeight: '600'},
-  dateSubtitle: {fontSize: 11, color: Colors.secondary},
+  date: {fontSize: 12, fontWeight: 'bold'},
+  dateSubtitle: {fontSize: 12, color: Colors.secondary},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
   roundState: {
     flexDirection: 'column',
@@ -229,15 +263,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: '5%',
   },
   roundInfoDate: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '35%',
   },
-  date: {fontSize: 12, fontWeight: '400'},
-  dateSubtitle: {fontSize: 11, color: Colors.secondary},
+  date: {fontSize: 12, fontWeight: 'bold'},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
   roundState: {
     flexDirection: 'column',

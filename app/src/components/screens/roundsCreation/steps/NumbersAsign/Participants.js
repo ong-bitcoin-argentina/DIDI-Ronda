@@ -7,11 +7,10 @@ import {
   Text,
   Animated,
   ScrollView,
-  Button,
 } from 'react-native';
 import colors from '../../../../components/colors';
-import {Icon} from 'native-base';
-import Avatar from '../../../../../assets/img/avatar.png';
+import {Icon, Button} from 'native-base';
+import Avatar from '../../../../../assets/img/avatar.jpg';
 
 class Participants extends React.Component {
   constructor(props) {
@@ -109,12 +108,22 @@ class Participants extends React.Component {
             </Text>
             {this.props.open && (
               <Button
+                style={{
+                  backgroundColor: colors.mainBlue,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                  marginHorizontal: '10%',
+                }}
                 onPress={() => {
                   this.props.selectParticipants(
                     this.state.selectedParticipants,
                   );
-                }}
-                title={'Seleccionar'}></Button>
+                }}>
+                <Text style={{color: 'white', fontWeight: 'bold'}}>
+                  Seleccionar
+                </Text>
+              </Button>
             )}
           </View>
         )}

@@ -1,13 +1,19 @@
-//import liraries
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import * as actions from '../../../../../actions/roundCreation';
-
+import {Icon} from 'native-base';
 import colors from '../../../../components/colors';
 import ScreenContainer from '../../ScreenContainer';
 import NextButton from '../../../../components/NextButton';
 import Number from './Number';
+import {
+  addMonths,
+  addDays,
+  parseISO,
+  isLastDayOfMonth,
+  lastDayOfMonth,
+} from 'date-fns';
 
 class NumbersAsign extends Component {
   nextStep() {
@@ -36,7 +42,7 @@ class NumbersAsign extends Component {
 
       participantList.push(p);
     }
-    
+
     this.props.setParticipants(participantList);
   }
 
@@ -50,14 +56,17 @@ class NumbersAsign extends Component {
     for (let i = 0; i < numbers - 1; i++) {
       if (frequency == 30) {
         nextDate.setMonth(nextDate.getMonth() + 1);
+        let auxNextDate = new Date(nextDate.valueOf());
+        dates.push(auxNextDate);
       } else {
         nextDate.setDate(nextDate.getDate() + frequency);
+        let auxNextDate = new Date(nextDate.valueOf());
+        dates.push(auxNextDate);
       }
-      let auxNextDate = new Date(nextDate.valueOf());
-      dates.push(auxNextDate);
     }
     return dates;
   }
+
   render() {
     let startDate = this.props.paymentDate;
     let frequency = 7;
@@ -84,6 +93,28 @@ class NumbersAsign extends Component {
     return (
       <ScreenContainer title={'Configura el orden de los numeros'} step={5}>
         <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => {
+              this.nextStep();
+            }}
+            style={{
+              backgroundColor: 'white',
+              height: 60,
+              marginVertical: 5,
+              paddingHorizontal: 15,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: colors.secondary, marginRight: 20}}>
+              Saltar
+            </Text>
+            <Icon
+              name="arrow-forward"
+              type="MaterialIcons"
+              style={{color: colors.mainBlue}}></Icon>
+          </TouchableOpacity>
           <View
             style={{
               flexDirection: 'row',
@@ -92,7 +123,9 @@ class NumbersAsign extends Component {
               paddingHorizontal: 10,
             }}>
             <Text style={styles.title}>Número</Text>
-            <Text style={styles.title}>Participante</Text>
+            <Text style={[styles.title, {width: '40%', textAlign: 'left'}]}>
+              Participante
+            </Text>
             <View style={{width: 50}}>
               <Text style={styles.title}>Fecha Cobro</Text>
             </View>
@@ -111,6 +144,7 @@ class NumbersAsign extends Component {
               );
             }}
             data={dates}
+            contentContainerStyle={{paddingBottom: 80}}
             style={styles.numbersContainer}></FlatList>
         </View>
         <NextButton callback={() => this.nextStep()}></NextButton>

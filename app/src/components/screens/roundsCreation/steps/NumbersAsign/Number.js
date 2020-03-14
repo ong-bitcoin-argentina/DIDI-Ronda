@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import {Icon} from 'native-base';
 import Participants from './Participants';
-import Avatar from '../../../../../assets/img/avatar.png';
+import Avatar from '../../../../../assets/img/avatar.jpg';
 import colors from '../../../../components/colors';
 import {setParticipants} from '../../../../../actions/roundCreation';
 
@@ -22,14 +22,29 @@ var months = [
 ];
 
 const Number = props => {
+  const selectedByProps =
+    props.selectedParticipants &&
+    props.participants.filter(p => props.selectedParticipants.includes(p._id));
+
   const [open, setOpen] = useState(false);
-  const [participants, setParticipants] = useState(
-    props.selectedParticipants
-      ? props.participants.filter(p => {
-          return props.selectedParticipants.includes(p._id);
-        })
-      : [],
-  );
+
+  // Selected participants
+  const [participants, setParticipants] = useState(selectedByProps || []);
+
+  // Amount
+  const amount =
+    props.shift &&
+    props.shift.pays &&
+    Math.ceil(props.amount * props.shift.pays.length);
+
+  const pressHandler = () => {
+    if (props.detail) {
+      props.callback(props.shift._id);
+    } else {
+      setOpen(!open);
+    }
+  };
+
   const date = props.detail
     ? new Date(props.shift.limitDate).getDate()
     : props.date.item.getDate();
@@ -48,22 +63,7 @@ const Number = props => {
           {zIndex: 10000 - props.index * 10},
           open && styles.numberShadow,
         ]}
-        onPress={
-          props.shift
-            ? props.shift.status == 'current' ||
-              props.shift.status == 'completed'
-              ? props.detail
-                ? e => {
-                    props.callback(props.shift._id);
-                  }
-                : () => {
-                    setOpen(!open);
-                  }
-              : () => {}
-            : () => {
-                setOpen(!open);
-              }
-        }>
+        onPress={() => pressHandler()}>
         <View
           style={{flexDirection: 'column', width: 40, alignItems: 'center'}}>
           <View style={styles.bookmarkContainer}>
@@ -111,37 +111,52 @@ const Number = props => {
 
         <View style={styles.participant}>
           <View style={styles.participantIdentification}>
-            <Text style={styles.participantName}>
-              {participants.length
-                ? participants[0].givenName ||
-                  participants[0].user.name +
-                    (participants.length > 1
-                      ? ` / ${participants[1].givenName ||
-                          participants[1].user.name}`
-                      : '')
-                : props.detail ? '---' : 'Seleccionar'}
-            </Text>
-            <Text style={styles.participantNumber}>
-              {props.detail ? props.shift.status == 'pending'
-                ? '' 
-                :  props.shift.status == 'current' ? 'En curso' : 'Completada' : 'Participante'}
-            </Text>
+
+            <View style={{flexDirection: 'column', justiContent: 'center'}}>
+
+              <Text style={styles.participantName}>{participants.length
+                  ? participants[0].givenName || participants[0].user.name : '---'}</Text>
+             
+             {participants.length > 1 &&
+              <Text style={styles.participantName}> 
+              { participants[1].givenName || participants[1].user.name }
+              </Text>}
+
+              </View>
+              {!participants.length &&
+                <Text style={styles.participantNumber}>
+                  {props.detail
+                    ? props.shift.status == 'pending'
+                      ? ''
+                      : props.shift.status == 'current'
+                      ? 'En curso'
+                      : 'Completada'
+                    : 'Participante'}
+                </Text>
+          }
+
           </View>
         </View>
         <View
-          style={{flexDirection: 'column', width: 40, alignItems: 'center'}}>
+          style={{
+            flexDirection: 'column',
+            width: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <Text style={styles.month}>
             {month.substring(0, 3).toUpperCase()}
           </Text>
           <Icon
-            type="FontAwesome5"
-            name="calendar"
-            style={styles.calendar}></Icon>
+            type="MaterialCommunityIcons"
+            name="calendar-blank"
+            style={styles.calendar}
+          />
           <View style={styles.dateContainer}>
-            <Text style={{textAlign: 'center'}}>{date}</Text>
+            <Text style={{textAlign: 'center', marginBottom: 0}}>{date}</Text>
           </View>
         </View>
-        {props.detail === true &&
+        {props.detail &&
           (props.shift.status === 'completed' ? (
             <View
               style={{
@@ -151,11 +166,11 @@ const Number = props => {
                 justifyContent: 'center',
               }}>
               <Icon
-                type="MaterialIcons"
+                type="MaterialCommunityIcons"
                 name="check-circle"
                 style={styles.check}></Icon>
             </View>
-          ) : props.shift.status == 'current' ? (
+          ) : props.shift.status === 'current' ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -163,15 +178,14 @@ const Number = props => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text>
+              <View style={styles.amountContainer}>
                 <Icon
                   type="MaterialIcons"
                   name="attach-money"
-                  style={{fontSize: 14, color: colors.mainBlue}}></Icon>
-                {Math.ceil(
-                  (props.amount) * props.shift.pays.length,
-                )}
-              </Text>
+                  style={styles.amountIcon}
+                />
+                <Text style={styles.amountText}>{amount}</Text>
+              </View>
             </View>
           ) : (
             <View
@@ -253,32 +267,29 @@ const styles = StyleSheet.create({
   },
   month: {
     textAlign: 'center',
-    paddingRight: 5,
     color: colors.mainBlue,
     fontWeight: 'bold',
+    fontSize: 13,
+    top: 5,
+    zIndex: 10,
+    backgroundColor: colors.backgroundGray,
   },
   calendar: {
     color: colors.mainBlue,
     fontSize: 40,
-    width: 40,
-    padding: 0,
-    margin: 0,
   },
   check: {
     color: colors.mainBlue,
-    fontSize: 30,
-    width: 30,
-    padding: 0,
-    margin: 0,
+    fontSize: 25,
   },
   dateContainer: {
-    paddingRight: 5,
     position: 'absolute',
     width: '100%',
     height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    top: 1,
   },
   participant: {
     flex: 1,
@@ -306,7 +317,7 @@ const styles = StyleSheet.create({
   participantName: {
     fontWeight: 'bold',
     color: colors.gray,
-    fontSize: 16,
+    fontSize: 14
   },
   participantNumber: {
     color: colors.secondary,
@@ -321,6 +332,21 @@ const styles = StyleSheet.create({
   },
   currentNumber: {
     backgroundColor: colors.lightGray,
+  },
+  amountIcon: {
+    fontSize: 17,
+    color: colors.mainBlue,
+    fontWeight: 'bold',
+  },
+  amountText: {
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#000',
+  },
+  amountContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });
 

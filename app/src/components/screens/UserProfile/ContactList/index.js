@@ -10,7 +10,8 @@ const ContactList = props => {
         <FlatList
             data={ contactList }
             renderItem={ ({item, index}) => <Item contact={item} pressHandler={ () => pressHandler( item ) } /> }
-            keyExtractor={ (data) => `contact-${data.recordID}` } />
+            keyExtractor={ (data) => `contact-${data.recordID}` }
+            scrollEnabled={false} />
 
     )
 }

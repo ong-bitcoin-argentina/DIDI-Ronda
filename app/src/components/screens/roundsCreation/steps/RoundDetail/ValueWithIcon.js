@@ -6,7 +6,7 @@ import Colors from '../../../../components/colors';
 
 const ValueWithIcon = props => {
   return (
-    <View style={styles.roundInfoDate}>
+    <View style={[styles.roundInfoDate, props.middle && styles.dashedBorder ]}>
       <Icon type={props.iconType} name={props.icon} style={styles.smallIcon} />
       <View style={styles.dateContainer}>
         <Text style={styles.date}>{props.value}</Text>
@@ -18,7 +18,7 @@ const ValueWithIcon = props => {
 
 // define your styles
 const styles = StyleSheet.create({
-  date: {fontSize: 14, fontWeight: '600', textAlign: 'center'},
+  date: {fontSize: 14, fontWeight: 'bold', textAlign: 'center'},
   dateSubtitle: {fontSize: 11, color: Colors.secondary, textAlign: 'center'},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginVertical: 10},
   roundInfoDate: {
@@ -27,6 +27,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '35%',
   },
+  dashedBorder: {
+    borderWidth: 1, 
+    borderStyle: 'dashed',
+    paddingVertical: 10,
+    borderRadius: 1,
+    borderColor: Colors.secondary,
+    margin: -2
+  }
 });
 
 //make this component available to the app

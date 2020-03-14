@@ -13,7 +13,9 @@ import RoundCreation from '../roundsCreation/RoundCreation';
 import RoundsList from './RoundsList';
 import RoundDetail from '../RoundDetail';
 import NumberDetail from '../NumberDetail';
+import NumberPay from '../NumberDetail/NumberPay'
 import UserProfile from '../UserProfile';
+import { logOut } from '../../utils';
 
 const List = createStackNavigator({
   List: {
@@ -50,6 +52,11 @@ const List = createStackNavigator({
               disabled={true}
               text="Pagar"
             />
+
+            <MenuOption
+              onSelect={ () => logOut() }
+              text="Logout (test)`"
+            />
           </MenuOptions>
         </Menu>
       ),
@@ -61,6 +68,46 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: {color: 'white'},
       title: `Numero`,
+      headerTintColor: 'white',
+      headerStyle: {backgroundColor: '#417fd7'},
+      headerTitleStyle: {
+        color: 'white',
+        width: '80%',
+        textAlign: 'left',
+        fontSize: 18,
+      },
+      headerRight: (
+        <Menu>
+          <MenuTrigger>
+            <View style={{paddingRight: 20}}>
+              <Icon name="md-more" style={{color: 'white'}} />
+            </View>
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => alert(`Compartido!`)}>
+              <Text style={{fontSize: 16, color: Colors.gray}}>Compartir</Text>
+            </MenuOption>
+            <MenuOption onSelect={() => alert(`Documentos`)}>
+              <Text style={{fontSize: 16, color: Colors.gray}}>
+                Ver Documentos
+              </Text>
+            </MenuOption>
+            <MenuOption
+              onSelect={() => alert(`Pagado!`)}
+              disabled={true}
+              text="Pagar"
+            />
+          </MenuOptions>
+        </Menu>
+      ),
+    }),
+  },
+  NumberPay: {
+    screen: NumberPay,
+    navigationOptions: () => ({
+      headerBackTitle: null,
+      headerBackStyle: {color: 'white'},
+      title: `Pagar`,
       headerTintColor: 'white',
       headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: {

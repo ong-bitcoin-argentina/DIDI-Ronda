@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "238805790713",
+    "firebase_url": "https://laronda-push-android.firebaseio.com",
+    "project_id": "laronda-push-android",
+    "storage_bucket": "laronda-push-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238805790713:android:325d67f8fac6025e24d728",
+        "android_client_info": {
+          "package_name": "com.larondaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238805790713-7nmtvrqr8b14a0ps2cnv1d6lg5kcevba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3hOp9nVtUg3ISc6VAVhnOTN_pGK1MFPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238805790713-7nmtvrqr8b14a0ps2cnv1d6lg5kcevba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

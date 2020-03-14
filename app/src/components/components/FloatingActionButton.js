@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 
-import {StyleSheet, View, Button, Modal, Image} from 'react-native';
-import {Icon, Fab, Text} from 'native-base';
+import {StyleSheet, View, Modal} from 'react-native';
+import {Icon, Fab, Text, Button} from 'native-base';
 import {getInset} from 'react-native-safe-area-view';
 import Colors from './colors.js';
-import logo from '../../assets/img/logo.png';
 
 const bottomOffset = getInset('bottom');
 const bottomTabNavigationHeight = 49;
@@ -16,56 +15,58 @@ const FloatingActionButton = props => {
     <Fab
       active={active}
       direction="up"
-      containerStyle={{}}
       style={{backgroundColor: active ? Colors.secondary : Colors.yellow}}
       position="bottomRight"
       onPress={() => setActive(!active)}>
       <Icon name={active ? 'close' : 'add'} />
       {active && (
-        <Button
-          style={[
-            {backgroundColor: Colors.mainBlue},
-            styles.FabButton,
-            {visible: active},
-          ]}>
-          <Icon name="md-share" />
-          <Text uppercase={false} style={[styles.textTitle]}>
-            Pagar número
-          </Text>
-        </Button>
+        <View style={styles.subFabView3}>
+          <Button
+            style={[
+              {backgroundColor: Colors.mainBlue},
+              styles.FabButton,
+              {visible: active},
+            ]}>
+            <Icon name="md-share" />
+            <Text uppercase={false} style={[styles.textTitle]}>
+              Pagar número
+            </Text>
+          </Button>
+        </View>
       )}
       {active && (
-        <Button
-          style={[
-            {backgroundColor: Colors.mainBlue},
-            styles.FabButton,
-            {visible: active},
-          ]}>
-          <Icon name="md-share" />
-          <Text uppercase={false} style={[styles.textTitle]}>
-            Pagar ronda
-          </Text>
-        </Button>
+        <View style={styles.subFabView2}>
+          <Button
+            style={[
+              {backgroundColor: Colors.mainBlue},
+              styles.FabButton,
+              {visible: active},
+            ]}>
+            <Icon name="md-share" />
+            <Text uppercase={false} style={[styles.textTitle]}>
+              Pagar ronda
+            </Text>
+          </Button>
+        </View>
       )}
       {active && (
-        <Button
-          style={[
-            {backgroundColor: Colors.mainBlue},
-            styles.FabButton,
-            {visible: active},
-          ]}
-          onPress={() => {
-            props.nav('Create');
-            setActive(false);
-          }}>
-          <Icon
-            type="MaterialIcons"
-            name="filter-tilt-shift"
-          />
-          <Text uppercase={false} style={[styles.textTitle]}>
-            Armar ronda
-          </Text>
-        </Button>
+        <View style={styles.subFabView1}>
+          <Button
+            style={[
+              {backgroundColor: Colors.mainBlue},
+              styles.FabButton,
+              {visible: active},
+            ]}
+            onPress={() => {
+              props.nav('Create');
+              setActive(false);
+            }}>
+            <Icon type="MaterialIcons" name="filter-tilt-shift" />
+            <Text uppercase={false} style={[styles.textTitle]}>
+              Armar ronda
+            </Text>
+          </Button>
+        </View>
       )}
     </Fab>
   );
@@ -87,11 +88,28 @@ const FloatingActionButton = props => {
 };
 
 const styles = StyleSheet.create({
-  FabButton: {},
+  FabButton: {
+    height: 56,
+    width: 56,
+    borderRadius: 28,
+  },
+  subFabView1: {
+    flexDirection: 'row',
+    top: -210,
+  },
+  subFabView2: {
+    flexDirection: 'row',
+    top: -140,
+  },
+  subFabView3: {
+    flexDirection: 'row',
+    top: -70,
+  },
   textTitle: {
     position: 'absolute',
     color: 'white',
-    right: 40,
+    right: 50,
+    fontWeight: 'bold',
   },
 });
 

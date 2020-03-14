@@ -27,8 +27,8 @@ export default ListItem = props => {
   let statusIcon = null;
 
   const payday = props.payday(participant._id);
-  let payDate = '?';
-  let payMonth = '';
+  let payDate = '';
+  let payMonth = '---';
   if (payday) {
     let newpayday = new Date(props.payday(participant._id));
     payDate = newpayday.getDate().toString().substr(0, 3);
@@ -142,6 +142,6 @@ const styles = StyleSheet.create({
   calendarDay: {
     fontSize: 12,
     position: 'absolute',
-    top: 31,
+    top: 33,
   },
 });

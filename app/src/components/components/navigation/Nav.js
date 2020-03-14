@@ -11,8 +11,8 @@ import Colors from '../colors.js';
 import Tutorial from '../../screens/tutorial/Tutorial.js';
 import Home from './MainNavigation';
 import RoundsList from '../../screens/rounds';
-import logo from '../../../assets/img/logo.png';
-import RoundCreation from '../../screens/roundsCreation/RoundCreation.js';
+import Auth from '../../screens/onboarding';
+import LoadingAuth from '../../screens/onboarding/LoadingAuth.js';
 
 const Main = createBottomTabNavigator(
   {
@@ -52,25 +52,27 @@ const Main = createBottomTabNavigator(
       tabBarIcon: ({f, tintColor}) => {
         const {routeName} = navigation.state;
         let iconName;
-        if (routeName === 'Inicio') {
-          iconName = `md-home`;
-        } else if (routeName === 'Rondas') {
-          return (
-            <Icon
-              size={20}
-              style={{color: tintColor, marginTop: 5}}
-              type="MaterialIcons"
-              name="filter-tilt-shift"
-            />
-          );
-        } else if (routeName === 'Notificaciones') {
-          iconName = `md-contact`;
-        } else if (routeName === 'Ajustes') {
-          iconName = `md-settings`;
+        let iconFamily = null;
+        switch (routeName) {
+          case 'Inicio':
+            iconName = `md-home`;
+            break;
+          case 'Rondas':
+            iconName = 'filter-tilt-shift';
+            iconFamily = 'MaterialIcons';
+            break;
+          case 'Notificaciones':
+            iconName = `perm-contact-calendar`;
+            iconFamily = 'MaterialIcons';
+            break;
+          case 'Ajustes':
+            iconName = `md-settings`;
+            break;
         }
         return (
           <Icon
             name={iconName}
+            type={iconFamily}
             size={20}
             style={{color: tintColor, marginTop: 5}}
           />
@@ -91,6 +93,12 @@ const Main = createBottomTabNavigator(
 
 const MainContainer = createSwitchNavigator(
   {
+    Auth: {
+      screen: Auth,
+    },
+    LoadingAuth: {
+      screen: LoadingAuth
+    },
     Tuto: {
       screen: Tutorial,
     },
@@ -99,7 +107,7 @@ const MainContainer = createSwitchNavigator(
     },
   },
   {
-    initialRouteName: 'Tuto',
+    initialRouteName: 'LoadingAuth',
     headerMode: 'none',
     defaultNavigationOptions: {
       gesturesEnabled: false,

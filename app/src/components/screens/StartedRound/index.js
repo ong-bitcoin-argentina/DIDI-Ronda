@@ -1,5 +1,5 @@
 //import liraries
-import React, {Component} from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,127 +11,190 @@ import {
 import {connect} from 'react-redux';
 import Colors from '../../components/colors';
 import {Icon} from 'native-base';
-import Number from '../roundsCreation/steps/NumbersAsign/Number';
 import Header from './Header';
 import ExtraData from './ExtraData';
 import SelectedList from '../roundsCreation/steps/SelectParticipants/SelectedList';
+import DrawModal from './DrawModal';
+// import Number from '../roundsCreation/steps/NumbersAsign/Number';
+import Number from '../../components/Number';
+import { roundStatusArray } from '../../../components/utils';
 
-class StartedRound extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: this.props.navigation.getParam('name', 'Ronda'),
-      paymentsQty: this.props.navigation.getParam('paymentsQty', '2'),
-      pending: this.props.navigation.getParam('pending', false),
-      amount: this.props.navigation.getParam('amount', '200'),
-      frequency: this.props.navigation.getParam('frequency', 'm'),
-      participants: this.props.navigation.getParam('participants', []),
-      startDate: this.props.navigation.getParam('customStartDate', '10/10/10'),
-      endDate: this.props.navigation.getParam('customEndDate', '10/10/10'),
-      _id: this.props.navigation.getParam('_id', null),
-      admin: this.props.navigation.getParam('admin', null),
-    };
+
+// class StartedRound extends Component {
+const StartedRound = props => {
+
+  const roundParams = {
+    name: props.navigation.getParam('name', 'Ronda'),
+    paymentsQty: props.navigation.getParam('paymentsQty', '2'),
+    pending: props.navigation.getParam('pending', false),
+    amount: props.navigation.getParam('amount', '200'),
+    frequency: props.navigation.getParam('frequency', 'm'),
+    participants: props.navigation.getParam('participants', []),
+    startDate: props.navigation.getParam('customStartDate', '10/10/10'),
+    endDate: props.navigation.getParam('customEndDate', '10/10/10'),
+    _id: props.navigation.getParam('_id', null),
+    admin: props.navigation.getParam('admin', null),
+  };
+
+  const [modalProps, setModalProps] = useState({round: null, item: null, number: null});
+
+  const { _id } = roundParams;
+  const {requestRounds} = props;
+
+  const round = requestRounds.list.find(
+    e => e._id === props.navigation.getParam('_id', null),
+  );
+
+  const roundData = {
+      shifts: round.shifts,
+  };
+
+  const lastCompleted = round.shifts.reverse().find( e => e.status === 'completed');
+  round.shifts.reverse();
+  const currentShift = lastCompleted && round.shifts.find( e => e.number === lastCompleted.number+1);
+
+  const currentShiftPaysAmount = currentShift && currentShift.pays && currentShift.pays.length * round.amount;
+
+  const listItemPressHandler = item => {
+
+    const newModalProps = {
+      round: round,
+      item: item,
+      number: item.number
+    }
+
+    setModalProps( newModalProps )
+
+
+    // No participant assigned and status is draw
+    if( item.participant.length === 0 && item.status === "draw" ) {
+
+      // Open draw modal
+      return this.child._openPopUp();
+
+    } 
+
+    // Status is current or completed
+    if( item.status === "current" || item.status === "completed" ){
+
+      // Go to number detail
+      return props.navigation.navigate('NumberDetail', {
+        shift_id: item._id,
+        _id,
+      });
+
+    }
+
+
+
   }
-  render() {
-    const {_id} = this.state;
-    const {requestRounds} = this.props;
-    const round = requestRounds.list.find(
-      e => e._id === this.props.navigation.getParam('_id', null),
-    );
 
-    const roundData = {
-       shifts: round.shifts,
-     };
+  const { name, amount, paymentsQty, startDate, shifts, endDate, recurrence: frequency, participants } = round;
 
-    return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>{this.state.name}</Text>
-          </View>
-          <Header
-            amount={this.state.amount}
-            paymentsQty={this.state.paymentsQty}
-            name={this.state.name}></Header>
-          <View>
-            <ExtraData
-              startDate={this.state.startDate}
-              endDate={this.state.endDate}
-              frequency={this.state.frequency}
-              amount={this.state.amount}
-              shifts={roundData.shifts.length}></ExtraData>
-          </View>
 
-          <View>
-            <View
-              style={{
-                width: Dimensions.get('window').width,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 20,
-              }}>
-              <Text style={styles.listTitle}>Numero</Text>
-              <Text style={[styles.listTitle, {textAlign: 'left', width: 140}]}>
-                Cobra
-              </Text>
-              <Text style={styles.listTitle}>Estado</Text>
-            </View>
-            <FlatList
-              data={roundData.shifts}
-              contentContainerStyle={{
-                justifyContent: 'center',
-                width: Dimensions.get('window').width,
-              }}
-              scrollEnabled={false}
-              renderItem={data => {
-                return (
-                  <Number
-                    date={1}
-                    selectParticipants={participants => {}}
-                    callback={id => {
-                      this.props.navigation.navigate('NumberDetail', {
-                        shift_id: data.item._id,
-                        _id,
-                      });
-                    }}
-                    shift={data.item}
-                    index={data.index}
-                    shiftsQty={roundData.shifts.length}
-                    amount={this.state.amount}
-                    selectedParticipants={data.item.participant}
-                    participants={this.state.participants}
-                    detail={true}
-                  />
-                );
-              }}
-              keyExtractor={item => item._id}
-            />
-          </View>
-        </ScrollView>
+  const currentShiftHeader = shifts.find(s => s.status === 'current' || s.status === 'draw')
+  const currentPaymentHeader = currentShiftHeader ?  currentShiftHeader.number : '0'
+
+  return (
+    <View style={styles.container}>
+
+      <DrawModal {...modalProps} onRef={ ref => (this.child = ref) } />
+
+      <ScrollView contentContainerStyle={styles.scrollView}>
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{name}</Text>
+        </View>
+
+        <Header
+          amount={amount}
+          currentPayment={currentPaymentHeader}
+          paymentsQty={shifts.length}
+          currentShiftPaysAmount={currentShiftPaysAmount ? currentShiftPaysAmount : 0}
+          name={name} />
+
+        <View>
+          <ExtraData
+            startDate={startDate}
+            endDate={endDate}
+            frequency={frequency}
+            amount={amount}
+            shifts={roundData.shifts.length} />
+
+        </View>
+
         <View
           style={{
-            width: '100%',
-            backgroundColor: Colors.backgroundGray,
-            borderTopWidth: 1,
-            borderTopColor: Colors.lightGray,
+            width: Dimensions.get('window').width,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
           }}>
+          <Text style={styles.listTitle}>Número</Text>
+          <Text style={[styles.listTitle, {textAlign: 'left', width: 140}]}>
+            Cobra
+          </Text>
+          <Text style={styles.listTitle}>Estado</Text>
+        </View>
+
+        <View style={{flex: 1}}>
+          <FlatList
+            data={roundData.shifts}
+            contentContainerStyle={{
+              justifyContent: 'center',
+              width: '100%',
+            }}
+            scrollEnabled={false}
+            renderItem={ ({item}) => {
+
+              const numberDate = new Date(item.limitDate)
+
+              const numberParticipants = participants.filter( p => item.participant.includes( p._id ) );
+              const numberTitle = numberParticipants.map( p => p.user.name ).join('/');
+              const numberAvatar = numberParticipants.map( p => p.user.picture );
+              const numberSubtitle = roundStatusArray[ item.status ];
+              const numberCalendar = {
+                day: numberDate.getUTCDate(),
+                month: numberDate.getUTCMonth()+1,
+              };
+              const numberCurrent = currentShift && currentShift.number === item.number;
+              const numberDraw = item.status === 'draw';
+              const numberStatus = item.status;
+
+              return (
+                <Number
+                  number={ item.number }
+                  avatar={ numberAvatar }
+                  title={ numberTitle }
+                  subtitle={ numberSubtitle }
+                  calendar={ numberCalendar }
+                  callback={ () => { listItemPressHandler( item ) } }
+                  status={ numberStatus }
+                  current={ numberCurrent }
+                  draw={ numberDraw }
+                />
+              );
+            }}
+            keyExtractor={item => item._id}
+          />
+        </View>
+            
+        <View style={ styles.participantsContainer} >
           <Text
-            style={{
-              color: Colors.mainBlue,
-              fontWeight: '600',
-              paddingLeft: 20,
-            }}>
-            participantes
+            style={{ color: "#000", fontWeight: '600', paddingLeft: 20 }}>
+            Participantes
           </Text>
           <SelectedList
-            participants={this.state.participants}
+            participants={participants}
             pressHandler={() => {}}
             detail
           />
         </View>
-      </View>
-    );
-  }
+
+      </ScrollView>
+    </View>
+  );
+
 }
 
 const styles = StyleSheet.create({
@@ -142,10 +205,15 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     width: '100%',
-    paddingBottom: 50,
-
-    flexGrow: 1,
+    paddingBottom: 160,
     alignItems: 'center',
+  },
+  participantsContainer: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    height: 100,
+    marginBottom: 30,
   },
   headerContainer: {
     margin: 15,

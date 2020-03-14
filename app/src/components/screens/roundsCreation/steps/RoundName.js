@@ -18,7 +18,7 @@ export default RoundName = props => {
             type="MaterialIcons"
             name="filter-tilt-shift"
             style={styles.icon}></Icon>
-          <Item style={{width: '80%'}} stackedLabel>
+          <Item style={{width: '80%', height: 75, borderColor: value.length > 0 ? colors.mainBlue : colors.secondary}} stackedLabel>
             <Label>Nombre de la ronda</Label>
             <Input
               placeholder="Escribi un nombre"
@@ -46,5 +46,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundGray,
   },
   iconContainer: {flexDirection: 'row', alignItems: 'center'},
-  icon: {marginHorizontal: '10%'},
+  icon: {
+    marginHorizontal: '10%',
+    color: '#9B9B9B',
+  },
 });

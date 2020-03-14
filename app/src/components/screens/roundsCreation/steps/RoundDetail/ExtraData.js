@@ -27,17 +27,21 @@ class ExtraData extends Component {
             value={'$' + this.props.roundAmount}
             subtitle={'Monto Ronda'}
             icon={'attach-money'}
-            iconType={'MaterialIcons'}></ValueWithIcon>
+            iconType={'MaterialIcons'}
+          />
           <ValueWithIcon
             value={'$' + Math.floor(parseFloat(this.props.value))}
             subtitle={'Valor Pago'}
-            icon={'money'}
-            iconType={'FontAwesome'}></ValueWithIcon>
+            icon={'cash-usd'}
+            middle={true}
+            iconType={'MaterialCommunityIcons'}
+          />
           <ValueWithIcon
             value={frequency}
             subtitle={'Frecuencia'}
             icon={'alarm'}
-            iconType={'MaterialIcons'}></ValueWithIcon>
+            iconType={'MaterialIcons'}
+          />
         </View>
       </SubMenuContainer>
     );
@@ -50,6 +54,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     paddingHorizontal: '15%',
+    overflow: 'hidden',
   },
   roundInfo: {
     flexDirection: 'column',

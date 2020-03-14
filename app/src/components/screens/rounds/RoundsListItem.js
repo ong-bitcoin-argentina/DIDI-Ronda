@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {Icon, Button, Spinner, Toast} from 'native-base';
 import Colors from '../../components/colors';
-import UserService from '../../../services/api/user';
 import {connect} from 'react-redux';
 import * as roundsActions from '../../../actions/rounds';
 import Swipeout from 'react-native-swipeout';
-import logo from '../../../assets/img/logo.png';
+import Arrow from '../../../assets/img/arrow.svg';
 
 class RoundListItem extends Component {
   componentDidUpdate(prevProps, prevState) {
@@ -23,11 +22,11 @@ class RoundListItem extends Component {
           buttonText: 'Okay',
         });
       } else {
-
-        const errMsg = 
-          error.error.response.data.error === "Only can delete not started rounds" ?
-          "No se puede eliminar una ronda ya comenzada!" :
-          "Hubo un error, intente nuevamente";
+        const errMsg =
+          error.error.response.data.error ===
+          'Only can delete not started rounds'
+            ? 'No se puede eliminar una ronda ya comenzada!'
+            : 'Hubo un error, intente nuevamente';
 
         // Error!
         Toast.show({
@@ -101,6 +100,9 @@ class RoundListItem extends Component {
 
     const paymentsQty = this.props.shifts.length;
     const usersQty = this.props.participants.length;
+
+    const currentShift = this.props.shifts.find(s => s.status === 'current' || s.status === 'draw')
+    const currentPayment = currentShift ?  currentShift.number : '0'
     let customStartDate = this.getCustomDate(new Date(startDate));
     let customEndDate = this.getCustomDate(new Date(endDate));
     let frequency = '';
@@ -156,6 +158,26 @@ class RoundListItem extends Component {
             <View style={styles.roundData}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={styles.icon}>
+                  {!start && (
+                    <View
+                      style={{
+                        backgroundColor: Colors.yellowStatus,
+                        height: 14,
+                        width: 14,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 7,
+                        position: 'absolute',
+                        top: -2,
+                        right: -2,
+                      }}>
+                      <Icon
+                        type="FontAwesome"
+                        name="exclamation"
+                        style={{color: 'black', fontSize: 10}}
+                      />
+                    </View>
+                  )}
                   <Icon
                     type="MaterialIcons"
                     name="filter-tilt-shift"
@@ -172,7 +194,7 @@ class RoundListItem extends Component {
                       name="bookmark-border"
                       style={{color: 'white', fontSize: 22}}
                     />
-                    <Text style={styles.amount}> 0 de {paymentsQty}</Text>
+                    <Text style={styles.amount}> {currentPayment} de {paymentsQty}</Text>
                   </View>
                 </View>
               </View>
@@ -205,10 +227,7 @@ class RoundListItem extends Component {
                 <Text style={styles.dateSubtitle}>Inicio</Text>
               </View>
             </View>
-            <Icon
-              type="MaterialCommunityIcons"
-              name="arrow-right"
-              style={{color: Colors.secondary}}></Icon>
+            <Arrow width={70} height={'100%'}></Arrow>
             <View style={styles.roundInfoDate}>
               <Icon
                 type="MaterialCommunityIcons"
@@ -235,7 +254,11 @@ class RoundListItem extends Component {
             </View>
 
             <View style={styles.roundInfoDate}>
-              <Icon type="FontAwesome" name="money" style={styles.smallIcon} />
+              <Icon
+                type="MaterialCommunityIcons"
+                name="cash-usd"
+                style={styles.smallIcon}
+              />
               <View>
                 <Text style={styles.date}>
                   ${Math.floor(amount / shifts.length)}
@@ -352,7 +375,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '35%',
   },
-  date: {fontSize: 12, fontWeight: '400'},
+  date: {fontSize: 12, fontWeight: 'bold'},
   dateSubtitle: {fontSize: 11, color: Colors.secondary},
   smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
   roundState: {
@@ -364,7 +387,6 @@ const styles = StyleSheet.create({
     color: Colors.lightBlue,
     fontStyle: 'italic',
   },
-  
 });
 
 const mapDispatchToProps = dispatch => {

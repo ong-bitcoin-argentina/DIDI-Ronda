@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {View, Text, StyleSheet,TouchableOpacity, FlatList, ScrollView} from 'react-native';
 import SubMenuContainer from '../roundsCreation/steps/RoundDetail/SubMenuContainer';
 import {Icon} from 'native-base';
 import Avatar from '../roundsCreation/steps/SelectParticipants/Avatar';
@@ -9,7 +9,7 @@ const Number = props => {
   const pendent = props.pendiente;
   const date = pendent ? new Date(props.date) : '';
   return (
-    <View style={styles.participantState}>
+    <TouchableOpacity onPress={props.onPress} style={styles.participantState}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Avatar path={props.picture}></Avatar>
         <View style={{marginHorizontal: 15}}>
@@ -30,7 +30,7 @@ const Number = props => {
             borderRadius: 10,
             width: 20,
             height: 20,
-            backgroundColor: pendent ? 'green' : 'yellow',
+            backgroundColor: pendent ? colors.green: colors.yellowStatus,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
@@ -41,11 +41,22 @@ const Number = props => {
         </View>
         <Text>{pendent ? `$ ${props.amount}` : 'pendiente'}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 class ParticipantsList extends Component {
+
+  constructor(props){
+    super(props)
+
+    this._onPress = this._onPress.bind(this)
+  }
+
+  _onPress(p){
+    this.props.goToPay(p)
+  }
+
   render() {
     const paidParticipants = this.props.pays.map(p => {
       return p.participant;
@@ -53,6 +64,7 @@ class ParticipantsList extends Component {
 
     const populatedParticipants = this.props.participants.map(p => {
       return {
+        id: p._id,
         name: p.user.name,
         pendent: paidParticipants.includes(p._id),
         picture: p.user.picture,
@@ -72,9 +84,11 @@ class ParticipantsList extends Component {
                 picture={data.item.picture}
                 amount={this.props.amount}
                 pendiente={data.item.pendent}
-                date={data.item.date}></Number>
+                date={data.item.date}
+                onPress={() => this._onPress(data.item)}></Number>
             );
-          }}></FlatList>
+          }} 
+         keyExtractor={ data => data.id } />
       </SubMenuContainer>
     );
   }

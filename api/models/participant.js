@@ -5,10 +5,9 @@ const mongoose = require('mongoose'),
 const participantSchema = new Schema({
     user:           { type: ObjectId, ref: 'User' },
     round:          { type: ObjectId, ref: 'Round' },
-    admin:          { type: Boolean, required: true, default: false },
     guarantor:      { type: ObjectId, ref: 'Participant', default: null },
-    date:           { type: Date, default: Date.now, required: true },
-    acepted:        { type: Boolean, required: true, default: false },
+    date:           { type: Date, default: Date.now },
+    acepted:        { type: Boolean, default: null },
 });
 
 module.exports = mongoose.model('Participant', participantSchema);

@@ -16,11 +16,14 @@ export const startRound = async id => {
   }
 };
 
-export const closeRound = async (id, number) => {
+export const closeRound = async (roundId, number, nextDraw) => {
   try {
     return await api_call(
       'post',
-      `/admin/round/${id}/number/${number}/complete`,
+      `/admin/round/${roundId}/number/${number}/complete`,
+      {
+        nextDraw: nextDraw,
+      },
     );
   } catch (error) {
     return {error};
@@ -28,7 +31,6 @@ export const closeRound = async (id, number) => {
 };
 
 export const payRound = async (roundId, number, participant) => {
-  console.log("PARTICIPANTE", participant)
   try {
     return await api_call(
       'post',
@@ -53,6 +55,37 @@ export const swapParticipant = async ( idParticipant, newUser, roundId ) => {
           phone: newUser.phone,
           name: newUser.name
         }
+      },
+    );
+  } catch (error) {
+    return {error};
+  }
+
+}
+
+export const removeParticipant = async ( idParticipant, roundId ) => {
+
+  try {
+    return await api_call(
+      'post',
+      `/admin/round/${roundId}/participant/${idParticipant}/remove`,
+    );
+  } catch (error) {
+    return {error};
+  }
+
+}
+
+
+
+export const assignParticipantToNumber = async ( idParticipant, roundId, shiftNumber ) => {
+
+  try {
+    return await api_call(
+      'post',
+      `/admin/round/${roundId}/number/${shiftNumber}/assign`,
+      {
+        participantId: idParticipant
       },
     );
   } catch (error) {

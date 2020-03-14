@@ -1,12 +1,25 @@
-//import liraries
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import {Icon} from 'native-base';
 import Colors from '../../../../components/colors';
 import SubMenuContainer from './SubMenuContainer';
+import Arrow from '../../../../../assets/img/arrow-blue.svg'
 
-// create a component
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 class Period extends Component {
+
+  getCustomDate(date) {
+    const customDate = new Date(date)
+    alert(customDate)
+    return (
+      customDate.getDate() +
+      '/' +
+      (parseInt(customDate.getMonth()) + 1).toString() +
+      '/' +
+      customDate.getFullYear()
+    );
+  }
   render() {
     return (
       <SubMenuContainer title="Periodo">
@@ -22,10 +35,7 @@ class Period extends Component {
               <Text style={styles.dateSubtitle}>Fecha Inicio</Text>
             </View>
           </View>
-          <Icon
-            type="MaterialCommunityIcons"
-            name="arrow-right"
-            style={{color: Colors.secondary}}></Icon>
+          <Arrow width={120} height={12} color={Colors.mainBlue} style={{color: Colors.mainBlue, position: 'absolute', left: (SCREEN_WIDTH * 0.5 ) - 60}} />
           <View style={styles.roundInfoDate}>
             <Icon
               type="MaterialCommunityIcons"
@@ -55,7 +65,7 @@ const styles = StyleSheet.create({
   },
   roundInfoDates: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   roundInfoDate: {
@@ -64,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '35%',
   },
-  date: {fontSize: 14, fontWeight: '600', textAlign: 'center'},
+  date: {fontSize: 14, fontWeight: 'bold', textAlign: 'center'},
   dateSubtitle: {fontSize: 11, color: Colors.secondary, textAlign: 'center'},
   smallIcon: {color: Colors.mainBlue, fontSize: 22},
   roundState: {

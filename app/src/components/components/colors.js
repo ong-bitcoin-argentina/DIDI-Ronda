@@ -12,5 +12,8 @@ export default {
   green: '#40d457',
   lightGray: '#eeeeee',
   secondGray: '#eaeaea',
-  statusPurple: '#906ECD'
+  statusPurple: '#906ECD',
+  iconDisabled: '#c3c3c3',
+  textDisabled: '#A2A2A2',
+  secondaryText: '#737373',
 };
