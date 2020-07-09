@@ -1,13 +1,16 @@
-//import liraries
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import Colors from '../../components/colors';
-import {Icon} from 'native-base';
+import React from "react";
+import { Icon } from "native-base";
+import { View, Text, StyleSheet } from "react-native";
+import Colors from "../../components/colors";
 
-export default Header = props => {
-
-  const { currentShiftPaysAmount, currentPayment } = props;
-
+const Header = props => {
+  const {
+    currentShiftPaysAmount,
+    currentPayment,
+    name,
+    paymentsQty,
+    amount,
+  } = props;
 
   return (
     <View style={styles.roundData}>
@@ -17,53 +20,55 @@ export default Header = props => {
             <Icon
               type="MaterialIcons"
               name="filter-tilt-shift"
-              style={{color: 'white', fontSize: 24}}
+              style={{ color: "white", fontSize: 24 }}
             />
           </View>
           <View style={styles.roundNameContainer}>
             <Text numberOfLines={1} style={styles.roundName}>
-              {props.name}
+              {name}
             </Text>
           </View>
         </View>
 
         <View style={[styles.dataRow, styles.left]}>
           <View style={styles.icon}>
-            <Icon name="bookmark" style={{color: 'white', fontSize: 18}} />
+            <Icon name="bookmark" style={{ color: "white", fontSize: 18 }} />
           </View>
-          <View style={{marginHorizontal: 10}}>
-            <Text style={styles.amount}>{currentPayment} de {props.paymentsQty}</Text>
+          <View style={{ marginHorizontal: 10 }}>
+            <Text style={styles.amount}>
+              {currentPayment} de {paymentsQty}
+            </Text>
             <Text style={styles.dateSubtitle}>#</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.dataColumn}>
-        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
-          <View style={{flexDirection: 'row', width: '80%'}}>
+        <View style={[styles.dataRow, { justifyContent: "flex-end" }]}>
+          <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={styles.icon}>
               <Icon
                 type="MaterialIcons"
                 name="attach-money"
-                style={{color: 'white', fontSize: 24}}
+                style={{ color: "white", fontSize: 24 }}
               />
             </View>
             <View style={styles.roundNameContainer}>
               <Text numberOfLines={1} style={styles.amount}>
-                ${props.amount}
+                ${amount}
               </Text>
               <Text style={styles.dateSubtitle}>Ronda</Text>
             </View>
           </View>
         </View>
 
-        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
-          <View style={{flexDirection: 'row', width: '80%'}}>
+        <View style={[styles.dataRow, { justifyContent: "flex-end" }]}>
+          <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={styles.icon}>
               <Icon
                 type="MaterialCommunityIcons"
                 name="cash-usd"
-                style={{color: 'white', fontSize: 24}}
+                style={{ color: "white", fontSize: 24 }}
               />
             </View>
             <View style={styles.roundNameContainer}>
@@ -80,35 +85,35 @@ export default Header = props => {
 };
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: Colors.backgroundGray,
   },
   scrollView: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerContainer: {
     margin: 15,
   },
   titleContainer: {
-    height: '10%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "10%",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.backgroundGray,
   },
   dataRow: {
-    height: '50%',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    height: "50%",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 
   dataColumn: {
     flex: 1,
-    height: '100%',
-    flexDirection: 'column',
+    height: "100%",
+    flexDirection: "column",
 
     paddingVertical: 10,
   },
@@ -116,63 +121,63 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     color: Colors.gray,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   roundStatus: {
-    height: '100%',
+    height: "100%",
     width: 5,
   },
   roundData: {
-    width: '95%',
+    width: "95%",
     height: 100,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     borderRadius: 5,
     backgroundColor: Colors.mainBlue,
   },
   icon: {
     backgroundColor: Colors.mainBlue,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     width: 30,
     height: 30,
   },
   roundNameContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+    flexDirection: "column",
+    alignItems: "flex-start",
     marginHorizontal: 10,
   },
   column: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   mensuality: {
     fontSize: 16,
-    textAlign: 'right',
-    fontWeight: 'bold',
+    textAlign: "right",
+    fontWeight: "bold",
     color: Colors.lightBlue,
   },
   amount: {
     fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'right',
-    color: 'white',
+    fontWeight: "bold",
+    textAlign: "right",
+    color: "white",
   },
   roundUsers: {
-    color: 'white',
+    color: "white",
   },
   roundName: {
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
     fontSize: 18,
   },
   rightActionContainer: {
     marginHorizontal: 15,
     marginVertical: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -183,72 +188,74 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   rightAction: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   rightAcionButton: {
     flex: 1,
     borderRadius: 0,
     margin: 0,
-    width: '100%',
+    width: "100%",
   },
   rightAcionIcon: {
-    color: 'white',
+    color: "white",
   },
   roundInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 100,
     marginBottom: 8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
   roundInfoDates: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   roundInfoDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '35%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "35%",
   },
-  date: {fontSize: 12, fontWeight: 'bold'},
-  dateSubtitle: {fontSize: 12, color: Colors.lightGray},
-  smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
+  date: { fontSize: 12, fontWeight: "bold" },
+  dateSubtitle: { fontSize: 12, color: Colors.lightGray },
+  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
   roundState: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
     paddingRight: 20,
   },
   state: {
     color: Colors.lightBlue,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   roundInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 100,
     marginBottom: 8,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
   roundInfoDates: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   roundInfoDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '35%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "35%",
   },
-  date: {fontSize: 12, fontWeight: 'bold'},
-  smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
+  date: { fontSize: 12, fontWeight: "bold" },
+  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
   roundState: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
     paddingRight: 20,
   },
 });
+
+export default Header;

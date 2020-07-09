@@ -1,99 +1,123 @@
 // MANAGERS
-const user_manager = require('../managers/user');
-const round_manager = require('../managers/round');
-const participant_manager = require('../managers/participant');
+const user_manager = require("../managers/user");
+const round_manager = require("../managers/round");
+const participant_manager = require("../managers/participant");
+const { STORAGE_HOST, STORAGE_PORT } = process.env;
+const blockchain = require("./blockchain");
+const crypto = require("../utils/crypto");
+const User = require("../models/user");
+const request = require("request-promise-native");
+const fs = require("fs");
+const { customError } = require("../helpers/errorHandler");
 
-const { customError } = require('../helpers/errorHandler');
-
-
-exports.byUsername = async (req, res) => {
-
-    const { username } = req.body;
-    const user = await user_manager.byUsername(username);
-    return user;
-
+exports.byUsername = async req => {
+  const { username } = req.body;
+  const user = await user_manager.byUsername(username);
+  return user;
 };
 
-exports.roundsOfUser = async (req, res) => {
+exports.roundsOfUser = async req => {
+  const { username } = req.body;
 
-    const { username } = req.body;
+  // Find user id
+  const user = await user_manager.byUsername(username);
 
-    // Find user id
-    const user = await user_manager.byUsername(username);
+  // Find Rounds of participant
+  const participant = await participant_manager.participantsOfUser(user);
 
-    // Find Rounds of participant 
-    const participant = await participant_manager.participantsOfUser(user)
+  // Filter participants (acepted !== false)
+  const filteredParticipants = participant.filter(p => p.acepted !== false);
 
-    // Filter participants (acepted !== false)
-    const filteredParticipants = participant.filter(p => p.acepted !== false)
+  // Get rounds
+  const rounds = filteredParticipants.map(p => p.round).filter(e => e !== null);
 
-    // Get rounds
-    const rounds = filteredParticipants.map(p => p.round).filter(e => e !== null)
-
-    return rounds;
-
+  return rounds;
 };
 
-exports.userData = async (req, res) => {
+//SET PROFILE IMAGE
+exports.setProfileImage = async data => {
+  const { userId, image } = data;
+  const user = await User.findById(userId);
+  if (user === null) throw new customError("That user does not exists");
+  try {
+    const hash = await request({
+      url: "http://" + STORAGE_HOST + ":" + STORAGE_PORT + "/bzz:/",
+      method: "POST",
+      headers: {
+        "content-type": "image/png",
+      },
+      encoding: null,
+      body: fs.createReadStream(image.path),
+    });
+    user.pictureHash = hash.toString();
+    user.save();
+    const walletAddress = crypto.decipher(user.walletAddress);
+    const walletPk = crypto.decipher(user.walletPk);
+    const savedToDomain = await blockchain.setContentToSubdomain(
+      user.nick,
+      hash,
+      walletAddress,
+      walletPk
+    );
+    return user.picture;
+  } catch (err) {
+    throw new customError(err);
+  }
+};
 
-    const { requestedUser: username } = req.body;
+exports.userData = async req => {
+  const { username } = req.body;
 
+  // Find user id
+  const user = await user_manager.byUsername(username);
 
-    // Find user id
-    const user = await user_manager.byUsername(username);
+  if (user === null) throw new customError("User do not exists");
 
+  // Find Rounds of participant
+  const participantsOfUser = await participant_manager.participantsOfUser(user);
+  const filteredParticipants = participantsOfUser.filter(
+    p => p.acepted === true && p.round !== null
+  );
 
-    if (user === null) throw new customError("User do not exists");
+  const rounds = await Promise.all(
+    filteredParticipants.map(async p => {
+      // Get round id
+      const participantRoundId = p.round;
 
+      if (participantRoundId) {
+        // Get Round by provided Id
+        const participantRound = await round_manager.findById(
+          participantRoundId
+        );
 
-    // Find Rounds of participant 
-    const participantsOfUser = await participant_manager.participantsOfUser(user)
-    const filteredParticipants = participantsOfUser.filter(p => p.acepted === true && p.round !== null)
+        if (participantRound !== null && participantRound !== undefined)
+          return participantRound;
+      }
+    })
+  );
 
+  // Starting Count for rounds and completed rounds
+  const roundsCount = rounds.length;
 
-    const rounds = await Promise.all( filteredParticipants.map( async p => {
-        // Get round id
-        const participantRoundId = p.round;
+  // Find completed rounds
+  let completedRoundsCount = rounds.filter(round => round.completed).length;
 
-        if (participantRoundId) {
+  return { roundsCount, completedRoundsCount };
+};
 
-            // Get Round by provided Id
-            const participantRound = await round_manager.findById(participantRoundId);
+exports.updateToken = async req => {
+  const { username, newToken } = req.body;
 
-            if (participantRound !== null && participantRound !== undefined) return participantRound;
-        }
+  // Find user id
+  const user = await user_manager.byUsername(username);
+  if (user === null) throw new customError("User do not exists");
 
-    }));
-
-    // Starting Count for rounds and completed rounds
-    const roundsCount = rounds.length;
-
-    //check if round's last shift status is 'completed' and add 1 to count
-    let completedRoundsCount = rounds.filter( round => round.shifts[ round.shifts.length - 1 ].status === "completed" ).length
-
-
-    return { roundsCount, completedRoundsCount }
-
-
-
-}
-
-
-exports.updateToken = async (req, res) => {
-
-    const { username, newToken } = req.body;
-
-    // Find user id
-    const user = await user_manager.byUsername(username);
-    if (user === null) throw new customError("User do not exists");
-
-    // If token is new, change it
-    if( user.token !== newToken ){
-        user.token = newToken;
-        const newUSer = await user_manager.save(user);
-        return newUSer.token;
-    } else {
-        return user.token;
-    }
-
-}
+  // If token is new, change it
+  if (user.token !== newToken) {
+    user.token = newToken;
+    const newUSer = await user_manager.save(user);
+    return newUSer.token;
+  } else {
+    return user.token;
+  }
+};

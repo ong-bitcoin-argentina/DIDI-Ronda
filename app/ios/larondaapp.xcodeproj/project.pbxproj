@@ -38,6 +38,7 @@
 		9CBA484E73A94E5B96B4E96B /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 741B94F0895C4B2C8DD503C8 /* SimpleLineIcons.ttf */; };
 		E413356ADAA747E5AA600DA7 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AE6E8D30F3E42E6BD1FE3F3 /* Zocial.ttf */; };
 		F49FAA1511F94C79B270FF78 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B1CC8031A4A4D8BA87B1032 /* Fontisto.ttf */; };
+		48719066557D4FBBAB377638 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 14A051C86E37498F8A40CD0B /* Fontisto.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		741B94F0895C4B2C8DD503C8 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		6AE6E8D30F3E42E6BD1FE3F3 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		2B1CC8031A4A4D8BA87B1032 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		14A051C86E37498F8A40CD0B /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/native-base/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +259,7 @@
 				741B94F0895C4B2C8DD503C8 /* SimpleLineIcons.ttf */,
 				6AE6E8D30F3E42E6BD1FE3F3 /* Zocial.ttf */,
 				2B1CC8031A4A4D8BA87B1032 /* Fontisto.ttf */,
+				14A051C86E37498F8A40CD0B /* Fontisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -431,6 +434,7 @@
 				9CBA484E73A94E5B96B4E96B /* SimpleLineIcons.ttf in Resources */,
 				E413356ADAA747E5AA600DA7 /* Zocial.ttf in Resources */,
 				F49FAA1511F94C79B270FF78 /* Fontisto.ttf in Resources */,
+				48719066557D4FBBAB377638 /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

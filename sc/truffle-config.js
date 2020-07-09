@@ -24,6 +24,9 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+const PrivateKeyProvider = require("truffle-privatekey-provider");
+
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -46,6 +49,15 @@ module.exports = {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 8546,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
+     },
+
+
+   rsktestnet: {
+       provider: () => new PrivateKeyProvider("C87509A1C067BBDE78BEB793E6FA76530B6382A4C0241E5E4A9EC0A0F44DC0D3", `https://public-node.testnet.rsk.co`),
+       network_id: 31,       // Ropsten's id
+       gas: 6800000,        // 
+       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
      },
 
     // Another network with more advanced options...

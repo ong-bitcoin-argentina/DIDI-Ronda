@@ -1,98 +1,87 @@
-//import liraries
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Icon} from 'native-base';
-import Colors from '../../../../components/colors';
-import SubMenuContainer from './SubMenuContainer';
-import ValueWithIcon from './ValueWithIcon';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import Colors from "../../../../components/colors";
+import SubMenuContainer from "./SubMenuContainer";
+import ValueWithIcon from "../../../../components/RoundDetail/ValueWithIcon";
+import { amountFormat, roundFrequencyArray } from "../../../../../utils/utils";
 
-class ExtraData extends Component {
-  render() {
-    let frequency = '';
-    switch (this.props.frequency) {
-      case 'm':
-        frequency = 'Mensual';
-        break;
-      case 'q':
-        frequency = 'Quincenal';
-        break;
-      case 's':
-        frequency = 'Semanal';
-        break;
-    }
-    return (
-      <SubMenuContainer title="Otros Datos">
-        <View style={styles.container}>
-          <ValueWithIcon
-            value={'$' + this.props.roundAmount}
-            subtitle={'Monto Ronda'}
-            icon={'attach-money'}
-            iconType={'MaterialIcons'}
-          />
-          <ValueWithIcon
-            value={'$' + Math.floor(parseFloat(this.props.value))}
-            subtitle={'Valor Pago'}
-            icon={'cash-usd'}
-            middle={true}
-            iconType={'MaterialCommunityIcons'}
-          />
-          <ValueWithIcon
-            value={frequency}
-            subtitle={'Frecuencia'}
-            icon={'alarm'}
-            iconType={'MaterialIcons'}
-          />
-        </View>
-      </SubMenuContainer>
-    );
-  }
-}
+const ExtraData = props => {
+  const { frequency: letterFrequency, value, roundAmount } = props;
+
+  let frequency = "";
+  frequency = roundFrequencyArray[letterFrequency];
+
+  return (
+    <SubMenuContainer title="Otros Datos">
+      <View style={styles.container}>
+        <ValueWithIcon
+          value={`$${amountFormat(roundAmount)}`}
+          subtitle="Monto Ronda"
+          icon="attach-money"
+          iconType="MaterialIcons"
+        />
+        <ValueWithIcon
+          value={`$${amountFormat(value)}`}
+          subtitle="Valor Pago"
+          icon="cash-usd"
+          middle
+          iconType="MaterialCommunityIcons"
+        />
+        <ValueWithIcon
+          value={frequency}
+          subtitle="Frecuencia"
+          icon="alarm"
+          iconType="MaterialIcons"
+        />
+      </View>
+    </SubMenuContainer>
+  );
+};
 
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingHorizontal: '15%',
-    overflow: 'hidden',
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingHorizontal: "15%",
+    overflow: "hidden",
   },
   roundInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 100,
     marginBottom: 8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
   roundInfoDates: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 10,
   },
   roundInfoDate: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '35%',
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "35%",
   },
 
   roundState: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
 
     paddingRight: 20,
   },
   state: {
     color: Colors.lightBlue,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   dateContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
-//make this component available to the app
 export default ExtraData;

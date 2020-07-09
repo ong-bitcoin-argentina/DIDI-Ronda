@@ -1,37 +1,51 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Button} from 'react-native';
-import {Icon} from 'native-base';
-import colors from '../../../components/colors';
-import {Input, Item, Label} from 'native-base';
-import ScreenContainer from '../ScreenContainer';
-import NextButton from '../../../components/NextButton';
-import {setName} from '../../../../actions/roundCreation';
-import BackButton from '../../../components/BackButton';
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Input, Icon } from "native-base";
 
-export default RoundName = props => {
-  const [value, setValue] = useState(props.name);
+import colors from "../../../components/colors";
+import ScreenContainer from "../ScreenContainer";
+import NextButton from "../../../components/NextButton";
+import CreationTitle from "../CreationTitle";
+
+const screenIcon = {
+  type: "MaterialIcons",
+  name: "format-color-text",
+};
+
+const RoundName = props => {
+  const { name } = props;
+  const [value, setValue] = useState(name);
+
   return (
-    <ScreenContainer title={'Como se va a llamar la ronda?'} step={0}>
+    <ScreenContainer step={0}>
+      <CreationTitle
+        title={`¿Cómo se va a\n llamar la Ronda?`}
+        iconName={screenIcon.name}
+        iconType={screenIcon.type}
+      />
       <View style={styles.container}>
         <View style={styles.iconContainer}>
           <Icon
             type="MaterialIcons"
             name="filter-tilt-shift"
-            style={styles.icon}></Icon>
-          <Item style={{width: '80%', height: 75, borderColor: value.length > 0 ? colors.mainBlue : colors.secondary}} stackedLabel>
-            <Label>Nombre de la ronda</Label>
-            <Input
-              placeholder="Escribi un nombre"
-              value={value}
-              onChangeText={text => setValue(text)}
-            />
-          </Item>
+            style={styles.icon}
+          />
+
+          <Input
+            placeholder="Escribí el nombre acá"
+            style={{
+              borderBottomColor: colors.secondary,
+              borderBottomWidth: 2,
+            }}
+            value={value}
+            onChangeText={text => setValue(text)}
+          />
         </View>
-        {value != '' && (
+        {!!value && (
           <NextButton
             callback={() => {
               props.setName(value);
-              props.navigation.navigate('Amount');
+              props.navigation.navigate("Amount");
             }}
           />
         )}
@@ -45,9 +59,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundGray,
   },
-  iconContainer: {flexDirection: 'row', alignItems: 'center'},
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+  },
   icon: {
-    marginHorizontal: '10%',
-    color: '#9B9B9B',
+    marginHorizontal: "10%",
+    color: "#9B9B9B",
+  },
+  label: {
+    fontSize: 12,
   },
 });
+
+export default RoundName;

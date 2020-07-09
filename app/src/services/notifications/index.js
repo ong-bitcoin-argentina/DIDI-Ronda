@@ -1,43 +1,63 @@
-import {Platform} from 'react-native';
-import firebase from 'react-native-firebase';
-import AsyncStorage from '@react-native-community/async-storage';
+import { Platform } from "react-native";
+import firebase from "react-native-firebase";
+import AsyncStorage from "@react-native-community/async-storage";
+import * as UserService from "../api/user";
+import { setAuth, getAuth } from "../../utils/utils";
 
-export default checkPermission = async () => {
-
+const checkPermission = async () => {
   // Android channel
-  if (Platform.OS === 'android') {
+  if (Platform.OS === "android") {
     const channel = new firebase.notifications.Android.Channel(
-      'ronda',
-      'Ronda',
-      firebase.notifications.Android.Importance.Max,
-    ).setDescription('Laronda app');
-    firebase.notifications().android.createChannel(channel);
+      "ronda",
+      "Ronda",
+      firebase.notifications.Android.Importance.Max
+    ).setDescription("La Ronda app");
+    await firebase.notifications().android.createChannel(channel);
   }
 
-  return await firebase
-    .messaging()
-    .hasPermission()
-    .then( enabled => enabled ? getToken() : this.requestPermission() )
+  const hasPermission = await firebase.messaging().hasPermission();
+
+  if (hasPermission) {
+    const token = await getToken();
+
+    // Refresh token if is null
+    refreshToken(token);
+
+    // Set listener for token refresh
+    // TODO: Error handler
+    firebase.messaging().onTokenRefresh(async newToken => {
+      refreshToken(newToken);
+    });
+
+    return token;
+  }
+  return requestPermission();
 };
 
+const refreshToken = async newToken => {
+  await UserService.updateToken(newToken);
+  const auth = await getAuth();
+  if (auth !== null) setAuth({ ...auth, token: newToken });
+};
 
-requestPermission = async () => {
-  return await firebase
-    .messaging()
-    .requestPermission()
-    .then( () => getToken() )
-    .catch( error => {
-      console.log('permission rejected');
-    });
+const requestPermission = async () => {
+  try {
+    await firebase.messaging().requestPermission();
+    await checkPermission();
+  } catch (error) {
+    console.log("permission rejected");
+  }
 };
 
 export const getToken = async () => {
-  let fcmToken = await AsyncStorage.getItem('fcmToken');
+  let fcmToken = await AsyncStorage.getItem("fcmToken");
   if (!fcmToken) {
     fcmToken = await firebase.messaging().getToken();
     if (fcmToken) {
-      await AsyncStorage.setItem('fcmToken', fcmToken);
+      await AsyncStorage.setItem("fcmToken", fcmToken);
     }
   }
   return fcmToken;
 };
+
+export default checkPermission;

@@ -1,86 +1,91 @@
 import React, { useState, useEffect } from "react";
-import {View, ScrollView, StyleSheet} from 'react-native';
-import { Button, Spinner } from 'native-base';
-import colors from '../colors';
+import { View, ScrollView, StyleSheet } from "react-native";
+import { connect } from "react-redux";
 
-import Period from './Period';
-import RoundTitle from './RoundTitle';
-import RoundInfo from './RoundInfo';
-import InvitationModal from './InvitationModal';
-import RequestNumberModal from './RequestNumberModal';
+import { Spinner } from "native-base";
+import colors from "../colors";
 
+import RoundInfo from "./RoundInfo";
+import InvitationModal from "./InvitationModal";
+import RequestNumberModal from "./RequestNumberModal";
 
 const Participant = props => {
+  // Props
+  const { round, auth, acceptAndRequest } = props;
 
-    // Props
-    const { round, auth } = props;
+  // Hooks
+  const [accepted, setAccepted] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [show, setShow] = useState({ show: false });
 
-    // Hooks
-    const [accepted, setAccepted]   = useState( true );
-    const [loading, setLoading]     = useState( true );
-    const [ show, setShow ]         = useState( {show: false} );
+  // Variables
+  const userParticipant =
+    round && round.participants.find(p => p.user._id === auth.id);
 
-    // Variables
-    const userParticipant               = round && round.participants.find( p => p.user._id === auth.id )
-    const assignedNumbers               = round && round.shifts.filter( shift => shift.participant.includes( userParticipant._id ) )
-    const requestedNumbers              = round && round.shifts.filter( shift => shift.requests.includes( userParticipant._id ) )
+  const preSelectedNumbers = round.shifts.filter(s => {
+    const { id: userId } = auth;
 
-    // Mount
-    useEffect(() => {
+    const participant = round.participants.find(p => p.user._id === userId);
 
-        // Check participant invitation 
-        setAccepted( userParticipant.acepted )
-        setLoading( false)
+    return participant && s.participant.includes(participant._id);
+  });
+  // Mount
+  useEffect(() => {
+    // Check participant invitation
+    setAccepted(userParticipant.acepted);
+    setLoading(false);
 
-        accepted &&
-        assignedNumbers.length === 0 && 
-        requestedNumbers.length === 0 &&
-        _openRequestNumbersModal();
+    if (acceptAndRequest) openRequestNumbersModal();
+  }, []);
 
-    }, []);
+  // Methods
+  const openRequestNumbersModal = () => {
+    setShow({ show: true });
+  };
 
-    // Methods
-    const _openRequestNumbersModal = () => {
-        setShow( {show: true} )
-    }
-
-    return (
+  return (
     <View style={styles.container}>
-        
-        {
-            !accepted && <InvitationModal {...props} />
-        }
-
-        {
-            <RequestNumberModal {...props} show={ show } />
-        }
-
-        {
-            loading ?
-            <Spinner />
-            :
-            <ScrollView>
-                <View style={ styles.scrollContainer }>
-
-                <RoundTitle title={ round.name } amount={ round.amount } />
-                <RoundInfo round={ round } auth={ auth } requestNumber={ _openRequestNumbersModal } />
-
-                </View>
-            </ScrollView>
-        }
+      <InvitationModal {...props} participant={userParticipant} />
+      <RequestNumberModal
+        {...props}
+        preSelectedNumbers={preSelectedNumbers}
+        show={show}
+      />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <ScrollView>
+          <View style={styles.scrollContainer}>
+            <RoundInfo
+              round={round}
+              auth={auth}
+              requestNumber={openRequestNumbersModal}
+            />
+          </View>
+        </ScrollView>
+      )}
     </View>
-    )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.backgroundGray,
-    },
-    scrollContainer:{
-        paddingHorizontal: 15,
-        paddingVertical: 20
-    }
+  container: {
+    flex: 1,
+    backgroundColor: colors.backgroundGray,
+  },
+  scrollContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+  },
 });
 
-export default Participant;
+const mapStateToProps = state => {
+  return {
+    acceptAndRequest: state.participant.acceptAndRequest,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(Participant);

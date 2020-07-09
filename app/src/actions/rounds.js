@@ -1,38 +1,41 @@
-import * as types from './types';
-import * as UserService from '../services/api/user';
-import * as AdminService from '../services/api/admin';
-import * as ParticipantService from '../services/api/participant';
-
-import { getAuth } from '../components/utils';
+import * as types from "./types";
+import * as UserService from "../services/api/user";
+import * as AdminService from "../services/api/admin";
+import * as ParticipantService from "../services/api/participant";
+import {
+  getAllRoundsFromStorage,
+  deleteRoundFromStorage,
+} from "../services/asyncStorage";
+import { openRoundDetailRootModal } from "./roundDetailRootModal";
+import { ROUND_START, REMEMBER_PAYMENT } from "../utils/notificationIntents";
+import { getAuth } from "../utils/utils";
+import { getMonthName } from "../utils/dates";
 
 export const loadRounds = () => {
   return async dispatch => {
+    dispatch(loadRoundsStart());
 
-    dispatch( loadRoundsStart() );
+    const loadedRounds = await UserService.getRoundsList();
 
-    const loadRounds = await UserService.getRoundsList();
-
-    if (!loadRounds.error) {
-      dispatch( loadRoundsSucceeded( loadRounds.data ) );
+    if (!loadedRounds.error) {
+      dispatch(loadRoundsSucceeded(loadedRounds.data));
     } else {
-      dispatch( loadRoundsFail( loadRounds.error) );
+      dispatch(loadRoundsFail(loadedRounds.error));
     }
-
   };
 };
-
 
 export const deleteRound = id => {
   return async dispatch => {
     dispatch(deleteRoundStart());
 
-    const deleteRound = await AdminService.deleteRound(id);
+    const deletedRound = await AdminService.deleteRound(id);
 
-    if (!deleteRound.error) {
+    if (!deletedRound.error) {
       dispatch(deleteRoundSucceeded());
       dispatch(removeRound(id));
     } else {
-      dispatch(deleteRoundFail(deleteRound.error));
+      dispatch(deleteRoundFail(deletedRound.error));
     }
   };
 };
@@ -41,263 +44,409 @@ export const startRound = id => {
   return async dispatch => {
     dispatch(startRoundStart(id));
 
-    const startRound = await AdminService.startRound(id);
+    const startedRound = await AdminService.startRound(id);
 
-    if (!startRound.error) {
-      dispatch(startRoundSucceded(startRound.data));
+    if (!startedRound.error) {
+      dispatch(startRoundSucceded(startedRound.data));
+      dispatch(loadRounds());
+      const roundModalMessage = `La Ronda "${startedRound.data.name}" se esta procesando y cuando comienze te llegara una notificacion`;
+      dispatch(openRoundDetailRootModal(roundModalMessage, "roundCheck"));
+    } else {
+      let message = "Hubo un error. Intente nuevamente mas tarde";
+      if (startedRound.error && startedRound.error.response) {
+        const { data } = startedRound.error.response;
+        const { error } = data;
+        if (error.includes("must accept"))
+          message =
+            "Un participante ha rechazado la invitacion.\nDebes reemplazarlo para comenzar la Ronda";
+      }
+      dispatch(loadRounds());
+      dispatch(startRoundFailed(message));
+    }
+  };
+};
+
+export const reSendInvite = id => async () => AdminService.reSendInvite(id);
+
+export const swapParticipant = (idParticipant, newUser, roundId) => {
+  return async dispatch => {
+    dispatch(swapParticipantStart());
+
+    const swapedParticipant = await AdminService.swapParticipant(
+      idParticipant,
+      newUser,
+      roundId
+    );
+
+    if (!swapedParticipant.error) {
+      dispatch(swapParticipantSucceded(swapedParticipant.data));
       dispatch(loadRounds());
     } else {
-      dispatch(startRoundFailed(startRound.error));
+      dispatch(swapParticipantFailed(swapedParticipant.error));
     }
   };
 };
 
-export const swapParticipant = ( idParticipant, newUser, roundId ) => {
+export const reasignNumber = (
+  participantId,
+  targetParticipantId,
+  number,
+  roundId
+) => async dispatch => {
+  const reasigned = await AdminService.reasignParticipant(
+    participantId,
+    targetParticipantId,
+    number,
+    roundId
+  );
+
+  if (!reasigned.error) {
+    dispatch(loadRounds());
+    return true;
+  }
+  return false;
+};
+
+export const removeParticipant = (idParticipant, roundId) => {
   return async dispatch => {
+    dispatch(removeParticipantStart());
 
-    dispatch( swapParticipantStart() );
+    const removedParticipant = await AdminService.removeParticipant(
+      idParticipant,
+      roundId
+    );
 
-    const swapParticipant = await AdminService.swapParticipant( idParticipant, newUser, roundId );
-
-    if (!swapParticipant.error) {
-      dispatch( swapParticipantSucceded( swapParticipant.data ) );
-      dispatch( loadRounds() );
+    if (!removedParticipant.error) {
+      dispatch(removeParticipantSucceded(removedParticipant.data));
+      dispatch(loadRounds());
     } else {
-      dispatch( swapParticipantFailed(swapParticipant.error) );
+      dispatch(removeParticipantFailed(removedParticipant.error));
     }
-
   };
 };
 
-export const removeParticipant = ( idParticipant, roundId ) => {
+export const assignParticipant = (idParticipant, roundId, shiftNumber) => {
   return async dispatch => {
+    dispatch(assignParticipantStart());
 
-    dispatch( removeParticipantStart() );
+    const assignedParticipant = await AdminService.assignParticipantToNumber(
+      idParticipant,
+      roundId,
+      shiftNumber
+    );
 
-    const removeParticipant = await AdminService.removeParticipant( idParticipant, roundId );
-
-    if (!removeParticipant.error) {
-      dispatch( removeParticipantSucceded( removeParticipant.data ) );
-      dispatch( loadRounds() );
+    if (!assignedParticipant.error) {
+      dispatch(assignParticipantSucceded(assignedParticipant.data));
     } else {
-      dispatch( removeParticipantFailed(removeParticipant.error) );
+      dispatch(assignParticipantFailed(assignedParticipant.error));
     }
-
-  };
-};
-
-export const assignParticipant = ( idParticipant, roundId, shiftNumber ) => {
-  return async dispatch => {
-
-    dispatch( assignParticipantStart() );
-
-    const assignParticipant = await AdminService.assignParticipantToNumber( idParticipant, roundId, shiftNumber );
-
-    if (!assignParticipant.error) {
-      dispatch( assignParticipantSucceded( assignParticipant.data ) );
-    } else {
-      dispatch( assignParticipantFailed(assignParticipant.error) );
-    }
-
   };
 };
 
 export const payRound = (roundId, number, participantId) => {
   return async dispatch => {
+    dispatch(startRoundLoad());
 
-    dispatch( startRoundLoad() );    
-    
-    const payRound = await AdminService.payRound(roundId, number, participantId);
+    const payedRound = await ParticipantService.payRound(
+      roundId,
+      number,
+      participantId
+    );
 
-    if (!payRound.error) {
-      dispatch( payRoundData( payRound.data ) );
+    if (!payedRound.error) {
+      dispatch(payRoundData(payedRound.data));
     } else {
-      dispatch( payRoundFailed( payRound.error ) );
+      dispatch(payRoundFailed(payedRound.error));
     }
 
-    dispatch( loadRounds() );
-
+    dispatch(loadRounds());
   };
 };
 
-export const closeRound = (roundId, number, nextDraw) => {
+export const closeRound = (
+  roundId,
+  number,
+  nextParticipants,
+  loadRoundAfter = true
+) => {
   return async dispatch => {
+    dispatch(startRoundLoad());
 
-    dispatch( startRoundLoad() );
+    const closedRound = await AdminService.closeRound(
+      roundId,
+      number,
+      nextParticipants
+    );
 
-    const closeRound = await AdminService.closeRound(roundId, number, nextDraw);
-
-    if (!closeRound.error) {
-      dispatch( closeRoundData( closeRound.data ) );
+    if (!closedRound.error) {
+      dispatch(closeRoundData(closedRound.data));
     } else {
-      dispatch( closeRoundFailed( closeRound.error ) );
+      dispatch(closeRoundFailed(closedRound.error));
     }
 
-    dispatch( loadRounds() );
+    if (loadRoundAfter) {
+      dispatch(loadRounds());
+    }
   };
 };
 
-
-export const acceptInvitation = ( idParticipant, roundId ) => {
+export const acceptInvitation = (
+  idParticipant,
+  roundId,
+  acceptAndRequest = false
+) => {
   return async dispatch => {
+    dispatch(invitationStart());
 
-    dispatch( invitationStart() );
+    const acceptedInvitation = await ParticipantService.acceptInvitation(
+      idParticipant,
+      roundId
+    );
 
-    const acceptInvitation = await ParticipantService.acceptInvitation( idParticipant, roundId );
+    if (!acceptedInvitation.error) {
+      if (acceptAndRequest) {
+        dispatch(acceptAndRequestSet());
+      }
 
-    if (!acceptInvitation.error) {
-      dispatch( invitationSucceded( acceptInvitation.data ) );
-      dispatch( loadRounds() );
+      dispatch(invitationSucceded(acceptedInvitation.data));
+      dispatch(loadRounds());
     } else {
-      dispatch( invitationFailed(acceptInvitation.error) );
+      dispatch(invitationFailed(acceptedInvitation.error));
     }
-
   };
 };
 
-export const rejectInvitation = ( idParticipant, roundId ) => {
+export const rejectInvitation = (idParticipant, roundId) => {
   return async dispatch => {
+    dispatch(invitationStart());
 
-    dispatch( invitationStart() );
+    const rejectedInvitation = await ParticipantService.rejectInvitation(
+      idParticipant,
+      roundId
+    );
 
-    const rejectInvitation = await ParticipantService.rejectInvitation( idParticipant, roundId );
-
-    if (!rejectInvitation.error) {
-      dispatch( invitationSucceded( rejectInvitation.data ) );
-      dispatch( loadRounds() );
+    if (!rejectedInvitation.error) {
+      dispatch(invitationSucceded(rejectedInvitation.data));
+      dispatch(loadRounds());
     } else {
-      dispatch( invitationFailed(rejectInvitation.error) );
+      dispatch(invitationFailed(rejectedInvitation.error));
+      dispatch(loadRounds());
     }
-
   };
 };
 
-export const requestNumbers = ( idParticipant, roundId, numbers ) => {
+export const requestNumbers = (idParticipant, roundId, numbers) => {
   return async dispatch => {
+    dispatch(requestNumbersStart());
 
-    dispatch( requestNumbersStart() );
+    const requestedNumbers = await ParticipantService.requestNumbers(
+      idParticipant,
+      roundId,
+      numbers
+    );
 
-    const requestNumbers = await ParticipantService.requestNumbers( idParticipant, roundId, numbers );
-
-    if (!requestNumbers.error) {
-      dispatch( requestNumbersSucceded( requestNumbers.data ) );
-      dispatch( loadRounds() );
+    if (!requestedNumbers.error) {
+      dispatch(acceptAndRequestClean());
+      dispatch(requestNumbersSucceded(requestedNumbers.data));
+      dispatch(loadRounds());
     } else {
-      dispatch( requestNumbersFailed(requestNumbers.error) );
+      dispatch(requestNumbersFailed(requestedNumbers.error));
     }
-
   };
 };
 
+export const chargeNumber = (roundId, participantId, number) => {
+  return async dispatch => {
+    dispatch(chargeNumberStart());
+
+    const chargedNumber = await ParticipantService.chargeNumber(
+      roundId,
+      participantId,
+      number
+    );
+
+    if (!chargedNumber.error) {
+      dispatch(chargeNumberSucceded(chargedNumber.data));
+      dispatch(loadRounds());
+    } else {
+      dispatch(chargeNumberFailed(chargedNumber.error));
+    }
+  };
+};
+
+export const getRoundData = roundId => async dispatch => {
+  const res = await ParticipantService.getRoundData(roundId);
+
+  if (!res.error) {
+    const { data } = res;
+    const round = { ...data, admin: data.admin.id };
+    if (data.id)
+      return dispatch({ type: types.GET_ROUND_DATA, payload: { round } });
+  }
+  return null;
+};
+
+export const requestPayment = (roundId, participantId) => async () => {
+  const res = await ParticipantService.requestPayment(roundId, participantId);
+
+  if (!res.error) {
+    const { data } = res;
+    if (data) return true;
+  }
+  return null;
+};
+
+export const getAllStoredRounds = () => async dispatch => {
+  const rounds = await getAllRoundsFromStorage();
+  return dispatch({ type: types.SET_STORED_ROUNDS, data: { rounds } });
+};
+
+export const removeStoredRound = roundIndex => async dispatch => {
+  const removed = await deleteRoundFromStorage(roundIndex);
+  if (removed) dispatch(getAllStoredRounds());
+};
+
+export const intentManager = data => async dispatch => {
+  const actionData = JSON.parse(data.action);
+  const { intent } = actionData;
+  if (intent === ROUND_START) {
+    const { admin, roundName } = actionData;
+    const auth = await getAuth();
+    if (admin === auth.id) {
+      const roundModalMessage = `La Ronda "${roundName}" se esta procesando y cuando comienze te llegara una notificacion`;
+      return dispatch(
+        openRoundDetailRootModal(roundModalMessage, "roundCheck")
+      );
+    }
+  }
+  if (intent === REMEMBER_PAYMENT) {
+    const { roundName, shiftNumber, limitDate } = actionData;
+    const dateObj = new Date(limitDate);
+    const dateText = `${dateObj.getUTCDate()} de ${getMonthName(
+      dateObj.getUTCMonth()
+    )}`;
+    const roundModalMessage = `Acuerdate que tienes hasta el ${dateText} Para pagar el #${shiftNumber} de la Ronda "${roundName}"`;
+    return dispatch(
+      openRoundDetailRootModal(roundModalMessage, "roundExclamation")
+    );
+  }
+  return null;
+};
+
+// Accept and request set
+export const acceptAndRequestSet = () => ({
+  type: types.ACCEPT_AND_REQUEST,
+});
+
+// Accept and request clean
+export const acceptAndRequestClean = () => ({
+  type: types.ACCEPT_AND_REQUEST_CLEAN,
+});
 
 // Request numbers clean
 export const requestNumbersClean = () => ({
   type: types.REQUEST_NUMBERS_CLEAN,
-})
+});
 
 // Request numbers start
 const requestNumbersStart = () => ({
   type: types.REQUEST_NUMBERS_START,
-})
+});
 
 // Request numbers succeded
-const requestNumbersSucceded = (data) => ({
+const requestNumbersSucceded = data => ({
   type: types.REQUEST_NUMBERS_SUCCEEDED,
-  payload: {data}
-})
+  payload: { data },
+});
 
 // Request numbers failed
 const requestNumbersFailed = error => ({
   type: types.REQUEST_NUMBERS_FAILED,
-  payload: {error}
-})
-
+  payload: { error },
+});
 
 // Invitation clean
 export const invitationClean = () => ({
   type: types.INVITATION_CLEAN,
-})
+});
 
 // Accept invitation start
 const invitationStart = () => ({
   type: types.INVITATION_START,
-})
+});
 
 // Accept invitation succeded
-const invitationSucceded = (data) => ({
+const invitationSucceded = data => ({
   type: types.INVITATION_SUCCEEDED,
-  payload: {data}
-})
+  payload: { data },
+});
 
 // Accept invitation failed
 const invitationFailed = error => ({
   type: types.INVITATION_FAILED,
-  payload: {error}
-})
-
+  payload: { error },
+});
 
 // Swap participant clean
 export const swapClean = () => ({
   type: types.SWAP_CLEAN,
-})
+});
 
 // Remove participant clean
 export const removeClean = () => ({
   type: types.REMOVE_CLEAN,
-})
-
+});
 
 // Swap participant start
 const swapParticipantStart = () => ({
   type: types.SWAP_PARTICIPANT_START,
-})
+});
 
 // Swap participant succeded
-const swapParticipantSucceded = (data) => ({
+const swapParticipantSucceded = data => ({
   type: types.SWAP_PARTICIPANT_SUCCEEDED,
-  payload: {data}
-})
+  payload: { data },
+});
 
 // Swap participant failed
 const swapParticipantFailed = error => ({
   type: types.SWAP_PARTICIPANT_FAILED,
-  payload: {error}
-})
+  payload: { error },
+});
 
 // Remove participant start
 const removeParticipantStart = () => ({
   type: types.REMOVE_PARTICIPANT_START,
-})
+});
 
 // Remove participant succeded
-const removeParticipantSucceded = (data) => ({
+const removeParticipantSucceded = data => ({
   type: types.REMOVE_PARTICIPANT_SUCCEEDED,
-  payload: {data}
-})
+  payload: { data },
+});
 
 // Remove participant failed
 const removeParticipantFailed = error => ({
   type: types.REMOVE_PARTICIPANT_FAILED,
-  payload: {error}
-})
+  payload: { error },
+});
 
 // Assign participant start
 const assignParticipantStart = () => ({
   type: types.ASSIGN_PARTICIPANT_START,
-})
+});
 
 // Assign participant succeded
-const assignParticipantSucceded = (data) => ({
+const assignParticipantSucceded = data => ({
   type: types.ASSIGN_PARTICIPANT_SUCCEEDED,
-  payload: {data}
-})
+  payload: { data },
+});
 
 // Assign participant failed
 const assignParticipantFailed = error => ({
   type: types.ASSIGN_PARTICIPANT_FAILED,
-  payload: {error}
-})
-
+  payload: { error },
+});
 
 // Load rounds start
 const loadRoundsStart = () => ({
@@ -305,17 +454,16 @@ const loadRoundsStart = () => ({
 });
 
 // Load rouns succeded
-const loadRoundsSucceeded = (data) => ({
+const loadRoundsSucceeded = data => ({
   type: types.LOAD_ROUNDS_SUCCEEDED,
   payload: data,
-})
+});
 
 // Load rouns failed
-const loadRoundsFail = (error) => ({
+const loadRoundsFail = error => ({
   type: types.LOAD_ROUNDS_FAILED,
-  payload: {error},
-})
-
+  payload: { error },
+});
 
 // Delete round
 const deleteRoundStart = () => ({
@@ -323,26 +471,26 @@ const deleteRoundStart = () => ({
 });
 
 // Start round start
-const startRoundStart = id => ({
+const startRoundStart = () => ({
   type: types.START_ROUND_START,
 });
 
 // Start round succeded
 const startRoundSucceded = data => ({
   type: types.START_ROUND_SUCCEEDED,
-  payload: {data},
+  payload: { data },
 });
 
 // Start round failed
 const startRoundFailed = error => ({
   type: types.START_ROUND_FAILED,
-  payload: {error},
+  payload: { error },
 });
 
 // Remove round
 const removeRound = id => ({
   type: types.REMOVE_ROUND,
-  payload: {id},
+  payload: { id },
 });
 
 const deleteRoundSucceeded = () => ({
@@ -351,38 +499,60 @@ const deleteRoundSucceeded = () => ({
 
 const deleteRoundFail = error => ({
   type: types.DELETEROUND_REQUEST_FAILED,
-  payload: {error},
+  payload: { error },
 });
-
 
 // Load round start
 const startRoundLoad = () => ({
   type: types.START_ROUND_LOAD,
 });
 
-
+// Pay round clean
+export const payRoundClean = () => ({
+  type: types.PAY_ROUND_CLEAN,
+});
 
 // Pay round (data)
 const payRoundData = data => ({
-  type: types.PAY_ROUND, 
-  data: {res: data}
+  type: types.PAY_ROUND,
+  payload: { data },
 });
 
 // Pay round (failed)
 const payRoundFailed = error => ({
-  type: types.PAY_ROUND_FAILED, 
+  type: types.PAY_ROUND_FAILED,
   payload: error,
 });
 
-
 // Close round (data)
 const closeRoundData = data => ({
-  type: types.CLOSE_ROUND, 
-  data: {res: data}
+  type: types.CLOSE_ROUND,
+  data: { res: data },
 });
 
 // Close round (failed)
 const closeRoundFailed = error => ({
-  type: types.CLOSE_ROUND_FAILED, 
+  type: types.CLOSE_ROUND_FAILED,
   payload: error,
+});
+
+//  Charge number start
+const chargeNumberStart = () => ({
+  type: types.CHARGE_NUMBER_START,
+});
+// Charge number succeded
+const chargeNumberSucceded = data => ({
+  type: types.CHARGE_NUMBER_SUCCEEDED,
+  payload: { data },
+});
+
+// Charge number failed
+const chargeNumberFailed = error => ({
+  type: types.CHARGE_NUMBER_FAILED,
+  payload: { error },
+});
+
+// Charge number failed
+export const chargeNumberClean = () => ({
+  type: types.CHARGE_NUMBER_CLEAN,
 });

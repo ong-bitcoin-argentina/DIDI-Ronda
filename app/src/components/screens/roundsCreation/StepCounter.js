@@ -1,32 +1,94 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import colors from '../../components/colors';
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Icon } from "native-base";
+import colors from "../../components/colors";
 
-export default StepCounter = props => {
-  let Steps = [];
-  for (let i = 0; i < props.totalSteps; i++) {
-    if (i < props.curentStep) {
-      Steps.push(
-        <View key={i} style={[styles.stepCounter, styles.stepCounterOn]} />
-      );
-    } else {
-      Steps.push(
-        <View key={i} style={[styles.stepCounter, styles.stepCounterOff]} />
-      );
-    }
-  }
-  return <View style={styles.stepCounterContainer}>{Steps}</View>;
+const StepCounter = ({ currentStep, totalSteps, navigation }) => {
+  const stepItems = [
+    {
+      type: "MaterialIcons",
+      name: "format-color-text",
+    },
+    {
+      type: "MaterialCommunityIcons",
+      name: "cash-usd",
+    },
+    {
+      type: "MaterialIcons",
+      name: "access-alarm",
+    },
+    {
+      type: "MaterialIcons",
+      name: "bookmark-border",
+    },
+    {
+      type: "MaterialCommunityIcons",
+      name: "calendar-check",
+    },
+    {
+      type: "MaterialIcons",
+      name: "settings",
+    },
+    {
+      type: "MaterialIcons",
+      name: "person-outline",
+    },
+  ];
+
+  const widthStep = `${90 / totalSteps}%`;
+
+  const backgroundColorStep = stepNum =>
+    stepNum < currentStep ? colors.mainBlue : colors.secondary;
+
+  const onPressItem = step => {
+    // We go back the needed screens to the step
+    if (!navigation) return null;
+    const targetStep = stepItems.findIndex(e => e.name === step.name) + 1;
+    if (targetStep > currentStep) return null;
+    const routesToPop = currentStep - targetStep;
+    return navigation.pop(routesToPop);
+  };
+
+  return (
+    <View style={styles.stepCounterContainer}>
+      {stepItems.map((s, i) => (
+        <TouchableOpacity
+          // eslint-disable-next-line react/no-array-index-key
+          onPress={() => onPressItem(s)}
+          // The order doesn't change and we always have 7 elements
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          style={{
+            width: widthStep,
+            marginHorizontal: 2,
+            borderBottomColor: backgroundColorStep(i),
+            borderBottomWidth: 5,
+            paddingBottom: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Icon
+            name={s.name}
+            style={{ color: backgroundColorStep(i), fontSize: 18 }}
+            type={s.type}
+          />
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
 };
+
 const styles = StyleSheet.create({
   stepCounterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 15,
     backgroundColor: colors.backgroundGray,
   },
   stepCounter: {
     height: 3,
-    width: '16%',
+    flexDirection: "row",
   },
   stepCounterOn: {
     backgroundColor: colors.mainBlue,
@@ -35,3 +97,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
 });
+
+export default StepCounter;

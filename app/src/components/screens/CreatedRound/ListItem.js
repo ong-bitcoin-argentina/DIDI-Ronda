@@ -1,83 +1,114 @@
-import React, {useState, useEffect} from 'react';
-import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import {Text, Spinner, Icon} from 'native-base';
-import colors from '../../components/colors';
-import Avatar from '../roundsCreation/steps/SelectParticipants/Avatar';
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Icon } from "native-base";
+import colors from "../../components/colors";
+import Avatar from "../roundsCreation/steps/ParticipantSelection/Avatar";
+import Bookmark from "../../components/Bookmark";
 
-var months = [
-  'ENERO',
-  'FEBRERO',
-  'MARZO',
-  'ABRIL',
-  'MAYO',
-  'JUNIO',
-  'JULIO',
-  'AGOSTO',
-  'SETIEMBRE',
-  'OCTUBRE',
-  'NOVIEMBRE',
-  'DICIEMBRE',
+const months = [
+  "ENERO",
+  "FEBRERO",
+  "MARZO",
+  "ABRIL",
+  "MAYO",
+  "JUNIO",
+  "JULIO",
+  "AGOSTO",
+  "SETIEMBRE",
+  "OCTUBRE",
+  "NOVIEMBRE",
+  "DICIEMBRE",
 ];
 
-export default ListItem = props => {
-  const {participant, handleNavigation} = props;
-  const {picture, name} = participant.user;
-
-  let status = '';
-  let statusIcon = null;
-
-  const payday = props.payday(participant._id);
-  let payDate = '';
-  let payMonth = '---';
-  if (payday) {
-    let newpayday = new Date(props.payday(participant._id));
-    payDate = newpayday.getDate().toString().substr(0, 3);
-    payMonth = months[newpayday.getMonth()].substr(0, 3);
-  }
-
-  switch (participant.acepted) {
+const getIconStatus = accepted => {
+  switch (accepted) {
     case true:
-      status = 'Aceptado';
-      statusIcon = (
+      return (
         <Icon
-          style={[styles.statusIcon, {color: colors.mainBlue}]}
+          style={[styles.statusIcon, { color: colors.mainBlue }]}
           name="check-circle"
           type="MaterialCommunityIcons"
         />
       );
-      break;
+
     case false:
-      status = 'Rechazado';
-      statusIcon = (
+      return (
         <Icon
-          style={[styles.statusIcon, {color: colors.statusPurple}]}
+          style={[styles.statusIcon, { color: colors.statusPurple }]}
           name="close-circle"
           type="MaterialCommunityIcons"
         />
       );
-      break;
+
     default:
-      status = 'Pendiente';
-      statusIcon = (
+      return (
         <Icon
-          style={[styles.statusIcon, {color: colors.yellowStatus}]}
+          style={[styles.statusIcon, { color: colors.yellowStatus }]}
           name="alert-circle"
           type="MaterialCommunityIcons"
         />
       );
+  }
+};
+
+const getStateString = accepted => {
+  switch (accepted) {
+    case true:
+      return "Aceptado";
+    case false:
+      return "Rechazado";
+    default:
+      return "Pendiente";
+  }
+};
+
+const ListItem = props => {
+  const {
+    participant,
+    number,
+    shouldRenderNumber = false,
+    handleNavigation,
+    payday,
+  } = props;
+  const { picture, name } = participant.user;
+
+  let payDate = "";
+  let payMonth = "---";
+  if (payday) {
+    const paydate = payday.split("T")[0];
+
+    const newpayday = new Date(paydate);
+
+    const offset = newpayday.getTimezoneOffset();
+
+    newpayday.setMinutes(offset);
+
+    payDate = newpayday
+      .getDate()
+      .toString()
+      .substr(0, 3);
+    payMonth = months[newpayday.getMonth()].substr(0, 3);
   }
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => handleNavigation(participant)}>
+        onPress={() => handleNavigation(participant)}
+      >
+        {shouldRenderNumber && (
+          <View>
+            <Bookmark number={number} />
+          </View>
+        )}
         <View style={styles.avatarContainer}>
           <Avatar path={picture} />
         </View>
         <View style={styles.nameContainer}>
           <Text style={styles.nameTitle}>{name}</Text>
-          <Text style={styles.statusTitle}>{status}</Text>
+          <Text style={styles.statusTitle}>
+            {getStateString(participant.acepted)}
+          </Text>
         </View>
         <View style={styles.statusContainer}>
           <View style={styles.calendarContainer}>
@@ -89,7 +120,7 @@ export default ListItem = props => {
             />
             <Text style={styles.calendarDay}>{payDate}</Text>
           </View>
-          {statusIcon}
+          {getIconStatus(participant.acepted)}
         </View>
       </TouchableOpacity>
     </View>
@@ -103,32 +134,34 @@ const styles = StyleSheet.create({
   itemContainer: {
     paddingVertical: 10,
     paddingHorizontal: 30,
-    flexDirection: 'row',
+    flexDirection: "row",
+    alignItems: "center",
   },
-  avatarContainer: {},
+  avatarContainer: {
+    marginLeft: 10,
+  },
   nameContainer: {
     flex: 1,
-    alignSelf: 'stretch',
     paddingHorizontal: 10,
   },
   statusContainer: {
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
   },
   nameTitle: {},
   statusTitle: {
     fontSize: 14,
     color: colors.secondary,
-    fontWeight: '100',
+    fontWeight: "100",
   },
   statusIcon: {
     fontSize: 25,
     marginLeft: 20,
   },
   calendarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   calendarIcon: {
     color: colors.mainBlue,
@@ -137,11 +170,13 @@ const styles = StyleSheet.create({
   calendarMonth: {
     fontSize: 12,
     color: colors.mainBlue,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   calendarDay: {
     fontSize: 12,
-    position: 'absolute',
+    position: "absolute",
     top: 33,
   },
 });
+
+export default ListItem;

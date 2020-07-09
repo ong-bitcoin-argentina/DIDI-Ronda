@@ -1,149 +1,351 @@
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { View, StyleSheet } from "react-native";
+import {
+  Text,
+  Tab,
+  Button,
+  Tabs,
+  TabHeading,
+  Toast,
+  Spinner,
+  Container,
+  Content,
+} from "native-base";
+import QRCode from "react-native-qrcode-svg";
+import UserData from "../../UserProfile/UserProfileComponent";
+import colors from "../../../components/colors";
+import PaymentsList from "./PaymentsList";
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { View, Image, StyleSheet } from 'react-native';
-import UserData from '../../UserProfile/UserProfileComponent'
-import { Text, Tab, Button, Tabs, TabHeading, Toast, Spinner } from 'native-base';
-import colors from '../../../components/colors'
-import PaymentsList from './PaymentsList';
-import { getAuth } from '../../../utils';
+import * as roundsActions from "../../../../actions/rounds";
+import AcceptPayment from "./AcceptPayment";
+import Swap from "../../UserProfile/Swap";
+import ReasignNumber from "./ReasingNumber";
+import ConfirmRoundPayment from "./ConfirmRoundPayment";
 
-import * as roundsActions from '../../../../actions/rounds';
-import AcceptPayment from './AcceptPayment';
+import { openRoundDetailRootModal } from "../../../../actions/roundDetailRootModal";
 
+const NumberPay = props => {
+  // Props
+  const {
+    requestRounds,
+    navigation,
+    loading,
+    openRootModal,
+    reasignNumberRequest,
+  } = props;
 
-const NumberPay = (props) => {
-    
-    const round = props.requestRounds.list.find(
-        e => e._id === props.navigation.getParam('roundId', null),
-      );
+  const roundId = navigation.getParam("roundId", null);
 
-    const number = props.navigation.getParam('number', null);
-    const fullParticipant = props.navigation.getParam('participant', null)
+  useEffect(() => {
+    const { refreshRoundData } = props;
+    refreshRoundData(roundId);
+  }, []);
 
-    const shift = round.shifts.find(s => s.number == number)
-    const shiftParticipantId = shift.participant
+  // Check if requestRounds list exist (prevent crash)
+  if (requestRounds.list.length === 0) {
+    return navigation.navigate("Main");
+  }
 
-    const shiftParticipant = round.participants.find(p => p._id == shiftParticipantId)
+  // Variables
+  const round = requestRounds.list.find(e => e._id === roundId);
 
+  const currentShiftInState = round.shifts.find(s => s.status === "current");
+  const number =
+    (currentShiftInState && currentShiftInState.number) ||
+    navigation.getParam("number", null) ||
+    round.shifts.length;
+  const participant = navigation.getParam("participant", null);
 
-    _pay = async () => {
+  const getParticipantData = id => {
+    return round.participants.find(e => e._id === id);
+  };
 
-        const participantId = fullParticipant.id
+  const fullParticipant = participant
+    ? getParticipantData(participant.id)
+    : null;
 
-        if(participantId) {
+  fullParticipant.id = fullParticipant._id;
 
-            props.pay_round(round._id, number, participantId)
+  const initialTab = navigation.getParam("initialTab", 0);
+  const shift = round.shifts.find(s => s.number === number);
+  const participantPaid =
+    shift.pays.filter(p => {
+      return p.participant === fullParticipant.id;
+    }).length > 0;
+  const qrCode = `${round._id}-${fullParticipant.id}-${number}`;
+  const allShiftsCompleted =
+    round.shifts.filter(s => s.status === "completed").length ===
+    round.shifts.length;
+  const amountPerShift = round.amount / round.shifts.length;
+  const participantAmount = amountPerShift * (fullParticipant.shiftsQty || 1);
 
-        }else{ 
+  // For Pay round to current number
+  const currentShift = round.shifts.find(s => s.number === number);
+  const shiftCompleted = currentShift.status === "completed";
+  const nextShift = round.shifts.find(s => s.number === number + 1);
+  const nextShiftParticipants = nextShift && nextShift.participant;
+  const enabledForPayRound =
+    currentShift.participant.includes(fullParticipant.id) &&
+    currentShift.status === "current";
 
-            Toast.show({
-                text: 'Hubo un problema con el pago intenta mas tarde',
-                position: 'top',
-                type: 'warning',
-            })
+  // Methods
+  const pay = async () => {
+    const participantId = fullParticipant.id;
 
-        }
+    if (participantId) {
+      props.pay_round(round._id, number, participantId);
+    } else {
+      Toast.show({
+        text: "Hubo un problema con el pago intenta mas tarde",
+        position: "top",
+        type: "warning",
+      });
     }
+  };
 
-    openPopUp = () =>{
-      this.popup._openPopUp();
-    }
+  const openPayNumberPopUp = () => {
+    this.popup.openPopUp();
+  };
 
+  const { isReceivingOrMakingPayment } = fullParticipant;
 
-    const participantPaid = shift.pays.filter(p => {
-      return p.participant == fullParticipant.id
-    }).length > 0
+  return (
+    <Container>
+      <UserData participant={fullParticipant}>
+        <Tabs
+          tabBarUnderlineStyle={styles.tabHeaderBorder}
+          initialPage={initialTab}
+        >
+          <Tab
+            heading={
+              <TabHeading style={styles.tabHeader}>
+                <Text style={styles.tabHeaderText}>APORTES</Text>
+              </TabHeading>
+            }
+          >
+            <Content>
+              <View style={styles.paysContainer}>
+                <View style={styles.actionContainer}>
+                  <PaymentsList
+                    participant={fullParticipant}
+                    amount={participantAmount}
+                    round={round}
+                    currentShift={shift}
+                    shifts={round.shifts}
+                  />
+                  <View style={styles.qrContainer}>
+                    <QRCode value={qrCode} size={150} />
+                    {!shiftCompleted &&
+                      !loading &&
+                      !isReceivingOrMakingPayment && (
+                        <Button
+                          onPress={openPayNumberPopUp}
+                          disabled={participantPaid}
+                          style={{
+                            ...styles.payButton,
+                            backgroundColor: participantPaid
+                              ? colors.inactiveBlue
+                              : colors.mainBlue,
+                          }}
+                          uppercase={false}
+                        >
+                          <Text uppercase={false} style={styles.textButton}>
+                            {participantPaid
+                              ? "Aporte ya hecho"
+                              : "Aceptar Pago"}
+                          </Text>
+                        </Button>
+                      )}
 
-    return (
-        <UserData participant={ fullParticipant }>
-            <Tabs tabBarUnderlineStyle={ styles.tabHeaderBorder } locked>
-                <Tab heading={
-                    <TabHeading style={ styles.tabHeader }>
-                    <Text style={ styles.tabHeaderText }>APORTES</Text>
-                    </TabHeading>
-                }>
-                  <View style={{width: '100%', backgroundColor: colors.lightGray, justifyContent: 'center', flexDirection: 'column', alignItems: 'center', flex: 1}}>
-                      <PaymentsList  participant={ fullParticipant } amount={ round.amount / round.shifts.length } round={round} currentShift={shift} shifts={ round.shifts }/>
-                      <View style={{width:'90%', backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
-                          <Image style={{width: 200, height: 200, marginVertical: 15}} source={{uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALoAAAC6CAMAAAAu0KfDAAAABlBMVEX///8AAABVwtN+AAABxklEQVR4nO3QUZKDQAwD0eT+l94DgJQeCAXOtr4oGKzneb2MMebivHHSX31mbzljkC5d+hT6tj6dIcuQ+vRMDNKlS59I5zX9ZKKQ98QgXbr0X6X3f9P5NEG6dOnSSTGnk6/SpUv/PXrHEXpHHLsa6dKlT6cfq/nuMzdIly59Cv18SMGF9Wci/Y5IvyM301N9quxEshJZAy0sXbr0x9NJWRqXWH2NnnQR0qVLn0XvUL79KqVfFmmULl36FHpC9xBoByFi+ipduvQh9D4ivUllqwvwq5EuXfpEOjoK6NsJxy6iLyxduvRZ9M4lX8mSx7rieenSpQ+hry6z/TdVrl5E/1e6dOmz6H2B/kyI6TmtmhaLy0iXLv3B9FXWauXq5NSyE+nSpT+enupTyEoESto/oKVLl/54emKREemvPqf/tWCQLl36EHpfKYWc54vxLunSpU+hr2Zbn3Dkfb+yPkG6dOnPp79xTtWErmPXIV269Fn0nQ/hTHomK5FeflK6dOmz6O9N+Lgz6/XsoKVLl/6j9PS1V/LFert06dL/A31nUM13J0iXLn0inRfz9JnbM/3ipEuXPpF+DEGInN5bpEuXPpFujDEX5A/WVTvF1c+o+gAAAABJRU5ErkJggg=='}} width={200} height={200}></Image>
-                          <Button onPress={openPopUp} disabled={participantPaid} style={styles.payButton}>
-                            { props.loading ? <Spinner color="white"/> : <Text>{participantPaid ? "Ya se pagó" : "Aceptar Pago"}</Text>}
-                          </Button>
-                      
+                    {loading && (
+                      <Spinner
+                        style={{ margin: 10 }}
+                        size={40}
+                        color={colors.mainBlue}
+                      />
+                    )}
+
+                    {!loading &&
+                      enabledForPayRound &&
+                      !isReceivingOrMakingPayment && (
+                        <ConfirmRoundPayment
+                          loading={loading}
+                          participant={fullParticipant}
+                          round={round}
+                          nextShiftParticipants={nextShiftParticipants}
+                          number={number}
+                        />
+                      )}
+
+                    {isReceivingOrMakingPayment && (
+                      <View>
+                        <Spinner size={40} color={colors.mainBlue} />
+                        <Text>Un pago se esta procesando</Text>
                       </View>
-                    </View>
-                </Tab>
-                <Tab disabled heading={
-                    <TabHeading style={ styles.emptyHeader }>
-                    <Text style={ styles.tabHeaderText }></Text>
-                    </TabHeading>
-                }>
-                    <Text></Text>
-                </Tab>
-                <Tab disabled heading={
-                    <TabHeading style={ styles.emptyHeader }>
-                    <Text style={ styles.tabHeaderText }></Text>
-                    </TabHeading>
-                }>
-                </Tab>
-            </Tabs>
-            <AcceptPayment participant={fullParticipant} _pay={_pay} onRef={ ref => (this.popup = ref) }/>
-        </UserData>
-    );
+                    )}
+                  </View>
+                </View>
+              </View>
+            </Content>
+          </Tab>
+          {!allShiftsCompleted && (
+            <Tab
+              heading={
+                <TabHeading style={styles.emptyHeader}>
+                  <Text style={styles.tabHeaderText}>ASIGNAR #</Text>
+                </TabHeading>
+              }
+            >
+              <Content>
+                <ReasignNumber
+                  participantName={fullParticipant.user.name}
+                  participantPicture={fullParticipant.user.image}
+                  participantReasign={reasignNumberRequest}
+                  openRootModal={openRootModal}
+                  roundId={round._id}
+                  shifts={round.shifts}
+                  participantUserId={fullParticipant.user.id}
+                  participantId={fullParticipant._id}
+                  participants={round.participants}
+                  roundFrequency={round.recurrence}
+                  roundStartDate={round.startDate}
+                />
+              </Content>
+            </Tab>
+          )}
+          {!allShiftsCompleted && (
+            <Tab
+              style={{ height: 100 }}
+              heading={
+                <TabHeading style={styles.emptyHeader}>
+                  <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
+                </TabHeading>
+              }
+            >
+              <Content>
+                <View style={{ marginVertical: 15, flex: 1 }}>
+                  <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+                    Elige el participante que reemplazará a{" "}
+                    {fullParticipant.user.name}
+                  </Text>
+                </View>
+                <Swap {...props} participant={fullParticipant} />
+              </Content>
+            </Tab>
+          )}
+        </Tabs>
+        <AcceptPayment
+          participant={fullParticipant}
+          _pay={pay}
+          onRef={ref => {
+            this.popup = ref;
+          }}
+        />
+      </UserData>
+    </Container>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2c3e50",
+  },
+  tabHeader: {
+    backgroundColor: colors.secondaryBackground,
+  },
+  emptyHeader: {
+    backgroundColor: colors.secondaryBackground,
+  },
+  tabHeaderText: {
+    color: "#333",
+    fontSize: 12,
+  },
+  tabHeaderBorder: {
+    borderBottomWidth: 3,
+    borderColor: colors.mainBlue,
+    backgroundColor: colors.secondaryBackground,
+  },
+  paysContainer: {
+    backgroundColor: colors.backgroundGray,
+    flexDirection: "column",
+    alignItems: "center",
+    flex: 1,
+    padding: 15,
+  },
+  actionContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    tabHeader: {
-        backgroundColor: colors.secondaryBackground,
-      },
-      emptyHeader: {
-        backgroundColor: colors.secondaryBackground
-      },
-      tabHeaderText: {
-        color: '#333',
-        fontSize: 12
-      },
-      tabHeaderBorder: {
-        borderBottomWidth: 3, 
-        borderColor: colors.mainBlue,
-        backgroundColor: colors.secondaryBackground,
-      },
-      payButton: {
-        width: '85%',
-        justifyContent: 'center',
-        borderRadius: 8,
-        marginBottom: 20,
-        backgroundColor: colors.mainBlue
-      },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  payButton: {
+    alignItems: "center",
+    borderRadius: 8,
+    marginVertical: 20,
+    height: 50,
+    backgroundColor: colors.mainBlue,
+    width: "100%",
+  },
+  textButton: {
+    textAlign: "center",
+    flex: 1,
+  },
+  qrContainer: {
+    marginVertical: 40,
+    paddingHorizontal: 15,
+    alignItems: "center",
+  },
+  buttonContainer: {
+    marginVertical: 20,
+  },
 });
 
-
-
-
 const mapStateToProps = state => {
-    return {
-      requestRounds: state.rounds.requestRounds,
-      loading: state.rounds.numberDetails.loading,
-    };
+  return {
+    requestRounds: state.rounds.requestRounds,
+    loading: state.rounds.numberDetails.loading,
   };
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-      pay_round: ( roundId, number, participantId ) => {
-        dispatch(roundsActions.payRound( roundId, number, participantId ));
-      },
-    };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    pay_round: (roundId, number, participantId) => {
+      dispatch(roundsActions.payRound(roundId, number, participantId));
+    },
+    openRootModal: (message, icon) =>
+      dispatch(openRoundDetailRootModal(message, icon)),
+    refreshRoundData: id => dispatch(roundsActions.getRoundData(id)),
+    reasignNumberRequest: (
+      participantId,
+      targetParticipantId,
+      number,
+      roundId
+    ) =>
+      dispatch(
+        roundsActions.reasignNumber(
+          participantId,
+          targetParticipantId,
+          number,
+          roundId
+        )
+      ),
   };
-  
-  export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(NumberPay);
-  
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NumberPay);

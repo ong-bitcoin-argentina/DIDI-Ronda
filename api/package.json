@@ -1,17 +1,26 @@
 {
   "name": "laronda-server",
-  "version": "1.0.0",
+  "version": "0.0.11",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "debug": "nodemon --inspect app.js",
+    "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write '**/*.js'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rnsdomains/rns-sdk-js": "https://github.com/rnsdomains/RNS-SDK-js",
+    "agenda": "^2.1.0",
+    "array-flat-polyfill": "^1.0.1",
+    "axios": "0.19.1",
+    "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
+    "cron": "^1.8.2",
     "dotenv": "^8.1.0",
+    "eth-ens-namehash": "^2.0.8",
     "express": "^4.17.1",
     "express-validator": "^6.1.1",
     "firebase-admin": "^8.6.0",
@@ -21,13 +30,22 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.6.9",
+    "multiparty": "4.2.1",
     "nodemailer": "^6.3.0",
     "promise.allsettled": "^1.0.1",
-    "twilio": "^3.36.0"
+    "request-promise-native": "^1.0.8",
+    "twilio": "^3.36.0",
+    "uid-generator": "^2.0.0",
+    "web3": "^1.2.4"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "prettier": "^1.19.1",
     "supertest": "^4.0.2"
   }
 }

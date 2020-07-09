@@ -1,59 +1,58 @@
-import React, {Component, useState, useEffect} from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
-import {View, DeckSwiper, Text, Icon, Spinner} from 'native-base';
-import {Dimensions} from 'react-native';
-import Colors from '../../components/colors';
-import TutorialCard from './TutorialCard';
-import DotStepCounter from './DotStepCounter';
-import {getInset} from 'react-native-safe-area-view';
-import AsyncStorage from '@react-native-community/async-storage';
-import colors from '../../components/colors';
-import Carousel from 'react-native-snap-carousel';
+import React, { useState, useEffect } from "react";
+import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+import { getInset } from "react-native-safe-area-view";
+import { View, Text, Icon, Spinner } from "native-base";
+import Carousel from "react-native-snap-carousel";
+import Colors from "../../components/colors";
+import TutorialCard from "./TutorialCard";
+import DotStepCounter from "./DotStepCounter";
+import tutorial1 from "../../../assets/img/tutorial-1.svg";
+import tutorial2 from "../../../assets/img/tutorial-2.svg";
+import tutorial3 from "../../../assets/img/tutorial-3.svg";
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const CARDS_HEIGHT =
   SCREEN_HEIGHT > 620 ? SCREEN_HEIGHT * 0.65 : SCREEN_HEIGHT * 0.75;
 
-const topOffset = getInset('top');
+const topOffset = getInset("top");
 
 const cards = [
   {
-    title: 'Empezá a jugar',
-    text: 'Invitá a jugar sólo a gente que conozcas y sea de tu confianza.',
-    image: require('../../../assets/img/tutorial-pic1.jpg'),
+    title: "Empezá tu ronda",
+    text: "Invita a las personas que quieras que se sumen a tu ronda.",
+    image: tutorial1,
     placeholder: false,
   },
   {
-    title: '¿Qué tenés que hacer?',
-    text: 'Indicá cuánto aporta cada uno y con qué frecuencia.',
-    image: require('../../../assets/img/tutorial-pic2.jpg'),
-    placeholder: false,
-  },
-  {
-    title: 'Sorteo o elección grupal',
+    title: "¿Cómo funciona",
     text:
-      'El órden de ganadores puede ser por sorteo o por elección colaborativa del grupo.',
-    image: require('../../../assets/img/tutorial-pic3.jpg'),
+      "Indica cuánto aporta cada persona de tu ronda y con qué frecuencia se harán los pagos.",
+    image: tutorial2,
     placeholder: false,
   },
   {
-    title: 'Sorteo o elección grupal',
+    title: "Sorteo o elección grupal",
     text:
-      'El órden de ganadores puede ser por sorteo o por elección colaborativa del grupo.',
-    image: require('../../../assets/img/tutorial-pic3.jpg'),
+      "El orden de números asignados a quienes participen de la ronda, puede ser por sorteo o por elección del administrador/a.",
+    image: tutorial3,
+    placeholder: false,
+  },
+  {
+    title: "Sorteo o elección grupal",
+    text:
+      "El órden de ganadores puede ser por sorteo o por elección colaborativa del grupo.",
+    image: tutorial3,
     placeholder: true,
   },
 ];
-getTutorialState = async (callback, secondCalback) => {
+const getTutorialState = async (callback, secondCalback) => {
   try {
-    const value = await AsyncStorage.getItem('tutorialFinished');
-    if (value !== null) {
-      callback();
-    } else {
-      secondCalback(false);
-    }
+    const value = await AsyncStorage.getItem("tutorialFinished");
+    if (value !== null) return callback();
+    return secondCalback(false);
   } catch (error) {
     return false;
   }
@@ -65,38 +64,38 @@ const Tutorials = props => {
 
   useEffect(() => {
     getTutorialState(() => {
-      props.navigation.navigate('Main');
+      props.navigation.navigate("Main");
     }, setLoading);
   }, []);
 
-  handleSwipe = count => {
-    if (count >= cards.length) {
-      goToRoundList();
-    } else {
-      nextStep(count);
-    }
+  const goToRoundList = async () => {
+    await AsyncStorage.setItem("tutorialFinished", "true");
+    props.navigation.navigate("Rondas");
   };
 
-  goToRoundList = async () => {
-    try {
-      await AsyncStorage.setItem('tutorialFinished', 'true');
-    } catch (error) {}
-    props.navigation.navigate('Rondas');
-  };
-  _renderItem = ({item, index}) => {
+  const renderItem = ({ item }) => {
     return <TutorialCard height={CARDS_HEIGHT} item={item} />;
   };
-  closeButton = (
-    <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => goToRoundList()}>
+
+  const closeButton = (
+    <TouchableOpacity
+      style={{ flexDirection: "row" }}
+      onPress={() => goToRoundList()}
+    >
       <Text style={styles.closeButton}>Cerrar </Text>
-      <Icon style={{color: 'white'}} name="ios-close"></Icon>
+      <Icon style={{ color: "white" }} name="ios-close" />
     </TouchableOpacity>
   );
 
+  const onBeforeSnapToItem = index => {
+    if (index === cards.length - 1) return goToRoundList();
+    return null;
+  };
+
   return loading ? (
     <View style={styles.container}>
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Spinner color={'white'} />
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Spinner color="white" />
       </View>
     </View>
   ) : (
@@ -105,19 +104,14 @@ const Tutorials = props => {
 
       <View style={styles.deckSwiperContainer}>
         <Carousel
-          ref={c => {
-            this._carousel = c;
-          }}
           data={cards}
-          renderItem={this._renderItem}
+          renderItem={renderItem}
           sliderWidth={SCREEN_WIDTH}
           itemWidth={SCREEN_WIDTH}
           onSnapToItem={i => {
             nextStep(i);
           }}
-          onBeforeSnapToItem={i => {
-            i == cards.length - 1 && goToRoundList();
-          }}
+          onBeforeSnapToItem={onBeforeSnapToItem}
         />
       </View>
       <View style={styles.dotStepCounterContainer}>
@@ -129,39 +123,39 @@ const Tutorials = props => {
 
 const styles = StyleSheet.create({
   dotStepCounterContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: "center",
+    alignItems: "flex-end",
     height: 50,
   },
   deckSwiperContainer: {
     height: CARDS_HEIGHT,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 11,
     },
-    width: '100%',
+    width: "100%",
     shadowOpacity: 0.55,
     shadowRadius: 14.78,
     elevation: 22,
   },
-  closeButton: {fontSize: 20, color: 'white'},
+  closeButton: { fontSize: 20, color: "white" },
   closeButtonContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     paddingHorizontal: 20,
     backgroundColor: Colors.mainBlue,
     marginTop: topOffset,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    height: '8%',
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    height: "8%",
   },
   container: {
     backgroundColor: Colors.mainBlue,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: '100%',
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "100%",
   },
 });
 

@@ -1,13 +1,12 @@
-import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Text, Icon} from 'native-base';
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Icon } from "native-base";
 
-import colors from '../colors';
-import Avatar from '../Avatar';
-import Bookmark from '../Bookmark';
-import Calendar from '../Calendar';
-import Draw from '../../../assets/img/draw.svg';
-import StatusIcon from './StatusIcon';
+import colors from "../colors";
+import Avatar from "../Avatar";
+import Bookmark from "../Bookmark";
+import Calendar from "../Calendar";
+import StatusIcon from "./StatusIcon";
 
 const Number = props => {
   const {
@@ -19,7 +18,6 @@ const Number = props => {
     edit,
     callback,
     status,
-    draw,
     current,
   } = props;
 
@@ -45,26 +43,35 @@ const Number = props => {
           borderLeftColor: colors.mainBlue,
           borderLeftWidth: 4,
         },
-      ]}>
+      ]}
+    >
       <View style={styles.container}>
         {number && <Bookmark number={number} bgColor={bmColor()} />}
 
         <View style={styles.avatarContainer}>
-          {draw ? (
-            <Draw width={40} height={40} />
-          ) : avatar && avatar.length > 0 ? (
-            avatar.map((avatar, idx) => (
+          {avatar && avatar.length > 0 ? (
+            avatar.map((path, idx) => (
               <View
                 key={`avatar${idx}`}
                 style={
-                  idx > 0 && {
-                    marginLeft: -30,
-                    borderLeftWidth: 1,
-                    borderColor: '#fff',
-                    borderRadius: 100,
+                  avatar.length > 1 && {
+                    width: "100%",
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: idx % 2 === 0 ? "flex-start" : "flex-end",
                   }
-                }>
-                <Avatar path={avatar} />
+                }
+              >
+                <View
+                  style={{
+                    alignSelf: idx % 2 === 0 ? "flex-end" : "flex-start",
+                  }}
+                >
+                  <Avatar
+                    path={path}
+                    size={avatar.length > 1 ? 60 / avatar.length : null}
+                  />
+                </View>
               </View>
             ))
           ) : (
@@ -106,24 +113,25 @@ const styles = StyleSheet.create({
   },
   // CONTAINER
   container: {
-    width: '100%',
+    width: "100%",
     height: 70,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   // AVATAR
   avatarContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     paddingLeft: 10,
     paddingRight: 7,
+    width: 70,
   },
   // TEXT
   textContainer: {
     flexGrow: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     paddingLeft: 10,
   },
   titleText: {
@@ -135,9 +143,8 @@ const styles = StyleSheet.create({
   },
   // EDIT
   editContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 10,
   },
   editIcon: {
@@ -146,9 +153,8 @@ const styles = StyleSheet.create({
   },
   // STATUS
   statusContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 15,
     minWidth: 50,
   },
@@ -157,13 +163,12 @@ const styles = StyleSheet.create({
 Number.defaultProps = {
   number: null,
   avatar: null,
-  title: '- - - -',
-  subtitle: '- - - -',
+  title: "- - - -",
+  subtitle: "- - - -",
   calendar: null,
   edit: null,
   callback: null,
   status: null,
-  draw: false,
   current: null,
 };
 

@@ -1,61 +1,55 @@
-import React, {useState, useEffect} from 'react';
-import {View, ScrollView, StyleSheet, FlatList} from 'react-native';
-import {Text, Spinner} from 'native-base';
-import colors from '../../components/colors';
+import React from "react";
+import { View, FlatList } from "react-native";
+import { Text } from "native-base";
 
-import ListItem from './ListItem';
+import ListItem from "./ListItem";
+import ParticipantListTitles from "./ParticipantListTitles";
 
-export default ParticipantsList = props => {
-  const {participants, shifts} = props;
+const ParticipantsList = props => {
+  const { participants, shifts, navigation } = props;
 
-  const getFirstPayDay = participantId => {
-    for (s of shifts) {
-      if (s.participant.includes(participantId)) {
-        return s.limitDate;
-      }
-    }
-    return false;
+  const getPayDay = index => {
+    const shift = shifts[index];
+    const { limitDate } = shift;
+    return limitDate;
   };
 
   const handleNavigation = participant => {
-    props.navigation.navigate('UserProfile', {participant: participant});
+    navigation.navigate("UserProfile", { participant });
   };
 
   return (
-    <View>
+    <>
       <View
         style={{
-          marginVertical: 20,
-          width: '100%',
-          flexDirection: 'row',
-          paddingHorizontal: 10,
-        }}>
-        <Text style={{fontSize: 11, fontWeight: '500', color: colors.mainBlue}}>
-          Confirmacion de participacion
+          marginVertical: 10,
+          marginHorizontal: 15,
+          borderBottomColor: "#8a8a8a",
+          flexDirection: "row",
+          paddingBottom: 3,
+          borderBottomWidth: 1,
+        }}
+      >
+        <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+          Participantes Confirmados
         </Text>
       </View>
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row-reverse',
-          paddingHorizontal: 25,
-        }}>
-        <Text
-          style={{color: colors.secondary, fontSize: 11, fontWeight: '500'}}>
-          Estado
-        </Text>
-      </View>
+      <ParticipantListTitles />
       <FlatList
         data={participants}
-        renderItem={({item}) => (
+        renderItem={({ item, index }) => (
           <ListItem
             participant={item}
-            payday={getFirstPayDay}
+            number={index + 1}
+            shouldRenderNumber
+            payday={getPayDay(index)}
             handleNavigation={handleNavigation}
           />
         )}
-        keyExtractor={item => item._id}
+        keyExtractor={(item, index) => String(item._id + index)}
       />
-    </View>
+    </>
   );
 };
+
+export default ParticipantsList;

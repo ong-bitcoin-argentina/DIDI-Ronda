@@ -1,15 +1,8 @@
-import React, {Component} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
-import {Button} from 'native-base';
-import Modal from 'react-native-modal';
-import colors from './colors';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React, { Component } from "react";
+import { Text, View, StyleSheet } from "react-native";
+import { Button } from "native-base";
+import Modal from "react-native-modal";
+import colors from "./colors";
 
 export default class RoundPopUp extends Component {
   constructor(props) {
@@ -17,98 +10,117 @@ export default class RoundPopUp extends Component {
     this.state = {
       isModalVisible: props.visible,
     };
-    this.props.onRef(this);
+    if (props.onRef) props.onRef(this);
   }
 
   componentWillUnmount() {
-    this.props.onRef(undefined);
+    const { onRef } = this.props;
+    if (onRef) onRef(undefined);
   }
 
-  _openPopUp() {
-    this.setState({isModalVisible: true});
-  }
-  _closePopUp() {
-    if (this.props.onBeforeClose) {
-      this.props.onBeforeClose();
-    }
-    this.setState({isModalVisible: false});
-  }
+  renderButtons = () => {
+    const {
+      accept,
+      notCloseAfterNegative,
+      notCloseAfterPositive,
+      positive,
+      negative,
+      acceptTitle,
+      positiveTitle,
+      disablePositive,
+      negativeTitle,
+    } = this.props;
+    return (
+      <React.Fragment>
+        {accept && (
+          <Button
+            style={styles.accept}
+            onPress={() => {
+              accept();
+              if (!notCloseAfterPositive) this.closePopUp();
+            }}
+          >
+            <Text style={styles.buttonText}>{acceptTitle || "OK"}</Text>
+          </Button>
+        )}
+        {positive && (
+          <Button
+            style={styles.positive}
+            disabled={disablePositive || false}
+            onPress={() => {
+              positive();
+              if (!notCloseAfterPositive) this.closePopUp();
+            }}
+          >
+            <Text style={styles.buttonText}>{positiveTitle || "Aceptar"}</Text>
+          </Button>
+        )}
+        {negative && (
+          <Button
+            style={styles.negative}
+            onPress={() => {
+              negative();
+              if (!notCloseAfterNegative) this.closePopUp();
+            }}
+          >
+            <Text style={styles.negativeButtonText}>
+              {negativeTitle || "Cancelar"}
+            </Text>
+          </Button>
+        )}
+      </React.Fragment>
+    );
+  };
 
-  _buttons = () => (
-    <React.Fragment>
-    {
-      this.props.accept &&
-      <Button
-        style={styles.accept}
-        onPress={() => {
-          this.props.accept();
-          !this.props.notCloseAfterPositive && this._closePopUp();
-        }}>
-        <Text style={styles.buttonText}>
-          {this.props.acceptTitle || 'OK'}
-        </Text>
-      </Button>
-    }
-    {
-      this.props.positive &&
-      <Button
-        style={styles.positive}
-        disabled={this.props.disablePositive || false}
-        onPress={() => {
-          this.props.positive();
-          !this.props.notCloseAfterPositive && this._closePopUp();
-        }}>
-        <Text style={styles.buttonText}>
-          {this.props.positiveTitle || 'Aceptar'}
-        </Text>
-      </Button>
-    }
-    {
-      this.props.negative &&
-      <Button
-        style={styles.negative}
-        onPress={() => {
-          this.props.negative();
-          !this.props.notCloseAfterNegative && this._closePopUp();
-        }}>
-        <Text style={styles.negativeButtonText}>
-          {this.props.negativeTitle || 'Cancelar'}
-        </Text>
-      </Button>
-    }
-    </React.Fragment>
-  )
-  
+  closePopUp = () => {
+    const { onBeforeClose } = this.props;
+    if (onBeforeClose) onBeforeClose();
+    this.setState({ isModalVisible: false });
+  };
+
+  openPopUp = () => {
+    this.setState({ isModalVisible: true });
+  };
+
   render() {
+    const {
+      icon,
+      value,
+      titleText,
+      children,
+      customContent,
+      titleStyle = {},
+      titleTextStyle = {},
+    } = this.props;
+    const { isModalVisible } = this.state;
+
     return (
       <Modal
-        isVisible={this.state.isModalVisible}
-        backdropColor={'rgba(0,0,0,0.5)'}
+        useNativeDriver
+        animationType="slide"
+        isVisible={isModalVisible}
+        backdropColor="rgba(0,0,0,0.5)"
       >
-
-        <View style={ styles.container }>
-
-          <View
-            style={ styles.titleContainer }>
-            {
-              this.props.icon && this.props.icon
-            }
-            {
-              this.props.value != undefined && <Text style={ styles.value }>{ this.props.value }</Text>
-            }
-            <Text style={ styles.title }>
-              { this.props.titleText }
-            </Text>
-          </View>
-          
-          <View style={ styles.childrenContainer }>
-            { this.props.children }
-          </View>
-
-          <View style={styles.buttonsContainer}>
-            { this._buttons() }
-          </View>
-
+        <View style={styles.container}>
+          {customContent ? (
+            customContent()
+          ) : (
+            <>
+              <View style={{ ...styles.titleContainer, ...titleStyle }}>
+                {icon && icon}
+                {value && <Text style={styles.value}>{value}</Text>}
+                <Text style={{ ...styles.title, ...titleTextStyle }}>
+                  {titleText}
+                </Text>
+              </View>
+              {children && (
+                <View style={styles.childrenContainer}>{children}</View>
+              )}
+              <View style={styles.buttonsContainer}>
+                {this.renderButtons()}
+              </View>
+            </>
+          )}
         </View>
       </Modal>
     );
@@ -117,10 +129,10 @@ export default class RoundPopUp extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     paddingVertical: 25,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 8,
@@ -130,68 +142,69 @@ const styles = StyleSheet.create({
     elevation: 16,
   },
   titleContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 25,
+    alignItems: "center",
+    alignContent: "space-around",
+    justifyContent: "space-around",
   },
   negative: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   positive: {
-    width: '100%',
+    width: "100%",
     height: 50,
     backgroundColor: colors.mainBlue,
     borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   accept: {
-    width: '100%',
+    width: "100%",
     height: 50,
     backgroundColor: colors.mainBlue,
     borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   value: {
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginTop: 5,
     marginBottom: 15,
   },
   buttonsContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 25,
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   negativeButtonText: {
     color: colors.secondary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   title: {
     fontSize: 18,
     color: colors.gray,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
+    marginVertical: 15,
   },
   childrenContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "space-around",
+    alignItems: "center",
     minHeight: 60,
     marginVertical: 10,
-  }
+  },
 });

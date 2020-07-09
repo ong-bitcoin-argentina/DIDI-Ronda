@@ -1,16 +1,19 @@
-import React from 'react'
-import {Fab, Icon} from 'native-base';
-import colors from './colors';
+import React from "react";
+import { Fab, Icon } from "native-base";
+import colors from "./colors";
 
-export default NextButton = props => {
+const NextButton = props => {
   return (
     <Fab
-      active={true}
+      active
       direction="up"
-      style={{backgroundColor: colors.mainBlue}}
+      style={{ backgroundColor: colors.mainBlue }}
       position="bottomRight"
-      onPress={() => props.callback()}>
-      <Icon name={'ios-arrow-forward'} />
+      onPress={() => props.callback()}
+    >
+      <Icon name="ios-arrow-forward" />
     </Fab>
   );
 };
+
+export default NextButton;

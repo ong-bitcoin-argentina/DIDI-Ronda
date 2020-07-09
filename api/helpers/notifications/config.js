@@ -5,11 +5,15 @@ require("dotenv").config();
 const { GOOGLE_APPLICATION_CREDENTIALS } = process.env;
 
 fbadmin.initializeApp({
-  credential: fbadmin.credential.cert(GOOGLE_APPLICATION_CREDENTIALS)
+  credential: fbadmin.credential.cert(GOOGLE_APPLICATION_CREDENTIALS),
 });
 
-const sendNotification = message => {
+exports.INTENTS = {
+  ROUND_START: "ROUND_START",
+  REMEMBER_PAYMENT: "REMEMBER_PAYMENT",
+};
 
+const sendNotification = message => {
   // Array of tokens
   if (message.tokens && message.tokens.length > 0) {
     return fbadmin
@@ -29,14 +33,36 @@ const sendNotification = message => {
   }
 };
 
-exports.createNotification = (tokens, title, body, data) => {
+const createMessage = (tokens, title, body, data) => {
+  // Remove nulls tokens
+  const tokensFilter = tokens.filter(t => t);
   const message = {
     notification: {
-        title: title,
-        body: body,
+      title,
+      body,
     },
-    data: data,
-    tokens: tokens,
+    tokens: tokensFilter,
   };
-  return sendNotification( message );
-}
+
+  if (data) message.data = data;
+
+  return message;
+};
+
+exports.createNotification = (tokens, title, body, data = null) => {
+  try {
+    const tokensMap = {};
+    tokens.forEach(t => {
+      tokensMap[t] = t;
+    });
+    const message = createMessage(Object.keys(tokensMap), title, body, data);
+    return sendNotification(message);
+  } catch (error) {
+    console.log("=====================");
+    console.log("createNotification ERROR:", error.message);
+    console.log("=====================");
+    return false;
+  }
+};
+
+exports.createMessage = createMessage;

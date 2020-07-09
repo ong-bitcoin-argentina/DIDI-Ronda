@@ -1,131 +1,128 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import {View, Text, KeyboardAvoidingView, StyleSheet, TouchableOpacity} from 'react-native';
-import colors from '../../components/colors';
-import { Button, Toast, Spinner} from 'native-base';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import * as actions from '../../../actions/login';
-import {Sae} from 'react-native-textinput-effects';
-import Success from './Success';
+import React, { useState } from "react";
+import { Sae } from "react-native-textinput-effects";
+import { connect } from "react-redux";
+import { Button, Toast, Spinner } from "native-base";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from "react-native";
+import colors from "../../components/colors";
+import * as actions from "../../../actions/auth";
 
 const Login = props => {
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
-  _onChangeEmail = newEmail => {
+  const onChangeEmail = newEmail => {
     setEmail(newEmail);
   };
 
-  _onChangePassword = newPassowrd => {
+  const onChangePassword = newPassowrd => {
     setPassword(newPassowrd);
   };
 
-  _onLogin = () => {
-    if (email.trim() != '' && password.trim() != '') {
-        props.login(email, password);
-        
+  const onLogin = async () => {
+    if (email.trim() && password.trim()) {
+      await props.login(email, password);
     } else {
       Toast.show({
-        text: 'Usuario o contraseña incorrectos',
-        position: 'top',
-        type: 'warning',
+        text: "Usuario o contraseña no rellenados",
+        position: "top",
+        type: "warning",
       });
     }
   };
 
-  _register = () => {
-    props.navigation.navigate("Register")
-  }
+  const register = () => {
+    props.navigation.navigate("Register");
+  };
 
-  _forgot = () => {
-    props.navigation.navigate('Forgot')
-  }
-  loginSuccess = () => {
-    return (     
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <View style={styles.formContainer}>
-          <View style={styles.titleContainer}>
-            <Success text={"Has ingresado correctamente"} callback={() => props.navigation.navigate('Tuto')}/>
-          </View>
-        </View>
-      </KeyboardAvoidingView> 
-    )
-  }
-  _loading = () => (
-  <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+  const forgot = () => {
+    props.navigation.navigate("Forgot");
+  };
+
+  const loading = () => (
+    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-            <Spinner color="white"/>
+          <Spinner color="white" />
         </View>
       </View>
-  </KeyboardAvoidingView>
-  )
+    </KeyboardAvoidingView>
+  );
 
   let subtitle = "Inicio de sesión";
+  const { error, loading: isLoading } = props;
 
-  if( props.error ){
-      subtitle = "Usuario o contraseña incorrectos"
-  }else{
+  if (error) subtitle = "Usuario o contraseña incorrectos";
 
-    if( props.auth ){
-      return loginSuccess()
-    }
-
-  }
-
-  if( props.loading ) { return _loading() }
+  if (isLoading) return loading();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <View style={styles.formContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>La Ronda</Text>
-            <Text style={styles.subtitle}>{ subtitle }</Text>
-          </View>
-          <Sae
-            label={'Email'}
-            value={email}
-            onChangeText={_onChangeEmail}
-            iconClass={FontAwesomeIcon}
-            iconName={'user'}
-            iconColor={'white'}
-            inputPadding={16}
-            labelHeight={24}
-            borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            labelStyle={{color: 'white'}}
-          />
-          <Sae
-            label={'Contraseña'}
-            onChangeText={_onChangePassword}
-            iconClass={FontAwesomeIcon}
-            iconName={'unlock-alt'}
-            iconColor={'white'}
-            secureTextEntry={true}
-            inputPadding={16}
-            labelHeight={24}
-            value={password}
-            borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            labelStyle={{color: 'white'}}
-          />
-
-          <Button onPress={() => _onLogin()} style={styles.button}>
-            <Text style={{color: 'black'}}>Iniciar sesión</Text>
-          </Button>
-          <Button onPress={() => _register()} style={[styles.button, {marginTop: 10}]}>
-            <Text style={{color: 'black'}}>Registrate</Text>
-          </Button>
-          <TouchableOpacity onPress={() => _forgot() } style={[styles.button, {backgroundColor: colors.mainBlue}]}>
-            <Text style={{color: 'white'}}>Olvide mi contraseña</Text>
-          </TouchableOpacity>
-          
+      <View style={styles.formContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>La Ronda</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
+        <Sae
+          label="Email"
+          value={email}
+          onChangeText={onChangeEmail}
+          iconClass={FontAwesomeIcon}
+          iconName="user"
+          iconColor="white"
+          inputPadding={16}
+          labelHeight={24}
+          borderHeight={2}
+          style={{ width: "80%" }}
+          autoCapitalize="none"
+          autoCorrect={false}
+          labelStyle={{ color: "white" }}
+        />
+        <Sae
+          label="Contraseña"
+          onChangeText={onChangePassword}
+          iconClass={FontAwesomeIcon}
+          iconName="unlock-alt"
+          iconColor="white"
+          secureTextEntry
+          inputPadding={16}
+          labelHeight={24}
+          value={password}
+          borderHeight={2}
+          style={{ width: "80%" }}
+          autoCapitalize="none"
+          autoCorrect={false}
+          labelStyle={{ color: "white" }}
+        />
+
+        <Button
+          background={TouchableNativeFeedback.Ripple("lightgray", false)}
+          onPress={onLogin}
+          style={styles.button}
+        >
+          <Text style={{ color: "black" }}>Iniciar sesión</Text>
+        </Button>
+        <Button
+          background={TouchableNativeFeedback.Ripple("lightgray", false)}
+          onPress={register}
+          style={[styles.button, { marginTop: 10 }]}
+        >
+          <Text style={{ color: "black" }}>Registrate</Text>
+        </Button>
+        <TouchableOpacity
+          onPress={forgot}
+          style={[styles.button, { backgroundColor: colors.mainBlue }]}
+        >
+          <Text style={{ color: "white" }}>Olvide mi contraseña</Text>
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -133,55 +130,57 @@ const Login = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.mainBlue,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    color: 'white',
+    color: "white",
   },
   button: {
     marginTop: 30,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 30,
   },
   title: {
     fontSize: 36,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
-  subtitle: {color: 'white', fontSize: 18},
+  subtitle: { color: "white", fontSize: 18 },
 });
 
 const mapStateToProps = state => {
   return {
     loading: state.onboarding.loading,
-    auth:  state.login.user,
-    error: state.login.error
+    auth: state.login.succeded,
+    error: state.login.error,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     login: (username, password) => {
-      dispatch(actions.login(username, password))
-    } 
-
+      dispatch(actions.login(username, password));
+    },
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(Login);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

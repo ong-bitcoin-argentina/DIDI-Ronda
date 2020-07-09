@@ -1,41 +1,175 @@
-import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Text, Spinner} from 'native-base';
-import Colors from '../../components/colors';
-import FloatingActionButton from '../../components/FloatingActionButton';
-import RoundListItem from './RoundsListItem';
-import moment from 'moment';
-import colors from '../../components/colors';
+import React from "react";
+import { View, StyleSheet, FlatList } from "react-native";
+import { Text, Spinner, Tab, Tabs, TabHeading, Icon } from "native-base";
 
-import {connect} from 'react-redux';
-import * as actions from '../../../actions/login';
-import * as roundsActions from '../../../actions/rounds';
+import { connect } from "react-redux";
+import FloatingActionButton from "../../components/FloatingActionButton";
+import RoundListItem from "./RoundsListItem";
+
+import * as roundsActions from "../../../actions/rounds";
+import colors from "../../components/colors";
+import { getAuth } from "../../../utils/utils";
+import WarningEditingRoundModal from "./WarningEditingRoundModal";
+import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
 
 class RoundsList extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    auth: null,
+    openWarningEditModal: false,
+    roundEditData: {},
+  };
+
+  async componentDidMount() {
+    // Load rounds if = 0
+    const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
+    if (requestRounds.list.length === 0) await loadRounds();
+    await getAllStoredRounds();
+    const auth = await getAuth();
+    this.setState({ auth });
   }
+
+  onDeleteStoredRound = async roundIndex => {
+    const { removeStoredRound } = this.props;
+    await removeStoredRound(roundIndex);
+  };
+
+  filterRounds = (roundsData, currentStatus) => {
+    return roundsData.filter(r => {
+      // Active tab
+      if (currentStatus === "active")
+        return (
+          r.start &&
+          r.shifts.find(s => ["pending", "current"].includes(s.status))
+        );
+
+      // To be active tab
+      if (currentStatus === "starting") return !r.start;
+
+      // Completed tab
+      if (currentStatus === "completed")
+        return !r.shifts.find(s => ["pending", "current"].includes(s.status));
+      return false;
+    });
+  };
+
+  manageStoredRoundPress = roundIndex => {
+    const { nameFromCreation, storedRounds } = this.props;
+    const roundEditData = storedRounds.find(r => r.roundIndex === roundIndex);
+
+    if (nameFromCreation) {
+      return this.setState({ openWarningEditModal: true, roundEditData });
+    }
+
+    return this.onContinueEditing(roundEditData);
+  };
+
+  onContinueEditing = roundData => {
+    const { editRound, navigation } = this.props;
+    editRound(roundData);
+    this.clearModalData(() => navigation.navigate("ParticipantsAllSelected"));
+  };
+
+  clearModalData = (callback = () => {}) =>
+    this.setState({ openWarningEditModal: false, roundEditData: {} }, callback);
+
+  onCancelEditing = () => this.clearModalData();
+
+  roundItemPress = params => {
+    const { navigation } = this.props;
+    if (params.isEditing) return this.manageStoredRoundPress(params.roundIndex);
+    return navigation.navigate("RoundDetail", params);
+  };
 
   static navigationOptions = {
     tabBarOptions: {
       showLabel: true,
     },
   };
-  calculateCurrentShift(shifts) {
-    console.log(moment(shifts[0].limitDate));
-  }
 
-  componentDidMount() {
-    // Load rounds if = 0
-    const {requestRounds} = this.props;
-    if (requestRounds.list.length === 0) this.props.loadRounds();
-  }
+  renderContent = (isLoading, rounds, status) => {
+    const { auth } = this.state;
 
-  render() {
-    const {requestRounds} = this.props;
+    let roundsToRender = rounds;
+    if (status === "starting") {
+      const { storedRounds } = this.props;
+      roundsToRender = [...storedRounds, ...roundsToRender];
+    }
+
+    roundsToRender = this.filterRounds(roundsToRender, status);
+    // Nothing is available?
+    if (roundsToRender.length === 0 && !isLoading) {
+      return this.renderNoRoundsSection(status);
+    }
+
+    if (isLoading || auth === null) return <Spinner />;
+    // We have to append the list of rounds to Edit first.
+    return (
+      <FlatList
+        data={roundsToRender}
+        renderItem={({ item }) => (
+          <RoundListItem
+            detail={this.roundItemPress}
+            onDeleteStoredRound={this.onDeleteStoredRound}
+            {...item}
+            auth={auth}
+            pending
+          />
+        )}
+        contentContainerStyle={styles.flatListContent}
+      />
+    );
+  };
+
+  renderNoRoundsSection = status => {
+    const bodyText = "Para crear una ronda, hace click en\nel ";
+    const boldBodyText = "círculo amarillo";
+    const statuses = {
+      active: "Aún no tenés Rondas\nactivas",
+      starting: "Aún no tenés Rondas\nen curso",
+      completed: "Aún no tenés Rondas\nfinalizadas",
+    };
+
+    return (
+      <View
+        style={{ flex: 0.8, justifyContent: "center", alignItems: "center" }}
+      >
+        <View style={{ flexDirection: "row", flex: 0.15 }}>
+          <Icon
+            type="MaterialCommunityIcons"
+            name="alert"
+            style={{ color: colors.yellow, fontSize: 60 }}
+          />
+        </View>
+        <View style={{ flexDirection: "row", flex: 0.15 }}>
+          <Text
+            style={{
+              fontSize: 24,
+              lineHeight: 30,
+              fontWeight: "bold",
+              color: colors.mainBlue,
+              textAlign: "center",
+            }}
+          >
+            {statuses[status]}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", flex: 0.15 }}>
+          <Text style={{ textAlign: "center" }}>
+            {bodyText}
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              {boldBodyText}
+            </Text>
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  renderTabs = () => {
+    const { requestRounds } = this.props;
     const roundsList =
       requestRounds.list &&
-      requestRounds.list.sort(function(a, b) {
+      requestRounds.list.sort((a, b) => {
         if (a.name < b.name) {
           return -1;
         }
@@ -44,37 +178,44 @@ class RoundsList extends React.Component {
         }
         return 0;
       });
+    const tabsObj = [
+      { title: "ACTIVAS", contentType: "active" },
+      { title: "POR INICIAR", contentType: "starting" },
+      { title: "TERMINADAS", contentType: "completed" },
+    ];
+    return tabsObj.map(t => (
+      <Tab
+        key={t.title}
+        heading={
+          <TabHeading style={styles.roundsTabs}>
+            <Text>{t.title}</Text>
+          </TabHeading>
+        }
+      >
+        {this.renderContent(requestRounds.loading, roundsList, t.contentType)}
+      </Tab>
+    ));
+  };
+
+  render() {
+    const { navigation, loadRounds, clearData } = this.props;
+    const { roundEditData, openWarningEditModal } = this.state;
 
     return (
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Mis rondas</Text>
-        </View>
-        {requestRounds.loading ? (
-          <Spinner />
-        ) : roundsList.length > 0 ? (
-          <FlatList
-            data={roundsList}
-            renderItem={({item}) => (
-              <RoundListItem
-                detail={(params) => {
-                  this.props.navigation.navigate('RoundDetail', params);
-                }}
-                {...item}
-                pending
-              />
-            )}
-            contentContainerStyle={styles.flatListContent}
-          />
-        ) : (
-          <Text style={{fontSize: 22, color: colors.secondary}}>
-            Aun no tenes rondas activas.
-          </Text>
-        )}
+        <Tabs onChangeTab={loadRounds} locked>
+          {this.renderTabs()}
+        </Tabs>
         <FloatingActionButton
-          nav={val => {
-            this.props.navigation.navigate(val);
-          }}
+          clearData={clearData}
+          nav={val => navigation.navigate(val)}
+        />
+        <WarningEditingRoundModal
+          open={openWarningEditModal}
+          roundName={roundEditData.name}
+          round={roundEditData}
+          onCancel={this.onCancelEditing}
+          onContinue={this.onContinueEditing}
         />
       </View>
     );
@@ -83,40 +224,47 @@ class RoundsList extends React.Component {
 const mapStateToPropsList = state => {
   return {
     requestRounds: state.rounds.requestRounds,
+    storedRounds: state.rounds.storedRounds,
+    nameFromCreation: state.roundCreation.name,
   };
 };
 
-const mapDispatchToPropsList = dispatch => {
-  return {
-    loadRounds: () => {
-      dispatch(roundsActions.loadRounds());
-    },
-    login: () => {
-      dispatch(actions.login());
-    },
-  };
-};
+const mapDispatchToPropsList = dispatch => ({
+  loadRounds: () => dispatch(roundsActions.loadRounds()),
+  getAllStoredRounds: () => dispatch(roundsActions.getAllStoredRounds()),
+  clearData: () => dispatch(clearStore()),
+  removeStoredRound: roundIndex =>
+    dispatch(roundsActions.removeStoredRound(roundIndex)),
+  editRound: round => dispatch(setEditRoundData(round)),
+});
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    flexDirection: "column",
+    alignItems: "center",
     flex: 1,
-    backgroundColor: Colors.backgroundGray,
+    backgroundColor: colors.backgroundGray,
   },
   titleContainer: {
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
-    color: Colors.mainBlue,
+    color: colors.mainBlue,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   flatListContent: {
+    marginTop: 40,
     paddingBottom: 100,
+  },
+  roundsTabs: {
+    backgroundColor: colors.mainBlue,
   },
 });
 
-
-export default connect(mapStateToPropsList, mapDispatchToPropsList)(RoundsList)
+export default connect(
+  mapStateToPropsList,
+  mapDispatchToPropsList
+)(RoundsList);

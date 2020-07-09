@@ -1,50 +1,50 @@
 //import liraries
-import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import Colors from '../../components/colors';
-import {Icon} from 'native-base';
-import Arrow from '../../../assets/img/arrow.svg';
+import React from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import Colors from "../../components/colors";
+import { Icon } from "native-base";
+import Arrow from "../../../assets/img/arrow.svg";
+import { roundFrequencyArray } from "../../utils";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 export default ExtraData = props => {
-
-  getCustomDate = (date) => {
+  getCustomDate = date => {
     return (
       date.getDate() +
-      '/' +
+      "/" +
       (parseInt(date.getMonth()) + 1).toString() +
-      '/' +
+      "/" +
       date.getFullYear()
     );
-  }
+  };
 
-  const {startDate, endDate, frequency, amount, shifts} = props;
+  const { startDate, endDate, frequency, amount, shifts } = props;
 
-  const customFrequency =
-    frequency == 'm' ? 'Mensual' : frequency == 's' ? 'Semanal' : 'Quincenal';
+  const customFrequency = roundFrequencyArray[frequency];
 
   return (
     <View style={styles.roundData}>
       <Arrow
-        height={'100%'}
+        height={"100%"}
         width={60}
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: -20,
           left: SCREEN_WIDTH * 0.5 - 50,
-        }}></Arrow>
+        }}
+      ></Arrow>
       <View style={styles.dataColumn}>
         <View style={styles.dataRow}>
           <View style={styles.icon}>
             <Icon
               type="MaterialCommunityIcons"
               name="calendar-range"
-              style={{color: Colors.mainBlue, fontSize: 24}}
+              style={{ color: Colors.mainBlue, fontSize: 24 }}
             />
           </View>
           <View style={styles.roundNameContainer}>
             <Text numberOfLines={1} style={styles.amount}>
-              { getCustomDate( new Date(startDate) ) }
+              {getCustomDate(new Date(startDate))}
             </Text>
             <Text style={styles.dateSubtitle}>Inicio</Text>
           </View>
@@ -54,40 +54,40 @@ export default ExtraData = props => {
             <Icon
               type="MaterialIcons"
               name="alarm"
-              style={{color: Colors.mainBlue, fontSize: 24}}
+              style={{ color: Colors.mainBlue, fontSize: 24 }}
             />
           </View>
-          <View style={{marginHorizontal: 10}}>
+          <View style={{ marginHorizontal: 10 }}>
             <Text style={styles.frequencyTitle}>{customFrequency}</Text>
             <Text style={styles.dateSubtitle}>Frecuencia</Text>
           </View>
         </View>
       </View>
       <View style={styles.dataColumn}>
-        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
-          <View style={{flexDirection: 'row', width: '80%'}}>
+        <View style={[styles.dataRow, { justifyContent: "flex-end" }]}>
+          <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={styles.icon}>
               <Icon
                 type="MaterialCommunityIcons"
                 name="calendar-range"
-                style={{color: Colors.mainBlue, fontSize: 24}}
+                style={{ color: Colors.mainBlue, fontSize: 24 }}
               />
             </View>
             <View style={styles.roundNameContainer}>
               <Text numberOfLines={1} style={styles.amount}>
-                {getCustomDate( new Date(endDate) )}
+                {getCustomDate(new Date(endDate))}
               </Text>
               <Text style={styles.dateSubtitle}>Fin</Text>
             </View>
           </View>
         </View>
-        <View style={[styles.dataRow, {justifyContent: 'flex-end'}]}>
-          <View style={{flexDirection: 'row', width: '80%'}}>
+        <View style={[styles.dataRow, { justifyContent: "flex-end" }]}>
+          <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={styles.icon}>
               <Icon
                 type="MaterialCommunityIcons"
                 name="cash-usd"
-                style={{color: Colors.mainBlue, fontSize: 24}}
+                style={{ color: Colors.mainBlue, fontSize: 24 }}
               />
             </View>
             <View style={styles.roundNameContainer}>
@@ -104,35 +104,35 @@ export default ExtraData = props => {
 };
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: Colors.backgroundGray,
   },
   scrollView: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerContainer: {
     margin: 15,
   },
   titleContainer: {
-    height: '10%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "10%",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.backgroundGray,
   },
   dataRow: {
-    height: '50%',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    height: "50%",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 
   dataColumn: {
     flex: 1,
-    height: '100%',
-    flexDirection: 'column',
+    height: "100%",
+    flexDirection: "column",
 
     paddingVertical: 10,
   },
@@ -140,64 +140,64 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     color: Colors.gray,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   roundStatus: {
-    height: '100%',
+    height: "100%",
     width: 5,
   },
   roundData: {
-    width: '95%',
+    width: "95%",
     height: 100,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     borderRadius: 5,
     backgroundColor: Colors.backgroundGray,
   },
   icon: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     width: 30,
     height: 30,
   },
   roundNameContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+    flexDirection: "column",
+    alignItems: "flex-start",
     marginHorizontal: 10,
   },
   column: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   mensuality: {
     fontSize: 16,
-    textAlign: 'right',
-    fontWeight: 'bold',
+    textAlign: "right",
+    fontWeight: "bold",
     color: Colors.lightBlue,
   },
   amount: {
     fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'right',
+    fontWeight: "bold",
+    textAlign: "right",
   },
   frequencyTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   roundUsers: {
-    color: 'white',
+    color: "white",
   },
   roundName: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   rightActionContainer: {
     marginHorizontal: 15,
     marginVertical: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -208,72 +208,72 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   rightAction: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   rightAcionButton: {
     flex: 1,
     borderRadius: 0,
     margin: 0,
-    width: '100%',
+    width: "100%",
   },
   rightAcionIcon: {
-    color: 'white',
+    color: "white",
   },
   roundInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 100,
     marginBottom: 8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
   roundInfoDates: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   roundInfoDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '35%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "35%",
   },
-  date: {fontSize: 12, fontWeight: 'bold'},
-  dateSubtitle: {fontSize: 12, color: Colors.secondary},
-  smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
+  date: { fontSize: 12, fontWeight: "bold" },
+  dateSubtitle: { fontSize: 12, color: Colors.secondary },
+  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
   roundState: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
     paddingRight: 20,
   },
   state: {
     color: Colors.lightBlue,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   roundInfo: {
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 100,
     marginBottom: 8,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
   roundInfoDates: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   roundInfoDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '35%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "35%",
   },
-  date: {fontSize: 12, fontWeight: 'bold'},
-  smallIcon: {color: Colors.mainBlue, fontSize: 22, marginRight: 10},
+  date: { fontSize: 12, fontWeight: "bold" },
+  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
   roundState: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
     paddingRight: 20,
   },
 });

@@ -1,37 +1,71 @@
-import firebase from 'react-native-firebase';
-import type { NotificationOpen } from 'react-native-firebase';
-import { NavigationActions } from 'react-navigation';
+import firebase from "react-native-firebase";
+import { Platform } from "react-native";
+import { NavigationActions } from "react-navigation";
+import { getAuth } from "../../utils/utils";
+import store from "../../store/store";
+import * as roundsActions from "../../actions/rounds";
 
-// TODO: 
+// TODO:
 // Enable/Disable notifications from config file
 export const enabledNotifications = true;
 
 // WITH OPEN APP
-export const notificationListener = navigator => {
-    return firebase.notifications().onNotification((notification) => {
+export const notificationListener = () => {
+  const listener = firebase.notifications().onNotification(notification => {
+    const newNotification = new firebase.notifications.Notification({
+      data: notification.data,
+      sound: "default",
+      show_in_foreground: true,
+      title: notification.title,
+      body: notification.body,
+    });
 
-    })
-}
+    if (Platform.OS === "android") {
+      newNotification.android
+        .setPriority(firebase.notifications.Android.Priority.Max)
+        .android.setAutoCancel(true)
+        .android.setChannelId("ronda")
+        .android.setVibrate(1000);
+    }
+
+    firebase.notifications().displayNotification(newNotification);
+  });
+  return listener;
+};
 
 // BACKGROUND
-export const notificationOpen = async navigator => {
-    const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-        const { notification } = notificationOpen;
-        const { data } = notification;
-
-        if( data && data.action ){
-            const actionObject = JSON.parse( data.action );
-            const { routeName, params } = actionObject;
-            navigate( navigator, routeName, params )
-        }
-        
+export const notificationOpen = async (navigator, notificationData) => {
+  let finalData = notificationData;
+  if (!finalData) {
+    const openNotificationData = await firebase
+      .notifications()
+      .getInitialNotification();
+    if (openNotificationData) {
+      const { notification } = openNotificationData;
+      const { data } = notification;
+      finalData = data;
     }
-}
+  }
+
+  // Check auth
+  const auth = await getAuth();
+
+  if (auth) {
+    if (finalData && finalData.action) {
+      const actionObject = JSON.parse(finalData.action);
+      const { routeName, params, intent } = actionObject;
+
+      // Reload rounds before navigate
+      await store.dispatch(roundsActions.loadRounds());
+
+      // Perform side effects on intent presence
+      if (intent) await store.dispatch(roundsActions.intentManager(finalData));
+      navigate(navigator, routeName, params);
+    }
+  }
+};
 
 // NAVIGATE
 const navigate = (navigator, routeName, params) => {
-    navigator.dispatch( 
-        NavigationActions.navigate({ routeName, params }) 
-    )
-}
+  navigator.dispatch(NavigationActions.navigate({ routeName, params }));
+};

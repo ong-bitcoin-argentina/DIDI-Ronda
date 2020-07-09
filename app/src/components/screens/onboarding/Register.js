@@ -1,205 +1,284 @@
-import React, {Component, useState, useEffect} from 'react';
-import { connect } from 'react-redux';
-import {View, Text, KeyboardAvoidingView, StyleSheet, TouchableOpacity} from 'react-native';
-import colors from '../../components/colors';
-import {Input, Form, Item, Button, Toast, Spinner} from 'native-base';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import {Sae} from 'react-native-textinput-effects';
-import AsyncStorage from '@react-native-community/async-storage';
-import * as actions from '../../../actions/onboarding';
-import VerifyAccount from './VerifyAccount';
-import VerifiedAccount from './Success';
+/* eslint-disable no-underscore-dangle */
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from "react-native";
+import { Button, Toast, Spinner } from "native-base";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Sae } from "react-native-textinput-effects";
+import AsyncStorage from "@react-native-community/async-storage";
+import colors from "../../components/colors";
+import * as actions from "../../../actions/auth";
 
 const Register = props => {
-  const [password, setPassword] = useState('');
-  const [verify, setVerify] = useState('');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [token, setToken] = useState('');
-  const [passwordsStatus, setPasswordStatus] = useState('white');
+  const [password, setPassword] = useState("");
+  const [verify, setVerify] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [nick, setNick] = useState("");
+  const [passwordsStatus, setPasswordStatus] = useState("white");
+  const {
+    navigation,
+    registrationFinished,
+    finish,
+    loading,
+    errorMessage,
+  } = props;
 
   useEffect(() => {
     passwordValidation();
   }, [verify]);
 
+  useEffect(() => {
+    if (errorMessage) {
+      Toast.show({
+        text:
+          "El codigo es incorrecto, el email ya fue registrado o el nickname esta en uso",
+        position: "top",
+        type: "warning",
+      });
+    }
+  }, [errorMessage]);
+
   const passwordValidation = () => {
     if (verifyPasswords()) {
-      setPasswordStatus('white');
+      setPasswordStatus("white");
     } else {
       setPasswordStatus(colors.yellow);
     }
   };
   const verifyPasswords = () => {
-    return password.trim() !== '' && verify.trim() !== '' &&
-                                     password.length > 5  &&
-                                     verify.length > 5    &&
-                                     password === verify;
+    return (
+      password.trim() !== "" &&
+      verify.trim() !== "" &&
+      password.length > 5 &&
+      verify.length > 5 &&
+      password === verify
+    );
   };
   const validateEmail = () => {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    // eslint-disable-next-line no-useless-escape
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email.trim()).toLowerCase());
   };
 
-  _onChangeName = newName => {
+  const _onChangeName = newName => {
     setName(newName);
   };
 
-  _onChangeEmail = newEmail => {
+  const _onChangeNick = newNick => {
+    setNick(newNick);
+  };
+
+  const _onChangeEmail = newEmail => {
     setEmail(newEmail);
   };
 
-  _onChangePassword = newPassowrd => {
+  const _onChangePassword = newPassowrd => {
     setPassword(newPassowrd);
   };
 
-  _onChangeVerify = newVerify => {
+  const _onChangeVerify = newVerify => {
     setVerify(newVerify);
   };
 
+  const returnToLogin = () => navigation.navigate("Login");
 
-  _goToLogin = () => {
-  }
+  const returnToLoginAndClear = () => {
+    finish();
+    return returnToLogin();
+  };
 
-_verifiedAccount = () => {
-  props.finish()
-  return ( <VerifiedAccount text={"Tu cuenta se creo correctamete"} callback={() => props.navigation.navigate('Login')}/> )
-}
-  _verifyYourAccount = () => {
+  const disclaimerBlockChain = () => {
+    return (
+      <View style={styles.container}>
+        <Text
+          style={{
+            textAlign: "center",
+            color: "white",
+            fontSize: 15,
+            maxWidth: "90%",
+          }}
+        >
+          Tu cuenta se encuentra en proceso de registro. Cuando termine, te
+          llegará una notificación y podrás iniciar sesión.
+        </Text>
+        <Button
+          background={TouchableNativeFeedback.Ripple("lightgray", false)}
+          onPress={returnToLoginAndClear}
+          style={[styles.button]}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              color: "black",
+              fontSize: 15,
+              maxWidth: "90%",
+            }}
+          >
+            Entendido
+          </Text>
+        </Button>
+      </View>
+    );
+  };
 
-    if(props.verified === null){
-
-        return <VerifyAccount sendToken={() => props.validateEmail(email, token)} back={() => props.finish()} title={`Te enviamos un codigo a ${email}`} token={token} setToken={setToken}/>
-    
-      }else {
-      if(props.verified){
-        return _verifiedAccount() 
-      }else{ 
-
-        Toast.show({
-          text: 'El codigo es incorrecto o el email ya fue registrado',
-          position: 'top',
-          type: 'warning',
-        })
-        return <VerifyAccount sendToken={() => props.validateEmail(email, token)} back={() => props.finish()} title={`Te enviamos un codigo a ${email}`} token={token} setToken={setToken}/>
-
-      }
-    }
-  }
-  _onRegister = async () => {
-    if( password.trim().length < 6 ){
+  const _onRegister = async () => {
+    if (password.trim().length < 6) {
       Toast.show({
-        text: 'La contraseña tiene que tener almenos 6 caracteres',
-        position: 'top',
-        type: 'warning',
+        text: "La contraseña tiene que tener almenos 6 caracteres",
+        position: "top",
+        type: "warning",
       });
-      return false
+      return false;
+    }
+    if (nick.trim().length < 5) {
+      Toast.show({
+        text: "El Nickname tiene que tener almenos 5 caracteres",
+        position: "top",
+        type: "warning",
+      });
+      return false;
     }
     if (verifyPasswords()) {
-      if (!validateEmail() && name.length > 1) {
+      if (!validateEmail() && name.length > 1 && nick.length > 1) {
         Toast.show({
-          text: 'Debes utilizar un email valido',
-          position: 'top',
-          type: 'warning',
+          text: "Debes utilizar un email valido",
+          position: "top",
+          type: "warning",
         });
       } else {
-        const token = await AsyncStorage.getItem('fcmToken');
+        const fcmToken = await AsyncStorage.getItem("fcmToken");
 
-
-        props.createUser(email, password, name, token)
+        return props.createUser(
+          email.trim(),
+          password,
+          name.trim(),
+          fcmToken,
+          nick.trim()
+        );
       }
     } else {
       Toast.show({
-        text: 'Las contraseñas deben ser identicas',
-        position: 'top',
-        type: 'warning',
+        text: "Las contraseñas deben ser identicas",
+        position: "top",
+        type: "warning",
       });
     }
+    return null;
   };
 
+  if (registrationFinished) return disclaimerBlockChain();
 
-
-  if(props.registrationFinished){
-    return _verifyYourAccount()
-  }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-      {props.loading ? (
-        <Spinner color="white"></Spinner>
-      ) : (
+      {loading && <Spinner color="white" />}
+      {!loading && (
         <View style={styles.formContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>La Ronda</Text>
             <Text style={styles.subtitle}>Registro</Text>
           </View>
           <Sae
-            label={'Nombre'}
+            label="Nickname"
+            value={nick}
+            onBlur={() => setNick(nick.toLowerCase())}
+            onChangeText={_onChangeNick}
+            iconClass={FontAwesomeIcon}
+            iconName="pencil"
+            iconColor="white"
+            inputPadding={16}
+            labelHeight={24}
+            borderHeight={2}
+            style={{ width: "80%" }}
+            autoCapitalize="none"
+            autoCorrect={false}
+            labelStyle={{ color: "white" }}
+          />
+          <Sae
+            label="Nombre"
             value={name}
             onChangeText={_onChangeName}
             iconClass={FontAwesomeIcon}
-            iconName={'pencil'}
-            iconColor={'white'}
+            iconName="pencil"
+            iconColor="white"
             inputPadding={16}
             labelHeight={24}
             borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
+            style={{ width: "80%" }}
+            autoCapitalize="none"
             autoCorrect={false}
-            labelStyle={{color: 'white'}}
+            labelStyle={{ color: "white" }}
           />
           <Sae
-            label={'Email'}
+            label="Email"
             value={email}
             onChangeText={_onChangeEmail}
             iconClass={FontAwesomeIcon}
-            iconName={'pencil'}
-            iconColor={'white'}
+            iconName="pencil"
+            iconColor="white"
             inputPadding={16}
             labelHeight={24}
             borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
+            style={{ width: "80%" }}
+            autoCapitalize="none"
             autoCorrect={false}
-            labelStyle={{color: 'white'}}
+            labelStyle={{ color: "white" }}
           />
           <Sae
-            label={'Contraseña'}
+            label="Contraseña"
             onChangeText={_onChangePassword}
             iconClass={FontAwesomeIcon}
-            iconName={'pencil'}
+            iconName="pencil"
             iconColor={passwordsStatus}
-            secureTextEntry={true}
+            secureTextEntry
             inputPadding={16}
             labelHeight={24}
             value={password}
             borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
+            style={{ width: "80%" }}
+            autoCapitalize="none"
             autoCorrect={false}
-            labelStyle={{color: 'white'}}
+            labelStyle={{ color: "white" }}
           />
           <Sae
-            label={'Confirmar contraseña'}
+            label="Confirmar contraseña"
             onChangeText={_onChangeVerify}
             iconClass={FontAwesomeIcon}
-            iconName={'pencil'}
+            iconName="pencil"
             iconColor={passwordsStatus}
-            secureTextEntry={true}
+            secureTextEntry
             value={verify}
             inputPadding={16}
             labelHeight={24}
             borderHeight={2}
-            style={{width: '80%'}}
-            autoCapitalize={'none'}
+            style={{ width: "80%" }}
+            autoCapitalize="none"
             autoCorrect={false}
-            labelStyle={{color: 'white'}}
+            labelStyle={{ color: "white" }}
           />
-
-          <Button onPress={_onRegister} style={styles.button}>
-            <Text style={{color: 'black'}}>Registrate</Text>
+          <Button
+            background={TouchableNativeFeedback.Ripple("lightgray", false)}
+            onPress={_onRegister}
+            style={styles.button}
+          >
+            <Text style={{ color: "black" }}>Registrate</Text>
           </Button>
 
-          <TouchableOpacity onPress={()=> props.navigation.navigate('Login')} style={[styles.button, {backgroundColor: colors.mainBlue, marginTop: 10}]}>
-            <Text style={{color: 'white'}}>Volver al inicio de sesion</Text>
+          <TouchableOpacity
+            onPress={returnToLogin}
+            style={[
+              styles.button,
+              { backgroundColor: colors.mainBlue, marginTop: 10 },
+            ]}
+          >
+            <Text style={{ color: "white" }}>Volver al inicio de sesion</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -210,53 +289,53 @@ _verifiedAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.mainBlue,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    color: 'white',
+    color: "white",
   },
   button: {
     marginTop: 30,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 30,
   },
   title: {
     fontSize: 36,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
-  subtitle: {color: 'white', fontSize: 18},
+  subtitle: { color: "white", fontSize: 18 },
 });
 
-
-const mapStateToProps = state => {
+const mapStateToProps = ({ onboarding }) => {
   return {
-    loading: state.onboarding.loading,
-    registrationFinished: state.onboarding.registrationFinished,
-    verified: state.onboarding.verified
+    loading: onboarding.loading,
+    registrationFinished: onboarding.registrationFinished,
+    errorMessage: onboarding.errorMessage,
+    verified: onboarding.verified,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    createUser: (username, password, name, token) => {
-      dispatch(actions.createUser(username, password, name, token));
+    createUser: (username, password, name, token, nick) => {
+      dispatch(actions.createUser(username, password, name, token, nick));
     },
     validateEmail: (username, token) => {
       dispatch(actions.verifyEmail(username, token));
@@ -264,8 +343,10 @@ const mapDispatchToProps = dispatch => {
     finish: () => {
       dispatch(actions.finish());
     },
-
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(Register);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Register);

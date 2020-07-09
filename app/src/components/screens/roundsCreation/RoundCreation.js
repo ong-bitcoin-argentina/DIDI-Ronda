@@ -1,18 +1,22 @@
-import React from 'react';
-import {View, TouchableHighlight} from 'react-native';
-import {Icon} from 'native-base';
-import {createStackNavigator} from 'react-navigation';
-import colors from '../../components/colors';
-import {connect} from 'react-redux';
-import * as actions from '../../../actions/roundCreation';
-import RoundName from './steps/RoundName';
-import Amount from './steps/Amount';
-import RoundConfig from './steps/RoundConfig';
-import SelectParticipants from './steps/SelectParticipants';
-import RoundDate from './steps/Date';
-import Finish from './steps/Finish';
-import NumbersAsign from './steps/NumbersAsign';
-import RoundDetail from './steps/RoundDetail';
+import React from "react";
+import { Icon } from "native-base";
+import { createStackNavigator } from "react-navigation";
+import { connect } from "react-redux";
+import colors from "../../components/colors";
+import * as actions from "../../../actions/roundCreation";
+import RoundName from "./steps/RoundName";
+import Amount from "./steps/Amount";
+import AmountValue from "./steps/AmountValue";
+import RoundFrequency from "./steps/RoundFrequency";
+import ParticipantSelection from "./steps/ParticipantSelection";
+import RoundDate from "./steps/Date";
+import Finish from "./steps/FinishStep";
+import RuffleOrSelection from "./steps/RuffleOrSelection";
+import RoundTurns from "./steps/RoundTurns";
+import ParticipantsAllSelected from "./steps/ParticipantsAllSelected";
+import RuffleParticipants from "./steps/RuffleParticipants";
+import SelectParticipantNumbers from "./steps/SelectParticipantNumbers";
+import CloseButton from "./CloseButton";
 
 const mapStateToProps = state => {
   return {
@@ -39,233 +43,137 @@ const mapDispatchToProps = dispatch => {
     setName: name => {
       dispatch(actions.setName(name));
     },
-  };
-};
-
-const mapStateToPropsConfig = state => {
-  return {
-    config: state.roundCreation.config,
-    amount: state.roundCreation.amount,
-  };
-};
-
-const mapDispatchToPropsConfig = dispatch => {
-  return {
-    setConfig: config => {
-      dispatch(actions.setConfig(config));
+    clearData: () => {
+      dispatch(actions.clearStore());
     },
   };
 };
 
-const mapStateToPropsParticipants = state => {
+const mapStateToPropsFrequency = ({ roundCreation }) => {
   return {
-    participants: state.roundCreation.participants,
-    participantsQty: state.roundCreation.config.participantsQty,
+    frequency: roundCreation.frequency,
   };
 };
 
-const mapDispatchToPropsParticipants = dispatch => {
+const mapDispatchToPropsFrequency = dispatch => {
   return {
-    setParticipants: participants => {
-      dispatch(actions.setParticipants(participants));
+    setFrequency: frequency => {
+      dispatch(actions.setFrequency(frequency));
     },
   };
 };
-const Left = ({onPress}) => (
-  <TouchableHighlight onPress={onPress}>
-    <Icon
-      name="ios-arrow-back"
-      style={{color: 'white', padding: 10, fontSize: 32, paddingTop: 5}}
-    />
-  </TouchableHighlight>
-);
-export default createStackNavigator({
-  
+
+const mapStateToPropsTurns = ({ roundCreation }) => {
+  return {
+    turns: roundCreation.turns,
+    noParticipantEdit: roundCreation.noParticipantEdit,
+    participantsQuantity: roundCreation.participants.length,
+  };
+};
+const mapDispatchToPropsTurns = dispatch => {
+  return {
+    setTurns: turns => {
+      dispatch(actions.setTurns(turns));
+    },
+  };
+};
+
+const defaultNavigationOptions = {
+  headerBackTitle: null,
+  headerBackStyle: { color: "white" },
+  title: `Nueva Ronda`,
+  headerTintColor: "white",
+  headerRight: <CloseButton />,
+  headerStyle: { backgroundColor: colors.mainBlue },
+  headerTitleStyle: {
+    color: "white",
+    width: "80%",
+    textAlign: "left",
+    fontSize: 18,
+  },
+};
+
+const RoundCreationStack = createStackNavigator({
   RoundName: {
     screen: connect(
       mapStateToProps,
-      mapDispatchToProps,
+      mapDispatchToProps
     )(RoundName),
     navigationOptions: navigation => ({
+      ...defaultNavigationOptions,
       headerLeft: (
-        <Left
+        <Icon
+          type="Ionicons"
+          name="md-arrow-back"
+          style={{ marginLeft: 15, color: "white", fontSize: 25 }}
           onPress={() => {
-            navigation.navigation.navigate('List');
+            navigation.navigation.navigate("List");
           }}
         />
-      ),
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
-  },
-  RoundDetail: {
-    screen: RoundDetail,
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
       ),
     }),
   },
   Amount: {
     screen: connect(
       mapStateToPropsAmount,
-      mapDispatchToPropsAmount,
+      mapDispatchToPropsAmount
     )(Amount),
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+    navigationOptions: defaultNavigationOptions,
   },
-  RoundConfig: {
+  AmountValue: {
     screen: connect(
-      mapStateToPropsConfig,
-      mapDispatchToPropsConfig,
-    )(RoundConfig),
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+      mapStateToPropsAmount,
+      mapDispatchToPropsAmount
+    )(AmountValue),
+    navigationOptions: defaultNavigationOptions,
   },
-  SelectParticipants: {
+  RoundFrequency: {
     screen: connect(
-      mapStateToPropsParticipants,
-      mapDispatchToPropsParticipants,
-    )(SelectParticipants),
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+      mapStateToPropsFrequency,
+      mapDispatchToPropsFrequency
+    )(RoundFrequency),
+    navigationOptions: defaultNavigationOptions,
   },
-  NumbersAsign: {
-    screen: NumbersAsign,
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+  RoundTurns: {
+    screen: connect(
+      mapStateToPropsTurns,
+      mapDispatchToPropsTurns
+    )(RoundTurns),
+    navigationOptions: defaultNavigationOptions,
+  },
+  ParticipantSelection: {
+    screen: ParticipantSelection,
+    navigationOptions: defaultNavigationOptions,
+  },
+  ParticipantsAllSelected: {
+    screen: ParticipantsAllSelected,
+    navigationOptions: defaultNavigationOptions,
+  },
+  RuffleOrSelection: {
+    screen: RuffleOrSelection,
+    navigationOptions: defaultNavigationOptions,
+  },
+  RuffleParticipants: {
+    screen: RuffleParticipants,
+    navigationOptions: defaultNavigationOptions,
+  },
+  SelectParticipantNumbers: {
+    screen: SelectParticipantNumbers,
+    navigationOptions: defaultNavigationOptions,
   },
   RoundDate: {
     screen: RoundDate,
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Nueva Ronda`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+    navigationOptions: defaultNavigationOptions,
   },
   Finish: {
     screen: Finish,
-    navigationOptions: () => ({
-      headerBackTitle: null,
-      headerBackStyle: {color: 'white'},
-      title: `Finish`,
-      headerTintColor: 'white',
-      headerStyle: {backgroundColor: colors.mainBlue},
-      headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
-        fontSize: 18,
-      },
-      headerRight: (
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      ),
-    }),
+    navigationOptions: {
+      ...defaultNavigationOptions,
+      title: "Finalizado",
+      headerLeft: null,
+      headerRight: null,
+    },
   },
 });
+
+export default RoundCreationStack;

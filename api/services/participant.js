@@ -1,150 +1,203 @@
-const { customError }   = require ('../helpers/errorHandler');
-const moment            = require('moment');
+const { customError } = require("../helpers/errorHandler");
 
 // MANAGERS
-const participant_manager   = require('../managers/participant');
-const round_manager         = require('../managers/round');
+const participant_manager = require("../managers/participant");
+const round_manager = require("../managers/round");
 
+// NOTIFICATIONS
+const {
+  requestedShiftNotification,
+  participantRequestPaymentNoti,
+} = require("../helpers/notifications/notifications");
 
-exports.byId = async (req, res) => {
+exports.byId = async req => {
+  const { roundId, participantId } = req.params;
 
-    const { roundId, participantId } = req.params;
+  const participant = await participant_manager.findById(participantId);
+  if (participant === null) throw new customError("Participant not exist");
 
-    const participant = await participant_manager.findById( participantId );
-    if( participant === null ) throw new customError("Participant not exist");
+  // Check participant - roundId
+  if (participant.round.toString() !== roundId)
+    throw new customError("Participant and round not match");
 
-    // Check participant - roundId
-    if( participant.round.toString() !== roundId ) throw new customError("Participant and round not match");
+  return participant;
+};
 
-    return participant;
-}
+exports.acceptRound = async req => {
+  const { roundId, participantId } = req.params;
+  const { username } = req.body;
 
+  // Find participant
+  const participant = await participant_manager.findById(participantId);
+  if (participant === null) throw new customError("Participant not exist");
 
-exports.acceptRound = async (req, res) => {
+  const round = await round_manager.findById(roundId);
+  if (round === null) throw new customError("That round does not exists");
 
-    const { roundId, participantId } = req.params;
+  // Check participant - roundId
+  if (participant.round.toString() !== roundId)
+    throw new customError("Participant and round not match");
 
-    // Find participant
-    const participant = await participant_manager.findById( participantId );
-    if( participant === null ) throw new customError("Participant not exist");
+  participant.isConfirmingTransaction = true;
+  await participant.save();
 
-    // Check participant - roundId
-    if( participant.round.toString() !== roundId ) throw new customError("Participant and round not match");
+  // Return updated
+  return { round, participant, accepted: true, username };
+};
 
-    // Set accepted = true
-    participant.acepted = true;
+exports.rejectRound = async req => {
+  const { roundId, participantId } = req.params;
+  const { username } = req.body;
 
-    // Update participant
-    const updatedParticipant = await participant_manager.save( participant );
+  if (typeof username !== "string" || username === "" || !username)
+    throw new customError("Username is invalid");
 
-    // Return updated
-    return updatedParticipant;
-}
+  // Find participant
+  const participant = await participant_manager.findById(participantId);
+  if (participant === null) throw new customError("Participant not exist");
 
-exports.rejectRound = async (req, res) => {
+  // Find round
+  const round = await round_manager.findById(roundId);
+  if (round === null) throw new customError("That round does not exists");
 
-    const { roundId, participantId } = req.params;
+  if (round.start) throw new customError("Round has already started");
 
-    // Find participant
-    const participant = await participant_manager.findById( participantId );
-    if( participant === null ) throw new customError("Participant not exist");
+  // Check participant - roundId
+  if (participant.round.toString() !== roundId)
+    throw new customError("Participant and round not match");
 
-    // Check participant - roundId
-    if( participant.round.toString() !== roundId ) throw new customError("Participant and round not match");
+  return { round, participant, accepted: false, username };
+};
 
-    // Set accepted = true
-    participant.acepted = false;
+exports.requestPayment = async req => {
+  const { roundId, participantId } = req.params;
+  const { username } = req.body;
 
-    // Update participant
-    const updatedParticipant = await participant_manager.save( participant );
+  if (typeof username !== "string" || username === "" || !username)
+    throw new customError("Username is invalid");
 
-    // Return updated
-    return updatedParticipant;
-}
+  // Find participant
+  const participant = await participant_manager.findById(participantId);
+  if (participant === null) throw new customError("Participant not exist");
 
-exports.requestNumbers = async (req, res) => {
+  // Find round
+  const round = await round_manager.findById(roundId);
+  if (round === null) throw new customError("That round does not exists");
+  await participantRequestPaymentNoti(round, participant);
 
-    const { roundId, participantId } = req.params;
-    const { numbers } = req.body;
+  return true;
+};
 
-    // Find participant
-    const participant = await participant_manager.findById( participantId );
-    if( participant === null ) throw new customError("Participant not exist");
+exports.requestNumbers = async req => {
+  const { roundId, participantId } = req.params;
+  const { numbers } = req.body;
 
-    // Check participant - roundId
-    if( participant.round.toString() !== roundId ) throw new customError("Participant and round not match");
+  // Find participant
+  const participant = await participant_manager.findById(participantId);
+  if (participant === null) throw new customError("Participant not exist");
 
-    // Find round
-    const round = await round_manager.findById( roundId )
-    if( round === null ) throw new customError("Round not exist");
+  // Check participant - roundId
+  if (participant.round.toString() !== roundId)
+    throw new customError("Participant and round not match");
 
-    // Check numbers exist in round
-    const requestedShift = round.shifts.filter( shift => numbers.includes( shift.number )  )
-    if( requestedShift.length !== numbers.length ) throw new customError("Numbers not exist");
+  // Find round
+  const round = await round_manager.findById(roundId);
+  if (round === null) throw new customError("Round not exist");
 
-    // Check numbers status
-    const availableShifts = requestedShift.filter( shift => (shift.status !== "completed" && shift.status !== "current" ) )
-    if( availableShifts.length !== numbers.length ) throw new customError("Numbers are completed or current");
+  // Check numbers exist in round
+  const requestedShift = round.shifts.filter(shift =>
+    numbers.includes(shift.number)
+  );
+  if (requestedShift.length !== numbers.length)
+    throw new customError("Numbers not exist");
 
-    // Push requested numbers to shift (FOR LATER)
-    // numbers.forEach( number => {
-    //     // Only push if not exist
-    //     const exist = round.shifts.find( shift => shift.number === number ).requests.includes( participantId );
-    //     if( !exist )
-    //         round.shifts.find( shift => shift.number === number ).requests.push( participant );
-    // });
+  // Check numbers status
+  // const availableShifts = requestedShift.filter( shift => (shift.status !== "completed" && shift.status !== "current" ) )
+  // if( availableShifts.length !== numbers.length ) throw new customError("Numbers are completed or current");
 
-    // FOR TESTING PURPOSE
-    // Push participant
-    numbers.forEach( number => {
-        // Only push if not exist
-        const exist = round.shifts.find( shift => shift.number === number ).participant.includes( participantId );
-        if( !exist )
-            round.shifts.find( shift => shift.number === number ).participant.push( participant );
-    });
-    // ./FOR TESTING PURPOSE
+  // Remove participant from every shift
+  for (let i = 0; i < round.shifts.length; i++) {
+    // Get shifts where participant is assigned
+    if (round.shifts[i].participant.includes(participantId)) {
+      // Get participant record index into shift participants
+      const participantIndex = round.shifts[i].participant.indexOf(
+        participantId
+      );
+      // Remove participant from shift
+      round.shifts[i].participant.splice(participantIndex, 1);
+    }
+  }
 
+  // Push requested numbers to shift (FOR LATER)
+  // numbers.forEach( number => {
+  //     // Only push if not exist
+  //     const exist = round.shifts.find( shift => shift.number === number ).requests.includes( participantId );
+  //     if( !exist )
+  //         round.shifts.find( shift => shift.number === number ).requests.push( participant );
+  // });
 
-    // Update round
-    const updatedRound = await round_manager.save( round );
+  // FOR TESTING PURPOSE
+  // Push participant
+  numbers.forEach(number => {
+    // Only push if not exist
+    const exist = round.shifts
+      .find(shift => shift.number === number)
+      .participant.includes(participantId);
+    if (!exist)
+      round.shifts
+        .find(shift => shift.number === number)
+        .participant.push(participant);
+  });
+  // ./FOR TESTING PURPOSE
 
-    // Return updated round
-    return updatedRound;
-}
+  // Update round
+  const updatedRound = await round_manager.save(round);
 
-exports.participantChargeNumber = async (req, res) => {
+  // Admin notification
+  requestedShiftNotification(updatedRound, participant.user.name, numbers);
 
-    const { roundId, number } = req.params;
-    const { participantId } = req.body;
+  // Return updated round
+  return updatedRound;
+};
 
-    // Find round
-    const round = await round_manager.findById( roundId )
-    if( round === null ) throw new customError("Round not exist");
+// Pay to participant
+exports.participantChargeNumber = async req => {
+  const { roundId, number } = req.params;
+  const { participantId } = req.body;
 
-    // Check number exist in round shift
-    if( number > round.shifts.length ) throw new customError("Number not exist in this round");
+  // Find round
+  const round = await round_manager.findById(roundId);
+  if (round === null) throw new customError("Round not exist");
 
-    // Check shift status is current
-    const shift = round.shifts.find( e => e.number === parseInt(number) )
-    if( !shift || shift.status !== 'current' ) throw new customError("Shift must be 'current' for mark as completed");
+  // Check number exist in round shift
+  if (number > round.shifts.length)
+    throw new customError("Number not exist in this round");
 
-    // Check shift date >= now
-    if( moment( shift.limitDate ).isSameOrAfter( moment() ) ) throw new customError("Shift limitDate error");
+  // Check shift status is current
+  const shift = round.shifts.find(e => e.number === parseInt(number));
+  if (!shift || shift.status !== "current")
+    throw new customError("Shift must be 'current' for mark as completed");
 
-    // Mark shift as completed
-    round.shifts.find( e => e.number === parseInt(number) ).status = 'completed';
+  // Check shift includes participantId
+  if (!shift.participant.includes(participantId))
+    throw new customError("Participant is not on the shift");
 
-    // Set next shift status depend on nextDraw value
-    const nextStatus = 'current';
-    const nextShift = round.shifts.find( e => e.number === parseInt(number)+1 );
-    if( nextShift ) round.shifts.find( e => e.number === parseInt(number)+1 ).status = nextStatus;
+  // Mark shift as completed
+  round.shifts.find(e => e.number === parseInt(number)).status = "completed";
 
-    // TODO: participant notifications
+  // Set next shift status depend on nextDraw value
+  const nextStatus = "current";
+  const nextShift = round.shifts.find(e => e.number === parseInt(number) + 1);
+  if (nextShift)
+    round.shifts.find(
+      e => e.number === parseInt(number) + 1
+    ).status = nextStatus;
 
-    // Save changes to round
-    const updatedRound = await round_manager.save( round );
-    if( updatedRound === null ) throw new customError("Error saving payment");
+  // TODO: participant notifications
 
-    return updatedRound;
+  // Save changes to round
+  const updatedRound = await round_manager.save(round);
+  if (updatedRound === null) throw new customError("Error saving payment");
 
-}
+  return updatedRound;
+};

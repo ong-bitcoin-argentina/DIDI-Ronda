@@ -1,31 +1,34 @@
 const defaultState = {
-  user: null,
+  succeded: false,
   loading: false,
-  error: null
+  error: null,
 };
 
 function login(state = defaultState, action) {
   switch (action.type) {
-    case 'LOGIN_SUCCEEDED':
+    case "LOGIN_SUCCEEDED":
       return {
         ...state,
-        user: action.payload
+        loading: false,
+        succeded: true,
       };
 
-    case 'LOGIN_FAILED':
+    case "LOGIN_FAILED":
       return {
         ...state,
         error: action.payload,
-        loading: false
-      }
+        loading: false,
+      };
 
-    case 'LOGIN_START':
+    case "LOGIN_START":
       return {
         ...state,
+        succeded: false,
         loading: true,
-        error: null
-    }
-
+        error: null,
+      };
+    case "LOGOUT":
+      return defaultState;
 
     default:
       return state;

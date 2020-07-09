@@ -1,11 +1,15 @@
 const defaultState = {
-  name: '',
+  name: "",
   amount: 0,
-  config: {},
+  frequency: "m",
+  turns: "0",
   participants: [],
-  date: '',
-  confirmationDate: '',
-  paymentDate: '',
+  assignedNumbers: [],
+  pickTurnsManual: false,
+  completedParticipantsSection: false,
+  date: "",
+  confirmationDate: "",
+  paymentDate: "",
   request: {
     loading: false,
     error: null,
@@ -15,73 +19,91 @@ const defaultState = {
 
 function creation(state = defaultState, action) {
   switch (action.type) {
-    case 'CREATION_NEXT_STEP':
+    case "CREATION_NEXT_STEP":
       return {
         ...state,
         step: action.data.step,
       };
-    case 'CREATION_NAME':
+    case "CREATION_NAME":
       return {
         ...state,
         name: action.data.name,
       };
-    case 'CREATION_AMOUNT':
+    case "CREATION_AMOUNT":
       return {
         ...state,
         amount: action.data.amount,
       };
-    case 'CREATION_CONFIG':
+    case "CREATION_FREQUENCY":
       return {
         ...state,
-        config: action.data.config,
+        frequency: action.data.frequency,
       };
-    case 'CREATION_DATE':
+    case "CREATION_DATE":
       return {
         ...state,
         date: action.data.date,
       };
-    case 'CREATION_CONFIRMATION_DATE':
+    case "PICK_TURNS_MANUAL":
       return {
         ...state,
-        confirmationDate: action.data.date,
+        pickTurnsManual: action.data.pickTurnsManual,
       };
-    case 'CREATION_PAYMENT_DATE':
+    case "NEW_NUMBER_ASSIGNED": {
+      const { userData } = action.data;
       return {
         ...state,
-        paymentDate: action.data.date,
+        assignedNumbers: [...state.assignedNumbers, userData],
       };
-    case 'CLEAR_STORE':
+    }
+    case "REMOVE_ASSIGNED_NUMBER": {
+      const { number } = action.data;
+      const newAssignedNumbers = state.assignedNumbers.filter(
+        e => e.number !== number
+      );
       return {
         ...state,
-        name: '',
-        amount: 0,
-        config: {},
-        participants: [],
-        date: '',
-        confirmationDate: '',
-        paymentDate: '',
+        assignedNumbers: newAssignedNumbers,
       };
-    case 'CREATION_PARTICIPANTS':
+    }
+    case "CREATION_TURNS":
+      return {
+        ...state,
+        turns: action.data.turns,
+      };
+    case "COMPLETED_PARTICIPANTS_SECTION":
+      return {
+        ...state,
+        completedParticipantsSection: true,
+      };
+    case "LOGOUT":
+    case "CLEAR_STORE":
+      return defaultState;
+    case "CREATION_PARTICIPANTS":
       return {
         ...state,
         participants: action.data.participants,
       };
-    case 'CREATEROUND_REQUEST_START':
+    case "CREATEROUND_REQUEST_START":
       return {
         ...state,
-        request: {loading: true},
+        request: { loading: true },
       };
-    case 'CREATEROUND_REQUEST_SUCCEEDED':
+    case "CREATEROUND_REQUEST_SUCCEEDED":
       return {
         ...state,
-        request: {loading: false, error: null, createdRound: action.payload},
+        request: { loading: false, error: null, createdRound: action.payload },
       };
-    case 'CREATEROUND_REQUEST_FAILED':
+    case "CREATEROUND_REQUEST_FAILED":
       return {
         ...state,
-        request: {loading: false, error: action.payload, createdRound: null},
+        request: { loading: false, error: action.payload, createdRound: null },
       };
-
+    case "START_EDITING_ROUND":
+      return {
+        ...state,
+        ...action.data.round,
+      };
     default:
       return state;
   }

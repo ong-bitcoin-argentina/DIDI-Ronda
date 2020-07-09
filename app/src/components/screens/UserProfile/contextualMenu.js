@@ -1,92 +1,147 @@
-import React from 'react';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import { Icon, View, Text } from 'native-base';
-import { Alert } from 'react-native'
-import {connect} from 'react-redux';
-import * as roundsActions from '../../../actions/rounds';
+import React, { useState, useEffect } from "react";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import { Icon, Text } from "native-base";
+import { StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import * as roundsActions from "../../../actions/rounds";
 
-import colors from '../../components/colors';
+import colors from "../../components/colors";
+import RoundPopUp from "../../components/RoundPopUp";
 
 const ContextualMenu = props => {
+  const [popUp, setPopUp] = useState(null);
 
-  const { participant, remove_participant, removeParticipant, remove_clean } = props;
+  const {
+    participant,
+    acceptInvitationReq,
+    invitation,
+    cleanInvitation,
+  } = props;
 
-  const removeParticipantHandler = () => {
+  // Hooks
+  const [acceptPending, setAcceptPending] = useState([]);
 
-    Alert.alert(
-      'Eliminar participante de la ronda',
-      `Realmente quieres eliminar a ${ participant.user.name } de la ronda?`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
+  const alertModal = (
+    title,
+    error,
+    positive = null,
+    negative = null,
+    icon = null
+  ) => {
+    const message = {
+      titleText: title,
+      positive: () => {
+        if (positive) positive();
+        setPopUp(null);
+      },
+      negative: negative
+        ? () => {
+            negative();
+            setPopUp(null);
+          }
+        : null,
+      icon,
+    };
+    setPopUp(message);
+  };
+
+  useEffect(() => {
+    setAcceptPending(participant.acepted === null);
+  }, []);
+
+  useEffect(() => {
+    if (!invitation.loading && invitation.round && invitation.error === null) {
+      const icon = (
+        <Icon type="MaterialIcons" name="check-circle" style={styles.icon} />
+      );
+      alertModal(
+        `Participante aceptado con exito`,
+        false,
+        () => {
+          setAcceptPending(false);
+          cleanInvitation();
         },
-        {
-          text: 'OK', 
-          onPress: () => remove_participant( participant._id, participant.round )
-        },
-      ],
-      {cancelable: false},
-    );
-
-  }
-
-  if( removeParticipant.error !== null ){
-    const errorMsg = removeParticipant.error.error.response.data.error;
-    let customErrorMsg = "";
-    // Error list
-    switch ( errorMsg ) {
-        case "Cant remove participants from started round":
-            customErrorMsg = "No se puede eliminar participantes de una ronda ya iniciada.";
-            break;
-        case "Cant remove round admin":
-            customErrorMsg = "No puedes eliminar al administrador de la ronda.";
-            break;
-        default:
+        null,
+        icon
+      );
     }
-    remove_clean();
-    Alert.alert(`Hubo un error. ${customErrorMsg}`);
-  } else {
-      const round = removeParticipant.round;
-      if( round !== null ){
-          Alert.alert('Eliminado con éxito');
-          remove_clean();
-          props.navigation.navigate('RoundDetail', {'_id': round.data.id} )
-      }
-  }
 
+    if (!invitation.loading && invitation.error !== null) {
+      const icon = (
+        <Icon type="MaterialIcons" name="warning" style={styles.icon} />
+      );
+      alertModal(
+        `Hubo un error. Intentalo nuevamente.`,
+        false,
+        () => {
+          cleanInvitation();
+        },
+        null,
+        icon
+      );
+    }
+  }, [invitation]);
 
-  return (
-    <Menu>
-      <MenuTrigger>
-        <View style={{paddingRight: 20}}>
-          <Icon name="md-more" style={{color: 'white'}} />
-        </View>
-      </MenuTrigger>
-      <MenuOptions>
-        <MenuOption onSelect={ () => removeParticipantHandler() }>
-          <Text style={{fontSize: 16, color: colors.gray}}>Eliminar</Text>
-        </MenuOption>
-      </MenuOptions>
-    </Menu>
-  );
+  const acceptInvitation = () => {
+    acceptInvitationReq(participant._id, participant.round);
+  };
+
+  if (acceptPending)
+    return (
+      <Menu>
+        {popUp && <RoundPopUp {...popUp} visible />}
+        <MenuTrigger
+          style={{
+            width: 50,
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Icon name="md-more" style={{ color: "white" }} />
+        </MenuTrigger>
+        <MenuOptions>
+          <MenuOption onSelect={() => acceptInvitation()}>
+            <Text style={{ fontSize: 16, color: colors.gray }}>
+              Aceptar invitacion
+            </Text>
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
+    );
+  return null;
 };
 
+const styles = StyleSheet.create({
+  icon: {
+    fontSize: 60,
+    color: colors.mainBlue,
+  },
+});
+
 const mapStateToProps = state => {
-    return {
-        removeParticipant: state.rounds.removeParticipant,
-    };
+  return {
+    invitation: state.participant.invitation,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        remove_participant: ( idParticipant, roundId ) => {
-            dispatch( roundsActions.removeParticipant( idParticipant, roundId ) );
-        },
-        remove_clean: () => {
-            dispatch( roundsActions.removeClean() );
-        },
-    };
+  return {
+    acceptInvitationReq: (idParticipant, roundId) => {
+      dispatch(roundsActions.acceptInvitation(idParticipant, roundId));
+    },
+    cleanInvitation: () => {
+      dispatch(roundsActions.invitationClean());
+    },
+  };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )(ContextualMenu);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ContextualMenu);

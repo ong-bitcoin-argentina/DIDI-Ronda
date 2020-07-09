@@ -1,72 +1,78 @@
-import React from 'react';
-import {StyleSheet, Image} from 'react-native';
-import {Icon, Text} from 'native-base';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { Icon, Text } from "native-base";
 import {
   createBottomTabNavigator,
-  createStackNavigator,
   createAppContainer,
   createSwitchNavigator,
-} from 'react-navigation';
-import Colors from '../colors.js';
-import Tutorial from '../../screens/tutorial/Tutorial.js';
-import Home from './MainNavigation';
-import RoundsList from '../../screens/rounds';
-import Auth from '../../screens/onboarding';
-import LoadingAuth from '../../screens/onboarding/LoadingAuth.js';
+} from "react-navigation";
+import Colors from "../colors";
+import Tutorial from "../../screens/tutorial/Tutorial";
+import Home from "./MainNavigation";
+import RoundsList from "../../screens/rounds";
+import Auth from "../../screens/onboarding";
+import LoadingAuth from "../../screens/onboarding/LoadingAuth";
+import UserProfile from "../../screens/Settings/userProfile";
 
 const Main = createBottomTabNavigator(
   {
-    Inicio: {screen: Home},
+    Inicio: { screen: Home },
     Rondas: {
       screen: RoundsList,
     },
-    Notificaciones: {screen: Home},
-    Ajustes: {screen: Home},
+    Notificaciones: { screen: Home },
+    Ajustes: { screen: UserProfile },
   },
   {
-    initialRouteName: 'Rondas',
-    defaultNavigationOptions: ({navigation}) => ({
-      tabBarLabel: ({focused}) => {
-        const {routeName} = navigation.state;
+    initialRouteName: "Rondas",
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarLabel: ({ focused }) => {
+        const { routeName } = navigation.state;
         let label;
         switch (routeName) {
-          case 'Inicio':
-            return (label = focused ? (
-              <Text style={styles.tabText}>Inicio</Text>
-            ) : null);
-          case 'Rondas':
-            return (label = focused ? (
+          case "Inicio":
+            label = focused ? <Text style={styles.tabText}>Inicio</Text> : null;
+            break;
+          case "Rondas":
+            label = focused ? (
               <Text style={styles.tabText}>Mis Rondas</Text>
-            ) : null);
-          case 'Notificaciones':
-            return (label = focused ? (
+            ) : null;
+            break;
+          case "Notificaciones":
+            label = focused ? (
               <Text style={styles.tabText}>Notificaciones</Text>
-            ) : null);
-          case 'Ajustes':
-            return (label = focused ? (
-              <Text style={styles.tabText}>Austes</Text>
-            ) : null);
+            ) : null;
+            break;
+          case "Ajustes":
+            label = focused ? (
+              <Text style={styles.tabText}>Ajustes</Text>
+            ) : null;
+            break;
+          default:
+            label = null;
         }
         return label;
       },
-      tabBarIcon: ({f, tintColor}) => {
-        const {routeName} = navigation.state;
+      tabBarIcon: ({ tintColor }) => {
+        const { routeName } = navigation.state;
         let iconName;
         let iconFamily = null;
         switch (routeName) {
-          case 'Inicio':
+          case "Inicio":
             iconName = `md-home`;
             break;
-          case 'Rondas':
-            iconName = 'filter-tilt-shift';
-            iconFamily = 'MaterialIcons';
+          case "Rondas":
+            iconName = "filter-tilt-shift";
+            iconFamily = "MaterialIcons";
             break;
-          case 'Notificaciones':
+          case "Notificaciones":
             iconName = `perm-contact-calendar`;
-            iconFamily = 'MaterialIcons';
+            iconFamily = "MaterialIcons";
             break;
-          case 'Ajustes':
+          case "Ajustes":
             iconName = `md-settings`;
+            break;
+          default:
             break;
         }
         return (
@@ -74,21 +80,21 @@ const Main = createBottomTabNavigator(
             name={iconName}
             type={iconFamily}
             size={20}
-            style={{color: tintColor, marginTop: 5}}
+            style={{ color: tintColor, marginTop: 5 }}
           />
         );
       },
     }),
 
     tabBarOptions: {
-      activeTintColor: 'white',
+      activeTintColor: "white",
       inactiveTintColor: Colors.inactiveBlue,
 
       style: {
         backgroundColor: Colors.mainBlue,
       },
     },
-  },
+  }
 );
 
 const MainContainer = createSwitchNavigator(
@@ -97,7 +103,7 @@ const MainContainer = createSwitchNavigator(
       screen: Auth,
     },
     LoadingAuth: {
-      screen: LoadingAuth
+      screen: LoadingAuth,
     },
     Tuto: {
       screen: Tutorial,
@@ -107,18 +113,18 @@ const MainContainer = createSwitchNavigator(
     },
   },
   {
-    initialRouteName: 'LoadingAuth',
-    headerMode: 'none',
+    initialRouteName: "LoadingAuth",
+    headerMode: "none",
     defaultNavigationOptions: {
       gesturesEnabled: false,
     },
-  },
+  }
 );
 
 const styles = StyleSheet.create({
   tabText: {
-    textAlign: 'center',
-    color: '#fff',
+    textAlign: "center",
+    color: "#fff",
     fontSize: 11,
   },
 });
