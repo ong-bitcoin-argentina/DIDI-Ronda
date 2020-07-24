@@ -8,11 +8,11 @@ const round_manager = require("../managers/round");
 const {
   requestedShiftNotification,
   participantRequestPaymentNoti,
+  numberPayedToUser,
 } = require("../helpers/notifications/notifications");
 
 exports.byId = async req => {
   const { roundId, participantId } = req.params;
-
   const participant = await participant_manager.findById(participantId);
   if (participant === null) throw new customError("Participant not exist");
 
@@ -24,8 +24,9 @@ exports.byId = async req => {
 };
 
 exports.acceptRound = async req => {
-  const { roundId, participantId } = req.params;
+  const { roundId } = req.params;
   const { username } = req.body;
+  const { participantId } = req.middlewareData;
 
   // Find participant
   const participant = await participant_manager.findById(participantId);
@@ -46,8 +47,9 @@ exports.acceptRound = async req => {
 };
 
 exports.rejectRound = async req => {
-  const { roundId, participantId } = req.params;
+  const { roundId } = req.params;
   const { username } = req.body;
+  const { participantId } = req.middlewareData;
 
   if (typeof username !== "string" || username === "" || !username)
     throw new customError("Username is invalid");
@@ -70,8 +72,9 @@ exports.rejectRound = async req => {
 };
 
 exports.requestPayment = async req => {
-  const { roundId, participantId } = req.params;
+  const { roundId } = req.params;
   const { username } = req.body;
+  const { participantId } = req.middlewareData;
 
   if (typeof username !== "string" || username === "" || !username)
     throw new customError("Username is invalid");
@@ -89,8 +92,9 @@ exports.requestPayment = async req => {
 };
 
 exports.requestNumbers = async req => {
-  const { roundId, participantId } = req.params;
+  const { roundId } = req.params;
   const { numbers } = req.body;
+  const { participantId } = req.middlewareData;
 
   // Find participant
   const participant = await participant_manager.findById(participantId);
@@ -111,10 +115,6 @@ exports.requestNumbers = async req => {
   if (requestedShift.length !== numbers.length)
     throw new customError("Numbers not exist");
 
-  // Check numbers status
-  // const availableShifts = requestedShift.filter( shift => (shift.status !== "completed" && shift.status !== "current" ) )
-  // if( availableShifts.length !== numbers.length ) throw new customError("Numbers are completed or current");
-
   // Remove participant from every shift
   for (let i = 0; i < round.shifts.length; i++) {
     // Get shifts where participant is assigned
@@ -129,12 +129,6 @@ exports.requestNumbers = async req => {
   }
 
   // Push requested numbers to shift (FOR LATER)
-  // numbers.forEach( number => {
-  //     // Only push if not exist
-  //     const exist = round.shifts.find( shift => shift.number === number ).requests.includes( participantId );
-  //     if( !exist )
-  //         round.shifts.find( shift => shift.number === number ).requests.push( participant );
-  // });
 
   // FOR TESTING PURPOSE
   // Push participant
@@ -161,10 +155,10 @@ exports.requestNumbers = async req => {
 };
 
 // Pay to participant
-exports.participantChargeNumber = async req => {
+exports.participantChargeNumber = async (req, participantId = null) => {
   const { roundId, number } = req.params;
-  const { participantId } = req.body;
-
+  // Only the admin passes participantId, everyone else uses the one from the middleware
+  const finalParticipantId = participantId || req.middlewareData.participantId;
   // Find round
   const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("Round not exist");
@@ -179,7 +173,7 @@ exports.participantChargeNumber = async req => {
     throw new customError("Shift must be 'current' for mark as completed");
 
   // Check shift includes participantId
-  if (!shift.participant.includes(participantId))
+  if (!shift.participant.includes(finalParticipantId))
     throw new customError("Participant is not on the shift");
 
   // Mark shift as completed
@@ -193,7 +187,7 @@ exports.participantChargeNumber = async req => {
       e => e.number === parseInt(number) + 1
     ).status = nextStatus;
 
-  // TODO: participant notifications
+  await numberPayedToUser(round, number, finalParticipantId);
 
   // Save changes to round
   const updatedRound = await round_manager.save(round);
@@ -201,3 +195,6 @@ exports.participantChargeNumber = async req => {
 
   return updatedRound;
 };
+
+exports.adminParticipantChargeNumber = async req =>
+  this.participantChargeNumber(req, req.body.participantId);

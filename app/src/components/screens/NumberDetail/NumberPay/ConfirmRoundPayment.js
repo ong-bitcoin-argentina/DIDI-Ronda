@@ -19,6 +19,7 @@ const ConfirmRoundPayment = props => {
     participant,
     closeRound,
     nextShiftParticipants,
+    allParticipantsPayedNumber = false,
   } = props;
 
   const [drawPopUp, setDrawPopUp] = useState(false);
@@ -48,6 +49,14 @@ const ConfirmRoundPayment = props => {
     }
   };
 
+  const payWithoutWarning = `¿Confirmás que le pagarás la Ronda a ${participant.user.name} ${adminStr}?`;
+  const payWarning = `Algunos aportes no han sido registrados, si no se registran antes del pago, no se podran registrar despues\n¿Confirmás que le pagarás la Ronda a ${participant.user.name} ${adminStr} de todas maneras? `;
+
+  const iconName = allParticipantsPayedNumber ? "filter-tilt-shift" : "warning";
+  const bodyText = allParticipantsPayedNumber ? payWithoutWarning : payWarning;
+  const iconColor = allParticipantsPayedNumber
+    ? colors.mainBlue
+    : colors.yellow;
   return (
     <React.Fragment>
       {confirmPopUp && (
@@ -58,8 +67,8 @@ const ConfirmRoundPayment = props => {
           icon={
             <Icon
               type="MaterialIcons"
-              name="filter-tilt-shift"
-              style={styles.popupIcon}
+              name={iconName}
+              style={{ ...styles.popupIcon, color: iconColor }}
             />
           }
           positive={() => payConfirmCheck()}
@@ -70,9 +79,7 @@ const ConfirmRoundPayment = props => {
           negativeTitle="Cancelar"
         >
           <View style={styles.childContainer}>
-            <Text
-              style={styles.textChilds}
-            >{`¿Confirmás que le pagarás la Ronda a ${participant.user.name} ${adminStr}?`}</Text>
+            <Text style={styles.textChilds}>{bodyText}</Text>
             <View style={styles.avatarContainer}>
               <Avatar path={participant.user.picture} size={60} />
             </View>

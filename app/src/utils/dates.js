@@ -36,7 +36,7 @@ export const getFormattedDate = date => {
 export const getHoursAndMinutes = date => {
   let dateAux = date;
   if (!isDate(dateAux)) dateAux = new Date(date);
-  const minutes = dateAux.getMinutes();
+  const minutes = String(dateAux.getMinutes()).padStart(2, "0");
   const hours = dateAux.getHours();
   return `${hours}:${minutes}`;
 };

@@ -139,7 +139,8 @@ export const createRound = async (
 
 export const updateRound = async data => {
   try {
-    await apiCall("put", "/user/round", data);
+    const url = `/admin/round/${data.id}`;
+    await apiCall("put", url, data);
     return { error: false };
   } catch (error) {
     return { error: true };

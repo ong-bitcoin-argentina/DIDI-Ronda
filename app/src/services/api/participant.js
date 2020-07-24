@@ -44,11 +44,17 @@ export const requestNumbers = async (idParticipant, roundId, numbers) => {
   }
 };
 
-export const payRound = async (roundId, number, participant) => {
+export const payRound = async (
+  roundId,
+  number,
+  participant,
+  useAdminEndpoint = false
+) => {
   try {
+    const basePath = useAdminEndpoint ? "admin" : "participant";
     return await apiCall(
       "post",
-      `/participant/round/${roundId}/number/${number}/pay`,
+      `/${basePath}/round/${roundId}/number/${number}/pay`,
       {
         participantId: participant,
       }

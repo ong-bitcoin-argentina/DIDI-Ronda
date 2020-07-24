@@ -8,6 +8,12 @@ const sign = payload => {
   });
 };
 
+/**
+ * This method is a middleware to check the token existence!
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 const check = (req, res, next) => {
   let token = req.headers["authorization"];
 
@@ -29,4 +35,22 @@ const check = (req, res, next) => {
   }
 };
 
-module.exports = { sign, check };
+const getUsernameFromToken = req => {
+  let token = req.headers["authorization"];
+  let username = "";
+  if (token && token.startsWith("Bearer ")) {
+    // Remove Bearer from string
+    token = token.slice(7, token.length);
+
+    jsonwebtoken.verify(token, process.env.JWT_SECRET, (error, decode) => {
+      if (error) {
+        req.jwt = null;
+        return false;
+      }
+     return username = decode.username;
+    });
+  }
+  return username;
+};
+
+module.exports = { sign, check, getUsernameFromToken };

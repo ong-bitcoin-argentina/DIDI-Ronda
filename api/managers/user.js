@@ -8,6 +8,16 @@ exports.byUsername = async username => {
     .catch(err => ({ error: `${username}: ${err}` }));
 };
 
+exports.fullByUsername = async username => {
+  return await User.findOne({
+    username: username,
+  }).select("+password").exec()
+    .then(user => user)
+    .catch(err => ({ error: `${username}: ${err}` }));
+};
+
+
+
 exports.byId = async id => {
   let user = null;
   try {

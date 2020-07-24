@@ -10,7 +10,6 @@ const {
   firstPaymentDate,
   username,
   newToken,
-  id,
 } = require("../helpers/validators");
 
 // CONTROLLERS
@@ -38,14 +37,6 @@ router.post(
   [name, amount, recurrence, startDate, limitDate, firstPaymentDate],
   validation,
   round_controller.create
-);
-
-// Update an existing round
-router.put(
-  "/round",
-  [name, amount, recurrence, startDate, id],
-  validation,
-  round_controller.update
 );
 
 // Update firebase token

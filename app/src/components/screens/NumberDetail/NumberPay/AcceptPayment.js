@@ -70,7 +70,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     pay_round: (roundId, number, participantId) => {
-      dispatch(roundsActions.payRound(roundId, number, participantId));
+      dispatch(roundsActions.payRound(roundId, number, participantId, true));
     },
   };
 };

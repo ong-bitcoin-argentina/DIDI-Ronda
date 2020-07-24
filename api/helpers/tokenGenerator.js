@@ -1,2 +1,7 @@
+const crypto = require("crypto");
+
 //This generates a unique token to use wherever we want
-exports.generate = () => Math.floor(Math.random() * 90000) + 10000;
+exports.generate = () => {
+const buff = crypto.randomBytes(4);
+return parseInt(buff.toString('hex'),16);
+}

@@ -11,6 +11,7 @@ const User = require("../models/user");
 // MANAGERS
 const user_manager = require("../managers/user");
 const participant_manager = require("../managers/participant");
+const blacklisted_password_manager = require("../managers/blacklisted_password");
 
 const { customError } = require("../helpers/errorHandler");
 
@@ -20,11 +21,12 @@ const { normalizePhone } = require("../helpers/phones");
 //LOGIN
 exports.login = async (username, password) => {
   // Find user
-  const user = await user_manager.byUsername(username);
-  if (user === null) throw new customError("User not exists");
+  const user = await user_manager.fullByUsername(username);
+  const genericFailure = new customError("User and/or password incorrect");
+  if (user === null) throw genericFailure;
 
   const isSamePassword = await user.comparePassword(password);
-  if (!isSamePassword) throw new customError("Wrong password");
+  if (!isSamePassword) throw genericFailure;
 
   const jwtToken = JWT.sign({ username });
 
@@ -50,6 +52,11 @@ exports.register = async (username, password, name, token, nick) => {
   const userExists = await user_manager.byUsername(username);
 
   if (userExists !== null) throw new customError("That user already exists");
+
+  const usesBlacklistedPassword = await blacklisted_password_manager.checkIfPasswordExists(
+    password
+  );
+  if (usesBlacklistedPassword) throw new customError("Password is insecure");
 
   if (SC_FEATURES) {
     const rnsNickname = await blockchain.nickNameAvailable(nick);
@@ -208,9 +215,21 @@ exports.phoneCode = async (username, phone, country, token) => {
 exports.forgotNewPassword = async (username, password, token) => {
   const user = await user_manager.byUsername(username);
 
-  if (user === null) throw new customError("That user already exists");
+  // Since the security audit we do not inform about the existence of the user
+  // We just return an error indicating that it is not possible to perform a reset.
+  const genericUnable = new customError("User not enabled to reset password");
+
+  if (user === null) throw genericUnable;
+  if (!token) throw new customError("Token not provided");
+  if (!user.forgotToken) throw genericUnable;
+  const usesBlacklistedPassword = await blacklisted_password_manager.checkIfPasswordExists(
+    password
+  );
+  if (usesBlacklistedPassword) throw new customError("Password is insecure");
 
   if (user.forgotToken === token) {
+    // Password is hashed in the 'pre' save method of the schema
+    // This is used to centralize changes in the hashing
     user.password = password;
     user.forgotToken = null;
     await user.save();
@@ -221,13 +240,11 @@ exports.forgotNewPassword = async (username, password, token) => {
   }
 };
 
-//SETTING NEW PASSWORD
 exports.isOwner = async username => {
   const user = await user_manager.byUsername(username);
   if (user === null) throw new customError("The user not exist");
-  const dencryptedPK = crypto.decipher(user.walletAddress);
-  console.log(user);
-  const walletResult = await blockchain.isOwner(user.nick, dencryptedPK);
+  const decryptedPK = crypto.decipher(user.walletAddress);
+  const walletResult = await blockchain.isOwner(user.nick, decryptedPK);
 
   return { confirmed: walletResult };
 };

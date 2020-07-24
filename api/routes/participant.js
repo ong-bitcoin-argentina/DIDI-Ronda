@@ -78,7 +78,7 @@ router.post(
   participant_controller.chargeNumber
 );
 
-// The current number asks to be payed to hte admin
+// The current number asks to be payed to the admin
 router.post(
   "/round/:roundId/participant/:participantId/requestPayment",
   [objectId("roundId"), objectId("participantId"), username],

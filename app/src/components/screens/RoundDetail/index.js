@@ -17,6 +17,16 @@ const RoundDetail = props => {
   const reduxRoundObject =
     requestRounds.list && requestRounds.list.find(e => e._id === roundId);
 
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const newAuth = await getAuth();
+      setAuth(newAuth);
+      await refreshRoundData(roundId);
+      setisLoaded(true);
+    };
+    checkAdmin();
+  }, []);
+
   if (!reduxRoundObject.isConfirmed)
     return (
       <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
@@ -43,16 +53,6 @@ const RoundDetail = props => {
         <DetailRootModal />
       </View>
     );
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const newAuth = await getAuth();
-      setAuth(newAuth);
-      await refreshRoundData(roundId);
-      setisLoaded(true);
-    };
-    checkAdmin();
-  }, []);
 
   const renderRound = () => {
     if (!reduxRoundObject) {

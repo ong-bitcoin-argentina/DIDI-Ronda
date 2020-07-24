@@ -14,6 +14,7 @@ const {
   inviteRound,
   completedRound,
   asignedShift,
+  numberPayedToUser,
 } = require("../helpers/notifications/notifications");
 
 // PHONE FORMAT
@@ -274,16 +275,11 @@ exports.reSendInvite = async req => {
 };
 
 exports.delete = async req => {
-  const { id } = req.params;
-  const { username } = req.body;
+  const { roundId } = req.params;
 
   // Find round
-  const round = await round_manager.findById(id);
+  const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("Round not exist");
-
-  // Check admin === username
-  if (round.admin.username !== username)
-    throw new customError("Only admin can delete a round");
 
   // Check round not started
   if (round.start) throw new customError("Only can delete not started rounds");
@@ -304,7 +300,7 @@ exports.delete = async req => {
     deleteRound.ok === 1 &&
     deleteRound.deletedCount === 1
   ) {
-    return { success: `${id} deleted!` };
+    return { success: `${roundId} deleted!` };
   } else {
     throw new customError("No rounds deleted");
   }
@@ -379,17 +375,12 @@ exports.participantReasignNumber = async req => {
     participantId,
     targetParticipantId,
     number,
-    username,
     roundId,
   } = req.body;
 
   // Find round
   const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("Round not exist");
-
-  // Check username is round admin
-  if (round.admin.username !== username)
-    throw new customError("Only admin can swap participants");
 
   // Find target participant
   const targetParticipant = await participant_manager.findById(
@@ -427,15 +418,11 @@ exports.participantReasignNumber = async req => {
 
 exports.participantRemove = async req => {
   const { roundId, participantId } = req.params;
-  const { username } = req.body;
 
   // Find round
   const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("Round not exist");
 
-  // Check username is round admin
-  if (round.admin.username !== username)
-    throw new customError("Only admin can remove participants");
 
   // Check round start = false
   if (round.start)
@@ -465,7 +452,7 @@ exports.participantRemove = async req => {
 
 exports.participantPayNumber = async req => {
   const { roundId, number } = req.params;
-  const { participantId } = req.body;
+  const { participantId } = req.middlewareData;
 
   // Find round
   const round = await round_manager.findById(roundId);
@@ -581,6 +568,7 @@ exports.completeShift = async req => {
     throw new customError("Shift must be 'current' for mark as ompleted");
 
   // Mark shift as completed
+  const participantId = round.shifts.find(e => e.number === parseInt(number)).participant[0]._id.toString();
   round.shifts.find(e => e.number === parseInt(number)).status = "completed";
 
   // If exist next shift
@@ -606,6 +594,7 @@ exports.completeShift = async req => {
   }
 
   // Save changes to round
+  await numberPayedToUser(round, number, participantId);
   const updatedRound = await round_manager.save(round);
   if (updatedRound === null) throw new customError("Error saving payment");
 

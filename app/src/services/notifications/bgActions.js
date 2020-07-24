@@ -27,6 +27,8 @@ export const notificationListener = () => {
         .android.setChannelId("ronda")
         .android.setVibrate(1000);
     }
+    const { data } = notification;
+    if (data && data.reloadRounds) store.dispatch(roundsActions.loadRounds());
 
     firebase.notifications().displayNotification(newNotification);
   });

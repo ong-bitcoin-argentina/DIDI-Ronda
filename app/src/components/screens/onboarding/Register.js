@@ -15,6 +15,10 @@ import { Sae } from "react-native-textinput-effects";
 import AsyncStorage from "@react-native-community/async-storage";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/auth";
+import {
+  passwordChecker,
+  passwordErrorsMessages,
+} from "../../../utils/password";
 
 const Register = props => {
   const [password, setPassword] = useState("");
@@ -22,7 +26,7 @@ const Register = props => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [nick, setNick] = useState("");
-  const [passwordsStatus, setPasswordStatus] = useState("white");
+
   const {
     navigation,
     registrationFinished,
@@ -32,36 +36,9 @@ const Register = props => {
   } = props;
 
   useEffect(() => {
-    passwordValidation();
-  }, [verify]);
-
-  useEffect(() => {
-    if (errorMessage) {
-      Toast.show({
-        text:
-          "El codigo es incorrecto, el email ya fue registrado o el nickname esta en uso",
-        position: "top",
-        type: "warning",
-      });
-    }
+    if (errorMessage) showWarningToast(errorMessage);
   }, [errorMessage]);
 
-  const passwordValidation = () => {
-    if (verifyPasswords()) {
-      setPasswordStatus("white");
-    } else {
-      setPasswordStatus(colors.yellow);
-    }
-  };
-  const verifyPasswords = () => {
-    return (
-      password.trim() !== "" &&
-      verify.trim() !== "" &&
-      password.length > 5 &&
-      verify.length > 5 &&
-      password === verify
-    );
-  };
   const validateEmail = () => {
     // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -93,6 +70,14 @@ const Register = props => {
   const returnToLoginAndClear = () => {
     finish();
     return returnToLogin();
+  };
+
+  const showWarningToast = text => {
+    return Toast.show({
+      text,
+      position: "top",
+      type: "warning",
+    });
   };
 
   const disclaimerBlockChain = () => {
@@ -130,48 +115,25 @@ const Register = props => {
   };
 
   const _onRegister = async () => {
-    if (password.trim().length < 6) {
-      Toast.show({
-        text: "La contraseña tiene que tener almenos 6 caracteres",
-        position: "top",
-        type: "warning",
-      });
-      return false;
-    }
-    if (nick.trim().length < 5) {
-      Toast.show({
-        text: "El Nickname tiene que tener almenos 5 caracteres",
-        position: "top",
-        type: "warning",
-      });
-      return false;
-    }
-    if (verifyPasswords()) {
-      if (!validateEmail() && name.length > 1 && nick.length > 1) {
-        Toast.show({
-          text: "Debes utilizar un email valido",
-          position: "top",
-          type: "warning",
-        });
-      } else {
-        const fcmToken = await AsyncStorage.getItem("fcmToken");
+    if (nick.trim().length < 5)
+      return showWarningToast("El nickname debe tener 5 o mas caracteres");
 
-        return props.createUser(
-          email.trim(),
-          password,
-          name.trim(),
-          fcmToken,
-          nick.trim()
-        );
-      }
-    } else {
-      Toast.show({
-        text: "Las contraseñas deben ser identicas",
-        position: "top",
-        type: "warning",
-      });
-    }
-    return null;
+    const passwordError = passwordChecker(password, verify);
+    if (passwordError)
+      return showWarningToast(passwordErrorsMessages[passwordError]);
+
+    if (!validateEmail() && name.length > 1)
+      return showWarningToast("Debes utilizar un email valido");
+
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+
+    return props.createUser(
+      email.trim(),
+      password,
+      name.trim(),
+      fcmToken,
+      nick.trim()
+    );
   };
 
   if (registrationFinished) return disclaimerBlockChain();
@@ -236,7 +198,6 @@ const Register = props => {
             onChangeText={_onChangePassword}
             iconClass={FontAwesomeIcon}
             iconName="pencil"
-            iconColor={passwordsStatus}
             secureTextEntry
             inputPadding={16}
             labelHeight={24}
@@ -252,7 +213,6 @@ const Register = props => {
             onChangeText={_onChangeVerify}
             iconClass={FontAwesomeIcon}
             iconName="pencil"
-            iconColor={passwordsStatus}
             secureTextEntry
             value={verify}
             inputPadding={16}

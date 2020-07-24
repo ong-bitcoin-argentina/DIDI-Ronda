@@ -66,9 +66,13 @@ const NumberPay = props => {
     : null;
 
   fullParticipant.id = fullParticipant._id;
-
+  const usersThatPaidShiftMap = {};
   const initialTab = navigation.getParam("initialTab", 0);
   const shift = round.shifts.find(s => s.number === number);
+  shift.pays.forEach(p => {
+    usersThatPaidShiftMap[p.participant] = p.participant;
+  });
+  const allParticipantsPaid = round.participants.length === Object.keys(usersThatPaidShiftMap).length;
   const participantPaid =
     shift.pays.filter(p => {
       return p.participant === fullParticipant.id;
@@ -171,6 +175,7 @@ const NumberPay = props => {
                       !isReceivingOrMakingPayment && (
                         <ConfirmRoundPayment
                           loading={loading}
+                          allParticipantsPayedNumber={allParticipantsPaid}
                           participant={fullParticipant}
                           round={round}
                           nextShiftParticipants={nextShiftParticipants}
@@ -323,7 +328,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     pay_round: (roundId, number, participantId) => {
-      dispatch(roundsActions.payRound(roundId, number, participantId));
+      dispatch(roundsActions.payRound(roundId, number, participantId, true));
     },
     openRootModal: (message, icon) =>
       dispatch(openRoundDetailRootModal(message, icon)),

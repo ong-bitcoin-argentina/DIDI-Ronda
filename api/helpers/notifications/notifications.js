@@ -27,6 +27,7 @@ const {
   roundStartFailed,
   registerUserCompleted,
   registerUserFailed,
+  numberPayedToUser,
 } = require("./messages");
 
 exports.inviteRound = async round => {
@@ -401,6 +402,7 @@ exports.roundCompletedProcessing = async round => {
   const { token } = admin;
 
   const data = {
+    reloadRounds: "true",
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
@@ -597,4 +599,25 @@ exports.registerUserProcessing = async (token, email, success) => {
 
   // Send notifications
   await createNotification([token], "La ronda", message, null);
+};
+
+exports.numberPayedToUser = async (round, number, participantId) => {
+  const { admin, name: roundName } = round;
+  const participant = round.participants.find(p => p.id === participantId);
+  // Get admin token
+  const { name } = admin;
+  const { token } = participant.user;
+  const data = {
+    action: JSON.stringify({
+      routeName: "RoundDetail",
+      params: {
+        _id: round._id,
+      },
+    }),
+  };
+
+  const message = numberPayedToUser(name, roundName, number);
+
+  // Send notifications
+  await createNotification([token], "La ronda", message, data);
 };

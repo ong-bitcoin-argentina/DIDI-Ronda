@@ -17,7 +17,7 @@ const AdminPayNumber = props => {
     amount,
     roundName,
     loading,
-    pay_round,
+    pay_round: payRoundFn,
     participantPayRound,
   } = props;
 
@@ -34,7 +34,7 @@ const AdminPayNumber = props => {
 
   // Methods
   const payNumber = () => {
-    pay_round(roundId, number, participantId);
+    payRoundFn(roundId, number, participantId);
     setPopUp(false);
   };
 
@@ -65,7 +65,10 @@ const AdminPayNumber = props => {
         <Spinner />
       ) : (
         !participantPayRound && (
-          <CallToAction title="Pagar" pressHandler={() => setPopUp(true)} />
+          <CallToAction
+            title="Hacer aporte"
+            pressHandler={() => setPopUp(true)}
+          />
         )
       )}
     </View>

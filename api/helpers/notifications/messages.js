@@ -115,3 +115,6 @@ exports.registerUserCompleted = email =>
 
 exports.registerUserFailed = email =>
   `El registro del usuario ${email} fallo, tienes que intentarlo nuevamente`;
+
+exports.numberPayedToUser = (admin, round, number) =>
+  `El admin ${admin} de la Ronda ${round} ha confirmado tu cobro del número ${number}`;

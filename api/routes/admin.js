@@ -5,36 +5,19 @@ const {
   objectId,
   username,
   phone,
+  name,
   number,
   nextParticipants,
+  amount,
+  recurrence,
+  startDate,
+  id
 } = require("../helpers/validators");
 const routesMiddleware = require("../middleware/routesMiddleware");
 
 // CONTROLLER
 const round_controller = require("../controllers/round");
-
-// CREATE ROUTES ON ROUTER
-
-// Participant pay confirm
-router.post("/round/:id/:user/payConfirm", round_controller.test);
-
-// Round pay confirm
-router.post("/round/:id/payConfirm", round_controller.test);
-
-// Assign number to participant
-router.post("/round/:id/numberAssign", round_controller.test);
-
-// Show pending number requests
-router.get("/round/:id/numberRequests", round_controller.test);
-
-// Number draw between participants
-router.post("/round/:id/numberDraw", round_controller.test);
-
-// Invite participant to round
-router.post("/round/:id/invite", round_controller.test);
-
-// Send notification to guarantor
-router.post("/round/:id/guarantorNotification", round_controller.test);
+const participant_controller = require("../controllers/participant");
 
 // Participant swap
 router.post(
@@ -45,7 +28,17 @@ router.post(
     phone("newParticipant.phone"),
   ],
   validation,
+  routesMiddleware.admin,
   round_controller.participantSwap
+);
+
+// Update an existing round
+router.put(
+  "/round/:roundId",
+  [name, amount, recurrence, startDate, id],
+  validation,
+  routesMiddleware.admin,
+  round_controller.update
 );
 
 // Participant number reasign
@@ -53,6 +46,7 @@ router.put(
   "/round/:roundId/participant/:participantId/:number/:targetParticipantId/reasign",
   [],
   validation,
+  routesMiddleware.admin,
   round_controller.participantReasignNumber
 );
 
@@ -75,7 +69,13 @@ router.post(
 );
 
 // Delete round
-router.delete("/round/:id", [username], validation, round_controller.delete);
+    router.delete(
+      "/round/:roundId",
+      [username],
+      validation,
+      routesMiddleware.admin,
+      round_controller.delete
+    );
 
 // Start round
 router.post(
@@ -102,6 +102,16 @@ router.post(
   validation,
   routesMiddleware.admin,
   round_controller.completeShift
+);
+
+
+// Accept an user payment
+router.post(
+  "/round/:roundId/number/:number/pay",
+  [objectId("roundId"), objectId("participantId"), username, number],
+  validation,
+  routesMiddleware.admin,
+  participant_controller.adminPayNumber
 );
 
 module.exports = router;

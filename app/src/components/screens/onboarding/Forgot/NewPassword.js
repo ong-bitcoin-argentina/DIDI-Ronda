@@ -1,43 +1,41 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { View, Text, KeyboardAvoidingView, StyleSheet } from "react-native";
-import colors from "../../../components/colors";
-import { Input, Form, Item, Button, Toast, Spinner } from "native-base";
+import { Button, Toast, Spinner } from "native-base";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { Sae } from "react-native-textinput-effects";
+import colors from "../../../components/colors";
 import Success from "../Success";
 import * as actions from "../../../../actions/auth";
+import {
+  passwordChecker,
+  passwordErrorsMessages,
+} from "../../../../utils/password";
 
 const NewPassword = props => {
   const [password, setPassword] = useState("");
   const [verify, setVerify] = useState("");
   const [passwordColor, setPasswordColor] = useState("white");
-  const username = props.navigation.getParam("username", null);
-  const token = props.navigation.getParam("token", null);
+  const { navigation, loading, changed } = props;
+  const username = navigation.getParam("username", null);
+  const token = navigation.getParam("token", null);
 
-  _sendPassword = () => {
-    if (
-      password.trim() !== "" &&
-      verify.trim() !== "" &&
-      password.length > 5 &&
-      verify.length > 5 &&
-      password === verify
-    ) {
-      props.sendPassword(username, password, token);
-    } else {
-      Toast.show({
-        text: "Las contraseñas deben coincidir y ser de almenos 6 caracteres",
-        position: "top",
-        type: "warning",
-      });
-    }
+  const sendPassword = () => {
+    const passwordError = passwordChecker(password, verify);
+    if (!passwordError) return props.sendPassword(username, password, token);
+
+    return Toast.show({
+      text: passwordErrorsMessages[passwordError],
+      position: "top",
+      type: "warning",
+    });
   };
 
   useEffect(() => {
     passwordValidation();
   }, [verify]);
 
-  passwordValidation = () => {
+  const passwordValidation = () => {
     if (verifyPasswords()) {
       setPasswordColor("white");
     } else {
@@ -45,19 +43,19 @@ const NewPassword = props => {
     }
   };
 
-  verifyPasswords = () => {
+  const verifyPasswords = () => {
     return password === verify;
   };
 
-  _onChangePassword = newPassowrd => {
+  const onChangePassword = newPassowrd => {
     setPassword(newPassowrd);
   };
 
-  _onChangeVerify = newVerify => {
+  const onChangeVerify = newVerify => {
     setVerify(newVerify);
   };
 
-  _loading = () => {
+  const spinnerBody = () => {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <View style={styles.formContainer}>
@@ -69,14 +67,12 @@ const NewPassword = props => {
     );
   };
 
-  if (props.loading) {
-    return _loading();
-  }
+  if (loading) return spinnerBody();
 
-  if (props.changed) {
+  if (changed) {
     return (
       <Success
-        text={"Tu contraseña se cambió con exito!"}
+        text="Tu contraseña se cambió con exito!"
         callback={() => props.navigation.navigate("Login")}
       />
     );
@@ -96,40 +92,40 @@ const NewPassword = props => {
             Ingresa tu nueva contraseña
           </Text>
           <Sae
-            label={"Contraseña"}
-            onChangeText={_onChangePassword}
+            label="Contraseña"
+            onChangeText={onChangePassword}
             iconClass={FontAwesomeIcon}
-            iconName={"lock"}
+            iconName="lock"
             iconColor={passwordColor}
-            secureTextEntry={true}
+            secureTextEntry
             inputPadding={16}
             labelHeight={24}
             value={password}
             borderHeight={2}
             style={{ width: "80%" }}
-            autoCapitalize={"none"}
+            autoCapitalize="none"
             autoCorrect={false}
             labelStyle={{ color: "white" }}
           />
           <Sae
-            label={"Confirmar contraseña"}
-            onChangeText={_onChangeVerify}
+            label="Confirmar contraseña"
+            onChangeText={onChangeVerify}
             iconClass={FontAwesomeIcon}
-            iconName={"lock"}
+            iconName="lock"
             iconColor={passwordColor}
-            secureTextEntry={true}
+            secureTextEntry
             value={verify}
             inputPadding={16}
             labelHeight={24}
             borderHeight={2}
             style={{ width: "80%" }}
-            autoCapitalize={"none"}
+            autoCapitalize="none"
             autoCorrect={false}
             labelStyle={{ color: "white" }}
           />
 
           <Button
-            onPress={_sendPassword}
+            onPress={sendPassword}
             style={[
               styles.button,
               { width: 200, flexDirection: "row", justifyContent: "center" },

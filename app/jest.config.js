@@ -1,7 +1,7 @@
 // jest.config.js
 module.exports = {
+  presets: ["react-native"],
   testEnvironment: "node",
-  setupFilesAfterEnv: ["./test/setup.js"],
   testTimeout: 5000,
   verbose: true,
   clearMocks: true,

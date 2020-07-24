@@ -54,16 +54,15 @@ const Component = props => {
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.date}>{userPay && dateFormat(userPay.date)}</Text>
         </View>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <View style={styles.iconStatusContainer}>
-          {userPay ? <MoneyIcon /> : <ExclamationIcon />}
-          <Text style={styles.statusText}>
-            {userPay
-              ? `$ ${amountFormat(amountPerShift * shiftsQty)}`
-              : "Pendiente"}
-          </Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.iconStatusContainer}>
+            {userPay ? <MoneyIcon /> : <ExclamationIcon />}
+            <Text style={styles.statusText}>
+              {userPay
+                ? `$ ${amountFormat(amountPerShift * shiftsQty)}`
+                : "Pendiente"}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -87,23 +86,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  hashContainer: {
-    position: "absolute",
-    right: -5,
-    top: -5,
-    width: 18,
-    height: 18,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.mainBlue,
-  },
-  hashText: {
-    color: "white",
-    fontSize: 12,
+  avatarContainer: {
+    flex: 0.125,
   },
   participantData: {
-    marginLeft: 10,
+    paddingLeft: 20,
+    flex: 0.5,
   },
   name: {
     fontWeight: "bold",
@@ -116,6 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
+    flex: 0.25,
   },
   iconStatusContainer: {
     alignItems: "center",
@@ -123,23 +112,8 @@ const styles = StyleSheet.create({
     width: 70,
   },
   bookmarkContainer: {
-    marginRight: 25,
-  },
-  iconContainer: {
-    marginBottom: 8,
-    borderRadius: 10,
-    width: 20,
-    height: 20,
-    justifyContent: "center",
+    flex: 0.2,
     alignItems: "center",
-  },
-  pendentIcon: {
-    color: "white",
-    fontSize: 18,
-  },
-  notPendentIcon: {
-    color: "black",
-    fontSize: 18,
   },
   statusText: {
     fontSize: 11,

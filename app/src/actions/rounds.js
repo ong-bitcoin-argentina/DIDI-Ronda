@@ -143,14 +143,20 @@ export const assignParticipant = (idParticipant, roundId, shiftNumber) => {
   };
 };
 
-export const payRound = (roundId, number, participantId) => {
+export const payRound = (
+  roundId,
+  number,
+  participantId,
+  useAdminEndpoint = false
+) => {
   return async dispatch => {
     dispatch(startRoundLoad());
 
     const payedRound = await ParticipantService.payRound(
       roundId,
       number,
-      participantId
+      participantId,
+      useAdminEndpoint
     );
 
     if (!payedRound.error) {

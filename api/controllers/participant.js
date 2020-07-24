@@ -105,6 +105,25 @@ exports.chargeNumber = async (req, res) => {
 };
 
 /*
+    ADMIN performs the Participant pay round number
+    POST
+    /participant/round/:roundId/number/:number/charge
+*/
+exports.adminPayNumber = async (req, res) => {
+  try {
+    const data = await round_services.participantPayNumber(req, res);
+    data && data.error
+      ? res.status(200).jsonp({ error: data.error })
+      : res.status(200).jsonp(data);
+    backgroundPostRes.payNumber(data);
+  } catch (err) {
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
+};
+
+/*
     Participant requests admin to be payed
     POST
   "/round/:roundId/participant/:participantId/requestPayment",

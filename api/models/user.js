@@ -17,7 +17,7 @@ const userSchema = new Schema(
     name: { type: String, default: null },
     lastname: { type: String, default: null },
     verified: { type: Boolean, default: false },
-    password: { type: String, default: null },
+    password: { type: String, default: null, select: false },
     token: { type: String, default: null },
     verifyToken: { type: String, default: null },
     forgotToken: { type: String, default: null },
@@ -45,6 +45,9 @@ userSchema.virtual("picture").get(function() {
   }
 });
 
+
+// Before saving the user in any case, we hash the password that is set to it.
+// The passwords are never stored in clear text.
 userSchema.pre("save", function(next) {
   const user = this;
   if (!user.isModified("password")) {

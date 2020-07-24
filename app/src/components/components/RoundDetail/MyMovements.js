@@ -33,7 +33,7 @@ const MyMovements = ({
       <CaptionInfo title="Mis movimientos">
         <MovementListTitles />
         <FlatList
-          data={myPayments}
+          data={myPayments.reverse()}
           keyExtractor={item => item._id}
           renderItem={renderItem}
         />

@@ -6,6 +6,8 @@ const http = require("http");
 http.createServer(app);
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
+const blacklistedPasswordManager = require('./managers/blacklisted_password');
 
 const helmet = require("helmet");
 const envs = {
@@ -13,7 +15,7 @@ const envs = {
   3001: "DEV          ",
   3002: "STAGING      ",
 };
-const version = "0.0.11";
+const version = "0.0.13";
 
 // CONFIGS
 require("dotenv").config();
@@ -74,17 +76,19 @@ mongoose.connect(
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
     }
-
-    app.listen(PORT, () => {
-      console.log(`------ LA RONDA API ------`);
-      console.log(`-      version ${version}     -`);
-      console.log(`-      ${envs[PORT]}     - `);
-      console.log(`-------------------------- `);
-
-      console.log(`Node server running on http://localhost:${PORT}`);
-
-      agendaStart();
-      walletRefillJob();
+    const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
+    blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
+      app.listen(PORT, () => {
+        console.log(`------ LA RONDA API ------`);
+        console.log(`-      version ${version}    -`);
+        console.log(`-      ${envs[PORT]}     - `);
+        console.log(`-------------------------- `);
+  
+        console.log(`Node server running on http://localhost:${PORT}`);
+  
+        agendaStart();
+        walletRefillJob();
+      });
     });
   }
 );

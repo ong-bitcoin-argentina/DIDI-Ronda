@@ -17,4 +17,4 @@ exports.rememberNotifications = {
 exports.scheduleNotificationsTime = (year, month, day) =>
   new Date(year, month, day, 17, 0, 0);
 exports.scheduleJobsTime = (year, month, day) =>
-  new Date(year, month, day, 09, 0, 0);
+  new Date(year, month, day, 9, 0, 0);
