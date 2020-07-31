@@ -1,22 +1,23 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Text, Icon, Button } from "native-base";
-import { createSwitchNavigator, createStackNavigator } from "react-navigation";
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Text, Icon, Button} from 'native-base';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createSwitchNavigator} from 'react-navigation';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-} from "react-native-popup-menu";
-import Colors from "../../components/colors";
-import RoundCreation from "../roundsCreation/RoundCreation";
-import RoundsList from "./RoundsList";
-import RoundDetail from "../RoundDetail";
-import NumberDetail from "../NumberDetail";
-import NumberPay from "../NumberDetail/NumberPay";
-import UserProfile from "../UserProfile";
-import { logOut } from "../../../utils/utils";
-import HeaderRightMenu from "../RoundDetail/HeaderRIghtMenu";
+} from 'react-native-popup-menu';
+import Colors from '../../components/colors';
+import RoundCreation from '../roundsCreation/RoundCreation';
+import RoundsList from './RoundsList';
+import RoundDetail from '../RoundDetail';
+import NumberDetail from '../NumberDetail';
+import NumberPay from '../NumberDetail/NumberPay';
+import UserProfile from '../UserProfile';
+import {logOut} from '../../../utils/utils';
+import HeaderRightMenu from '../RoundDetail/HeaderRIghtMenu';
 
 const styles = StyleSheet.create({
   optionText: {
@@ -24,19 +25,19 @@ const styles = StyleSheet.create({
     color: Colors.gray,
   },
   menuView: {
-    height: "100%",
+    height: '100%',
     width: 50,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitleStyle: {
-    color: "white",
-    width: "80%",
-    textAlign: "left",
+    color: 'white',
+    width: '80%',
+    textAlign: 'left',
     fontSize: 18,
   },
   colorWhite: {
-    color: "white",
+    color: 'white',
   },
 });
 
@@ -72,7 +73,7 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       title: `Ronda`,
-      headerStyle: { backgroundColor: "#417fd7", elevation: 0 },
+      headerStyle: {backgroundColor: '#417fd7', elevation: 0},
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
@@ -84,8 +85,8 @@ const List = createStackNavigator({
       headerBackStyle: styles.colorWhite,
 
       title: `Número`,
-      headerTintColor: "white",
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerTintColor: 'white',
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
@@ -96,20 +97,20 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       title: `Pagar`,
-      headerTintColor: "white",
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerTintColor: 'white',
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
   },
   RoundDetail: {
     screen: RoundDetail,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({navigation}) => ({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
-      headerTintColor: "white",
+      headerTintColor: 'white',
       title: `Mis Rondas`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: renderBackButton(navigation.goBack),
       headerRight: HeaderRightMenu(navigation),
@@ -117,9 +118,9 @@ const List = createStackNavigator({
   },
   UserProfile: {
     screen: UserProfile,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({navigation}) => ({
       title: `Participante`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: renderBackButton(navigation.goBack),
     }),
@@ -134,10 +135,10 @@ export default createSwitchNavigator(
     Create: {
       screen: RoundCreation,
     },
-    headerMode: "none",
+    headerMode: 'none',
   },
   {
-    backBehavior: "initialRoute",
-    initialRouteName: "List",
-  }
+    backBehavior: 'initialRoute',
+    initialRouteName: 'List',
+  },
 );

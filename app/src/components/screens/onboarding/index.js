@@ -1,11 +1,11 @@
-import { createStackNavigator } from "react-navigation";
-import Register from "./Register";
-import Login from "./Login";
-import Forgot from "./Forgot";
-import Code from "./Forgot/code";
-import NewPassword from "./Forgot/NewPassword";
-import Phone from "./Phone";
-import VerifyEmail from "./VerifyEmail";
+import {createStackNavigator} from 'react-navigation-stack';
+import Register from './Register';
+import Login from './Login';
+import Forgot from './Forgot';
+import Code from './Forgot/code';
+import NewPassword from './Forgot/NewPassword';
+import Phone from './Phone';
+import VerifyEmail from './VerifyEmail';
 
 export default createStackNavigator(
   {
@@ -32,10 +32,10 @@ export default createStackNavigator(
     },
   },
   {
-    headerMode: "none",
-    initialRouteName: "Login",
+    headerMode: 'none',
+    initialRouteName: 'Login',
     defaultNavigationOptions: {
       gesturesEnabled: false,
     },
-  }
+  },
 );

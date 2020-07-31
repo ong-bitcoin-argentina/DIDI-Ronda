@@ -136,6 +136,7 @@ android {
         versionCode 11
         versionName "0.0.11"
         missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -180,6 +181,10 @@ android {
         }
     }
 
+    dexOptions {
+        jumboMode true
+    }
+
     packagingOptions {
         pickFirst '**/armeabi-v7a/libc++_shared.so'
         pickFirst '**/x86/libc++_shared.so'
@@ -195,7 +200,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-base:16.1.0"
 
-
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation "com.google.firebase:firebase-messaging:18.0.0"
     implementation "com.google.firebase:firebase-core:16.0.9"

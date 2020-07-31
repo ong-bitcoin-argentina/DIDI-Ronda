@@ -1,6 +1,6 @@
-import React from "react";
-import { View } from "react-native";
-import { createStackNavigator } from "react-navigation";
+import React from 'react';
+import {View} from 'react-native';
+import {createStackNavigator} from 'react-navigation-stack';
 
 class Home extends React.Component {
   static navigationOptions = {
@@ -10,7 +10,7 @@ class Home extends React.Component {
   };
 
   render() {
-    return <View style={{ flexDirection: "column", flex: 1 }} />;
+    return <View style={{flexDirection: 'column', flex: 1}} />;
   }
 }
 
@@ -19,11 +19,11 @@ export default createStackNavigator({
     screen: Home,
     navigationOptions: () => ({
       title: `Mis Rondas`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: {
-        color: "white",
-        width: "80%",
-        textAlign: "left",
+        color: 'white',
+        width: '80%',
+        textAlign: 'left',
         fontSize: 18,
       },
     }),
