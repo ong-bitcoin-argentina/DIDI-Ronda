@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'larondaapp' do
-  # Pods for larondaapp
+target 'aidironda' do
+  # Pods for aidironda
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -27,7 +27,7 @@ target 'larondaapp' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'larondaappTests' do
+  target 'aidirondaTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -35,10 +35,10 @@ target 'larondaapp' do
   use_native_modules!
 end
 
-target 'larondaapp-tvOS' do
-  # Pods for larondaapp-tvOS
+target 'aidironda-tvOS' do
+  # Pods for aidironda-tvOS
 
-  target 'larondaapp-tvOSTests' do
+  target 'aidironda-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

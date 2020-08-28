@@ -1,6 +1,6 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import firebase from 'react-native-firebase';
+import firebase from '@react-native-firebase/app';
 import {Root} from 'native-base';
 import {MenuProvider} from 'react-native-popup-menu';
 import store from './src/store/store';
@@ -22,7 +22,7 @@ class App extends React.Component {
         // NOTIFICATIONS LISTENERS
         this.onNotificationListener = notificationListener(this.navigator);
         this.notificationOpenListener = firebase
-          .notifications()
+          .messaging()
           .onNotificationOpened(({notification: {data}}) =>
             notificationOpen(this.navigator, data),
           );

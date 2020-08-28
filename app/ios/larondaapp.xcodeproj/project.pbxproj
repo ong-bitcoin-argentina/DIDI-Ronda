@@ -6,19 +6,19 @@
 	objectVersion = 46;
 	objects = {
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* larondaappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* larondaappTests.m */; };
+		00E356F31AD99517003FC87E /* aidirondaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* aidirondaTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		22D5B11E6B491C05257641BE /* libPods-larondaapp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DBAA9A24C39ED28924BB0B2 /* libPods-larondaapp-tvOSTests.a */; };
+		22D5B11E6B491C05257641BE /* libPods-aidironda-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DBAA9A24C39ED28924BB0B2 /* libPods-aidironda-tvOSTests.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* larondaappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* larondaappTests.m */; };
-		57A00DE9AEE183B0FD07C648 /* libPods-larondaappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F216736893DD7D26DF19BE0 /* libPods-larondaappTests.a */; };
-		924A35E94D776C31EFC15347 /* libPods-larondaapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E66CA9C187DCB0A70930D30 /* libPods-larondaapp.a */; };
-		AC687E37BFE026502A8C8BB1 /* libPods-larondaapp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67E5D910AEF9453AF935F076 /* libPods-larondaapp-tvOS.a */; };
+		2DCD954D1E0B4F2C00145EB5 /* aidirondaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* aidirondaTests.m */; };
+		57A00DE9AEE183B0FD07C648 /* libPods-aidirondaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F216736893DD7D26DF19BE0 /* libPods-aidirondaTests.a */; };
+		924A35E94D776C31EFC15347 /* libPods-aidironda.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E66CA9C187DCB0A70930D30 /* libPods-aidironda.a */; };
+		AC687E37BFE026502A8C8BB1 /* libPods-aidironda-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67E5D910AEF9453AF935F076 /* libPods-aidironda-tvOS.a */; };
 		7C632E8052884E52B4101FC1 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FB106DC0B724A7A8B4CCF2E /* AntDesign.ttf */; };
 		115DC464157445DBA355A53B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB53A0616FF64984931E17F2 /* Entypo.ttf */; };
 		855F7C69FD90461D9967E0EA /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20443FECA0054A7CA37CFD80 /* EvilIcons.ttf */; };
@@ -47,43 +47,43 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = larondaapp;
+			remoteInfo = aidironda;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "larondaapp-tvOS";
+			remoteInfo = "aidironda-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* larondaappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = larondaappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* aidirondaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = aidirondaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* larondaappTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = larondaappTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* larondaapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = larondaapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = larondaapp/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = larondaapp/AppDelegate.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* aidirondaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = aidirondaTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* aidironda.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aidironda.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = aidironda/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = aidironda/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = larondaapp/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = larondaapp/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = larondaapp/main.m; sourceTree = "<group>"; };
-		25A14AF7F001851CC1843D63 /* Pods-larondaapp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-larondaapp-tvOS/Pods-larondaapp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* larondaapp-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "larondaapp-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* larondaapp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "larondaapp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F216736893DD7D26DF19BE0 /* libPods-larondaappTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-larondaappTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DBAA9A24C39ED28924BB0B2 /* libPods-larondaapp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-larondaapp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		67E5D910AEF9453AF935F076 /* libPods-larondaapp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-larondaapp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		75E019E823697BD6293AC616 /* Pods-larondaappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaappTests.release.xcconfig"; path = "Target Support Files/Pods-larondaappTests/Pods-larondaappTests.release.xcconfig"; sourceTree = "<group>"; };
-		822514D250F7BFF6BD22F226 /* Pods-larondaapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp.debug.xcconfig"; path = "Target Support Files/Pods-larondaapp/Pods-larondaapp.debug.xcconfig"; sourceTree = "<group>"; };
-		857586074E20B97F2D708D31 /* Pods-larondaapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp.release.xcconfig"; path = "Target Support Files/Pods-larondaapp/Pods-larondaapp.release.xcconfig"; sourceTree = "<group>"; };
-		8E66CA9C187DCB0A70930D30 /* libPods-larondaapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-larondaapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		90ABBCAB56F224894869E71C /* Pods-larondaapp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-larondaapp-tvOS/Pods-larondaapp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		B4D441E4841697B774E7A27F /* Pods-larondaapp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-larondaapp-tvOSTests/Pods-larondaapp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		D21CFBD30594A70FC7B4934F /* Pods-larondaappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaappTests.debug.xcconfig"; path = "Target Support Files/Pods-larondaappTests/Pods-larondaappTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E332F88A614AE70CC5E34903 /* Pods-larondaapp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-larondaapp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-larondaapp-tvOSTests/Pods-larondaapp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = aidironda/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = aidironda/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = aidironda/main.m; sourceTree = "<group>"; };
+		25A14AF7F001851CC1843D63 /* Pods-aidironda-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda-tvOS.release.xcconfig"; path = "Target Support Files/Pods-aidironda-tvOS/Pods-aidironda-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		2D02E47B1E0B4A5D006451C7 /* aidironda-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "aidironda-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* aidironda-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "aidironda-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F216736893DD7D26DF19BE0 /* libPods-aidirondaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-aidirondaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DBAA9A24C39ED28924BB0B2 /* libPods-aidironda-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-aidironda-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67E5D910AEF9453AF935F076 /* libPods-aidironda-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-aidironda-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		75E019E823697BD6293AC616 /* Pods-aidirondaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidirondaTests.release.xcconfig"; path = "Target Support Files/Pods-aidirondaTests/Pods-aidirondaTests.release.xcconfig"; sourceTree = "<group>"; };
+		822514D250F7BFF6BD22F226 /* Pods-aidironda.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda.debug.xcconfig"; path = "Target Support Files/Pods-aidironda/Pods-aidironda.debug.xcconfig"; sourceTree = "<group>"; };
+		857586074E20B97F2D708D31 /* Pods-aidironda.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda.release.xcconfig"; path = "Target Support Files/Pods-aidironda/Pods-aidironda.release.xcconfig"; sourceTree = "<group>"; };
+		8E66CA9C187DCB0A70930D30 /* libPods-aidironda.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-aidironda.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		90ABBCAB56F224894869E71C /* Pods-aidironda-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-aidironda-tvOS/Pods-aidironda-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		B4D441E4841697B774E7A27F /* Pods-aidironda-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-aidironda-tvOSTests/Pods-aidironda-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D21CFBD30594A70FC7B4934F /* Pods-aidirondaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidirondaTests.debug.xcconfig"; path = "Target Support Files/Pods-aidirondaTests/Pods-aidirondaTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E332F88A614AE70CC5E34903 /* Pods-aidironda-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-aidironda-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-aidironda-tvOSTests/Pods-aidironda-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		7FB106DC0B724A7A8B4CCF2E /* AntDesign.ttf */ = {isa = PBXFileReference; name = "AntDesign.ttf"; path = "../node_modules/native-base/Fonts/AntDesign.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
@@ -113,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57A00DE9AEE183B0FD07C648 /* libPods-larondaappTests.a in Frameworks */,
+				57A00DE9AEE183B0FD07C648 /* libPods-aidirondaTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				924A35E94D776C31EFC15347 /* libPods-larondaapp.a in Frameworks */,
+				924A35E94D776C31EFC15347 /* libPods-aidironda.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC687E37BFE026502A8C8BB1 /* libPods-larondaapp-tvOS.a in Frameworks */,
+				AC687E37BFE026502A8C8BB1 /* libPods-aidironda-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,20 +137,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22D5B11E6B491C05257641BE /* libPods-larondaapp-tvOSTests.a in Frameworks */,
+				22D5B11E6B491C05257641BE /* libPods-aidironda-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* larondaappTests */ = {
+		00E356EF1AD99517003FC87E /* aidirondaTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* larondaappTests.m */,
+				00E356F21AD99517003FC87E /* aidirondaTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = larondaappTests;
+			path = aidirondaTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -164,19 +164,19 @@
 		023EE6E377BBB9CA471F2879 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				822514D250F7BFF6BD22F226 /* Pods-larondaapp.debug.xcconfig */,
-				857586074E20B97F2D708D31 /* Pods-larondaapp.release.xcconfig */,
-				90ABBCAB56F224894869E71C /* Pods-larondaapp-tvOS.debug.xcconfig */,
-				25A14AF7F001851CC1843D63 /* Pods-larondaapp-tvOS.release.xcconfig */,
-				B4D441E4841697B774E7A27F /* Pods-larondaapp-tvOSTests.debug.xcconfig */,
-				E332F88A614AE70CC5E34903 /* Pods-larondaapp-tvOSTests.release.xcconfig */,
-				D21CFBD30594A70FC7B4934F /* Pods-larondaappTests.debug.xcconfig */,
-				75E019E823697BD6293AC616 /* Pods-larondaappTests.release.xcconfig */,
+				822514D250F7BFF6BD22F226 /* Pods-aidironda.debug.xcconfig */,
+				857586074E20B97F2D708D31 /* Pods-aidironda.release.xcconfig */,
+				90ABBCAB56F224894869E71C /* Pods-aidironda-tvOS.debug.xcconfig */,
+				25A14AF7F001851CC1843D63 /* Pods-aidironda-tvOS.release.xcconfig */,
+				B4D441E4841697B774E7A27F /* Pods-aidironda-tvOSTests.debug.xcconfig */,
+				E332F88A614AE70CC5E34903 /* Pods-aidironda-tvOSTests.release.xcconfig */,
+				D21CFBD30594A70FC7B4934F /* Pods-aidirondaTests.debug.xcconfig */,
+				75E019E823697BD6293AC616 /* Pods-aidirondaTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* larondaapp */ = {
+		13B07FAE1A68108700A75B9A /* aidironda */ = {
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -187,7 +187,7 @@
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = larondaapp;
+			name = aidironda;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -195,10 +195,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				8E66CA9C187DCB0A70930D30 /* libPods-larondaapp.a */,
-				67E5D910AEF9453AF935F076 /* libPods-larondaapp-tvOS.a */,
-				3DBAA9A24C39ED28924BB0B2 /* libPods-larondaapp-tvOSTests.a */,
-				2F216736893DD7D26DF19BE0 /* libPods-larondaappTests.a */,
+				8E66CA9C187DCB0A70930D30 /* libPods-aidironda.a */,
+				67E5D910AEF9453AF935F076 /* libPods-aidironda-tvOS.a */,
+				3DBAA9A24C39ED28924BB0B2 /* libPods-aidironda-tvOSTests.a */,
+				2F216736893DD7D26DF19BE0 /* libPods-aidirondaTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -213,9 +213,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* larondaapp */,
+				13B07FAE1A68108700A75B9A /* aidironda */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* larondaappTests */,
+				00E356EF1AD99517003FC87E /* aidirondaTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				023EE6E377BBB9CA471F2879 /* Pods */,
@@ -229,10 +229,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* larondaapp.app */,
-				00E356EE1AD99517003FC87E /* larondaappTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* larondaapp-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* larondaapp-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* aidironda.app */,
+				00E356EE1AD99517003FC87E /* aidirondaTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* aidironda-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* aidironda-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,9 +268,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* larondaappTests */ = {
+		00E356ED1AD99517003FC87E /* aidirondaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "larondaappTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "aidirondaTests" */;
 			buildPhases = (
 				DF83EA98C4C03B07D78F8508 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -282,14 +282,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = larondaappTests;
-			productName = larondaappTests;
-			productReference = 00E356EE1AD99517003FC87E /* larondaappTests.xctest */;
+			name = aidirondaTests;
+			productName = aidirondaTests;
+			productReference = 00E356EE1AD99517003FC87E /* aidirondaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* larondaapp */ = {
+		13B07F861A680F5B00A75B9A /* aidironda */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "larondaapp" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "aidironda" */;
 			buildPhases = (
 				E6862138E4F3439930C2A97C /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -303,14 +303,14 @@
 			);
 			dependencies = (
 			);
-			name = larondaapp;
-			productName = larondaapp;
-			productReference = 13B07F961A680F5B00A75B9A /* larondaapp.app */;
+			name = aidironda;
+			productName = aidironda;
+			productReference = 13B07F961A680F5B00A75B9A /* aidironda.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* larondaapp-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* aidironda-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "larondaapp-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "aidironda-tvOS" */;
 			buildPhases = (
 				208F07C6924BD14FF9F04AD1 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -323,14 +323,14 @@
 			);
 			dependencies = (
 			);
-			name = "larondaapp-tvOS";
-			productName = "larondaapp-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* larondaapp-tvOS.app */;
+			name = "aidironda-tvOS";
+			productName = "aidironda-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* aidironda-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* larondaapp-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* aidironda-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "larondaapp-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "aidironda-tvOSTests" */;
 			buildPhases = (
 				656D78175ABAD3EC2DA3E784 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -342,9 +342,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "larondaapp-tvOSTests";
-			productName = "larondaapp-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* larondaapp-tvOSTests.xctest */;
+			name = "aidironda-tvOSTests";
+			productName = "aidironda-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* aidironda-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -374,7 +374,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "larondaapp" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "aidironda" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -390,10 +390,10 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* larondaapp */,
-				00E356ED1AD99517003FC87E /* larondaappTests */,
-				2D02E47A1E0B4A5D006451C7 /* larondaapp-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* larondaapp-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* aidironda */,
+				00E356ED1AD99517003FC87E /* aidirondaTests */,
+				2D02E47A1E0B4A5D006451C7 /* aidironda-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* aidironda-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -476,7 +476,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-larondaapp/Pods-larondaapp-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-aidironda/Pods-aidironda-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -515,7 +515,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-larondaapp/Pods-larondaapp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-aidironda/Pods-aidironda-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		208F07C6924BD14FF9F04AD1 /* [CP] Check Pods Manifest.lock */ = {
@@ -533,7 +533,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-larondaapp-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-aidironda-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -569,7 +569,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-larondaapp-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-aidironda-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -591,7 +591,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-larondaappTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-aidirondaTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -613,7 +613,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-larondaapp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-aidironda-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -665,7 +665,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* larondaappTests.m in Sources */,
+				00E356F31AD99517003FC87E /* aidirondaTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,7 +691,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* larondaappTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* aidirondaTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,12 +700,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* larondaapp */;
+			target = 13B07F861A680F5B00A75B9A /* aidironda */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* larondaapp-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* aidironda-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -717,7 +717,7 @@
 				13B07FB21A68108700A75B9A /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = larondaapp;
+			path = aidironda;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -725,14 +725,14 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D21CFBD30594A70FC7B4934F /* Pods-larondaappTests.debug.xcconfig */;
+			baseConfigurationReference = D21CFBD30594A70FC7B4934F /* Pods-aidirondaTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = larondaappTests/Info.plist;
+				INFOPLIST_FILE = aidirondaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -742,7 +742,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/larondaapp.app/larondaapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aidironda.app/aidironda";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
@@ -751,11 +751,11 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 75E019E823697BD6293AC616 /* Pods-larondaappTests.release.xcconfig */;
+			baseConfigurationReference = 75E019E823697BD6293AC616 /* Pods-aidirondaTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = larondaappTests/Info.plist;
+				INFOPLIST_FILE = aidirondaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -765,7 +765,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/larondaapp.app/larondaapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aidironda.app/aidironda";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
@@ -774,13 +774,13 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 822514D250F7BFF6BD22F226 /* Pods-larondaapp.debug.xcconfig */;
+			baseConfigurationReference = 822514D250F7BFF6BD22F226 /* Pods-aidironda.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = MWCY88LKY5;
-				INFOPLIST_FILE = larondaapp/Info.plist;
+				INFOPLIST_FILE = aidironda/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -788,7 +788,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = larondaapp;
+				PRODUCT_NAME = aidironda;
 				VERSIONING_SYSTEM = "apple-generic";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -798,12 +798,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 857586074E20B97F2D708D31 /* Pods-larondaapp.release.xcconfig */;
+			baseConfigurationReference = 857586074E20B97F2D708D31 /* Pods-aidironda.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MWCY88LKY5;
-				INFOPLIST_FILE = larondaapp/Info.plist;
+				INFOPLIST_FILE = aidironda/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -811,7 +811,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = larondaapp;
+				PRODUCT_NAME = aidironda;
 				VERSIONING_SYSTEM = "apple-generic";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -821,7 +821,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 90ABBCAB56F224894869E71C /* Pods-larondaapp-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 90ABBCAB56F224894869E71C /* Pods-aidironda-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -832,14 +832,14 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "larondaapp-tvOS/Info.plist";
+				INFOPLIST_FILE = "aidironda-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.larondaapp-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.aidironda-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -852,7 +852,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25A14AF7F001851CC1843D63 /* Pods-larondaapp-tvOS.release.xcconfig */;
+			baseConfigurationReference = 25A14AF7F001851CC1843D63 /* Pods-aidironda-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -863,14 +863,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "larondaapp-tvOS/Info.plist";
+				INFOPLIST_FILE = "aidironda-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.larondaapp-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.aidironda-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -883,7 +883,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4D441E4841697B774E7A27F /* Pods-larondaapp-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = B4D441E4841697B774E7A27F /* Pods-aidironda-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -893,17 +893,17 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "larondaapp-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "aidironda-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.larondaapp-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.aidironda-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/larondaapp-tvOS.app/larondaapp-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aidironda-tvOS.app/aidironda-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -913,7 +913,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E332F88A614AE70CC5E34903 /* Pods-larondaapp-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = E332F88A614AE70CC5E34903 /* Pods-aidironda-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -923,17 +923,17 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "larondaapp-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "aidironda-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.larondaapp-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.aidironda-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/larondaapp-tvOS.app/larondaapp-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aidironda-tvOS.app/aidironda-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1043,7 +1043,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "larondaappTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "aidirondaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1052,7 +1052,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "larondaapp" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "aidironda" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1061,7 +1061,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "larondaapp-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "aidironda-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -1070,7 +1070,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "larondaapp-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "aidironda-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -1079,7 +1079,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "larondaapp" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "aidironda" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

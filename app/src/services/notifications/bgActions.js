@@ -1,4 +1,5 @@
-import firebase from "react-native-firebase";
+import firebase from '@react-native-firebase/app';
+import '@react-native-firebase/messaging';
 import { Platform } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { getAuth } from "../../utils/utils";
@@ -11,28 +12,28 @@ export const enabledNotifications = true;
 
 // WITH OPEN APP
 export const notificationListener = () => {
-  const listener = firebase.notifications().onNotification(notification => {
-    const newNotification = new firebase.notifications.Notification({
-      data: notification.data,
-      sound: "default",
-      show_in_foreground: true,
-      title: notification.title,
-      body: notification.body,
-    });
+  // const listener = firebase.messaging().onNotification(notification => {
+  //   const newNotification = new firebase.notifications.Notification({
+  //     data: notification.data,
+  //     sound: "default",
+  //     show_in_foreground: true,
+  //     title: notification.title,
+  //     body: notification.body,
+  //   });
 
-    if (Platform.OS === "android") {
-      newNotification.android
-        .setPriority(firebase.notifications.Android.Priority.Max)
-        .android.setAutoCancel(true)
-        .android.setChannelId("ronda")
-        .android.setVibrate(1000);
-    }
-    const { data } = notification;
-    if (data && data.reloadRounds) store.dispatch(roundsActions.loadRounds());
+  //   if (Platform.OS === "android") {
+  //     newNotification.android
+  //       .setPriority(firebase.notifications.Android.Priority.Max)
+  //       .android.setAutoCancel(true)
+  //       .android.setChannelId("ronda")
+  //       .android.setVibrate(1000);
+  //   }
+  //   const { data } = notification;
+  //   if (data && data.reloadRounds) store.dispatch(roundsActions.loadRounds());
 
-    firebase.notifications().displayNotification(newNotification);
-  });
-  return listener;
+  //   firebase.messaging().displayNotification(newNotification);
+  // });
+  return firebase.messaging();
 };
 
 // BACKGROUND
@@ -40,7 +41,7 @@ export const notificationOpen = async (navigator, notificationData) => {
   let finalData = notificationData;
   if (!finalData) {
     const openNotificationData = await firebase
-      .notifications()
+      .messaging()
       .getInitialNotification();
     if (openNotificationData) {
       const { notification } = openNotificationData;
