@@ -1,60 +1,101 @@
-import React from "react";
-import { Provider } from "react-redux";
-import firebase from "react-native-firebase";
-import { Root } from "native-base";
-import { MenuProvider } from "react-native-popup-menu";
-import store from "./src/store/store";
-import Nav from "./src/components/components/navigation/Nav";
-import checkPermission from "./src/services/notifications";
-import {
-  enabledNotifications,
-  notificationListener,
-  notificationOpen,
-} from "./src/services/notifications/bgActions";
-import NavigationService from "./src/services/navigation";
+const express = require("express");
+// Array flat polyfill for Node 10
+require("array-flat-polyfill");
+const app = express();
+const http = require("http");
+http.createServer(app);
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
+const blacklistedPasswordManager = require("./managers/blacklisted_password");
+const { version } = require("./package.json");
+const helmet = require("helmet");
+const envs = {
+  3030: "PROD         ",
+  3001: "DEV          ",
+  3002: "STAGING      ",
+};
 
-class App extends React.Component {
-  async componentDidMount() {
-    try {
-      await checkPermission();
+// CONFIGS
+require("dotenv").config();
 
-      if (enabledNotifications) {
-        // NOTIFICATIONS LISTENERS
-        this.onNotificationListener = notificationListener(this.navigator);
-        this.notificationOpenListener = firebase
-          .notifications()
-          .onNotificationOpened(({ notification: { data } }) =>
-            notificationOpen(this.navigator, data)
-          );
-        await notificationOpen(this.navigator);
-      }
-      // We do not care about errors here
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
+// Agenda
+const { agendaStart, walletRefillJob } = require("./jobs/jobs");
+
+const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
+
+// parse application/json
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// SMALL SECURITY
+app.use(helmet());
+
+/*** MIDDLEWARES ****/
+const appMiddleware = require("./middleware/app");
+
+// Log request on develop
+ENVIROMENT === "dev" && app.use("/", appMiddleware.log);
+
+// Basic auth to all api calls
+app.use("/", appMiddleware.auth);
+
+// JWT
+
+// User
+app.use("/user", appMiddleware.jwtCheck);
+
+// Participant
+app.use("/participant", appMiddleware.jwtCheck);
+
+// Admin
+app.use("/admin", appMiddleware.jwtCheck);
+
+/*** ./MIDDLEWARES ****/
+
+/*** ROUTES ****/
+const guest = require("./routes/guest"); // Imports routes for guest
+const user = require("./routes/user"); // Imports routes for user
+const participant = require("./routes/participant"); // Imports routes for participant
+const admin = require("./routes/admin"); // Imports routes for admin
+
+app.use("/", guest);
+app.use("/user", user);
+app.use("/participant", participant);
+app.use("/admin", admin);
+/*** ./ROUTES ****/
+
+/*** SERVER ****/
+mongoose.set("useCreateIndex", true);
+mongoose.connect(
+  `${MONGO_SERVER}/${MONGO_DATABASE}`,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  err => {
+    if (err) {
+      console.log("ERROR: connecting to Database. " + err);
+    }
+    const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
+    blacklistedPasswordManager
+      .insertPasswords(blacklistedPasswords)
+      .catch(() => null)
+      .finally(() => {
+        app.listen(PORT, () => {
+          console.log(`------ LA RONDA API ------`);
+          console.log(`-      version ${version}    -`);
+          console.log(`-      ${envs[PORT]}     - `);
+          console.log(`-------------------------- `);
+
+          console.log(`Node server running on http://localhost:${PORT}`);
+
+          agendaStart();
+          walletRefillJob();
+        });
+      });
   }
+);
+/*** ./SERVER ****/
 
-  componentWillUnmount() {
-    // Remove listeners to prevent double listeners
-    this.onNotificationListener();
-    this.notificationOpenListener();
-  }
-
-  render() {
-    return (
-      <Provider store={store}>
-        <MenuProvider>
-          <Root>
-            <Nav
-              ref={nav => {
-                this.navigator = nav;
-                NavigationService.setTopLevelNavigator(nav);
-              }}
-            />
-          </Root>
-        </MenuProvider>
-      </Provider>
-    );
-  }
-}
-
-export default App;
+/*** EXPORT FOR TESTING PURPOSE ****/
+module.exports = app;
+/*** ./EXPORT FOR TESTING PURPOSE ****/
