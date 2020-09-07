@@ -33,10 +33,14 @@ const Login = props => {
     if (link != undefined && link != null ) {
       if (link.url.match(/loginSuccess/))
       {
-        console.log("logging in...");
-        await onLogin();
-        console.log("logged");
-        console.log("hi");
+        const url = link.url;
+        const token = url.split('token=').pop();
+        console.log(token);
+        // await onLogin();
+      }
+      if (link.url.match(/loginDenied/))
+      {
+        console.log("loginDenied");
       }
     }
   };
@@ -66,7 +70,10 @@ const Login = props => {
   };
 
   const onLoginWithAidi = async () => {
-    Linking.openURL(`https://aidi.page.link/XktS`);
+    const loginUrl = `https://aidi.page.link/XktS`;
+    const canOpenURL = await Linking.canOpenURL(loginUrl);
+    if (canOpenURL) Linking.openURL(loginUrl);
+    console.log("canOpenURL", canOpenURL, loginUrl);
   }
 
   const register = () => {
@@ -108,6 +115,12 @@ const Login = props => {
         >
           <Text style={{ color: "black" }}>Iniciar con aidi</Text>
         </Button>
+        <TouchableOpacity
+          onPress={forgot}
+          style={[styles.button, { backgroundColor: colors.mainBlue }]}
+        >
+          <Text style={{ color: "white" }}>Recuperar Cuenta</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -133,6 +146,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: "white",
     borderRadius: 8,
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonTransparent: {
+    marginTop: 30,
+    borderRadius: 8,
+    backgroundColor: "transparent",
     width: "80%",
     justifyContent: "center",
     alignItems: "center",
