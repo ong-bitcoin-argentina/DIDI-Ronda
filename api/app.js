@@ -23,7 +23,7 @@ require("dotenv").config();
 // Agenda
 const { agendaStart, walletRefillJob } = require("./jobs/jobs");
 
-const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
+const { PORT, IP_ADDRESS, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
 // parse application/json
 app.use(bodyParser.json());
@@ -78,13 +78,13 @@ mongoose.connect(
     }
     const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
     blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
-      app.listen(PORT, () => {
+      app.listen(PORT, IP_ADDRESS, () => {
         console.log(`------ LA RONDA API ------`);
         console.log(`-      version ${version}    -`);
         console.log(`-      ${envs[PORT]}     - `);
         console.log(`-------------------------- `);
   
-        console.log(`Node server running on http://localhost:${PORT}`);
+        console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
   
         agendaStart();
         walletRefillJob();
