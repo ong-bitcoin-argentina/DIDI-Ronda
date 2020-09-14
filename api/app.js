@@ -10,11 +10,6 @@ const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
 const blacklistedPasswordManager = require("./managers/blacklisted_password");
 const { version } = require("./package.json");
 const helmet = require("helmet");
-const envs = {
-  3030: "PROD         ",
-  3001: "DEV          ",
-  3002: "STAGING      ",
-};
 
 // CONFIGS
 require("dotenv").config();
@@ -76,26 +71,23 @@ mongoose.connect(
       console.log("ERROR: connecting to Database. " + err);
     }
     const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
-    blacklistedPasswordManager
-      .insertPasswords(blacklistedPasswords)
-      .catch(() => null)
-      .finally(() => {
-        app.listen(PORT, () => {
-          console.log(`------ LA RONDA API ------`);
-          console.log(`-      version ${version}    -`);
-          console.log(`-      ${envs[PORT]}     - `);
-          console.log(`-------------------------- `);
+    blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
+      app.listen(PORT, () => {
+        console.log(`------ LA RONDA API ------`);
+        console.log(`-   version ${version}   -`);
+        console.log(`-   ENV: ${ENVIROMENT}   - `);
+        console.log(`-------------------------- `);
+  
+        console.log(`Node server running on http://localhost:${PORT}`);
 
-          console.log(`Node server running on http://localhost:${PORT}`);
-
-          agendaStart();
-          walletRefillJob();
-        });
+        agendaStart();
+        walletRefillJob();
       });
+    })
   }
 );
 /*** ./SERVER ****/
 
 /*** EXPORT FOR TESTING PURPOSE ****/
 module.exports = app;
-/*** ./EXPORT FOR TESTING PURPOSE ****/
+/*** EXPORT FOR TESTING PURPOSE ****/

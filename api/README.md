@@ -33,10 +33,6 @@
 - TWILIO_AUTHTOKEN: Twilio auth token
 - TWILIO_PHONE_NUMBER: Twilio phone number
 
-- REDIS_HOST: Redis host. Example: `127.0.0.1`
-- REDIS_PORT: Redis port. Example: `6379`
-- REDIS_PASSWORD: Redis password. Example: `laronda123`
-
 The other parameters in the .env.example are exemplified in there, in the case of addresses or keys, checksumed addresses must be used
 
 # Interaction with the Smart Contract
