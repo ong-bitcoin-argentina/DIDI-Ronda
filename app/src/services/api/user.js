@@ -13,6 +13,19 @@ export const login = async (username, password) => {
   }
 };
 
+// loginWithAidi
+export const loginWithAidi = async (token) => {
+  console.log("sending request.... loginWithAidi", token)
+  try {
+    return await apiCall("post", "/login/aidi", {
+      token
+    });
+  } catch (error) {
+    console.log("error loginWithAidi", error);
+    return { error };
+  }
+};
+
 // Register
 export const register = async (username, password, name, token, nick) => {
   try {

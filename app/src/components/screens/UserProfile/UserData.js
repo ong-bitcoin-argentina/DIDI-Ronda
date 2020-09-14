@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Linking } from "react-native";
 import { Icon, View, Text, Spinner } from "native-base";
 import colors from "../../components/colors";
 import * as userDataActions from "../../../actions/userData";
@@ -21,6 +21,12 @@ const UserData = props => {
     roundsCount: "-",
     completedRoundsCount: "-",
   };
+
+  const goToAidiCredentials = () => {
+    console.log("goToAidiCredentials");
+    const url = "https://aidi.page.link/mKfG"
+    Linking.openURL(url);
+  }
 
   return (
     <View style={styles.userData}>
@@ -56,6 +62,20 @@ const UserData = props => {
         )}
         <Text style={styles.userDataInfoText}>Rondas completadas</Text>
       </View>
+      <View style={[styles.userDataInfo]}>
+        <Icon
+          onPress={goToAidiCredentials}
+          type="MaterialIcons"
+          name="filter-tilt-shift"
+          style={styles.userDataInfoIcon}
+        />
+        {loading ? (
+          <Spinner size={15} style={styles.spinner} />
+        ) : (
+          <Text onPress={goToAidiCredentials} style={styles.userDataInfoValue}>{completedRoundsCount}</Text>
+        )}
+        <Text onPress={goToAidiCredentials} style={styles.userDataInfoText}>Certificados de Rondas</Text>
+      </View>
     </View>
   );
 };
@@ -69,13 +89,13 @@ const styles = StyleSheet.create({
   },
 
   userData: {
-    marginTop: 5,
+    marginTop: 40,
     width: "100%",
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 20,
-    marginBottom: 5,
+    marginBottom: 20,
   },
   userDataInfo: {
     flexDirection: "column",

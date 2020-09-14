@@ -35,15 +35,19 @@ const Login = props => {
       {
         const url = link.url;
         const token = url.split('token=').pop();
-        console.log(token);
-        // await onLogin();
+        await loginWithAidi(token);
       }
       if (link.url.match(/loginDenied/))
       {
         console.log("loginDenied");
+        props.navigation.navigate("AccessDenied");
       }
     }
   };
+
+  const goToErrorScreen = () => {
+    props.navigation.navigate("AccessDenied");
+  }
 
   useEffect(() => {
     console.log("useEffect dynamicLinks");
@@ -54,20 +58,16 @@ const Login = props => {
   useEffect(() => {
     console.log("useEffect getInitialLink");
     dynamicLinks().getInitialLink().then( link => { handleLoginOnDynamicLink(link); });
-	}) 
+  }) 
 
-  const onLogin = async () => {
-    await props.login("ftorielli@atixlabs.com", "Admin1234");
-    // if (email.trim() && password.trim()) {
-    //   console.log("logged onLogin");
-    // } else {
-    //   Toast.show({
-    //     text: "Usuario o contraseña no rellenados",
-    //     position: "top",
-    //     type: "warning",
-    //   });
-    // }
-  };
+  const sendToken = async () => {
+    await loginWithAidi(123456);
+    // await onLogin();
+  }
+  
+  const loginWithAidi = async (token) => {
+    await props.loginWithAidi(token);
+  }
 
   const onLoginWithAidi = async () => {
     const loginUrl = `https://aidi.page.link/XktS`;
@@ -183,6 +183,9 @@ const mapDispatchToProps = dispatch => {
   return {
     login: (username, password) => {
       dispatch(actions.login(username, password));
+    },
+    loginWithAidi: (token) => {
+      dispatch(actions.loginWithAidi(token));
     },
   };
 };

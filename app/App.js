@@ -18,16 +18,16 @@ class App extends React.Component {
     try {
       await checkPermission();
 
-      if (enabledNotifications) {
-        // NOTIFICATIONS LISTENERS
-        this.onNotificationListener = notificationListener(this.navigator);
-        this.notificationOpenListener = firebase
-          .messaging()
-          .onNotificationOpened(({notification: {data}}) =>
-            notificationOpen(this.navigator, data),
-          );
-        await notificationOpen(this.navigator);
-      }
+      // if (enabledNotifications) {
+      //   // NOTIFICATIONS LISTENERS
+      //   this.onNotificationListener = notificationListener(this.navigator);
+      //   this.notificationOpenListener = firebase
+      //     .messaging()
+      //     .onNotificationOpened(({notification: {data}}) =>
+      //       notificationOpen(this.navigator, data),
+      //     );
+      //   await notificationOpen(this.navigator);
+      // }
       // We do not care about errors here
       // eslint-disable-next-line no-empty
     } catch (error) {}
@@ -35,8 +35,8 @@ class App extends React.Component {
 
   componentWillUnmount() {
     // Remove listeners to prevent double listeners
-    this.onNotificationListener();
-    this.notificationOpenListener();
+    // this.onNotificationListener();
+    // this.notificationOpenListener();
   }
 
   render() {

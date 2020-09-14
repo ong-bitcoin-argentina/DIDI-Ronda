@@ -6,6 +6,7 @@ import Code from './Forgot/code';
 import NewPassword from './Forgot/NewPassword';
 import Phone from './Phone';
 import VerifyEmail from './VerifyEmail';
+import errorScreen from './error'
 
 export default createStackNavigator(
   {
@@ -29,6 +30,9 @@ export default createStackNavigator(
     },
     VerifyEmail: {
       screen: VerifyEmail,
+    },
+    AccessDenied: {
+      screen: errorScreen,
     },
   },
   {

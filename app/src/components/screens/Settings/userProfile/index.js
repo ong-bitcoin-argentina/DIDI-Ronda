@@ -33,6 +33,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(emptyUser);
   const getUser = async () => {
     const data = await getAuth();
+    console.log("getUser",data);
     setUser(data);
   };
 

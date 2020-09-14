@@ -156,6 +156,26 @@ export const cleanForgot = () => {
   };
 };
 
+export const loginWithAidi = (token) => {
+  return async (dispatch) => {
+    dispatch(loginStart());
+    console.log("auth loginWithAidi", token);
+    const session = await UserService.loginWithAidi(token);
+
+    if (!session.error) {
+      try {
+        await setAuth(session.data);
+        dispatch(loginSucceded());
+        NavigationService.navigate("LoadingAuth");
+      } catch (error) {
+        dispatch(loginFailed(error));
+      }
+    } else {
+      dispatch(loginFailed(login.error));
+    }
+  };
+}
+ 
 export const login = (username, password) => {
   return async dispatch => {
     dispatch(loginStart());
