@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "larondaapp-tvOS.app"
-               BlueprintName = "larondaapp-tvOS"
-               ReferencedContainer = "container:larondaapp.xcodeproj">
+               BuildableName = "aidironda-tvOS.app"
+               BlueprintName = "aidironda-tvOS"
+               ReferencedContainer = "container:aidironda.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "larondaapp-tvOSTests.xctest"
-               BlueprintName = "larondaapp-tvOSTests"
-               ReferencedContainer = "container:larondaapp.xcodeproj">
+               BuildableName = "aidironda-tvOSTests.xctest"
+               BlueprintName = "aidironda-tvOSTests"
+               ReferencedContainer = "container:aidironda.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "larondaapp-tvOSTests.xctest"
-               BlueprintName = "larondaapp-tvOSTests"
-               ReferencedContainer = "container:larondaapp.xcodeproj">
+               BuildableName = "aidironda-tvOSTests.xctest"
+               BlueprintName = "aidironda-tvOSTests"
+               ReferencedContainer = "container:aidironda.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "larondaapp-tvOS.app"
-            BlueprintName = "larondaapp-tvOS"
-            ReferencedContainer = "container:larondaapp.xcodeproj">
+            BuildableName = "aidironda-tvOS.app"
+            BlueprintName = "aidironda-tvOS"
+            ReferencedContainer = "container:aidironda.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "larondaapp-tvOS.app"
-            BlueprintName = "larondaapp-tvOS"
-            ReferencedContainer = "container:larondaapp.xcodeproj">
+            BuildableName = "aidironda-tvOS.app"
+            BlueprintName = "aidironda-tvOS"
+            ReferencedContainer = "container:aidironda.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "larondaapp-tvOS.app"
-            BlueprintName = "larondaapp-tvOS"
-            ReferencedContainer = "container:larondaapp.xcodeproj">
+            BuildableName = "aidironda-tvOS.app"
+            BlueprintName = "aidironda-tvOS"
+            ReferencedContainer = "container:aidironda.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

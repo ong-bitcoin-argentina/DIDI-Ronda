@@ -6,6 +6,7 @@ const {
   password,
   displayName,
   userId,
+  token
 } = require("../helpers/validators");
 
 // CONTROLLER
@@ -15,6 +16,9 @@ const guest_controller = require("../controllers/guest");
 
 // App login
 router.post("/login", [username, password], validation, guest_controller.login);
+
+// App aidi login
+router.post("/login/aidi", [token], token, guest_controller.loginWithAidi);
 
 // App register
 router.post(

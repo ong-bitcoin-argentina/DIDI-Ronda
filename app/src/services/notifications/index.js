@@ -1,19 +1,20 @@
 import { Platform } from "react-native";
-import firebase from "react-native-firebase";
+import firebase from "@react-native-firebase/app";
+import '@react-native-firebase/messaging';
 import AsyncStorage from "@react-native-community/async-storage";
 import * as UserService from "../api/user";
 import { setAuth, getAuth } from "../../utils/utils";
 
 const checkPermission = async () => {
   // Android channel
-  if (Platform.OS === "android") {
-    const channel = new firebase.notifications.Android.Channel(
-      "ronda",
-      "Ronda",
-      firebase.notifications.Android.Importance.Max
-    ).setDescription("La Ronda app");
-    await firebase.notifications().android.createChannel(channel);
-  }
+  // if (Platform.OS === "android") {
+  //   const channel = new firebase.notifications.Android.Channel(
+  //     "ronda",
+  //     "Ronda",
+  //     firebase.notifications.Android.Importance.Max
+  //   ).setDescription("La Ronda app");
+  //   await firebase.messaging().android.createChannel(channel);
+  // }
 
   const hasPermission = await firebase.messaging().hasPermission();
 

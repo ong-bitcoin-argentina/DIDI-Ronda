@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sae } from "react-native-textinput-effects";
 import { connect } from "react-redux";
 import { Button, Toast, Spinner } from "native-base";
@@ -6,6 +6,7 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import {
   View,
   Text,
+  Linking,
   KeyboardAvoidingView,
   StyleSheet,
   TouchableOpacity,
@@ -13,6 +14,7 @@ import {
 } from "react-native";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/auth";
+import dynamicLinks from "@react-native-firebase/dynamic-links";
 
 const Login = props => {
   const [password, setPassword] = useState("");
@@ -25,18 +27,54 @@ const Login = props => {
   const onChangePassword = newPassowrd => {
     setPassword(newPassowrd);
   };
-
-  const onLogin = async () => {
-    if (email.trim() && password.trim()) {
-      await props.login(email, password);
-    } else {
-      Toast.show({
-        text: "Usuario o contraseña no rellenados",
-        position: "top",
-        type: "warning",
-      });
+  
+  const handleLoginOnDynamicLink = async link => {
+    console.log("handleLoginOnDynamicLink",link);
+    if (link != undefined && link != null ) {
+      if (link.url.match(/loginSuccess/))
+      {
+        const url = link.url;
+        const token = url.split('token=').pop();
+        await loginWithAidi(token);
+      }
+      if (link.url.match(/loginDenied/))
+      {
+        console.log("loginDenied");
+        props.navigation.navigate("AccessDenied");
+      }
     }
   };
+
+  const goToErrorScreen = () => {
+    props.navigation.navigate("AccessDenied");
+  }
+
+  useEffect(() => {
+    console.log("useEffect dynamicLinks");
+    const unsubscribe = dynamicLinks().onLink(handleLoginOnDynamicLink);
+    return () => unsubscribe();
+  });
+  
+  useEffect(() => {
+    console.log("useEffect getInitialLink");
+    dynamicLinks().getInitialLink().then( link => { handleLoginOnDynamicLink(link); });
+  }) 
+
+  const sendToken = async () => {
+    await loginWithAidi(123456);
+    // await onLogin();
+  }
+  
+  const loginWithAidi = async (token) => {
+    await props.loginWithAidi(token);
+  }
+
+  const onLoginWithAidi = async () => {
+    const loginUrl = `https://aidi.page.link/XktS`;
+    const canOpenURL = await Linking.canOpenURL(loginUrl);
+    if (canOpenURL) Linking.openURL(loginUrl);
+    console.log("canOpenURL", canOpenURL, loginUrl);
+  }
 
   const register = () => {
     props.navigation.navigate("Register");
@@ -70,57 +108,18 @@ const Login = props => {
           <Text style={styles.title}>La Ronda</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
-        <Sae
-          label="Email"
-          value={email}
-          onChangeText={onChangeEmail}
-          iconClass={FontAwesomeIcon}
-          iconName="user"
-          iconColor="white"
-          inputPadding={16}
-          labelHeight={24}
-          borderHeight={2}
-          style={{ width: "80%" }}
-          autoCapitalize="none"
-          autoCorrect={false}
-          labelStyle={{ color: "white" }}
-        />
-        <Sae
-          label="Contraseña"
-          onChangeText={onChangePassword}
-          iconClass={FontAwesomeIcon}
-          iconName="unlock-alt"
-          iconColor="white"
-          secureTextEntry
-          inputPadding={16}
-          labelHeight={24}
-          value={password}
-          borderHeight={2}
-          style={{ width: "80%" }}
-          autoCapitalize="none"
-          autoCorrect={false}
-          labelStyle={{ color: "white" }}
-        />
-
         <Button
           background={TouchableNativeFeedback.Ripple("lightgray", false)}
-          onPress={onLogin}
+          onPress={onLoginWithAidi}
           style={styles.button}
         >
-          <Text style={{ color: "black" }}>Iniciar sesión</Text>
-        </Button>
-        <Button
-          background={TouchableNativeFeedback.Ripple("lightgray", false)}
-          onPress={register}
-          style={[styles.button, { marginTop: 10 }]}
-        >
-          <Text style={{ color: "black" }}>Registrate</Text>
+          <Text style={{ color: "black" }}>Iniciar con aidi</Text>
         </Button>
         <TouchableOpacity
           onPress={forgot}
           style={[styles.button, { backgroundColor: colors.mainBlue }]}
         >
-          <Text style={{ color: "white" }}>Olvide mi contraseña</Text>
+          <Text style={{ color: "white" }}>Recuperar Cuenta</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -151,6 +150,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  buttonTransparent: {
+    marginTop: 30,
+    borderRadius: 8,
+    backgroundColor: "transparent",
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   titleContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -176,6 +183,9 @@ const mapDispatchToProps = dispatch => {
   return {
     login: (username, password) => {
       dispatch(actions.login(username, password));
+    },
+    loginWithAidi: (token) => {
+      dispatch(actions.loginWithAidi(token));
     },
   };
 };
