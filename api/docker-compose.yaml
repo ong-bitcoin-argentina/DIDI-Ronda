@@ -1,0 +1,46 @@
+version: "3.3"
+services:
+  api:
+    build:
+      context: ./
+    image: ronda-api-dev
+    container_name: ronda-api
+    depends_on:
+      - mongodb
+    environment:
+      - ENVIROMENT=${ENVIROMENT}
+      - PORT=${PORT}
+      - API_KEY=${API_KEY}
+      - CIPHER_KEY=${CIPHER_KEY}
+      - SALT_STRING=${SALT_STRING}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_LIFETIME=${JWT_LIFETIME}
+      - MONGO_SERVER=${MONGO_SERVER}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTHTOKEN=${TWILIO_AUTHTOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+    networks:
+      - ronda
+    ports:
+      - 3000:${PORT}
+    volumes:
+      - ${CONFIG_DIR}:/configs
+
+  mongodb:
+    image: mongo:4.4.0
+    container_name: ronda-api-mongodb
+    volumes:
+      - ${VOLUME_DIR}/db-data:/data/db
+      - ${VOLUME_DIR}/configs:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - ronda
+    ports:
+      - 27017:27017
+
+networks:
+  ronda:
+    driver: bridge
