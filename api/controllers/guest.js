@@ -2,6 +2,7 @@
 const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
+const { createNotification } = require("../helpers/notifications/config");
 
 /*
     /login
@@ -33,7 +34,7 @@ exports.loginWithAidi = async (req, res) => {
       name: "hola",
       username: "hola1234"
     }
-    const {  username, password, name, token, nick } = user;
+    const {  username, password, name, nick } = user;
     //i create the user on ronda backend
     const data = await guest_services.register(
       username,
