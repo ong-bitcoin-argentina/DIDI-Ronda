@@ -17,7 +17,7 @@ require("dotenv").config();
 // Agenda
 const { agendaStart, walletRefillJob } = require("./jobs/jobs");
 
-const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
+const { PORT, IP_ADDRESS, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
 // parse application/json
 app.use(bodyParser.json());
@@ -70,20 +70,16 @@ mongoose.connect(
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
     }
-    const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
-    blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
-      app.listen(PORT, () => {
-        console.log(`------ LA RONDA API ------`);
-        console.log(`-   version ${version}   -`);
-        console.log(`-   ENV: ${ENVIROMENT}   - `);
-        console.log(`-------------------------- `);
-  
-        console.log(`Node server running on http://localhost:${PORT}`);
-
-        agendaStart();
-        walletRefillJob();
-      });
-    })
+    app.listen(PORT, IP_ADDRESS, () => {
+      console.log(`------ LA RONDA API ------`);
+      console.log(`-   version ${version}   -`);
+      console.log(`-   ENV: ${ENVIROMENT}   - `);
+      console.log(`-------------------------- `);
+      console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
+      
+      agendaStart();
+      walletRefillJob();
+    });
   }
 );
 /*** ./SERVER ****/

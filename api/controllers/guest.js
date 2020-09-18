@@ -2,6 +2,7 @@
 const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
+const { createNotification } = require("../helpers/notifications/config");
 
 /*
     /login
@@ -18,6 +19,37 @@ exports.login = async (req, res) => {
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");
+  }
+};
+
+exports.loginWithAidi = async (req, res) => {
+  console.log("running loginWithAidi.....");
+  const { token } = req.body;
+  try {
+    //something like this should be the user response from aidi
+    const user = {
+      phone: "2494611482",
+      email: "hola@atixlab.com",
+      nick: "hola",
+      name: "hola",
+      username: "hola1234"
+    }
+    const {  username, password, name, nick } = user;
+    //i create the user on ronda backend
+    const data = await guest_services.register(
+      username,
+      password,
+      name,
+      token,
+      nick
+    );
+    console.log("register result",data);
+    res.status(200).jsonp(user);
+  } catch (error) {
+    console.log(error,error);
+    return err.name === "customError"
+    ? generic(res, err.message)
+    : generic(res, "");
   }
 };
 

@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   //   ImageStore,
-} from "react-native";
-import { Spinner, Icon } from "native-base";
-import { createStackNavigator } from "react-navigation";
-import ImagePicker from "react-native-image-crop-picker";
-import Avatar from "../../../components/Avatar";
-import { getAuth } from "../../../../utils/utils";
-import colors from "../../../components/colors";
-import UserData from "../../UserProfile/UserData";
+} from 'react-native';
+import {Spinner, Icon} from 'native-base';
+import {createStackNavigator} from 'react-navigation-stack';
+import ImagePicker from 'react-native-image-crop-picker';
+import Avatar from '../../../components/Avatar';
+import {getAuth} from '../../../../utils/utils';
+import colors from '../../../components/colors';
+import UserData from '../../UserProfile/UserData';
 
 const emptyUser = {
   image: null,
-  name: "",
-  nick: "",
-  username: "",
-  phone: "",
+  name: '',
+  nick: '',
+  username: '',
+  phone: '',
 };
 
 const imgPickerOptions = {
@@ -33,6 +33,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(emptyUser);
   const getUser = async () => {
     const data = await getAuth();
+    console.log("getUser",data);
     setUser(data);
   };
 
@@ -42,7 +43,7 @@ const UserProfile = () => {
 
   const onPressAvatar = async () => {
     const img = await ImagePicker.openPicker(imgPickerOptions);
-    setUser({ ...user, picture: img.path });
+    setUser({...user, picture: img.path});
     // Se hace lo siguiente para obtener el base64
     // Luego se lo manipula y se sube al endpoint
     // ImageStore.getBase64ForTag(
@@ -60,8 +61,7 @@ const UserProfile = () => {
       <View style={styles.row}>
         <TouchableOpacity
           style={styles.avatarTouchableCoiner}
-          onPress={onPressAvatar}
-        >
+          onPress={onPressAvatar}>
           <Avatar size={150} path={user.picture} />
           <View style={styles.editButton}>
             <Icon
@@ -72,7 +72,7 @@ const UserProfile = () => {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 0.3, paddingVertical: 0 }}>
+      <View style={{flex: 0.3, paddingVertical: 0}}>
         {user.username ? (
           <UserData username={user.username} />
         ) : (
@@ -103,38 +103,38 @@ const UserProfile = () => {
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
-    color: "white",
-    width: "80%",
-    textAlign: "left",
+    color: 'white',
+    width: '80%',
+    textAlign: 'left',
     fontSize: 18,
   },
   container: {
-    alignItems: "center",
+    alignItems: 'center',
     flex: 1,
     paddingTop: 15,
   },
   editText: {
     fontSize: 13,
     marginVertical: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   avatarTouchableContainer: {
     marginVertical: 15,
   },
   row: {
-    backgroundColor: "white",
-    flexDirection: "row",
+    backgroundColor: 'white',
+    flexDirection: 'row',
   },
   dataContainer: {
     flex: 1,
     marginTop: 25,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    width: "100%",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
   },
   fieldRow: {
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   valueTitle: {
     fontSize: 11,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 22,
     color: colors.mainBlue,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   avatarTouchableCoiner: {
     borderColor: colors.mainBlue,
@@ -150,23 +150,23 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderWidth: 10,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   editButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: -18,
     backgroundColor: colors.mainBlue,
     borderRadius: 15,
     width: 38,
     height: 38,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   editIcon: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
   },
 });
@@ -176,7 +176,7 @@ export default createStackNavigator({
     screen: UserProfile,
     navigationOptions: () => ({
       title: `Ajustes`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
     }),
   },

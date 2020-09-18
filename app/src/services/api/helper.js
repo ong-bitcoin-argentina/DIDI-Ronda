@@ -7,7 +7,7 @@ const { API_URL, API_PORT, API_KEY } = Config;
 const apiCall = async (method, url, requestParams = {}) => {
   try {
     const token = await getToken();
-
+    
     // TODO:
     // If api call authorization fail, redirect login
 
