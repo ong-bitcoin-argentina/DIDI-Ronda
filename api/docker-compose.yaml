@@ -26,7 +26,7 @@ services:
     networks:
       - ronda
     ports:
-      - 3000:${PORT}
+      - ${PORT}:${PORT}
     volumes:
       - ${CONFIG_DIR}:/configs
 
