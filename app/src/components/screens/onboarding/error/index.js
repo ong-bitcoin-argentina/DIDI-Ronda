@@ -2,15 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet,KeyboardAvoidingView, TouchableNativeFeedback, Linking } from "react-native";
 import { Button } from "native-base";
 import colors from "../../../components/colors";
+import { openAdiLogin } from "./../../../../utils/appRouter";
 
 const errorScreen = (props) => {
 
-    const onLoginWithAidi = async () => {
-        const loginUrl = `https://aidi.page.link/XktS`;
-        const canOpenURL = await Linking.canOpenURL(loginUrl);
-        if (canOpenURL) Linking.openURL(loginUrl);
-        console.log("canOpenURL", canOpenURL, loginUrl);
-    }
+  const onLoginWithAidi = async () => await openAdiLogin();
       
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>

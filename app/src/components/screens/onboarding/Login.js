@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Sae } from "react-native-textinput-effects";
 import { connect } from "react-redux";
-import { Button, Toast, Spinner } from "native-base";
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Button, Spinner } from "native-base";
 import {
   View,
   Text,
-  Linking,
   KeyboardAvoidingView,
   StyleSheet,
   TouchableOpacity,
@@ -14,76 +11,28 @@ import {
 } from "react-native";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/auth";
-import dynamicLinks from "@react-native-firebase/dynamic-links";
+import { deepLinkHandler, dynamicLinkHandler, loginSuccess, loginDenied, getToken, openAdiLogin } from "./../../../utils/appRouter"
 
 const Login = props => {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-
-  const onChangeEmail = newEmail => {
-    setEmail(newEmail);
-  };
-
-  const onChangePassword = newPassowrd => {
-    setPassword(newPassowrd);
-  };
   
-  const handleLoginOnDynamicLink = async link => {
-    console.log("handleLoginOnDynamicLink",link);
-    if (link != undefined && link != null ) {
-      if (link.url.match(/loginSuccess/))
-      {
-        const url = link.url;
-        const token = url.split('token=').pop();
-        await loginWithAidi(token);
-      }
-      if (link.url.match(/loginDenied/))
-      {
-        console.log("loginDenied");
-        props.navigation.navigate("AccessDenied");
-      }
-    }
+  const handleLogin = async link => {
+    if (link == undefined && link == null ) return;
+    if (loginSuccess(link)) await loginWithAidi(getToken(link));
+    if (loginDenied(link)) props.navigation.navigate("AccessDenied");
   };
 
-  const goToErrorScreen = () => {
-    props.navigation.navigate("AccessDenied");
-  }
-
-  useEffect(() => {
-    console.log("useEffect dynamicLinks");
-    const unsubscribe = dynamicLinks().onLink(handleLoginOnDynamicLink);
-    return () => unsubscribe();
-  });
+  const goToErrorScreen = () => props.navigation.navigate("AccessDenied");
   
-  useEffect(() => {
-    console.log("useEffect getInitialLink");
-    dynamicLinks().getInitialLink().then( link => { handleLoginOnDynamicLink(link); });
-  }) 
-
-  const sendToken = async () => {
-    await loginWithAidi(123456);
-    // await onLogin();
-  }
+  useEffect(deepLinkHandler(handleLogin))
+ 
+  useEffect(dynamicLinkHandler(handleLogin));
   
-  const loginWithAidi = async (token) => {
-    await props.loginWithAidi(token);
-  }
+  const loginWithAidi = async (token) => await props.loginWithAidi(token);
 
-  const onLoginWithAidi = async () => {
-    const loginUrl = `https://aidi.page.link/XktS`;
-    const canOpenURL = await Linking.canOpenURL(loginUrl);
-    if (canOpenURL) Linking.openURL(loginUrl);
-    console.log("canOpenURL", canOpenURL, loginUrl);
-  }
+  const onLoginWithAidi = async () => await openAdiLogin();
 
-  const register = () => {
-    props.navigation.navigate("Register");
-  };
-
-  const forgot = () => {
-    props.navigation.navigate("Forgot");
-  };
-
+  const forgot = () => props.navigation.navigate("Forgot");
+  
   const loading = () => (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
@@ -121,6 +70,12 @@ const Login = props => {
         >
           <Text style={{ color: "white" }}>Recuperar Cuenta</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={goToErrorScreen}
+          style={[styles.button, { backgroundColor: colors.mainBlue }]}
+        >
+          <Text style={{ color: "white" }}>Go to error Screen</Text>
+        </TouchableOpacity>   
       </View>
     </KeyboardAvoidingView>
   );
