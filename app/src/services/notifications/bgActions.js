@@ -1,5 +1,5 @@
 import firebase from '@react-native-firebase/app';
-import '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 import { Platform } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { getAuth } from "../../utils/utils";
@@ -12,36 +12,37 @@ export const enabledNotifications = true;
 
 // WITH OPEN APP
 export const notificationListener = () => {
-  // const listener = firebase.messaging().onNotification(notification => {
-  //   const newNotification = new firebase.notifications.Notification({
-  //     data: notification.data,
-  //     sound: "default",
-  //     show_in_foreground: true,
-  //     title: notification.title,
-  //     body: notification.body,
-  //   });
+  const listener = messaging().onNotificationOpenedApp(notification => {
+    console.log("notification",notification);
+    const newNotification = new firebase.notifications.Notification({
+      data: notification.data,
+      sound: "default",
+      show_in_foreground: true,
+      title: notification.title,
+      body: notification.body
+    });
 
-  //   if (Platform.OS === "android") {
-  //     newNotification.android
-  //       .setPriority(firebase.notifications.Android.Priority.Max)
-  //       .android.setAutoCancel(true)
-  //       .android.setChannelId("ronda")
-  //       .android.setVibrate(1000);
-  //   }
-  //   const { data } = notification;
-  //   if (data && data.reloadRounds) store.dispatch(roundsActions.loadRounds());
+    if (Platform.OS === "android") {
+      newNotification.android
+        .setPriority(firebase.notifications.Android.Priority.Max)
+        .android.setAutoCancel(true)
+        .android.setChannelId("ronda")
+        .android.setVibrate(1000);
+    }
+    const { data } = notification;
+    if (data && data.reloadRounds) store.dispatch(roundsActions.loadRounds());
 
-  //   firebase.messaging().displayNotification(newNotification);
-  // });
-  return firebase.messaging();
+    messaging().displayNotification(newNotification);
+  });
+  return messaging();
 };
 
 // BACKGROUND
 export const notificationOpen = async (navigator, notificationData) => {
+  console.log("notificationData",notificationData);
   let finalData = notificationData;
   if (!finalData) {
-    const openNotificationData = await firebase
-      .messaging()
+    const openNotificationData = await messaging()
       .getInitialNotification();
     if (openNotificationData) {
       const { notification } = openNotificationData;

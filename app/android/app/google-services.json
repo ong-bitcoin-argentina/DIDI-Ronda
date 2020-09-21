@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "247471219459",
-    "firebase_url": "https://didi-ar.firebaseio.com",
-    "project_id": "didi-ar",
-    "storage_bucket": "didi-ar.appspot.com"
+    "project_number": "254161629893",
+    "firebase_url": "https://ronda-qa.firebaseio.com",
+    "project_id": "ronda-qa",
+    "storage_bucket": "ronda-qa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:247471219459:android:f715cfa474443bc446ff36",
+        "mobilesdk_app_id": "1:254161629893:android:ed46779fdc72075ad2b6ac",
         "android_client_info": {
           "package_name": "com.aidironda"
         }
       },
       "oauth_client": [
         {
-          "client_id": "247471219459-d9k9eroqju27n901ajbicg7hvad71hj3.apps.googleusercontent.com",
+          "client_id": "254161629893-udbg5dcq2qai43o5kcc4ibi5rvpdkmeb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aidironda",
+            "certificate_hash": "fee0f3c204f73df10495c44e7c2a355b8ce909a0"
+          }
+        },
+        {
+          "client_id": "254161629893-pb8p0df8gv3vopuuip7elarbpanpd2ui.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDi0VAw3rlydymKx9eRl5S6HR9QZUENEs8"
+          "current_key": "AIzaSyDiKUAt2rYxPceH_PUyK0Emi1a_hMAiS6o"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "247471219459-d9k9eroqju27n901ajbicg7hvad71hj3.apps.googleusercontent.com",
+              "client_id": "254161629893-pb8p0df8gv3vopuuip7elarbpanpd2ui.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
