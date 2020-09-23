@@ -32,18 +32,25 @@ exports.loginWithAidi = async (req, res) => {
       email: "hola@atixlab.com",
       nick: "hola",
       name: "hola",
-      username: "hola1234"
+      username: "hola1234",
+      password: "1234hola123"
     }
-    const {  username, password, name, nick } = user;
-    //i create the user on ronda backend
-    const data = await guest_services.register(
-      username,
-      password,
-      name,
-      token,
-      nick
-    );
-    console.log("register result",data);
+    try {
+      const {  username, password, name, nick } = user;
+      //i create the user on ronda backend
+      const data = await guest_services.register(
+        username,
+        password,
+        name,
+        token,
+        nick
+      );
+      const registeredUser = await postResBackground.registerUser(data);
+      console.log("register result",registeredUser);
+    } catch (error) {
+      console.log("user couldn't be register bcz: ", error)
+    }
+
     res.status(200).jsonp(user);
   } catch (error) {
     console.log(error,error);
