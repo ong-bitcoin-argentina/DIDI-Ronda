@@ -26,6 +26,6 @@ RUN apk update && apk upgrade && \
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3200
 
 CMD [ "node", "app.js" ]

@@ -15,7 +15,7 @@
 ## .env configuration
 
 - ENVIROMENT: `dev` or `prod`
-- PORT: Api port to run server. Example: `3000`
+- PORT: Api port to run server. Example: `3200`
 - API_KEY: Create api key authorization to make request. Example: `123456`
 
 - JWT_SECRET: Secret string to generate JWT tokens. Example: `thisisastring`

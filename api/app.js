@@ -70,19 +70,16 @@ mongoose.connect(
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
     }
-    const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
-    blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
-      app.listen(PORT, IP_ADDRESS, () => {
-        console.log(`------ LA RONDA API ------`);
-        console.log(`-   version ${version}   -`);
-        console.log(`-   ENV: ${ENVIROMENT}   - `);
-        console.log(`-------------------------- `);
-        console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
-        
-        agendaStart();
-        walletRefillJob();
-      });
-    })
+    app.listen(PORT, IP_ADDRESS, () => {
+      console.log(`------ LA RONDA API ------`);
+      console.log(`-   version ${version}   -`);
+      console.log(`-   ENV: ${ENVIROMENT}   - `);
+      console.log(`-------------------------- `);
+      console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
+      
+      agendaStart();
+      walletRefillJob();
+    });
   }
 );
 /*** ./SERVER ****/

@@ -14,6 +14,7 @@ import * as actions from "../../../actions/auth";
 import { deepLinkHandler, dynamicLinkHandler, loginSuccess, loginDenied, getToken, openAdiLogin } from "./../../../utils/appRouter"
 
 const Login = props => {
+
   const handleLogin = async link => {
     if (link == undefined && link == null ) return;
     if (loginSuccess(link)) await loginWithAidi(getToken(link));
@@ -82,6 +83,7 @@ const Login = props => {
           style={[styles.button, { backgroundColor: colors.mainBlue }]}
         >
           <Text style={{ color: "white" }}>Send Token</Text>
+
         </TouchableOpacity>   
       </View>
     </KeyboardAvoidingView>
