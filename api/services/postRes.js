@@ -304,7 +304,7 @@ exports.registerUser = async params => {
         [address],
         WALLET_TARGET_WEI
       );
-      await Promise.all(
+      return await Promise.all(
         results.map(async ({ error, success }) => {
           if (!success) throw error;
           addedBalance = true;
@@ -338,7 +338,13 @@ exports.registerUser = async params => {
   }
 
   await registerUserProcessing(token, username, true);
-  if (user) await sendVerificationToken(username, verifyToken);
+
+  try {
+    if (user) await sendVerificationToken(username, verifyToken);  
+  } catch (error) {
+    console.error("send verification token via email failed: ",error)
+  }
+  
 
   return null;
 };
