@@ -196,5 +196,5 @@
 {"name":"Antons","lastname":"Brockett","username":"abrockett5f@devhub.com"},
 {"name":"Morly","lastname":"Clutram","username":"mclutram5g@smh.com.au"},
 {"name":"Nikolia","lastname":"Leyninye","username":"nleyninye5i@gov.uk"},
-{"name":"Test","lastname":"User","username":"user@test.com"},
+{"name":"Test","lastname":"User","username":"user@test.com","password":"$2b$10$xyryKMPwfWvioOt1SrICXeKKoHf6xjWPMDkzBr8IdDpVlemE/QmAW"},
 {"name":"Nelson","lastname":"Miklem","username":"nmiklem5h@fc2.com"}]
