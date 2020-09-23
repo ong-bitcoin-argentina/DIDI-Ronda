@@ -12,13 +12,9 @@ exports.login = async (req, res) => {
 
   try {
     const auth = await guest_services.login(username, password);
-    return auth && auth.error
-      ? res.status(200).jsonp({ error: auth.error })
-      : res.status(200).jsonp(auth);
+    return res.status(200).jsonp(auth);
   } catch (err) {
-    return err.name === "customError"
-      ? generic(res, err.message)
-      : generic(res, "");
+    return generic(res, err.message);
   }
 };
 

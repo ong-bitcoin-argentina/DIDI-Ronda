@@ -2,7 +2,7 @@
 module.exports = {
   testEnvironment: "node",
   setupFilesAfterEnv: ["./test/setup.js"],
-  testTimeout: 5000,
+  testTimeout: 500000,
   verbose: true,
   clearMocks: true,
   collectCoverage: true,
