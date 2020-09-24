@@ -9,6 +9,7 @@ const { API_KEY } = process.env;
 
 // Fake user and token (real)
 const FAKE_USER = "user@test.com";
+const FAKE_PASSWORD = FAKE_USER;
 const FAKE_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJAdGVzdC5jb20ifQ.c9i-82vqIMQtgzLG1t6Q_57CzC2knFXBM7r_5YOInaE";
 
@@ -19,7 +20,7 @@ describe("GUEST", () => {
   // Test invalid api_key (401 expected)
   it("Test api key | POST /login", done => {
     const username = FAKE_USER;
-    const password = FAKE_USER;
+    const password = FAKE_PASSWORD;
 
     return request(server)
       .post("/login")
@@ -38,7 +39,7 @@ describe("GUEST", () => {
   // Test login authorized user (200, valid token expected)
   it("Login - check token decode | POST /login", done => {
     const username = FAKE_USER;
-    const password = FAKE_USER;
+    const password = FAKE_PASSWORD;
 
     return request(server)
       .post("/login")
@@ -51,9 +52,8 @@ describe("GUEST", () => {
       .end((err, res) => {
         if (err) return done(err);
         //    Validate token username
-        const decodedUsername =
-          res.body && res.body.auth && decodeJWT(res.body.auth.token);
-        assert.equal(decodedUsername, username);
+        const decodedUsername = decodeJWT(res.body.jwtToken);
+        assert.strictEqual(decodedUsername, username);
         return done();
       });
   });

@@ -4,6 +4,7 @@ import { StyleSheet, Linking } from "react-native";
 import { Icon, View, Text, Spinner } from "native-base";
 import colors from "../../components/colors";
 import * as userDataActions from "../../../actions/userData";
+import { openAidiCredentials } from "../../../utils/appRouter";
 
 const UserData = props => {
   useEffect(() => {
@@ -22,10 +23,8 @@ const UserData = props => {
     completedRoundsCount: "-",
   };
 
-  const goToAidiCredentials = () => {
-    console.log("goToAidiCredentials");
-    const url = "https://aidi.page.link/mKfG"
-    Linking.openURL(url);
+  const goToAidiCredentials = async () => {
+    await openAidiCredentials();
   }
 
   return (
