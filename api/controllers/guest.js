@@ -4,6 +4,7 @@ const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
 const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
+const { customError } = require("../helpers/errorHandler");
 /*
     /login
 */
@@ -23,8 +24,7 @@ exports.loginWithAidi = async (req, res) => {
   try {
     //something like this should be the user response from aidi
     const { token } = req.body;  
-    const user = aidi_service.getUser(token);
-    
+    const user = await aidi_service.getUser(token);
     try {
       const {  username, password, name, nick } = user;
       //i create the user on ronda backend
@@ -46,7 +46,7 @@ exports.loginWithAidi = async (req, res) => {
     
   } catch (error) {
     console.log(error,error);
-    return err.name === "customError"
+    err.name === "customError"
     ? generic(res, err.message)
     : generic(res, "");
   }
