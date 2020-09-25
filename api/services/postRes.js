@@ -279,6 +279,36 @@ const sendVerificationToken = async (username, token) => {
   return token;
 };
 
+exports.registerAidiUser = async params => {
+  try {
+    const { nick, username, password, name, token, phone } = params;
+
+    const { address, privateKey } = await walletUtil.createWallet();
+  
+    const encryptedAddress = crypto.cipher(address);
+    const encryptedPK = crypto.cipher(privateKey);
+    const verifyToken = tokens.generate();
+    const user = await user_manager.saveUser(
+      username,
+      password,
+      name,
+      token,
+      verifyToken,
+      nick,
+      encryptedAddress,
+      encryptedPK
+    );
+    user.verified = true;
+    user.phone = phone;
+    user.save();
+    console.log("registerAidiUser user", user);
+    return user;
+  } catch (error) {
+    console.log("registerAidiUser error", error);
+    return error;
+  }
+}
+
 exports.registerUser = async params => {
   const { nick, username, password, name, token } = params;
 

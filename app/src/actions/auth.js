@@ -159,7 +159,6 @@ export const cleanForgot = () => {
 export const loginWithAidi = (token) => {
   return async (dispatch) => {
     dispatch(loginStart());
-    console.log("auth loginWithAidi", token);
     const session = await UserService.loginWithAidi(token);
 
     if (!session.error) {

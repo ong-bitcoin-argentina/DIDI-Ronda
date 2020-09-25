@@ -40,7 +40,7 @@ exports.create = async req => {
     shifts,
     participants,
   } = req.body;
-
+  console.log("creating round", name, username);
   // Check at least 1 participant
   if (participants.length === 0)
     throw new customError(`There must be at least 1 participant`);

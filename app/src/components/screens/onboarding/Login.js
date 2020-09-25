@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Config from "react-native-config";
 import { connect } from "react-redux";
 import { Button, Spinner } from "native-base";
 import {
@@ -27,7 +28,7 @@ const Login = props => {
  
   useEffect(dynamicLinkHandler(handleLogin));
 
-  const sendToken = async () => await loginWithAidi("1234");
+  const sendToken = async () => await loginWithAidi("dUESJ7tmSnC4nnoTanLsyO:APA91bGzkN2xVYZhuXN6DKn7o1HtdjsFDbx4gjyORFVHd65tX-Vfh8acL1KgSsc5JJjbCI7OicGFrW0W8izsrScAs5ZwDet3lYIQEZgz5vfroUYKTiTpory2NiWhbJ4MuLOy1yNrt6jN");
   
   const loginWithAidi = async (token) => await props.loginWithAidi(token);
 
@@ -47,6 +48,7 @@ const Login = props => {
 
   let subtitle = "Inicio de sesión";
   const { error, loading: isLoading } = props;
+  const { QA } = Config;
 
   if (error) subtitle = "Usuario o contraseña incorrectos";
 
@@ -77,14 +79,15 @@ const Login = props => {
           style={[styles.button, { backgroundColor: colors.mainBlue }]}
         >
           <Text style={{ color: "white" }}>Go to error Screen</Text>
-        </TouchableOpacity>           
-        <TouchableOpacity
+        </TouchableOpacity>
+        {QA && <TouchableOpacity
           onPress={sendToken}
           style={[styles.button, { backgroundColor: colors.mainBlue }]}
         >
           <Text style={{ color: "white" }}>Send Token</Text>
 
-        </TouchableOpacity>   
+        </TouchableOpacity> }           
+          
       </View>
     </KeyboardAvoidingView>
   );
