@@ -22,9 +22,9 @@ exports.login = async (req, res) => {
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
-    //something like this should be the user response from aidi
     const { token } = req.body;  
     const user = await aidi_service.getUser(token);
+
     try {
       const {  username, password, name, nick } = user;
       //i create the user on ronda backend
@@ -39,7 +39,7 @@ exports.loginWithAidi = async (req, res) => {
       const registeredUser = await postResBackground.registerAidiUser({...user,...data});
       return res.status(200).jsonp(user);
     } catch (error) {
-      console.log("user couldn't be register bcz: ", error)
+      console.log("user couldn't be register bcz: ", error);
     }
 
     if (user) return res.status(200).jsonp(user);
