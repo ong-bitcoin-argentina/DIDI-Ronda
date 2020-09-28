@@ -33,7 +33,7 @@ exports.getUser = async (token) => {
             },
         });
         if (!response.data) throw new customError("Usuario invalido");
-        return  await formatAidiResponse(response.data);
+        return await formatAidiResponse(response.data);
     } catch (e) {
         console.log("No se pudo validar el usuario con aidi");
     }

@@ -17,9 +17,9 @@ import { deepLinkHandler, dynamicLinkHandler, loginSuccess, loginDenied, getToke
 const Login = props => {
 
   const handleLogin = async link => {
-    if (link == undefined && link == null ) return;
+    if (!link) return;
     if (loginSuccess(link)) await loginWithAidi(getToken(link));
-    if (loginDenied(link)) props.navigation.navigate("AccessDenied");
+    else if (loginDenied(link)) props.navigation.navigate("AccessDenied");
   };
 
   const goToErrorScreen = () => props.navigation.navigate("AccessDenied");
