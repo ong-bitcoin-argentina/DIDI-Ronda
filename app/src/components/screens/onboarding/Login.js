@@ -7,13 +7,12 @@ import {
   Text,
   KeyboardAvoidingView,
   StyleSheet,
-  TouchableOpacity,
   TouchableNativeFeedback,
+  ImageBackground
 } from "react-native";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/auth";
 import { deepLinkHandler, dynamicLinkHandler, loginSuccess, loginDenied, getToken, openAdiLogin } from "./../../../utils/appRouter"
-
 const Login = props => {
 
   const handleLogin = async link => {
@@ -24,9 +23,9 @@ const Login = props => {
 
   const goToErrorScreen = () => props.navigation.navigate("AccessDenied");
   
-  useEffect(deepLinkHandler(handleLogin))
+  useEffect(deepLinkHandler(handleLogin),[])
  
-  useEffect(dynamicLinkHandler(handleLogin));
+  useEffect(dynamicLinkHandler(handleLogin),[]);
 
   const sendToken = async () => await loginWithAidi("dUESJ7tmSnC4nnoTanLsyO:APA91bGzkN2xVYZhuXN6DKn7o1HtdjsFDbx4gjyORFVHd65tX-Vfh8acL1KgSsc5JJjbCI7OicGFrW0W8izsrScAs5ZwDet3lYIQEZgz5vfroUYKTiTpory2NiWhbJ4MuLOy1yNrt6jN");
   
@@ -46,54 +45,34 @@ const Login = props => {
     </KeyboardAvoidingView>
   );
 
-  let subtitle = "Inicio de sesión";
-  const { error, loading: isLoading } = props;
-  const { QA } = Config;
-
-  if (error) subtitle = "Usuario o contraseña incorrectos";
+  const { loading: isLoading } = props;
 
   if (isLoading) return loading();
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-      <View style={styles.formContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
-        </View>
-        <Button
-          background={TouchableNativeFeedback.Ripple("lightgray", false)}
-          onPress={onLoginWithAidi}
-          style={styles.button}
-        >
-          <Text style={{ color: "black" }}>Iniciar con aidi</Text>
-        </Button>
-        <TouchableOpacity
-          onPress={forgot}
-          style={[styles.button, { backgroundColor: colors.mainBlue }]}
-        >
-          <Text style={{ color: "white" }}>Recuperar Cuenta</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={goToErrorScreen}
-          style={[styles.button, { backgroundColor: colors.mainBlue }]}
-        >
-          <Text style={{ color: "white" }}>Go to error Screen</Text>
-        </TouchableOpacity>
-        {QA && <TouchableOpacity
-          onPress={sendToken}
-          style={[styles.button, { backgroundColor: colors.mainBlue }]}
-        >
-          <Text style={{ color: "white" }}>Send Token</Text>
-
-        </TouchableOpacity> }           
-          
-      </View>
-    </KeyboardAvoidingView>
+    <ImageBackground source={require("../../../assets/img/loginbackground.png")} style={styles.backgroundImage}>
+          <View style={styles.formContainer}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Ronda</Text>
+            </View>
+            <Button
+              background={TouchableNativeFeedback.Ripple("lightgray", false)}
+              onPress={onLoginWithAidi}
+              style={styles.button}
+            >
+              <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>Conectate con ai-di</Text>
+            </Button>       
+          </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -111,7 +90,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
-    backgroundColor: "white",
+    // backgroundColor: "white",
+    backgroundColor: "#24CDD2",
     borderRadius: 8,
     width: "80%",
     justifyContent: "center",
