@@ -35,12 +35,12 @@ const UserData = props => {
           name="filter-tilt-shift"
           style={styles.userDataInfoIcon}
         />
+        <Text style={styles.userDataInfoText}>Rondas que participó</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
           <Text style={styles.userDataInfoValue}>{roundsCount}</Text>
         )}
-        <Text style={styles.userDataInfoText}>Rondas que participó</Text>
       </View>
       <View style={[styles.userDataInfo]}>
         <Icon
@@ -54,26 +54,27 @@ const UserData = props => {
           size={5}
           style={[styles.userDataInfoIcon, styles.userDataIconCheck]}
         />
+        <Text style={styles.userDataInfoText}>Rondas completadas</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
           <Text style={styles.userDataInfoValue}>{completedRoundsCount}</Text>
         )}
-        <Text style={styles.userDataInfoText}>Rondas completadas</Text>
       </View>
       <View style={[styles.userDataInfo]}>
         <Icon
           onPress={goToAidiCredentials}
-          type="MaterialIcons"
-          name="filter-tilt-shift"
+          type="Ionicons"
+          name="md-card"
           style={styles.userDataInfoIcon}
         />
+        <Text onPress={goToAidiCredentials} style={styles.userDataInfoText}>Certificados de Rondas</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
           <Text onPress={goToAidiCredentials} style={styles.userDataInfoValue}>{completedRoundsCount}</Text>
         )}
-        <Text onPress={goToAidiCredentials} style={styles.userDataInfoText}>Certificados de Rondas</Text>
+        
       </View>
     </View>
   );
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.backgroundGray,
   },
-
   userData: {
     marginTop: 40,
     width: "100%",
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 40,
   },
   userDataInfo: {
     flexDirection: "column",
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderColor: colors.secondary,
   },
   userDataInfoValue: {
-    color: "#000",
+    color: colors.white,
     fontSize: 15,
     fontWeight: "bold",
   },
@@ -113,10 +113,12 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontSize: 13,
     textAlign: "center",
+    color: colors.white
   },
   userDataInfoIcon: {
-    color: colors.mainBlue,
+    color: colors.white,
     marginBottom: 5,
+    marginTop:10
   },
   userDataIconCheck: {
     position: "absolute",

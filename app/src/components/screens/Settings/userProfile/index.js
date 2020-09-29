@@ -62,7 +62,7 @@ const UserProfile = () => {
         <TouchableOpacity
           style={styles.avatarTouchableCoiner}
           onPress={onPressAvatar}>
-          <Avatar size={150} path={user.picture} />
+          <Avatar size={130} path={user.picture} />
           <View style={styles.editButton}>
             <Icon
               type="SimpleLineIcons"
@@ -72,7 +72,7 @@ const UserProfile = () => {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{flex: 0.3, paddingVertical: 0}}>
+      <View style={{flex: 0.3, paddingVertical: 0, backgroundColor: colors.mainBlue}}>
         {user.username ? (
           <UserData username={user.username} />
         ) : (
@@ -81,20 +81,43 @@ const UserProfile = () => {
       </View>
       <View style={styles.dataContainer}>
         <View style={styles.fieldRow}>
-          <Text style={styles.valueTitle}>NICKNAME</Text>
-          <Text style={styles.value}>{user.nick}</Text>
+          <View>
+            <Icon
+              type="MaterialIcons"
+              name="account-circle"
+              style={styles.userDataInfoIcon}
+            />
+          </View>
+          <View style={{paddingLeft:15}}>
+            <Text style={styles.valueTitle}>NICKNAME</Text>
+            <Text style={styles.value}>{user.nick}</Text>
+          </View>
         </View>
         <View style={styles.fieldRow}>
-          <Text style={styles.valueTitle}>NOMBRE</Text>
-          <Text style={styles.value}>{user.name}</Text>
+          <View>
+            <Icon
+              type="MaterialIcons"
+              name="mail"
+              style={styles.userDataInfoIcon}
+            />
+          </View>
+          <View style={{paddingLeft:15}}>
+            <Text style={styles.valueTitle}>EMAIL</Text>
+            <Text style={styles.value}>{user.username.toLowerCase()}</Text>
+          </View>
         </View>
         <View style={styles.fieldRow}>
-          <Text style={styles.valueTitle}>EMAIL</Text>
-          <Text style={styles.value}>{user.username.toLowerCase()}</Text>
-        </View>
-        <View style={styles.fieldRow}>
-          <Text style={styles.valueTitle}>TELEFONO</Text>
-          <Text style={styles.value}>{user.phone}</Text>
+          <View style={styles}>
+            <Icon
+              type="MaterialIcons"
+              name="phone"
+              style={styles.userDataInfoIcon}
+            />
+          </View>
+          <View style={{paddingLeft:15}}>
+            <Text style={styles.valueTitle}>TELEFONO</Text>
+            <Text style={styles.value}>{user.phone}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -102,6 +125,10 @@ const UserProfile = () => {
 };
 
 const styles = StyleSheet.create({
+  userDataInfoIcon: {
+    color: colors.gray,
+    marginBottom: 5,
+  },
   headerTitleStyle: {
     color: 'white',
     width: '80%',
@@ -110,8 +137,9 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
+    backgroundColor: colors.mainBlue,
     flex: 1,
-    paddingTop: 15,
+    paddingTop: 35,
   },
   editText: {
     fontSize: 13,
@@ -124,32 +152,38 @@ const styles = StyleSheet.create({
   row: {
     backgroundColor: 'white',
     flexDirection: 'row',
+    backgroundColor: colors.mainBlue,
+    height: "36%"
   },
   dataContainer: {
+    paddingLeft: 50,
     flex: 1,
-    marginTop: 25,
+    marginTop: 30,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '100%',
+    backgroundColor: colors.secondaryWhite,
   },
   fieldRow: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20,
   },
   valueTitle: {
     fontSize: 11,
   },
   value: {
-    fontSize: 22,
-    color: colors.mainBlue,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   avatarTouchableCoiner: {
-    borderColor: colors.mainBlue,
+    borderColor: colors.white,
+    backgroundColor: colors.mainBlue,
     borderRadius: 80,
-    width: 160,
-    height: 160,
-    borderWidth: 10,
+    width: 130,
+    height: 130,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -158,7 +192,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: -18,
-    backgroundColor: colors.mainBlue,
+    backgroundColor: colors.white,
     borderRadius: 15,
     width: 38,
     height: 38,
@@ -166,7 +200,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   editIcon: {
-    color: 'white',
+    color: colors.mainBlue,
     fontSize: 16,
   },
 });
@@ -175,7 +209,7 @@ export default createStackNavigator({
   Settings: {
     screen: UserProfile,
     navigationOptions: () => ({
-      title: `Ajustes`,
+      title: `Mi Perfil`,
       headerStyle: {backgroundColor: '#417fd7'},
       headerTitleStyle: styles.headerTitleStyle,
     }),
