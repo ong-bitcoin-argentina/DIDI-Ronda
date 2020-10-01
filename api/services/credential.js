@@ -60,7 +60,8 @@ const emmitRoundParticipants = async round => {
   if (!endDate || isAfterNow) throw new customError("La ronda aún no finalizó");
 
   const filteredParticipants = round.participants.filter(
-    participant => participant.user && participant.user.did
+    participant =>
+      participant.user && participant.user.did && !participant.credentialJWT
   );
   const credentials = filteredParticipants.map(participant =>
     getCredential(participant, round)
