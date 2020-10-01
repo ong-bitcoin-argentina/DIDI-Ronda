@@ -4,15 +4,15 @@ exports.findById = async id => {
   return await Round.findById(id)
     .populate({
       path: "admin",
-      model: "User",
+      model: "User"
     })
     .populate({
       path: "participants",
       model: "Participant",
       populate: {
         path: "user",
-        model: "User",
-      },
+        model: "User"
+      }
     })
     .then(round => round)
     .catch(err => ({ error: err }));
@@ -51,6 +51,6 @@ exports.createModel = async (
     firstPaymentDate: firstPaymentDate,
     admin: admin,
     participants: participants,
-    shifts: shifts,
+    shifts: shifts
   });
 };

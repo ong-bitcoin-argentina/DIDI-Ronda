@@ -5,8 +5,8 @@ const router = express.Router();
 const credential_controller = require("../controllers/credential");
 
 router.post(
-	"/rounds/:roundId/emmit",
-	credential_controller.emmitRoundParticipantsById
+  "/rounds/:roundId/emmit",
+  credential_controller.emmitRoundParticipantsById
 );
 
 module.exports = router;
