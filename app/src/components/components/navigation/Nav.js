@@ -19,7 +19,7 @@ const Main = createBottomTabNavigator(
       screen: RoundsList,
     },
     Notificaciones: {screen: Home},
-    Ajustes: {screen: UserProfile},
+    Perfil: {screen: UserProfile},
   },
   {
     initialRouteName: 'Rondas',
@@ -41,15 +41,16 @@ const Main = createBottomTabNavigator(
               <Text style={styles.tabText}>Notificaciones</Text>
             ) : null;
             break;
-          case 'Ajustes':
+          case 'Perfil':
             label = focused ? (
-              <Text style={styles.tabText}>Ajustes</Text>
+              <Text style={styles.tabText}>Perfil</Text>
             ) : null;
             break;
           default:
             label = null;
         }
-        return label;
+        // return label, if we want to show page name on the navigation
+        return null;
       },
       tabBarIcon: ({tintColor}) => {
         const {routeName} = navigation.state;
@@ -64,11 +65,12 @@ const Main = createBottomTabNavigator(
             iconFamily = 'MaterialIcons';
             break;
           case 'Notificaciones':
-            iconName = `perm-contact-calendar`;
+            iconName = `notifications`;
             iconFamily = 'MaterialIcons';
             break;
-          case 'Ajustes':
-            iconName = `md-settings`;
+          case 'Perfil':
+            iconName = `account`;
+            iconFamily = 'MaterialCommunityIcons';
             break;
           default:
             break;

@@ -24,29 +24,32 @@ export const openApp = async ({ dynamicLink, deppLink }) => {
 }
 
 export const deepLinkHandler = (myHandler) => {
-    console.log("deepLinkHandler");
     Linking.getInitialURL().then(myHandler);
     Linking.addEventListener("url",myHandler);
-    return () => { Linking.removeEventListener("url", e => console.log("url",e)); }
+    return () => { Linking.removeEventListener("url", e => console.log("removeEventListener",e)); }
 }
 
 export const dynamicLinkHandler = (myHandler) => {
-    console.log("dynamicLinkHandler");
     dynamicLinks().getInitialLink().then(myHandler);
     const unsubscribe = dynamicLinks().onLink(myHandler);
-    return () => unsubscribe();
+    return () => { console.log("removing listeners"); unsubscribe() };
 }
 
 export const loginSuccess = (link) => {
-    return link.url.match(/loginSuccess/);
+    if (!link) return false;
+    const url = link.url ? link.url : link;
+    return url.match(/loginSuccess/);
 }
 
 export const loginDenied = (link) => {
-    return link.url.match(/loginDenied/);
+    if (!link) return false;
+    const url = link.url ? link.url : link;
+    return url.match(/loginDenied/);
 }
 
 export const getToken = (link) => {
-    const url = link.url;
+    if (!link) return false;
+    const url = link.url ? link.url : link;
     const token = url.split('token=').pop();
     return token;
 }

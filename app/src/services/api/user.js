@@ -15,7 +15,7 @@ export const login = async (username, password) => {
 
 // loginWithAidi
 export const loginWithAidi = async (token) => {
-  console.log("sending request.... loginWithAidi", token)
+  console.log("sending request.... loginWithAidi")
   try {
     return await apiCall("post", "/login/aidi", {
       token

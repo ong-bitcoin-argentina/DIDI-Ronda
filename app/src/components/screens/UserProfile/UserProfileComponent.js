@@ -21,6 +21,8 @@ const UserProfile = props => {
             flexDirection: "column",
             justifyContent: "center",
             marginTop: 15,
+            marginBottom: 20,
+            backgroundColor: colors.mainBlue,
           }}
         >
           <Avatar path={participant.user.picture} size={avatarSize} />
@@ -41,17 +43,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.backgroundGray,
+    backgroundColor: colors.mainBlue,
+    backgroundColor: "#417FD7"
   },
   avatarContainer: {
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: colors.secondaryBackground,
+    backgroundColor: colors.mainBlue,
     width: "100%",
+    paddingBottom: 15
   },
   profileContainer: {
     flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   profileName: {
     marginTop: 5,
