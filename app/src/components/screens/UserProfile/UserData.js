@@ -35,7 +35,7 @@ const UserData = props => {
           name="filter-tilt-shift"
           style={styles.userDataInfoIcon}
         />
-        <Text style={styles.userDataInfoText}>Rondas que participó</Text>
+        <Text style={styles.userDataInfoText}>Todas mis Rondas</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
@@ -54,7 +54,7 @@ const UserData = props => {
           size={5}
           style={[styles.userDataInfoIcon, styles.userDataIconCheck]}
         />
-        <Text style={styles.userDataInfoText}>Rondas completadas</Text>
+        <Text style={styles.userDataInfoText}>Mis Rondas Terminadas</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
@@ -64,8 +64,8 @@ const UserData = props => {
       <View style={[styles.userDataInfo]}>
         <Icon
           onPress={goToAidiCredentials}
-          type="Ionicons"
-          name="md-card"
+          type="MaterialCommunityIcons"
+          name="certificate"
           style={styles.userDataInfoIcon}
         />
         <Text onPress={goToAidiCredentials} style={styles.userDataInfoText}>Certificados de Rondas</Text>

@@ -67,7 +67,7 @@ const UserProfile = () => {
             <Icon
               type="SimpleLineIcons"
               style={styles.editIcon}
-              name="pencil"
+              name="camera"
             />
           </View>
         </TouchableOpacity>

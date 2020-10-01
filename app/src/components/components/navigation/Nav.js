@@ -49,7 +49,8 @@ const Main = createBottomTabNavigator(
           default:
             label = null;
         }
-        return label;
+        // return label, if we want to show page name on the navigation
+        return null;
       },
       tabBarIcon: ({tintColor}) => {
         const {routeName} = navigation.state;
@@ -68,8 +69,8 @@ const Main = createBottomTabNavigator(
             iconFamily = 'MaterialIcons';
             break;
           case 'Perfil':
-            iconName = `account-box`;
-            iconFamily = 'MaterialIcons';
+            iconName = `account`;
+            iconFamily = 'MaterialCommunityIcons';
             break;
           default:
             break;
