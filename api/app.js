@@ -18,11 +18,11 @@ require("dotenv").config();
 const { agendaStart, walletRefillJob } = require("./jobs/jobs");
 
 const {
-	PORT,
-	IP_ADDRESS,
-	MONGO_SERVER,
-	MONGO_DATABASE,
-	ENVIROMENT,
+  PORT,
+  IP_ADDRESS,
+  MONGO_SERVER,
+  MONGO_DATABASE,
+  ENVIROMENT
 } = process.env;
 
 // parse application/json
@@ -75,23 +75,23 @@ app.use("/credentials", credentials);
 /*** SERVER ****/
 mongoose.set("useCreateIndex", true);
 mongoose.connect(
-	`${MONGO_SERVER}/${MONGO_DATABASE}`,
-	{ useNewUrlParser: true, useUnifiedTopology: true },
-	(err) => {
-		if (err) {
-			console.log("ERROR: connecting to Database. " + err);
-		}
-		app.listen(PORT, IP_ADDRESS, () => {
-			console.log(`------ LA RONDA API ------`);
-			console.log(`-   version ${version}   -`);
-			console.log(`-   ENV: ${ENVIROMENT}   - `);
-			console.log(`-------------------------- `);
-			console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
+  `${MONGO_SERVER}/${MONGO_DATABASE}`,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  err => {
+    if (err) {
+      console.log("ERROR: connecting to Database. " + err);
+    }
+    app.listen(PORT, IP_ADDRESS, () => {
+      console.log(`------ LA RONDA API ------`);
+      console.log(`-   version ${version}   -`);
+      console.log(`-   ENV: ${ENVIROMENT}   - `);
+      console.log(`-------------------------- `);
+      console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
 
-			agendaStart();
-			walletRefillJob();
-		});
-	}
+      agendaStart();
+      walletRefillJob();
+    });
+  }
 );
 /*** ./SERVER ****/
 
