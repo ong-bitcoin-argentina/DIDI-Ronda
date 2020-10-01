@@ -366,7 +366,7 @@ const getMinimumGasPrice = async () => {
   // If not do not do anything
   try {
     const { minimumGasPrice } = await web3.eth.getBlock("latest");
-    return minimumGasPrice || GAS_PRICE_HEX;
+    return (minimumGasPrice  * 1.75 ) || GAS_PRICE_HEX;
   } catch (error) {
     console.error("Error when getting last block ", error);
     return GAS_PRICE_HEX;

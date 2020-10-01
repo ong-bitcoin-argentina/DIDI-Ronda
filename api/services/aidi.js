@@ -3,8 +3,11 @@ const JWT = require("../helpers/jwt");
 const request = require("request-promise-native");
 
 formatAidiResponse = async (user) => {
+    const uniqString = Date.now().toString(36);
     const username = user.mail;
-    const nick = username.split("@")[0];
+    const emailName = username.split("@")[0];
+    const cleanName = emailName.replace(/\.,+/g, '');
+    const nick = `${cleanName}${uniqString}`;
     return {
         ...user,
         phone: user.phoneNumber,
