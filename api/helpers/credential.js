@@ -23,7 +23,7 @@ const getRol = (participant, round) => {
 };
 
 const getPaymentInfo = (participantId, shifts) => {
-	let defaulted = shifts.length;
+	let defaulted = 0;
 	let noPayed = 0;
 	shifts.forEach(({ pays, limitDate }) => {
 		const participantPayment = pays.find(
@@ -33,7 +33,7 @@ const getPaymentInfo = (participantId, shifts) => {
 			noPayed++;
 			return;
 		}
-		if (participantPayment.date < limitDate) defaulted--;
+		if (participantPayment.date > limitDate) defaulted++;
 	});
 	return {
 		defaulted,
