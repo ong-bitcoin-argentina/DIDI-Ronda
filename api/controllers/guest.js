@@ -3,7 +3,8 @@ const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
 const { createNotification } = require("../helpers/notifications/config");
-
+const aidi_service = require("../services/aidi");
+const { customError } = require("../helpers/errorHandler");
 /*
     /login
 */
@@ -20,17 +21,10 @@ exports.login = async (req, res) => {
 
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
-  const { token } = req.body;
   try {
-    //something like this should be the user response from aidi
-    const user = {
-      phone: "2494611482",
-      email: "hola@atixlab.com",
-      nick: "hola",
-      name: "hola",
-      username: "hola1234",
-      password: "1234hola123"
-    }
+    const { token } = req.body;  
+    const user = await aidi_service.getUser(token);
+
     try {
       const {  username, password, name, nick } = user;
       //i create the user on ronda backend
@@ -41,16 +35,18 @@ exports.loginWithAidi = async (req, res) => {
         token,
         nick
       );
-      const registeredUser = await postResBackground.registerUser(data);
-      console.log("register result",registeredUser);
+      console.log("guest_services.register", data);
+      const registeredUser = await postResBackground.registerAidiUser({...user,...data});
+      return res.status(200).jsonp(user);
     } catch (error) {
-      console.log("user couldn't be register bcz: ", error)
+      console.log("user couldn't be register bcz: ", error);
     }
 
-    res.status(200).jsonp(user);
+    if (user) return res.status(200).jsonp(user);
+    
   } catch (error) {
     console.log(error,error);
-    return err.name === "customError"
+    err.name === "customError"
     ? generic(res, err.message)
     : generic(res, "");
   }

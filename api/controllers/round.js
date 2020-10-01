@@ -46,6 +46,7 @@ exports.create = async (req, res) => {
       : res.status(200).jsonp(create.round);
     backgroundPostRes.createdRound(create);
   } catch (err) {
+    console.log(err);
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");
