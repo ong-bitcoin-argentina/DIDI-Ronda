@@ -17,7 +17,13 @@ require("dotenv").config();
 // Agenda
 const { agendaStart, walletRefillJob } = require("./jobs/jobs");
 
-const { PORT, IP_ADDRESS, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
+const {
+	PORT,
+	IP_ADDRESS,
+	MONGO_SERVER,
+	MONGO_DATABASE,
+	ENVIROMENT,
+} = process.env;
 
 // parse application/json
 app.use(bodyParser.json());
@@ -47,6 +53,9 @@ app.use("/participant", appMiddleware.jwtCheck);
 // Admin
 app.use("/admin", appMiddleware.jwtCheck);
 
+// Credentials
+app.use("/credentials", appMiddleware.jwtCheck);
+
 /*** ./MIDDLEWARES ****/
 
 /*** ROUTES ****/
@@ -54,33 +63,35 @@ const guest = require("./routes/guest"); // Imports routes for guest
 const user = require("./routes/user"); // Imports routes for user
 const participant = require("./routes/participant"); // Imports routes for participant
 const admin = require("./routes/admin"); // Imports routes for admin
+const credentials = require("./routes/credentials");
 
 app.use("/", guest);
 app.use("/user", user);
 app.use("/participant", participant);
 app.use("/admin", admin);
+app.use("/credentials", credentials);
 /*** ./ROUTES ****/
 
 /*** SERVER ****/
 mongoose.set("useCreateIndex", true);
 mongoose.connect(
-  `${MONGO_SERVER}/${MONGO_DATABASE}`,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  err => {
-    if (err) {
-      console.log("ERROR: connecting to Database. " + err);
-    }
-    app.listen(PORT, IP_ADDRESS, () => {
-      console.log(`------ LA RONDA API ------`);
-      console.log(`-   version ${version}   -`);
-      console.log(`-   ENV: ${ENVIROMENT}   - `);
-      console.log(`-------------------------- `);
-      console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
-      
-      agendaStart();
-      walletRefillJob();
-    });
-  }
+	`${MONGO_SERVER}/${MONGO_DATABASE}`,
+	{ useNewUrlParser: true, useUnifiedTopology: true },
+	(err) => {
+		if (err) {
+			console.log("ERROR: connecting to Database. " + err);
+		}
+		app.listen(PORT, IP_ADDRESS, () => {
+			console.log(`------ LA RONDA API ------`);
+			console.log(`-   version ${version}   -`);
+			console.log(`-   ENV: ${ENVIROMENT}   - `);
+			console.log(`-------------------------- `);
+			console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
+
+			agendaStart();
+			walletRefillJob();
+		});
+	}
 );
 /*** ./SERVER ****/
 
