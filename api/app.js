@@ -17,13 +17,7 @@ require("dotenv").config();
 // Agenda
 const { agendaStart, walletRefillJob } = require("./jobs/jobs");
 
-const {
-  PORT,
-  IP_ADDRESS,
-  MONGO_SERVER,
-  MONGO_DATABASE,
-  ENVIROMENT
-} = process.env;
+const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
 // parse application/json
 app.use(bodyParser.json());
@@ -81,13 +75,13 @@ mongoose.connect(
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
     }
-    app.listen(PORT, IP_ADDRESS, () => {
+    app.listen(PORT, () => {
       console.log(`------ LA RONDA API ------`);
       console.log(`-   version ${version}   -`);
       console.log(`-   ENV: ${ENVIROMENT}   - `);
       console.log(`-------------------------- `);
-      console.log(`Node server running on http://${IP_ADDRESS}:${PORT}`);
-
+      console.log(`Node server running on http://localhost:${PORT}`);
+      
       agendaStart();
       walletRefillJob();
     });
