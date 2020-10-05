@@ -56,6 +56,9 @@ app.use("/admin", appMiddleware.jwtCheck);
 // Credentials
 app.use("/credentials", appMiddleware.jwtCheck);
 
+// Insecure endpoints (for QA testing)
+app.use("/insecure", appMiddleware.insecure);
+
 /*** ./MIDDLEWARES ****/
 
 /*** ROUTES ****/
@@ -64,12 +67,14 @@ const user = require("./routes/user"); // Imports routes for user
 const participant = require("./routes/participant"); // Imports routes for participant
 const admin = require("./routes/admin"); // Imports routes for admin
 const credentials = require("./routes/credentials");
+const insecure = require("./routes/insecure");
 
 app.use("/", guest);
 app.use("/user", user);
 app.use("/participant", participant);
 app.use("/admin", admin);
 app.use("/credentials", credentials);
+app.use("/insecure", insecure);
 /*** ./ROUTES ****/
 
 /*** SERVER ****/

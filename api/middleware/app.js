@@ -21,6 +21,15 @@ const auth = (req, res, next) => {
   }
 };
 
+const insecure = (req, res, next) => {
+  const { ENVIROMENT } = process.env;
+  if (!ENVIROMENT || ENVIROMENT.toLowerCase().includes("prod")) {
+    return errorHandler.unauthorized(res, "Endpoint not available");
+  } else {
+    next();
+  }
+};
+
 const jwtCheck = (req, res, next) => jwt.check(req, res, next);
 
-module.exports = { log, auth, jwtCheck };
+module.exports = { log, auth, jwtCheck, insecure };

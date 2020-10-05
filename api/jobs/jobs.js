@@ -27,10 +27,7 @@ const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
 
 const Agenda = require("agenda");
 const types = require("./types");
-const {
-  roundNotStarted,
-  completedRound
-} = require("../helpers/notifications/notifications");
+const { roundNotStarted } = require("../helpers/notifications/notifications");
 const {
   createNotification,
   INTENTS
@@ -49,7 +46,7 @@ const {
   roundStartedDate
 } = require("../helpers/notifications/messages");
 const { SC_FEATURES } = require("../utils/other");
-const credential_services = require("../services/credential");
+const { handleRoundNumberChange } = require("./utils");
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -160,63 +157,7 @@ agenda.define(types.ROUND_START_DATE, async job => {
 
 agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
   const { roundId } = job.attrs.data;
-  console.log(`Job for round id ${roundId} change number started`);
-  // Get round
-  const round = await round_manager.findById(roundId);
-  let sendCompletedNotification = false;
-  // Round must be started
-  if (!round) console.error(`Round with id ${roundId} not found!`);
-  if (round && round.start) {
-    // Which shift are we in?
-    const currentShiftIndex = round.shifts.findIndex(
-      s => s.status === "current"
-    );
-    console.log(JSON.stringify(round.shifts));
-    console.log(`Current shift index is ${currentShiftIndex}`);
-    if (currentShiftIndex != -1) {
-      // Mark it as completed
-      round.shifts[currentShiftIndex].status = "completed";
-      const currentNumber = round.shifts[currentShiftIndex].number;
-      const nextShiftIndex = round.shifts.findIndex(
-        s => s.number === currentNumber + 1
-      );
-      // Are we in range?
-      console.log(
-        `Job for round id ${roundId} changed the status of shift to completed`
-      );
-      if (nextShiftIndex != -1) {
-        // If we are in range, mark the next one as current
-
-        round.shifts[nextShiftIndex].status = "current";
-
-        console.log(
-          `Job for round id ${roundId} changed the status of the next shift to current`
-        );
-      } else {
-        sendCompletedNotification = true;
-      }
-    }
-    // Save changes to round
-    try {
-      const updatedRound = await round_manager.save(round);
-      await credential_services.emmitRoundParticipants(round);
-      console.log(`Job for round ${roundId} ran successfuly`);
-      if (sendCompletedNotification)
-        console.log(`Job for round ${roundId} will send ending notifications`);
-      if (updatedRound === null)
-        throw new customError("Error changing round number");
-    } catch (error) {
-      console.error(`Job for round ${roundId} had a failure when saving`);
-      console.error(error);
-    }
-
-    if (sendCompletedNotification) {
-      // TODO: encolar participantes o emitir ronda
-      await completedRound(round);
-    }
-  }
-
-  return true;
+  await handleRoundNumberChange(roundId);
 });
 
 // Start method
