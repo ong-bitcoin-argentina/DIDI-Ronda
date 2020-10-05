@@ -157,7 +157,7 @@ agenda.define(types.ROUND_START_DATE, async job => {
 
 agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
   const { roundId } = job.attrs.data;
-  await handleRoundNumberChange(roundId);
+  return await handleRoundNumberChange(roundId);
 });
 
 // Start method
