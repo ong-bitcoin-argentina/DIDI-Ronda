@@ -14,7 +14,7 @@ exports.createModel = async (
     acepted: acepted,
     shiftsQty: shiftsQty,
     guarantor: guarantor,
-    date: date,
+    date: date
   });
 };
 
@@ -40,9 +40,9 @@ exports.participantsOfUser = async user => {
       model: "Participant",
       populate: {
         path: "user",
-        model: "User",
-      },
-    },
+        model: "User"
+      }
+    }
   });
 
   return participants;
@@ -52,14 +52,22 @@ exports.findById = async id => {
   return await Participant.findById(id)
     .populate({
       path: "admin",
-      model: "User",
+      model: "User"
     })
     .populate({
       path: "user",
-      model: "User",
+      model: "User"
     })
     .then(participant => participant)
     .catch(err => ({ error: err }));
+};
+
+exports.findByIdAndUpdateJWT = async (id, credentialJWT) => {
+  return await Participant.findByIdAndUpdate(
+    id,
+    { $set: { credentialJWT } },
+    { new: true }
+  );
 };
 
 exports.updateParticipantUser = async (participant, newUser) => {
@@ -67,7 +75,7 @@ exports.updateParticipantUser = async (participant, newUser) => {
     .updateOne({
       acepted: null,
       user: newUser,
-      isBeingSwapped: false,
+      isBeingSwapped: false
     })
     .then(updatedParticipant => updatedParticipant)
     .catch(err => ({ error: err }));

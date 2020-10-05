@@ -283,6 +283,7 @@ exports.registerAidiUser = async params => {
   try {
     const { nick, username, password, name, token, phone, did, jwtToken } = params;
 
+
     const { address, privateKey } = await walletUtil.createWallet();
   
     const encryptedAddress = crypto.cipher(address);
@@ -316,11 +317,13 @@ exports.registerAidiUser = async params => {
         jwtToken: jwtToken,
       }
     };
+
   } catch (error) {
     console.log("registerAidiUser error", error);
     return error;
   }
 }
+
 
 exports.enableSCToUser = async (user) => {
   console.log("enableSCToUser");
@@ -384,6 +387,7 @@ exports.enableSCToUser = async (user) => {
     console.error("send verification token via email failed: ",error)
   }
 }
+
 
 exports.registerUser = async params => {
   const { nick, username, password, name, token } = params;

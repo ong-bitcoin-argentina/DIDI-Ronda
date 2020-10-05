@@ -1,10 +1,14 @@
 const jsonwebtoken = require("jsonwebtoken");
 const errorHandler = require("../helpers/errorHandler");
 require("dotenv").config();
+const { createVerifiableCredential } = require("did-jwt-vc");
+const EthrDID = require("ethr-did");
+const { getDidAddress } = require("./utils");
+const { DID, PRIVATE_KEY } = process.env;
 
 const sign = payload => {
   return jsonwebtoken.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_LIFETIME,
+    expiresIn: process.env.JWT_LIFETIME
   });
 };
 
@@ -47,10 +51,28 @@ const getUsernameFromToken = req => {
         req.jwt = null;
         return false;
       }
-     return username = decode.username;
+      return (username = decode.username);
     });
   }
   return username;
 };
 
-module.exports = { sign, check, getUsernameFromToken };
+const createCredentialJWT = async (credential, participantDID) => {
+  const issuer = new EthrDID({
+    address: getDidAddress(DID),
+    privateKey: PRIVATE_KEY
+  });
+
+  const payload = {
+    sub: participantDID,
+    vc: {
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      type: ["VerifiableCredential"],
+      credentialSubject: credential
+    }
+  };
+
+  return await createVerifiableCredential(payload, issuer);
+};
+
+module.exports = { sign, check, getUsernameFromToken, createCredentialJWT };

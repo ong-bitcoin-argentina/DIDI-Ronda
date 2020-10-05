@@ -20,7 +20,7 @@ const {
   WALLET_TARGET_BALANCE,
   WALLET_MIN_BALANCE,
   REFILL_ORIGIN_ACCOUNT,
-  REFILL_ORIGIN_ACCOUNT_PK,
+  REFILL_ORIGIN_ACCOUNT_PK
 } = process.env;
 
 const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
@@ -29,26 +29,27 @@ const Agenda = require("agenda");
 const types = require("./types");
 const {
   roundNotStarted,
-  completedRound,
+  completedRound
 } = require("../helpers/notifications/notifications");
 const {
   createNotification,
-  INTENTS,
+  INTENTS
 } = require("../helpers/notifications/config");
 const { customError } = require("../helpers/errorHandler");
 const CronJob = require("cron").CronJob;
 
 const agenda = new Agenda({
   db: { address: mongoConnectionString },
-  processEvery: "1 minutes",
+  processEvery: "1 minutes"
 });
 
 // Messages
 const {
   shiftAboutToEnd,
-  roundStartedDate,
+  roundStartedDate
 } = require("../helpers/notifications/messages");
 const { SC_FEATURES } = require("../utils/other");
+const credential_services = require("../services/credential");
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -89,8 +90,8 @@ agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
         intent: INTENTS.REMEMBER_PAYMENT,
         roundName: updatedRound.name,
         shiftNumber: shift.number.toString(),
-        limitDate: shift.limitDate,
-      }),
+        limitDate: shift.limitDate
+      })
     };
 
     console.log(`Send scheduled notification payment remember`);
@@ -142,8 +143,8 @@ agenda.define(types.ROUND_START_DATE, async job => {
         params: { _id: round._id },
         admin: round.admin,
         roundName: round.name,
-        intent: INTENTS.ROUND_START,
-      }),
+        intent: INTENTS.ROUND_START
+      })
     };
     console.log(`Send scheduled notification...`);
     const notificationResult = await createNotification(
@@ -171,7 +172,7 @@ agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
       s => s.status === "current"
     );
     console.log(JSON.stringify(round.shifts));
-    console.log(`Current shift index is ${currentShiftIndex }`);
+    console.log(`Current shift index is ${currentShiftIndex}`);
     if (currentShiftIndex != -1) {
       // Mark it as completed
       round.shifts[currentShiftIndex].status = "completed";
@@ -198,6 +199,7 @@ agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
     // Save changes to round
     try {
       const updatedRound = await round_manager.save(round);
+      await credential_services.emmitRoundParticipants(round);
       console.log(`Job for round ${roundId} ran successfuly`);
       if (sendCompletedNotification)
         console.log(`Job for round ${roundId} will send ending notifications`);
@@ -208,7 +210,10 @@ agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
       console.error(error);
     }
 
-    if (sendCompletedNotification) await completedRound(round);
+    if (sendCompletedNotification) {
+      // TODO: encolar participantes o emitir ronda
+      await completedRound(round);
+    }
   }
 
   return true;
@@ -284,7 +289,7 @@ exports.walletRefillJob = () => {
       REFILL_HOURS,
       REFILL_DAY_OF_MONTH,
       REFILL_MONTH,
-      REFILL_DAY_OF_WEEL,
+      REFILL_DAY_OF_WEEL
     ].join(" ");
     new CronJob(
       frequency,
@@ -309,14 +314,14 @@ exports.walletRefillJob = () => {
                   walletPk: encryptedPK,
                   address,
                   new: true,
-                  id: u._id,
+                  id: u._id
                 };
               }
               const address = cryptoUtil.decipher(u.walletAddress);
               addressIdMap[address] = u._id;
               return {
                 address,
-                id: u._id,
+                id: u._id
               };
             } catch (error) {
               console.log("Failure in creating RBTC tx object for user: ", u);

@@ -8,7 +8,7 @@ const round_manager = require("../managers/round");
 const {
   requestedShiftNotification,
   participantRequestPaymentNoti,
-  numberPayedToUser,
+  numberPayedToUser
 } = require("../helpers/notifications/notifications");
 
 exports.byId = async req => {
@@ -180,7 +180,7 @@ exports.participantChargeNumber = async (req, participantId = null) => {
   if (shift.isPayedToParticipant) throw new customError("Shift already payed");
 
   // Change payed status
-   const shiftIndex = round.shifts.findIndex(e => e.number === parseInt(number));
+  const shiftIndex = round.shifts.findIndex(e => e.number === parseInt(number));
   round.shifts[shiftIndex].isPayedToParticipant = true;
   await round.save();
   await numberPayedToUser(round, number, finalParticipantId);
@@ -190,6 +190,10 @@ exports.participantChargeNumber = async (req, participantId = null) => {
   if (updatedRound === null) throw new customError("Error saving payment");
 
   return updatedRound;
+};
+
+exports.findAndUpdateJWT = async (id, jwt) => {
+  return await participant_manager.findByIdAndUpdateJWT(id, jwt);
 };
 
 exports.adminParticipantChargeNumber = async req =>

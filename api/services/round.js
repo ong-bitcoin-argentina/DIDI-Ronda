@@ -12,7 +12,7 @@ const crypto = require("../utils/crypto");
 // NOTIFICATIONS
 const {
   inviteRound,
-  asignedShift,
+  asignedShift
 } = require("../helpers/notifications/notifications");
 
 // PHONE FORMAT
@@ -38,7 +38,7 @@ exports.create = async req => {
     firstPaymentDate,
     username,
     shifts,
-    participants,
+    participants
   } = req.body;
   console.log("creating round", name, username);
   // Check at least 1 participant
@@ -106,7 +106,7 @@ exports.create = async req => {
             participant.number.map(number =>
               participantsNumber.push({
                 number,
-                participant: adminParticipant._id,
+                participant: adminParticipant._id
               })
             );
 
@@ -155,7 +155,7 @@ exports.create = async req => {
           participant.number.map(number =>
             participantsNumber.push({
               number,
-              participant: newParticipant._id,
+              participant: newParticipant._id
             })
           );
 
@@ -168,7 +168,7 @@ exports.create = async req => {
   if (participantsNumber.filter(e => e.number === 1).length === 0)
     participantsNumber.push({
       number: 1,
-      participant: adminParticipant._id,
+      participant: adminParticipant._id
     });
 
   // Save participants
@@ -184,7 +184,7 @@ exports.create = async req => {
   participants_list.forEach(p => {
     if (!p.user)
       throw new customError({
-        error: `Un participante es invalido ${JSON.stringify(p)}`,
+        error: `Un participante es invalido ${JSON.stringify(p)}`
       });
   });
   // Create shifts
@@ -197,7 +197,7 @@ exports.create = async req => {
 
     const shiftLimitDate = moment(firstPaymentDate)
       .add({
-        [recurrenceKey]: recurrenceValue * (number - 1),
+        [recurrenceKey]: recurrenceValue * (number - 1)
       })
       .format("YYYY-MM-DD");
 
@@ -205,7 +205,7 @@ exports.create = async req => {
       number: number,
       participant: findParticipant,
       pays: [],
-      limitDate: shiftLimitDate,
+      limitDate: shiftLimitDate
     };
   });
 
@@ -234,14 +234,14 @@ exports.update = async req => {
   const recurrenceValue = Object.values(recurrenceConfig[recurrence]);
 
   const firstPaymentDate = moment(startDate).add({
-    [recurrenceKey]: recurrenceValue * 1,
+    [recurrenceKey]: recurrenceValue * 1
   });
 
   round.shifts.forEach((s, i) => {
     const number = i + 1;
     const shiftLimitDate = moment(firstPaymentDate)
       .add({
-        [recurrenceKey]: recurrenceValue * (number - 1),
+        [recurrenceKey]: recurrenceValue * (number - 1)
       })
       .format("YYYY-MM-DD");
     round.shifts[i].limitDate = shiftLimitDate;

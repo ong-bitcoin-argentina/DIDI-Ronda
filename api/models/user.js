@@ -10,7 +10,7 @@ const userSchema = new Schema(
       trim: true,
       index: true,
       unique: true,
-      sparse: true,
+      sparse: true
     },
     nick: { type: String, default: null },
     username: { type: String, default: null },
@@ -28,14 +28,15 @@ const userSchema = new Schema(
     lastBalance: { type: String, default: "0", required: true },
     sc: { type: Boolean, default: false },
     did: { type: String, default: null }
+
   },
   {
     toObject: {
-      virtuals: true,
+      virtuals: true
     },
     toJSON: {
-      virtuals: true,
-    },
+      virtuals: true
+    }
   }
 );
 
@@ -46,7 +47,6 @@ userSchema.virtual("picture").get(function() {
     return null;
   }
 });
-
 
 // Before saving the user in any case, we hash the password that is set to it.
 // The passwords are never stored in clear text.

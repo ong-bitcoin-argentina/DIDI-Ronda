@@ -6,6 +6,7 @@ const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
 const { customError } = require("../helpers/errorHandler");
 const user_manager = require("../managers/user");
+
 /*
     /login
 */
@@ -34,6 +35,7 @@ exports.loginWithAidi = async (req, res) => {
       console.log("user first login with ronda");
     }
     
+
     try {
       const data = await guest_services.register(
         username,
@@ -42,6 +44,7 @@ exports.loginWithAidi = async (req, res) => {
         token,
         nick
       );
+
       const result = await postResBackground.registerAidiUser({...user,...data});
       console.log("registeredUser", result.appUser);
       res.status(200).jsonp(result.appUser);
