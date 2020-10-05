@@ -573,7 +573,5 @@ exports.simulateFinish = async id => {
   });
 
   round.completed = true;
-  const result = await round_manager.save(round);
-
-  return result;
+  return await round_manager.save(round);
 };
