@@ -5,6 +5,8 @@ const { generic } = require("../helpers/errorHandler");
 const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
 const { customError } = require("../helpers/errorHandler");
+const user_manager = require("../managers/user");
+
 /*
     /login
 */
@@ -24,10 +26,17 @@ exports.loginWithAidi = async (req, res) => {
   try {
     const { token } = req.body;  
     const user = await aidi_service.getUser(token);
+    const {  username, password, name, nick } = user;
 
     try {
-      const {  username, password, name, nick } = user;
-      //i create the user on ronda backend
+      const userExist = await user_manager.byUsername(username);
+      if (userExist) return res.status(200).jsonp({ ...user, ...userExist, id:userExist._id });
+    } catch (error) {
+      console.log("user first login with ronda");
+    }
+    
+
+    try {
       const data = await guest_services.register(
         username,
         password,
@@ -35,14 +44,14 @@ exports.loginWithAidi = async (req, res) => {
         token,
         nick
       );
-      console.log("guest_services.register", data);
-      const registeredUser = await postResBackground.registerAidiUser({...user,...data});
-      return res.status(200).jsonp(user);
+
+      const result = await postResBackground.registerAidiUser({...user,...data});
+      console.log("registeredUser", result.appUser);
+      res.status(200).jsonp(result.appUser);
+      return postResBackground.enableSCToUser(result.user)
     } catch (error) {
       console.log("user couldn't be register bcz: ", error);
     }
-
-    if (user) return res.status(200).jsonp(user);
     
   } catch (error) {
     console.log(error,error);

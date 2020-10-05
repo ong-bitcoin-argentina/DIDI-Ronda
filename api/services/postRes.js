@@ -281,7 +281,8 @@ const sendVerificationToken = async (username, token) => {
 
 exports.registerAidiUser = async params => {
   try {
-    const { nick, username, password, name, token, phone } = params;
+    const { nick, username, password, name, token, phone, did, jwtToken } = params;
+
 
     const { address, privateKey } = await walletUtil.createWallet();
   
@@ -300,14 +301,93 @@ exports.registerAidiUser = async params => {
     );
     user.verified = true;
     user.phone = phone;
+    user.sc = false;
+    user.did = did;
     user.save();
-    console.log("registerAidiUser user", user);
-    return user;
+    return {
+      user: user,
+      appUser: {
+        id: user._id,
+        name: user.name,
+        nick: user.nick,
+        lastname: user.lastname,
+        username: user.username,
+        emailVerified: true,
+        phone: user.phone,
+        jwtToken: jwtToken,
+      }
+    };
+
   } catch (error) {
     console.log("registerAidiUser error", error);
     return error;
   }
 }
+
+
+exports.enableSCToUser = async (user) => {
+  console.log("enableSCToUser");
+  let addedBalance = false;
+  let subDomainCreated = false;
+  const { nick, walletAddress, token, username, verifyToken } = user;
+
+  const address = crypto.decipher(walletAddress);
+
+  try {
+    console.log("creating subdomain...",nick, address);
+    await blockchain.createSubdomain(nick, address);
+    subDomainCreated = true;
+  } catch (error) {
+    console.log("createSubdomain", error);
+    // Send failure notification
+    await registerUserProcessing(token, username, false);
+    return null;
+  }
+  try {
+    const WALLET_TARGET_WEI = blockchain.toWei(WALLET_TARGET_BALANCE);
+
+    const results = await blockchain.sendManyBalanceTx(
+      REFILL_ORIGIN_ACCOUNT,
+      REFILL_ORIGIN_ACCOUNT_PK,
+      [address],
+      WALLET_TARGET_WEI
+    );
+    await Promise.all(
+      results.map(async ({ error, success }) => {
+        if (!success) throw error;
+        addedBalance = true;
+        return { success: true };
+      })
+    );
+    console.log("await Promise.all ended");
+  } catch (error) {
+    console.log("===================");
+    console.log("Error when giving RBTC to new user");
+    console.log(error);
+    console.log("===================");
+  }
+
+  if (subDomainCreated){
+    user.sc = true;
+    await user.save();
+  }
+
+  if (addedBalance) {
+    user.lastBalance = WALLET_TARGET_BALANCE;
+    await user.save();
+  }
+
+  console.log("user after sc", user);
+
+  await registerUserProcessing(token, username, true);
+
+  try {
+    if (user) await sendVerificationToken(username, verifyToken);  
+  } catch (error) {
+    console.error("send verification token via email failed: ",error)
+  }
+}
+
 
 exports.registerUser = async params => {
   const { nick, username, password, name, token } = params;

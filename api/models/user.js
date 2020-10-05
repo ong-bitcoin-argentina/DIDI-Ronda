@@ -26,7 +26,9 @@ const userSchema = new Schema(
     walletPk: { type: String, default: null },
     pictureHash: { type: String, default: null },
     lastBalance: { type: String, default: "0", required: true },
-    did: { type: String }
+    sc: { type: Boolean, default: false },
+    did: { type: String, default: null }
+
   },
   {
     toObject: {

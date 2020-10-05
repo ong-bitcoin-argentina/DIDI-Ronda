@@ -3,8 +3,11 @@ const JWT = require("../helpers/jwt");
 const request = require("request-promise-native");
 
 formatAidiResponse = async (user) => {
+    const uniqString = Date.now().toString(36);
     const username = user.mail;
-    const nick = username.split("@")[0];
+    const emailName = username.split("@")[0];
+    const cleanName = emailName.replace(/\.,+/g, '');
+    const nick = `${cleanName}${uniqString}`;
     return {
         ...user,
         phone: user.phoneNumber,
@@ -33,7 +36,7 @@ exports.getUser = async (token) => {
             },
         });
         if (!response.data) throw new customError("Usuario invalido");
-        return  await formatAidiResponse(response.data);
+        return await formatAidiResponse(response.data);
     } catch (e) {
         console.log("No se pudo validar el usuario con aidi");
     }

@@ -20,4 +20,6 @@ export default {
   iconDisabled: "#c3c3c3",
   textDisabled: "#A2A2A2",
   secondaryText: "#737373",
+  white: "#FFFFFF",
+  secondaryWhite: "#F2F2F2"
 };

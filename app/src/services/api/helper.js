@@ -11,7 +11,6 @@ const apiCall = async (method, url, requestParams = {}) => {
     let baseURL = `${API_URL}:${API_PORT}`;
     if (STG) baseURL = `${API_URL}`    
 
-    console.log(baseURL);
     // TODO:
     // If api call authorization fail, redirect login
 
