@@ -28,8 +28,8 @@ exports.loginWithAidi = async (req, res) => {
     const {  username, password, name, nick } = user;
 
     try {
-      const userExist = await user_manager.byUsername(user.username);
-      if (userExist) return res.status(200).jsonp({ ...userExist, ...user, id:userExist._id });
+      const userExist = await user_manager.byUsername(username);
+      if (userExist) return res.status(200).jsonp({ ...user, ...userExist, id:userExist._id });
     } catch (error) {
       console.log("user first login with ronda");
     }
