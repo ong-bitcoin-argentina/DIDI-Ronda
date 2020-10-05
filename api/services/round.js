@@ -1,5 +1,5 @@
 const moment = require("moment");
-const config = require("../helpers/config");
+const { recurrenceConfig } = require("../helpers/config");
 const { customError } = require("../helpers/errorHandler");
 
 // MANAGERS
@@ -20,6 +20,13 @@ const { normalizePhone } = require("../helpers/phones");
 
 // Jobs
 const { updateStartRoundJob } = require("../jobs/jobs");
+const {
+  getSimulatedFirstPaymentDate,
+  getSimulatedPayment,
+  getShiftLimitDate,
+  getSimulatedStartDate,
+  getSimulatedLimitDate
+} = require("../utils/round");
 
 exports.byId = async req => {
   const { roundId } = req.params;
@@ -540,4 +547,33 @@ exports.assignShiftNumber = async req => {
   asignedShift(updatedRound, participant.name);
 
   return updatedRound;
+};
+
+exports.simulateFinish = async id => {
+  const round = await round_manager.findById(id);
+
+  const { recurrence, shifts, participants } = round;
+
+  round.start = true;
+  round.startDate = getSimulatedStartDate(recurrence, shifts);
+  round.limitDate = getSimulatedLimitDate(recurrence, shifts);
+  round.firstPaymentDate = getSimulatedFirstPaymentDate(recurrence, shifts);
+
+  // simulate all participants accept round
+  round.participants.forEach(participant => {
+    participant.acepted = true;
+  });
+  // simulate shifts payments
+  round.shifts.forEach(shift => {
+    shift.limitDate = getShiftLimitDate(round, shift.number);
+    shift.status = "completed";
+    participants.forEach(participant => {
+      shift.pays.push(getSimulatedPayment(participant._id, shift));
+    });
+  });
+
+  round.completed = true;
+  const result = await round_manager.save(round);
+
+  return result;
 };
