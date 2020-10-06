@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { recurrenceConfig } = require("../helpers/config");
+const config = require("../helpers/config");
 const { customError } = require("../helpers/errorHandler");
 
 // MANAGERS
