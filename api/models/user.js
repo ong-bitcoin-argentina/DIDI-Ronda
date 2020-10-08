@@ -67,4 +67,8 @@ userSchema.methods.comparePassword = async function plaintext(plaintext) {
   return result;
 };
 
+userSchema.statics.findByToken = function(token) {
+  return this.findOne({ token });
+}
+
 module.exports = mongoose.model("User", userSchema);

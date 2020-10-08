@@ -1,126 +1,200 @@
+// Categories:
+// - Notification: blue
+// - Confirmation: green
+// - Alert: red
+// - Warning: yellow
+// - Request: purple
+
 // ADMIN NOTIFICATIONS
+
+// Round - Notification
+// not used already
 exports.roundAboutToStart = (daysLeft, roundName) => {
-  return `En ${daysLeft} días comenzará la Ronda ${roundName}. ¿Está todo listo? Recorda que podes modificar la fecha de inicio o si la quieres iniciar antes, puedes presionar el botón Iniciar.`;
+  return `En ${daysLeft} días comenzará la ronda ${roundName}. ¿Está todo listo? Recordá que podés iniciarla antes presionando el botón Iniciar.`;
 };
 
-exports.participantConfirmed = participantName => {
-  return `Participante ${participantName} ha aceptado ser parte de La Ronda.`;
+// Participant - Confirmation
+// code: 'participant-confirmed'
+exports.participantConfirmed = (participantName) => {
+  return `Participante ${participantName} ha aceptado ser parte de la ronda.`;
 };
 
+// Payment - Warning
+// only in jobs
 exports.shiftAboutToEnd = (daysLeft, shiftNumber, adminName, endDate) => {
-  return `Atención: Quedan ${daysLeft} dias para pagar el número ${shiftNumber} al participante ${adminName}. El plazo de pago se vence el ${endDate}.`;
+  return `Atención: Quedan ${daysLeft} días para pagar el número ${shiftNumber} al participante ${adminName}. El plazo de pago se vence el ${endDate}.`;
 };
 
+// Participant - Request
+// code: 'shift-requested'
 exports.shiftRequested = (participantName, shiftNumber) => {
-  return `${participantName} ha solicitado obtener el número ${shiftNumber} de La Ronda. Ingrese a la aplicación para aceptar o no esta asignación.`;
+  return `${participantName} ha solicitado obtener el número ${shiftNumber} de la ronda. Ingresá a la aplicación para aceptar o no esta asignación.`;
 };
 
 // USER/PARTICIPANT NOTIFICATIONS
+// Participant - Request
+// code: 'round-invite'
 exports.roundInvite = (roundName, sentBy) => {
-  return `Ha sido invitado a la Ronda ${roundName} por ${sentBy}. Ingrese para ver mas detalle.`;
+  return `Has sido invitado a la ronda ${roundName} por ${sentBy}!. Ingresá para ver mas detalle.`;
 };
 
-exports.roundStarted = roundName => {
-  return `El administrador ha iniciado la nueva ronda a la que Ud. ha confirmado. Ingrese a la aplicación para hacer el seguimiento sobre la Ronda ${roundName}.`;
+// Round - Notification
+// code: 'round-started'
+exports.roundStarted = (roundName) => {
+  return `El administrador ha iniciado la nueva ronda ${roundName}. Ingresá a la aplicación para el seguimiento de la ronda.`;
 };
 
-exports.roundStartedDate = roundName => {
-  return `Se ha iniciado la nueva ronda a la que Ud. ha confirmado. Ingrese a la aplicación para hacer el seguimiento sobre la Ronda ${roundName}.`;
+// Round -  Notification
+// only in jobs
+exports.roundStartedDate = (roundName) => {
+  return `El administrador ha iniciado la nueva ronda ${roundName}. Ingresá a la aplicación para el seguimiento de la ronda.`;
 };
 
-exports.paymentReminder = roundName => {
-  return `Atención: Comenzó el período de pago de La Ronda ${roundName} y no está registrado su pago. Realice el pago para que su compañero o compañera pueda recibir su pago en tiempo y forma.`;
+// Payments - Alert
+// not used already
+exports.paymentReminder = (roundName) => {
+  return `Atención: Comenzó el período de pago de la ronda ${roundName} y no está registrado tu pago. Realizá el pago para que su compañero/a pueda recibir su pago en tiempo y forma.`;
 };
 
+// Payments - Confirmation
+// not used already
 exports.shiftPaid = (shiftNumber, nextParticipant) => {
-  return `El número ${shiftNumber} ha sido abonado satisfactoriamente. Se ha iniciado un nuevo circuito de cobro el cual ha sido asignado a ${nextParticipant}.`;
+  return `El número ${shiftNumber} ha sido abonado satisfactoriamente. Se ha iniciado un nuevo ciclo de cobro que ha sido asignado a ${nextParticipant}.`;
 };
 
-exports.participantDidNotPaid = participantName => {
-  return `El participante ${participantName} no pago su numero. Tuvo que pagar la Administradora o otros.`;
+// Payments - Alert
+// not used already
+exports.participantDidNotPaid = (participantName) => {
+  return `El participante ${participantName} no pagó su número. La deuda tuvo que ser saldada por otro/s particiopante/s.`;
 };
 
-exports.shiftAsigned = participantName => {
+// Round - Notification
+// code: 'shift-assigned'
+exports.shiftAsigned = (participantName) => {
   return `Se ha asignado un número vacante al participante ${participantName}.`;
 };
 
+// Payments - Confirmation
+// not used already
 exports.shiftRequestAcepted = (shiftNumber, payday) => {
-  return `Su solicitud para tener el numero ${shiftNumber} ha sido aceptada por la administradora. Esto significa que Ud. cobrará la Ronda el dia ${payday}.`;
+  return `Tu solicitud para tener el numero ${shiftNumber} ha sido aceptada por la administradora. Esto significa que cobrarás la ronda el dia ${payday}.`;
 };
 
+// Round - Notification
+// code: 'round-completed'
 exports.roundCompleted = (roundName, endDate) => {
-  return `Se ha completado la Ronda ${roundName} el día ${endDate}. Gracias por participar!`;
+  return `Se ha completado la ronda ${roundName} el día ${endDate}. Gracias por participar!`;
 };
 
+// Payments - Alert
+// not used already
 exports.garantorRequested = () => {
-  return `El participante que Ud. promocionó no ha pagado su cuota este mes, necesitamos que gestione el cobro de esta cuota y abone al grupo el monto faltante.`;
+  return `El participante que promocionaste no ha pagado su cuota este mes, necesitamos que gestiones el cobro de esta cuota y abones al grupo el monto faltante.`;
 };
 
-exports.participantPayNumber = roundName => {
+// Payments - Confirmation
+// code: 'participant-pay-number'
+exports.participantPayNumber = (roundName) => {
   return `Tu aporte a la ronda ${roundName} fue registrado con éxito!`;
 };
 
+// Payments - Request
+// code: 'participant-request-payment'
 exports.participantRequestPaymentMessage = (roundName, participantName) =>
-  `El participante ${participantName} de la Ronda ${roundName} esta pidiendo cobrar su numero`;
+  `El participante ${participantName} de la ronda ${roundName} esta pidiendo cobrar su numero`;
 
+// Payments  - Request
+// code: 'participant-request-admin-accept-payment'
 exports.participantRequestAdminToAcceptPaymentMessage = (
   roundName,
   participantName
 ) =>
-  `El participante ${participantName} de la Ronda ${roundName} esta pidiendo que se acepte su aporte`;
+  `El participante ${participantName} de la ronda ${roundName} está pidiendo que se acepte su aporte`;
 
+// Participant - Alert
+// code: 'participant-rejected'
 exports.participantRejected = (roundName, participantName) =>
-  `El participante ${participantName} de la Ronda ${roundName} ha rechazado su invitacion para participar`;
+  `El usuario ${participantName} ha rechazado su invitación para participar de la ronda ${roundName}`;
 
+// Participant - Alert
+// code: 'participant-swapped'
 exports.participantSwapped = (roundName, adminName) =>
-  `El admin ${adminName} de la Ronda ${roundName} te ha reemplazado por otro participante en la misma`;
+  `El administrador ${adminName} de la ronda ${roundName} te ha reemplazado por otro participante`;
 
-exports.roundNotStartedParticipantRejected = roundName =>
-  `La Ronda ${roundName} no ha comenzado porque un participante rechazo su invitacion, debe reemplazarlo para poder empezar la Ronda`;
+// Round - Alert
+// code: 'round-not-started-participant-rejected'
+exports.roundNotStartedParticipantRejected = (roundName) =>
+  `La ronda ${roundName} no ha comenzado porque un participante rechazo su invitación, debes reemplazarlo para poder empezar la ronda`;
 
-exports.roundConfirmationCompleted = roundName =>
-  `La Ronda ${roundName} se ha procesado y ya puede entrar a la misma en la seccion "Por Iniciar"`;
+//  Round - Notification
+// code: 'round-confirmation-completed'
+exports.roundConfirmationCompleted = (roundName) =>
+  `La ronda ${roundName} se ha procesado! Ya podés entrar desde la sección rondas "Por Iniciar"`;
 
-exports.roundConfirmationFailed = roundName =>
-  `La Ronda ${roundName} no se ha podido procesar, debera crearla denuevo`;
+// Round - Alert
+// code: 'round-confirmation-failed'
+exports.roundConfirmationFailed = (roundName) =>
+  `La ronda ${roundName} no se ha podido procesar, deberás crearla de nuevo`;
 
+// Participant - Confirmation
+// code: 'round-invitation-completed'
 exports.roundInvitationCompleted = (roundName, accepted) =>
   `Tu pedido de ${
     accepted ? "aceptar" : "rechazar"
-  } la invitacion a la Ronda ${roundName} fue completado con exito`;
+  } la invitación a la ronda ${roundName} fue completado con éxito`;
 
+// Round - Alert
+// code: 'round-invitation-failed'
 exports.roundInvitationFailed = (roundName, accepted) =>
   `Tu pedido de ${
     accepted ? "aceptar" : "rechazar"
   } la invitacion a la Ronda ${roundName} tuvo un error, deberas intentarlo nuevamente`;
 
-exports.participantPaymentConfirmed = roundName =>
-  `Tu aporte para la Ronda ${roundName} fue procesado con exito!`;
+// Payments - Confirmation
+// code: 'participant-payment-confirmed'
+exports.participantPaymentConfirmed = (roundName) =>
+  `Tu aporte para la ronda ${roundName} fue procesado con éxito!`;
 
-exports.participantPaymentFailed = roundName =>
-  `Tu aporte para la Ronda ${roundName} no se ha podido procesar, intentalo nuevamente`;
+// Payments - Alert
+// code: 'participant-payment-failed'
+exports.participantPaymentFailed = (roundName) =>
+  `Tu aporte para la ronda ${roundName} no se ha podido procesar. Por favor, inténtalo nuevamente!`;
 
+// Participant - Confirmation
+// code: 'admin-swapped-confirmed'
 exports.adminSwappedConfirmed = (
   roundName,
   participantName,
   newParticipantName
 ) =>
-  `El participante ${participantName} de la Ronda ${roundName} fue reemplazado por ${newParticipantName} con exito!`;
+  `El participante ${participantName} de la ronda ${roundName} fue reemplazado por ${newParticipantName} con éxito!`;
 
+// Participant - Alert
+// code: 'admin-swapped-failed'
 exports.adminSwappedFailed = (roundName, participantName, newParticipantName) =>
-  `El participante ${participantName} de la Ronda ${roundName} no pudo ser reemplazado por ${newParticipantName}, intentalo denuevo mas tarde`;
+  `El participante ${participantName} de la ronda ${roundName} no pudo ser reemplazado por ${newParticipantName}. Por favor, inténtalo nuevamente!`;
 
-exports.roundStartCompleted = roundName =>
-  `La Ronda ${roundName} termino de procesar y ya comenzo`;
+// Round - Notification
+// code: 'round-start-completed'
+exports.roundStartCompleted = (roundName) =>
+  `La ronda ${roundName} ya ha iniciado! Podés entrar desde la sección "Activas"`;
 
-exports.roundStartFailed = roundName =>
-  `La Ronda ${roundName} no se pudo procesar y no comenzo`;
+// Round - Alert
+// code: 'round-start-failed'
+exports.roundStartFailed = (roundName) =>
+  `Ups!.. Ocurrió un error al procesar la ronda ${roundName}. Por favor, inténtalo nuevamente!`;
 
-exports.registerUserCompleted = email =>
-  `Se completo el registro del usuario ${email} ya podes inciar sesion`;
+// Participant - Notification (DISABLED)
+// code: 'register-user-completed'
+exports.registerUserCompleted = (email) =>
+  `Se completó el registro del usuario ${email} ya podés inciar sesión`;
 
-exports.registerUserFailed = email =>
-  `El registro del usuario ${email} fallo, tienes que intentarlo nuevamente`;
+// Participant - Alert - (DISABLED)
+// code: 'register-user-failed'
+exports.registerUserFailed = (email) =>
+  `El registro del usuario ${email} falló, tenés que intentarlo nuevamente`;
 
+// Payments - Confirmation
+// code: 'number-payed-to-user'
 exports.numberPayedToUser = (admin, round, number) =>
-  `El admin ${admin} de la Ronda ${round} ha confirmado tu cobro del número ${number}`;
+  `El Administrador ${admin} de la ronda ${round} ha confirmado tu cobro del número ${number}`;

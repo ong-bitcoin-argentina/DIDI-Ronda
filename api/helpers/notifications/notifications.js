@@ -3,6 +3,9 @@ const { rememberNotifications } = require("../config");
 // NOTIFICATIONS
 const { createNotification, INTENTS } = require("./config");
 const jobs = require("../../jobs/jobs");
+const User = require("../../models/user");
+const Notification = require("../../models/notification");
+
 const {
   roundInvite,
   roundCompleted,
@@ -31,11 +34,31 @@ const {
   participantRequestAdminToAcceptPaymentMessage,
 } = require("./messages");
 
-exports.inviteRound = async round => {
+const APP_TITLE = "Ronda";
+
+async function presistNotification(token, code, body) {
+  const user = User.findByToken(token);
+  if (user) {
+    await Notification.create({
+      code,
+      userId: user._id,
+      body,
+    });
+  }
+}
+
+async function createAndPersistNotification(tokens, code, body, data) {
+  for (const token of tokens) {
+    await presistNotification(token, code, body);
+  }
+  return await createNotification(tokens, APP_TITLE, body, data);
+}
+
+exports.inviteRound = async (round) => {
   // Filter accepted === null
-  const participants = round.participants.filter(p => p.acepted === null);
+  const participants = round.participants.filter((p) => p.acepted === null);
   // Only participants with token
-  const tokens = participants.map(p => p.user.token).filter(t => t);
+  const tokens = participants.map((p) => p.user.token).filter((t) => t);
 
   // Create data for redirect
   const data = {
@@ -45,9 +68,9 @@ exports.inviteRound = async round => {
     }),
   };
 
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-invite",
     roundInvite(round.name, round.admin.name),
     data
   );
@@ -55,12 +78,12 @@ exports.inviteRound = async round => {
   return notifications;
 };
 
-exports.completedRound = async round => {
+exports.completedRound = async (round) => {
   // Remove admin
-  const participants = round.participants.filter(p => p.user !== round.admin);
+  const participants = round.participants.filter((p) => p.user !== round.admin);
 
   // Get tokens
-  const tokens = participants.map(p => p.user.token).filter(t => t);
+  const tokens = participants.map((p) => p.user.token).filter((t) => t);
 
   const endDate = moment().format("DD/MM/YYYY");
 
@@ -73,9 +96,9 @@ exports.completedRound = async round => {
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-completed",
     roundCompleted(round.name, endDate),
     data
   );
@@ -83,15 +106,15 @@ exports.completedRound = async round => {
   return notifications;
 };
 
-exports.startedRound = async round => {
+exports.startedRound = async (round) => {
   // Only participants with shift assigned
   const idsMap = {};
-  round.shifts.forEach(shift => {
+  round.shifts.forEach((shift) => {
     const id = shift.participant[0].toString();
     idsMap[id] = id;
   });
 
-  const participants = round.participants.filter(p => {
+  const participants = round.participants.filter((p) => {
     // Remove admin
     if (p.user === round.admin) return false;
     const participantId = p._id.toString();
@@ -100,7 +123,7 @@ exports.startedRound = async round => {
   });
 
   // Get tokens
-  const tokens = participants.map(p => p.user.token).filter(t => t);
+  const tokens = participants.map((p) => p.user.token).filter((t) => t);
 
   // Create data for redirect
   const data = {
@@ -114,9 +137,9 @@ exports.startedRound = async round => {
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-started",
     roundStarted(round.name),
     data
   );
@@ -124,12 +147,12 @@ exports.startedRound = async round => {
   return notifications;
 };
 
-exports.startedRoundWithoutShift = async round => {
+exports.startedRoundWithoutShift = async (round) => {
   // Only participants without shift assigned
   const participantsWithShift = round.shifts
-    .map(shift => shift.participant)
+    .map((shift) => shift.participant)
     .flat();
-  const participants = round.participants.filter(p => {
+  const participants = round.participants.filter((p) => {
     // Remove admin
     if (p.user === round.admin) {
       return false;
@@ -139,12 +162,12 @@ exports.startedRoundWithoutShift = async round => {
   });
 
   // Get tokens
-  const tokens = participants.map(p => p.user.token).filter(t => t);
+  const tokens = participants.map((p) => p.user.token).filter((t) => t);
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-started",
     roundStarted(round.name)
   );
 
@@ -153,10 +176,10 @@ exports.startedRoundWithoutShift = async round => {
 
 exports.asignedShift = async (round, participantName) => {
   // Remove admin
-  const participants = round.participants.filter(p => p.user !== round.admin);
+  const participants = round.participants.filter((p) => p.user !== round.admin);
 
   // Get tokens
-  const tokens = participants.map(p => p.user.token).filter(t => t);
+  const tokens = participants.map((p) => p.user.token).filter((t) => t);
 
   // Create data for redirect
   const data = {
@@ -167,9 +190,9 @@ exports.asignedShift = async (round, participantName) => {
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La Ronda",
+    "shift-assigned",
     shiftAsigned(participantName),
     data
   );
@@ -189,9 +212,9 @@ exports.participantRejectedInvitation = async (round, participantName) => {
     }),
   };
 
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-rejected",
     participantRejected(name, participantName),
     data
   );
@@ -223,9 +246,9 @@ exports.requestedShiftNotification = async (
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     [token],
-    "La ronda",
+    "shift-requested",
     shiftRequested(participantName, stringNumbers),
     data
   );
@@ -249,9 +272,9 @@ exports.participantConfirmed = async (round, participantName) => {
   };
 
   // Send notification
-  const notification = await createNotification(
+  const notification = await createAndPersistNotification(
     [token],
-    "La Ronda",
+    "participant-confirmed",
     participantConfirmed(participantName),
     data
   );
@@ -274,7 +297,7 @@ exports.participantRequestPaymentNoti = async (
   const { user } = participant;
   const currentShift =
     round.shifts.find(
-      shift => shift.status === "current" || shift.status === "draw"
+      (shift) => shift.status === "current" || shift.status === "draw"
     ) || round.shifts[round.shifts.length - 1];
   const data = {
     action: JSON.stringify({
@@ -297,10 +320,13 @@ exports.participantRequestPaymentNoti = async (
   const message = isRequestingPayment
     ? participantRequestPaymentMessage(...msgParams)
     : participantRequestAdminToAcceptPaymentMessage(...msgParams);
+  const code = isRequestingPayment
+    ? "participant-request-payment"
+    : "participant-request-admin-accept-payment";
   // Send notification
-  const notification = await createNotification(
+  const notification = await createAndPersistNotification(
     [token],
-    "La Ronda",
+    code,
     message,
     data
   );
@@ -321,9 +347,9 @@ exports.participantPayNumberNotification = async (round, participant) => {
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "participant-pay-number",
     participantPayNumber(round.name),
     data
   );
@@ -332,11 +358,11 @@ exports.participantPayNumberNotification = async (round, participant) => {
 };
 
 // SCHEDULES
-exports.schedulePayRemember = round => {
+exports.schedulePayRemember = (round) => {
   // Only if recurrence is not daily
   if (round.recurrence !== "d") {
     // Create task schedule for all shifts
-    round.shifts.forEach(async shift => {
+    round.shifts.forEach(async (shift) => {
       // Notification date
       const objectSubstract = rememberNotifications[round.recurrence];
       const notificationDate = moment(shift.limitDate).subtract(
@@ -367,9 +393,9 @@ exports.participantSwappedInRound = async (round, participant) => {
 
   if (!token) return null;
 
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-swapped",
     participantSwapped(roundName, name),
     null
   );
@@ -377,7 +403,7 @@ exports.participantSwappedInRound = async (round, participant) => {
   return null;
 };
 
-exports.roundNotStarted = async round => {
+exports.roundNotStarted = async (round) => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -392,9 +418,9 @@ exports.roundNotStarted = async round => {
   };
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-not-started-participant-rejected",
     roundNotStartedParticipantRejected(roundName),
     data
   );
@@ -402,7 +428,7 @@ exports.roundNotStarted = async round => {
   return null;
 };
 
-exports.roundCompletedProcessing = async round => {
+exports.roundCompletedProcessing = async (round) => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -420,9 +446,9 @@ exports.roundCompletedProcessing = async round => {
   };
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-confirmation-completed",
     roundConfirmationCompleted(roundName),
     data
   );
@@ -430,7 +456,7 @@ exports.roundCompletedProcessing = async round => {
   return null;
 };
 
-exports.roundFailedProcessing = async round => {
+exports.roundFailedProcessing = async (round) => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -438,9 +464,9 @@ exports.roundFailedProcessing = async round => {
   const { token } = admin;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-confirmation-failed",
     roundConfirmationFailed(roundName)
   );
 
@@ -466,9 +492,9 @@ exports.invitationProcessCompleted = async (round, participant, accepted) => {
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-invitation-completed",
     roundInvitationCompleted(round.name, accepted),
     data
   );
@@ -492,9 +518,9 @@ exports.invitationProcessFailed = async (round, participant, accepted) => {
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-invitation-failed",
     roundInvitationFailed(round.name, accepted),
     data
   );
@@ -517,9 +543,9 @@ exports.participantPaymentConfirmed = async (round, participant) => {
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-payment-confirmed",
     participantPaymentConfirmed(round.name),
     data
   );
@@ -540,9 +566,9 @@ exports.participantPaymentFailed = async (round, participant) => {
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-payment-failed",
     participantPaymentFailed(round.name),
     data
   );
@@ -572,9 +598,10 @@ exports.swappedParticipantAdminConfirmation = async (
   const message = success
     ? adminSwappedConfirmed(...messageParams)
     : adminSwappedFailed(...messageParams);
+  const code = success ? "admin-swapped-confirmed" : "admin-swapped-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  await createAndPersistNotification([token], code, message, data);
 };
 
 exports.roundStartProcessing = async (round, success) => {
@@ -595,23 +622,25 @@ exports.roundStartProcessing = async (round, success) => {
   const message = success
     ? roundStartCompleted(roundName)
     : roundStartFailed(roundName);
+  const code = success ? "round-start-completed" : "round-start-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  await createAndPersistNotification([token], code, message, data);
 };
 
 exports.registerUserProcessing = async (token, email, success) => {
   const message = success
     ? registerUserCompleted(email)
     : registerUserFailed(email);
+  const code = success ? "register-user-completed" : "register-user-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, null);
+  await createAndPersistNotification([token], code, message, null);
 };
 
 exports.numberPayedToUser = async (round, number, participantId) => {
   const { admin, name: roundName } = round;
-  const participant = round.participants.find(p => p.id === participantId);
+  const participant = round.participants.find((p) => p.id === participantId);
   // Get admin token
   const { name } = admin;
   const { token } = participant.user;
@@ -627,5 +656,10 @@ exports.numberPayedToUser = async (round, number, participantId) => {
   const message = numberPayedToUser(name, roundName, number);
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  await createAndPersistNotification(
+    [token],
+    "number-payed-to-user",
+    message,
+    data
+  );
 };
