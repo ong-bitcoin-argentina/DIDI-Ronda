@@ -1,5 +1,6 @@
 // MANAGERS
 const user_manager = require("../managers/user");
+const notifications_manager = require("../managers/notifications");
 const round_manager = require("../managers/round");
 const participant_manager = require("../managers/participant");
 const { STORAGE_HOST, STORAGE_PORT } = process.env;
@@ -15,6 +16,17 @@ exports.byUsername = async req => {
   const user = await user_manager.byUsername(username);
   return user;
 };
+
+exports.getNotifications = async req => {
+  const { username, page, limit } = req.body;
+  const user = await user_manager.byUsername(username);
+  return {
+    items: notifications_manager.byUserId(user._id, page, limit),
+    count: notifications_manager.countByUserId(user._id),
+    page,
+    limit,
+  };
+}
 
 exports.roundsOfUser = async req => {
   const { username } = req.body;

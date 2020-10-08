@@ -20,6 +20,11 @@ exports.byUsername = async (req, res) => {
   res.status(200).jsonp(user);
 };
 
+// Get user's notification by username
+exports.getNotifications = async (req, res) => {
+  res.status(200).jsonp(await user_services.getNotifications(req));
+};
+
 // set user profile picture
 
 exports.setProfileImage = async (req, res) => {

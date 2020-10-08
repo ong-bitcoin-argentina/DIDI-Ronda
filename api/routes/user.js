@@ -21,6 +21,9 @@ const round_controller = require("../controllers/round");
 // User information
 router.get("/", [username], validation, user_controller.byUsername);
 
+// User information
+router.get("/notifications", [username], validation, user_controller.getNotifications);
+
 // Update user information
 router.put("/", [username], validation, user_controller.test);
 
