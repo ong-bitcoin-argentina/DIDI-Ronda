@@ -1,5 +1,6 @@
 api/db-data
 api/docker-compose.yml
 app/.env
+app/.env.staging
 app/package-lock.json
 api/package-lock.json
