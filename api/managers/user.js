@@ -16,7 +16,14 @@ exports.fullByUsername = async username => {
     .catch(err => ({ error: `${username}: ${err}` }));
 };
 
-
+exports.updateProfile = async (user, profile) => {
+  user.name = profile.name;
+  user.lastname = profile.lastname;
+  user.phone = profile.phoneNumber;
+  user.username = profile.mail;
+  await user.save();
+  return user;
+}
 
 exports.byId = async id => {
   let user = null;

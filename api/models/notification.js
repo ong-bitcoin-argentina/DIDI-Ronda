@@ -6,7 +6,7 @@ const notificationSchema = new Schema({
   code: { type: String, required: true },
   date: { type: Date, default: Date.now, required: true },
   body: { type: String, required: true },
-  userId: { type: ObjectId, ref: "User" },
+  userId: { type: ObjectId, ref: "User", required: true },
 });
 
 module.exports = mongoose.model("Notification", notificationSchema);

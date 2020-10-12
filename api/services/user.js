@@ -1,4 +1,5 @@
 // MANAGERS
+const aidi_service = require("./aidi");
 const user_manager = require("../managers/user");
 const notifications_manager = require("../managers/notifications");
 const round_manager = require("../managers/round");
@@ -17,14 +18,27 @@ exports.byUsername = async req => {
   return user;
 };
 
+exports.updateByUsername = async req => {
+  const { username } = req.body;
+  const user = await user_manager.byUsername(username);
+  if(!user) throw new customError("That user does not exist");
+  if(!user.did) throw new customError("That user does not have a did");
+  const profileFromAidi = await aidi_service.getProfile(user.did);
+  const updatedUser = await user_manager.updateProfile(user, profileFromAidi);
+  return updatedUser;
+};
+
 exports.getNotifications = async req => {
-  const { username, page, limit } = req.body;
+  const { username } = req.body;
+  const { page, limit } = req.query;
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
   const user = await user_manager.byUsername(username);
   return {
-    items: notifications_manager.byUserId(user._id, page, limit),
-    count: notifications_manager.countByUserId(user._id),
-    page,
-    limit,
+    items: await notifications_manager.byUserId(user._id, pageNumber, limitNumber),
+    count: await notifications_manager.countByUserId(user._id),
+    page: pageNumber,
+    limit: limitNumber,
   };
 }
 
