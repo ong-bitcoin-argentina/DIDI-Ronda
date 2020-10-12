@@ -20,6 +20,18 @@ exports.byUsername = async (req, res) => {
   res.status(200).jsonp(user);
 };
 
+// Update user by username
+exports.updateByUsername = async (req, res) => {
+  try {
+    const user = await user_services.updateByUsername(req, res);
+    res.status(200).jsonp(user);  
+  } catch (err) {
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
+};
+
 // Get user's notification by username
 exports.getNotifications = async (req, res) => {
   res.status(200).jsonp(await user_services.getNotifications(req));

@@ -69,6 +69,9 @@ app.use("/participant", participant);
 app.use("/admin", admin);
 app.use("/credentials", credentials);
 app.use("/insecure", insecure);
+app.use("*", function notFoundRoute(req, res) {
+  res.status(404).json({ message: "route not found" });
+});
 /*** ./ROUTES ****/
 
 /*** SERVER ****/
@@ -86,7 +89,6 @@ mongoose.connect(
       console.log(`-   ENV: ${ENVIROMENT}   - `);
       console.log(`-------------------------- `);
       console.log(`Node server running on http://localhost:${PORT}`);
-      
       agendaStart();
       walletRefillJob();
     });

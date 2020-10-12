@@ -5,5 +5,5 @@ exports.byUserId = async (userId, page = 0, limit = 50) => {
 };
 
 exports.countByUserId = async (userId) => {
-  return await Notification.find({ userId }).count();
+  return await Notification.count({ userId });
 };

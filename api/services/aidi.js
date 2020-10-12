@@ -2,7 +2,7 @@ const didJWT = require('did-jwt');
 const JWT = require("../helpers/jwt");
 const request = require("request-promise-native");
 
-formatAidiResponse = async (user) => {
+async function formatAidiResponse(user) {
     const uniqString = Date.now().toString(36);
     const username = user.mail;
     const emailName = username.split("@")[0];
@@ -12,16 +12,23 @@ formatAidiResponse = async (user) => {
         ...user,
         phone: user.phoneNumber,
         nick: nick,
-        name: nick,
+        name: user.name || nick,
+        lastname: user.lastname,
         username,
         jwtToken : JWT.sign({ username })
     }; 
 }
 
-exports.getUser = async (token) => {
-    const { DID, PRIVATE_KEY, DIDI_SERVER } = process.env;
+async function createJWTForAidi() {
+    const { DID, PRIVATE_KEY } = process.env;
     const signer = didJWT.SimpleSigner(PRIVATE_KEY);
-    const AIDI_JWT = await didJWT.createJWT({name: 'Ronda'}, {alg: 'ES256K-R', issuer: DID, signer});
+    return await didJWT.createJWT({name: 'Ronda'}, {alg: 'ES256K-R', issuer: DID, signer});
+}
+
+// For auth with aidi app
+exports.getUser = async (token) => {
+    const { DIDI_SERVER } = process.env;
+    const AIDI_JWT = await createJWTForAidi();
     try {
         const response = await request({
             url: `${DIDI_SERVER}/userApp/validateUser`,
@@ -41,4 +48,21 @@ exports.getUser = async (token) => {
         console.log("No se pudo validar el usuario con aidi");
     }
     return null;
+}
+
+// For get updated profile
+exports.getProfile = async (userDid) => {
+    const { DIDI_SERVER } = process.env;
+    const AIDI_JWT = await createJWTForAidi();
+    const response = await request({
+        url: `${DIDI_SERVER}/user/${userDid}`,
+        method: "POST",
+        headers: {
+            Authorization: `${AIDI_JWT}`,
+            origin: "Ronda",
+        },
+        json: true,
+        body: {},
+    });
+    return await formatAidiResponse(response.data);
 }
