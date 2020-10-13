@@ -37,7 +37,7 @@ const {
 const APP_TITLE = "Ronda";
 
 async function presistNotification(token, code, body) {
-  const user = User.findByToken(token);
+  const user = await User.findByToken(token);
   if (user) {
     await Notification.create({
       code,

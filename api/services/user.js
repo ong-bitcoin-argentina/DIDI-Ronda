@@ -37,8 +37,8 @@ exports.getNotifications = async req => {
   return {
     items: await notifications_manager.byUserId(user._id, pageNumber, limitNumber),
     count: await notifications_manager.countByUserId(user._id),
-    page: pageNumber,
-    limit: limitNumber,
+    page: pageNumber || 0,
+    limit: limitNumber || undefined,
   };
 }
 
