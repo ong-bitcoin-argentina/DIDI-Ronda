@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  ScrollView,
   //   ImageStore,
 } from 'react-native';
 import {Spinner, Icon} from 'native-base';
@@ -13,6 +14,7 @@ import Avatar from '../../../components/Avatar';
 import {getAuth} from '../../../../utils/utils';
 import colors from '../../../components/colors';
 import UserData from '../../UserProfile/UserData';
+import InformationRow from '../../../components/InformationRow';
 
 const emptyUser = {
   image: null,
@@ -33,7 +35,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(emptyUser);
   const getUser = async () => {
     const data = await getAuth();
-    console.log("getUser",data);
+    console.log('getUser', data);
     setUser(data);
   };
 
@@ -57,70 +59,54 @@ const UserProfile = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <TouchableOpacity
-          style={styles.avatarTouchableCoiner}
-          onPress={onPressAvatar}>
-          <Avatar size={130} path={user.picture} />
-          <View style={styles.editButton}>
-            <Icon
-              type="SimpleLineIcons"
-              style={styles.editIcon}
-              name="camera"
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={{flex: 0.3, paddingVertical: 0, backgroundColor: colors.mainBlue}}>
-        {user.username ? (
-          <UserData username={user.username} />
-        ) : (
-          <Spinner color={colors.mainBlue} />
-        )}
-      </View>
-      <View style={styles.dataContainer}>
-        <View style={styles.fieldRow}>
-          <View>
-            <Icon
-              type="MaterialIcons"
-              name="account-circle"
-              style={styles.userDataInfoIcon}
-            />
-          </View>
-          <View style={{paddingLeft:15}}>
-            <Text style={styles.valueTitle}>NICKNAME</Text>
-            <Text style={styles.value}>{user.nick}</Text>
-          </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.avatarTouchableCoiner}
+            onPress={onPressAvatar}>
+            <Avatar size={130} path={user.picture} />
+            <View style={styles.editButton}>
+              <Icon
+                type="SimpleLineIcons"
+                style={styles.editIcon}
+                name="camera"
+              />
+            </View>
+          </TouchableOpacity>
         </View>
-        <View style={styles.fieldRow}>
-          <View>
-            <Icon
-              type="MaterialIcons"
-              name="mail"
-              style={styles.userDataInfoIcon}
-            />
-          </View>
-          <View style={{paddingLeft:15}}>
-            <Text style={styles.valueTitle}>EMAIL</Text>
-            <Text style={styles.value}>{user.username.toLowerCase()}</Text>
-          </View>
+        <View
+          style={{
+            flex: 0.3,
+            paddingVertical: 0,
+            backgroundColor: colors.mainBlue,
+          }}>
+          {user.username ? (
+            <UserData username={user.username} />
+          ) : (
+            <Spinner color={colors.mainBlue} />
+          )}
         </View>
-        <View style={styles.fieldRow}>
-          <View style={styles}>
-            <Icon
-              type="MaterialIcons"
-              name="phone"
-              style={styles.userDataInfoIcon}
-            />
-          </View>
-          <View style={{paddingLeft:15}}>
-            <Text style={styles.valueTitle}>TELEFONO</Text>
-            <Text style={styles.value}>{user.phone}</Text>
-          </View>
+        <View style={styles.dataContainer}>
+          <InformationRow
+            icon="account-circle"
+            label="NICKNAME"
+            value={user.nick}
+          />
+          <InformationRow
+            icon="mail"
+            label="EMAIL"
+            value={user.username.toLowerCase()}
+          />
+          <InformationRow icon="phone" label="TELEFONO" value={user.phone} />
+          <InformationRow
+            icon="person"
+            label="NOMBRE Y APELLIDO"
+            value={`${user.name ?? ''} ${user.lastname ?? ''}`}
+          />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -153,7 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     backgroundColor: colors.mainBlue,
-    height: "36%"
   },
   dataContainer: {
     paddingLeft: 50,
