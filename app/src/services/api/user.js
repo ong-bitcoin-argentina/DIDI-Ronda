@@ -1,10 +1,10 @@
-import apiCall from "./helper";
-import { getPaymentDate } from "../../utils/dates";
+import apiCall from './helper';
+import { getPaymentDate } from '../../utils/dates';
 
 // Login
 export const login = async (username, password) => {
   try {
-    return await apiCall("post", "/login", {
+    return await apiCall('post', '/login', {
       username,
       password,
     });
@@ -14,14 +14,15 @@ export const login = async (username, password) => {
 };
 
 // loginWithAidi
-export const loginWithAidi = async (token) => {
-  console.log("sending request.... loginWithAidi")
+export const loginWithAidi = async token => {
+  console.log('sending request.... loginWithAidi');
+  console.log(token);
   try {
-    return await apiCall("post", "/login/aidi", {
-      token
+    return await apiCall('post', '/login/aidi', {
+      token,
     });
   } catch (error) {
-    console.log("error loginWithAidi", error);
+    console.log('error loginWithAidi', error);
     return { error };
   }
 };
@@ -29,7 +30,7 @@ export const loginWithAidi = async (token) => {
 // Register
 export const register = async (username, password, name, token, nick) => {
   try {
-    return await apiCall("post", "/register", {
+    return await apiCall('post', '/register', {
       username,
       password,
       name,
@@ -44,7 +45,7 @@ export const register = async (username, password, name, token, nick) => {
 // Verify
 export const verifyEmail = async (username, token) => {
   try {
-    return await apiCall("post", "/verify", {
+    return await apiCall('post', '/verify', {
       username,
       token,
     });
@@ -56,7 +57,7 @@ export const verifyEmail = async (username, token) => {
 // Forgot
 export const forgot = async username => {
   try {
-    return await apiCall("post", "/forgot", {
+    return await apiCall('post', '/forgot', {
       username,
     });
   } catch (error) {
@@ -67,7 +68,7 @@ export const forgot = async username => {
 // Forgot code
 export const forgotCode = async (username, token) => {
   try {
-    return await apiCall("post", "/forgot/code", {
+    return await apiCall('post', '/forgot/code', {
       username,
       token,
     });
@@ -78,7 +79,7 @@ export const forgotCode = async (username, token) => {
 // Forgot ser new password
 export const forgotNewPassword = async (username, password, token) => {
   try {
-    return await apiCall("post", "/forgot/password", {
+    return await apiCall('post', '/forgot/password', {
       username,
       password,
       token,
@@ -91,7 +92,7 @@ export const forgotNewPassword = async (username, password, token) => {
 // Get round list of user
 export const getRoundsList = async () => {
   try {
-    return await apiCall("get", "/user/round");
+    return await apiCall('get', '/user/round');
   } catch (error) {
     return { error };
   }
@@ -103,7 +104,7 @@ export const createRound = async (
   frequency,
   roundName,
   participants,
-  date
+  date,
 ) => {
   const participantsObj = {};
   participants.forEach(contact => {
@@ -133,7 +134,7 @@ export const createRound = async (
   });
   const { date: paymentDate } = getPaymentDate(date, frequency, 1);
   try {
-    const data = await apiCall("post", "/user/round", {
+    const data = await apiCall('post', '/user/round', {
       name: roundName,
       amount: parseInt(amount, 10),
       shifts,
@@ -153,7 +154,7 @@ export const createRound = async (
 export const updateRound = async data => {
   try {
     const url = `/admin/round/${data.id}`;
-    await apiCall("put", url, data);
+    await apiCall('put', url, data);
     return { error: false };
   } catch (error) {
     return { error: true };
@@ -164,7 +165,7 @@ export const phone = async (username, phoneData, country) => {
   const body = { username, phone: phoneData, country };
 
   try {
-    return await apiCall("post", "/phone", body);
+    return await apiCall('post', '/phone', body);
   } catch (error) {
     return { error };
   }
@@ -174,7 +175,7 @@ export const phoneVerify = async (username, phoneData, country, code) => {
   const body = { username, phone: phoneData, country, token: code };
 
   try {
-    return await apiCall("post", "/phone/code", body);
+    return await apiCall('post', '/phone/code', body);
   } catch (error) {
     return { error };
   }
@@ -182,7 +183,7 @@ export const phoneVerify = async (username, phoneData, country, code) => {
 
 export const getUserData = async () => {
   try {
-    return await apiCall("post", "/user/userData");
+    return await apiCall('post', '/user/userData');
   } catch (error) {
     return { error };
   }
@@ -191,9 +192,18 @@ export const getUserData = async () => {
 // Update token
 export const updateToken = async token => {
   try {
-    return await apiCall("post", "/user/token/update", {
+    return await apiCall('post', '/user/token/update', {
       newToken: token,
     });
+  } catch (error) {
+    return { error };
+  }
+};
+
+// Get notifications list of user
+export const getNotifications = async username => {
+  try {
+    return await apiCall('post', '/user/notifications', { username });
   } catch (error) {
     return { error };
   }

@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {Icon, Text} from 'native-base';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
+import { StyleSheet } from 'react-native';
+import { Icon, Text } from 'native-base';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Colors from '../colors';
 import Tutorial from '../../screens/tutorial/Tutorial';
 import Home from './MainNavigation';
@@ -11,21 +11,22 @@ import Auth from '../../screens/onboarding';
 import LoadingAuth from '../../screens/onboarding/LoadingAuth';
 import UserProfile from '../../screens/Settings/userProfile';
 import Register from '../../screens/onboarding/Register';
+import Notifications from '../../screens/Notifications';
 
 const Main = createBottomTabNavigator(
   {
-    Inicio: {screen: Home},
+    Inicio: { screen: Home },
     Rondas: {
       screen: RoundsList,
     },
-    Notificaciones: {screen: Home},
-    Perfil: {screen: UserProfile},
+    Notificaciones: { screen: Notifications },
+    Perfil: { screen: UserProfile },
   },
   {
     initialRouteName: 'Rondas',
-    defaultNavigationOptions: ({navigation}) => ({
-      tabBarLabel: ({focused}) => {
-        const {routeName} = navigation.state;
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarLabel: ({ focused }) => {
+        const { routeName } = navigation.state;
         let label;
         switch (routeName) {
           case 'Inicio':
@@ -42,9 +43,7 @@ const Main = createBottomTabNavigator(
             ) : null;
             break;
           case 'Perfil':
-            label = focused ? (
-              <Text style={styles.tabText}>Perfil</Text>
-            ) : null;
+            label = focused ? <Text style={styles.tabText}>Perfil</Text> : null;
             break;
           default:
             label = null;
@@ -52,8 +51,8 @@ const Main = createBottomTabNavigator(
         // return label, if we want to show page name on the navigation
         return null;
       },
-      tabBarIcon: ({tintColor}) => {
-        const {routeName} = navigation.state;
+      tabBarIcon: ({ tintColor }) => {
+        const { routeName } = navigation.state;
         let iconName;
         let iconFamily = null;
         switch (routeName) {
@@ -80,7 +79,7 @@ const Main = createBottomTabNavigator(
             name={iconName}
             type={iconFamily}
             size={20}
-            style={{color: tintColor, marginTop: 5}}
+            style={{ color: tintColor, marginTop: 5 }}
           />
         );
       },
