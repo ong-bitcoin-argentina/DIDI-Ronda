@@ -1,6 +1,7 @@
 export default {
   mainBlue: '#417fd7',
   lightBlue: '#9fbeed',
+  secondaryBlue: '#04c9e1',
   inactiveBlue: '#b3cbef',
   secondary: '#9c9c9c',
   gray: '#595959',
@@ -12,6 +13,7 @@ export default {
   secondaryBackground: '#e7e7e7',
   darkishGray: '#bfbfbf',
   green: '#40d457',
+  secondaryGreen: '#6ecc62',
   red: '#F44336',
   lightGray: '#eeeeee',
   lighterGray: '#e3e3e3',
