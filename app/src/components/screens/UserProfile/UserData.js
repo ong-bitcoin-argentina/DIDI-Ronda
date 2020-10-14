@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, Linking } from "react-native";
-import { Icon, View, Text, Spinner } from "native-base";
-import colors from "../../components/colors";
-import * as userDataActions from "../../../actions/userData";
-import { openAidiCredentials } from "../../../utils/appRouter";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, Linking } from 'react-native';
+import { Icon, View, Text, Spinner } from 'native-base';
+import colors from '../../components/colors';
+import * as userDataActions from '../../../actions/userData';
+import { openAidiCredentials } from '../../../utils/appRouter';
 
 const UserData = props => {
   useEffect(() => {
@@ -19,13 +19,13 @@ const UserData = props => {
   const { userData, loading } = props;
 
   const { roundsCount, completedRoundsCount } = userData || {
-    roundsCount: "-",
-    completedRoundsCount: "-",
+    roundsCount: '-',
+    completedRoundsCount: '-',
   };
 
   const goToAidiCredentials = async () => {
     await openAidiCredentials();
-  }
+  };
 
   return (
     <View style={styles.userData}>
@@ -63,18 +63,16 @@ const UserData = props => {
       </View>
       <View style={[styles.userDataInfo]}>
         <Icon
-          onPress={goToAidiCredentials}
           type="MaterialCommunityIcons"
           name="certificate"
           style={styles.userDataInfoIcon}
         />
-        <Text onPress={goToAidiCredentials} style={styles.userDataInfoText}>Certificados de Rondas</Text>
+        <Text style={styles.userDataInfoText}>Certificados de Rondas</Text>
         {loading ? (
           <Spinner size={15} style={styles.spinner} />
         ) : (
-          <Text onPress={goToAidiCredentials} style={styles.userDataInfoValue}>{completedRoundsCount}</Text>
+          <Text style={styles.userDataInfoValue}>{completedRoundsCount}</Text>
         )}
-        
       </View>
     </View>
   );
@@ -83,47 +81,47 @@ const UserData = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: colors.backgroundGray,
   },
   userData: {
     marginTop: 40,
-    width: "100%",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
+    width: '100%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 20,
     marginBottom: 40,
   },
   userDataInfo: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
-    borderStyle: "dashed",
+    borderStyle: 'dashed',
     borderColor: colors.secondary,
   },
   userDataInfoValue: {
     color: colors.white,
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   userDataInfoText: {
     color: colors.secondary,
     fontSize: 13,
-    textAlign: "center",
-    color: colors.white
+    textAlign: 'center',
+    color: colors.white,
   },
   userDataInfoIcon: {
     color: colors.white,
     marginBottom: 5,
-    marginTop:10
+    marginTop: 10,
   },
   userDataIconCheck: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 100,
-    backfaceVisibility: "hidden",
+    backfaceVisibility: 'hidden',
     bottom: 55,
     right: 66,
     fontSize: 20,
@@ -151,5 +149,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(UserData);

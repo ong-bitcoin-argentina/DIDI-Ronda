@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,11 @@ import {
   ScrollView,
   //   ImageStore,
 } from 'react-native';
-import {Spinner, Icon} from 'native-base';
-import {createStackNavigator} from 'react-navigation-stack';
+import { Spinner, Icon } from 'native-base';
+import { createStackNavigator } from 'react-navigation-stack';
 import ImagePicker from 'react-native-image-crop-picker';
 import Avatar from '../../../components/Avatar';
-import {getAuth} from '../../../../utils/utils';
+import { getAuth } from '../../../../utils/utils';
 import colors from '../../../components/colors';
 import UserData from '../../UserProfile/UserData';
 import InformationRow from '../../../components/InformationRow';
@@ -45,7 +45,7 @@ const UserProfile = () => {
 
   const onPressAvatar = async () => {
     const img = await ImagePicker.openPicker(imgPickerOptions);
-    setUser({...user, picture: img.path});
+    setUser({ ...user, picture: img.path });
     // Se hace lo siguiente para obtener el base64
     // Luego se lo manipula y se sube al endpoint
     // ImageStore.getBase64ForTag(
@@ -98,7 +98,7 @@ const UserProfile = () => {
             label="EMAIL"
             value={user.username.toLowerCase()}
           />
-          <InformationRow icon="phone" label="TELEFONO" value={user.phone} />
+          <InformationRow icon="phone" label="TELÉFONO" value={user.phone} />
           <InformationRow
             icon="person"
             label="NOMBRE Y APELLIDO"
@@ -195,7 +195,7 @@ export default createStackNavigator({
     screen: UserProfile,
     navigationOptions: () => ({
       title: `Mi Perfil`,
-      headerStyle: {backgroundColor: '#417fd7'},
+      headerStyle: { backgroundColor: '#417fd7' },
       headerTitleStyle: styles.headerTitleStyle,
     }),
   },
