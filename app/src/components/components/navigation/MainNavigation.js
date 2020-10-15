@@ -47,12 +47,6 @@ class Home extends React.Component {
     ];
   };
 
-  navigateTo = async options => {
-    const { navigation, saveRouteOptions } = this.props;
-    saveRouteOptions({ roundsList: { page: options.page } });
-    navigation.navigate(options.route);
-  };
-
   renderCard = round => {
     return (
       <Button
