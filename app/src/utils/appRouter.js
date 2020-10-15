@@ -4,7 +4,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 export const openAdiLogin = async () => {
   const params = {
     dynamicLink: `https://aidi.page.link/XktS`,
-    deppLink: `aidi://login/`,
+    deppLink: `aidi://login`,
   };
   await openApp(params);
 };

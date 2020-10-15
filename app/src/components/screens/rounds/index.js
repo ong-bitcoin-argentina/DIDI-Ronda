@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Text, Icon, Button} from 'native-base';
-import {createStackNavigator} from 'react-navigation-stack';
-import {createSwitchNavigator} from 'react-navigation';
+import { View, StyleSheet } from 'react-native';
+import { Text, Icon, Button } from 'native-base';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createSwitchNavigator } from 'react-navigation';
 import {
   Menu,
   MenuOptions,
@@ -16,7 +16,7 @@ import RoundDetail from '../RoundDetail';
 import NumberDetail from '../NumberDetail';
 import NumberPay from '../NumberDetail/NumberPay';
 import UserProfile from '../UserProfile';
-import {logOut} from '../../../utils/utils';
+import { logOut } from '../../../utils/utils';
 import HeaderRightMenu from '../RoundDetail/HeaderRIghtMenu';
 
 const styles = StyleSheet.create({
@@ -69,11 +69,11 @@ const renderBackButton = goBack => (
 const List = createStackNavigator({
   List: {
     screen: RoundsList,
-    navigationOptions: () => ({
+    navigationOptions: ({ navigation }) => ({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       title: `Ronda`,
-      headerStyle: {backgroundColor: '#417fd7', elevation: 0},
+      headerStyle: { backgroundColor: '#417fd7', elevation: 0 },
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
@@ -86,7 +86,7 @@ const List = createStackNavigator({
 
       title: `Número`,
       headerTintColor: 'white',
-      headerStyle: {backgroundColor: '#417fd7'},
+      headerStyle: { backgroundColor: '#417fd7' },
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
@@ -98,19 +98,19 @@ const List = createStackNavigator({
       headerBackStyle: styles.colorWhite,
       title: `Pagar`,
       headerTintColor: 'white',
-      headerStyle: {backgroundColor: '#417fd7'},
+      headerStyle: { backgroundColor: '#417fd7' },
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: menuOptions(),
     }),
   },
   RoundDetail: {
     screen: RoundDetail,
-    navigationOptions: ({navigation}) => ({
+    navigationOptions: ({ navigation }) => ({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       headerTintColor: 'white',
       title: `Mis Rondas`,
-      headerStyle: {backgroundColor: '#417fd7'},
+      headerStyle: { backgroundColor: '#417fd7' },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: renderBackButton(navigation.goBack),
       headerRight: HeaderRightMenu(navigation),
@@ -118,9 +118,9 @@ const List = createStackNavigator({
   },
   UserProfile: {
     screen: UserProfile,
-    navigationOptions: ({navigation}) => ({
+    navigationOptions: ({ navigation }) => ({
       title: `Participante`,
-      headerStyle: {backgroundColor: '#417fd7'},
+      headerStyle: { backgroundColor: '#417fd7' },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: renderBackButton(navigation.goBack),
     }),
