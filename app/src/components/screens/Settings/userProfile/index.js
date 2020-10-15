@@ -89,9 +89,9 @@ const UserProfile = () => {
         </View>
         <View style={styles.dataContainer}>
           <InformationRow
-            icon="account-circle"
-            label="NICKNAME"
-            value={user.nick}
+            icon="person"
+            label="NOMBRE Y APELLIDO"
+            value={`${user.name ?? ''} ${user.lastname ?? ''}`}
           />
           <InformationRow
             icon="mail"
@@ -100,9 +100,9 @@ const UserProfile = () => {
           />
           <InformationRow icon="phone" label="TELÉFONO" value={user.phone} />
           <InformationRow
-            icon="person"
-            label="NOMBRE Y APELLIDO"
-            value={`${user.name ?? ''} ${user.lastname ?? ''}`}
+            icon="account-circle"
+            label="NICKNAME"
+            value={user.nick}
           />
         </View>
       </View>
