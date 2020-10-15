@@ -1,13 +1,14 @@
-import { combineReducers } from "redux";
-import roundCreation from "./roundCreation";
-import rounds from "./rounds";
-import login from "./login";
-import onboarding from "./onboarding";
-import forgot from "./forgot";
-import participant from "./participant";
-import phone from "./phone";
-import userData from "./userData";
-import roundDetailRootModal from "./roundDetailRootModal";
+import { combineReducers } from 'redux';
+import roundCreation from './roundCreation';
+import rounds from './rounds';
+import login from './login';
+import onboarding from './onboarding';
+import forgot from './forgot';
+import participant from './participant';
+import phone from './phone';
+import userData from './userData';
+import roundDetailRootModal from './roundDetailRootModal';
+import routeOptions from './routeOptions';
 
 export default combineReducers({
   rounds,
@@ -19,4 +20,5 @@ export default combineReducers({
   participant,
   userData,
   roundDetailRootModal,
+  routeOptions,
 });

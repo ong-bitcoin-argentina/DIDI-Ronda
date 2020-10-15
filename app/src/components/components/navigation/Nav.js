@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Colors from '../colors';
 import Tutorial from '../../screens/tutorial/Tutorial';
 import Home from './MainNavigation';
-import RoundsList from '../../screens/rounds';
+import Rounds from '../../screens/rounds';
 import Auth from '../../screens/onboarding';
 import LoadingAuth from '../../screens/onboarding/LoadingAuth';
 import UserProfile from '../../screens/Settings/userProfile';
@@ -17,7 +17,7 @@ const Main = createBottomTabNavigator(
   {
     Inicio: { screen: Home },
     Rondas: {
-      screen: RoundsList,
+      screen: Rounds,
     },
     Notificaciones: { screen: Notifications },
     Perfil: { screen: UserProfile },

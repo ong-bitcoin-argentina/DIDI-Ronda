@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon, Button } from 'native-base';
+import { connect } from 'react-redux';
 import { createStackNavigator } from 'react-navigation-stack';
 import { getAuth } from '../../../utils/utils';
 import { openAidiCredentials } from '../../../utils/appRouter';
+import { toRoundListPage } from '../../../utils/deepNavigation';
 import colors from '../colors';
 
 class Home extends React.Component {
@@ -23,7 +25,7 @@ class Home extends React.Component {
   async componentDidMount() {
     const user = await getAuth();
     this.setState({ user: user });
-    console.log('user componentDidMount', user);
+    // console.log('user componentDidMount', user);
   }
 
   roundsType = () => {
@@ -33,27 +35,44 @@ class Home extends React.Component {
         qty: '',
         icon: '',
         color: colors.secondaryBlue,
+        page: 0,
       },
       {
         title: 'Rondas Terminadas',
         qty: '',
         icon: '',
         color: colors.secondaryGreen,
+        page: 2,
       },
     ];
   };
 
+  navigateTo = async options => {
+    const { navigation, saveRouteOptions } = this.props;
+    saveRouteOptions({ roundsList: { page: options.page } });
+    navigation.navigate(options.route);
+  };
+
   renderCard = round => {
     return (
-      <View style={{ backgroundColor: round.color, ...styles.card }}>
+      <Button
+        style={{ backgroundColor: round.color, ...styles.card }}
+        onPress={() => this.props.navigateToRoundsPage(round.page)}>
         <Icon
           type="MaterialIcons"
           name="filter-tilt-shift"
           style={styles.icon}
         />
-        <Text style={styles.quantity}>{round.qty}</Text>
-        <Text style={{ color: 'white', fontSize: 18 }}> {round.title} </Text>
-      </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.quantity}>{round.qty || '-'}</Text>
+          <Text style={styles.cardTitle}>{round.title}</Text>
+        </View>
+        <Icon
+          type="MaterialIcons"
+          name="chevron-right"
+          style={{ color: colors.white }}
+        />
+      </Button>
     );
   };
 
@@ -61,7 +80,7 @@ class Home extends React.Component {
 
   seeCredentials = () => {
     const { user } = this.state;
-    console.log('seeCredentials', user);
+    // console.log('seeCredentials', user);
     return (
       <View style={{ backgroundColor: '#FFFFFF', padding: 15, marginTop: 10 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -118,15 +137,28 @@ const styles = StyleSheet.create({
     padding: 0,
     alignContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 8,
     height: 84,
+  },
+  cardTitle: {
+    color: 'white',
+    fontSize: 18,
+  },
+  cardContent: {
+    // flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
   icon: {
     color: 'white',
     fontSize: 40,
-    marginHorizontal: 20,
+    marginHorizontal: 0,
     backgroundColor: '#ffffff54',
     borderRadius: 40,
     padding: 5,
+    marginRight: 14,
   },
   button: {
     marginTop: 30,
@@ -137,9 +169,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantity: {
-    fontSize: 30,
+    fontSize: 26,
     color: 'white',
     fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginRight: 8,
   },
   title: {
     fontSize: 25,
@@ -147,9 +181,16 @@ const styles = StyleSheet.create({
   },
 });
 
+const HomeScreen = connect(
+  null,
+  dispatch => ({
+    navigateToRoundsPage: page => toRoundListPage(dispatch, page),
+  }),
+)(Home);
+
 export default createStackNavigator({
   Home: {
-    screen: Home,
+    screen: HomeScreen,
     navigationOptions: () => ({
       title: `Mis Rondas`,
       headerStyle: { backgroundColor: '#417fd7' },

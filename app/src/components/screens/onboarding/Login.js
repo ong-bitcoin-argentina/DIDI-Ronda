@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Config from 'react-native-config';
-import {connect} from 'react-redux';
-import {Button, Spinner} from 'native-base';
+import { connect } from 'react-redux';
+import { Button, Spinner } from 'native-base';
 import {
   View,
   Text,
@@ -55,7 +55,7 @@ const Login = props => {
     </KeyboardAvoidingView>
   );
 
-  const {loading: isLoading} = props;
+  const { loading: isLoading } = props;
 
   if (isLoading) return loading();
 
@@ -65,13 +65,13 @@ const Login = props => {
       style={styles.backgroundImage}>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Logo height={120} width={140} />
+          <Logo height={140} width={160} />
         </View>
         <Button
           background={TouchableNativeFeedback.Ripple('lightgray', false)}
           onPress={onLoginWithAidi}
           style={styles.button}>
-          <Text style={{fontSize: 18, color: 'white', fontWeight: 'bold'}}>
+          <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
             Conectate con ai-di
           </Text>
         </Button>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  subtitle: {color: 'white', fontSize: 18},
+  subtitle: { color: 'white', fontSize: 18 },
 });
 
 const mapStateToProps = state => {
