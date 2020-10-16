@@ -21,4 +21,6 @@ router.post(
   round_controller.simulateFinish
 );
 
+router.post("/notify/:username", user_controller.notify);
+
 module.exports = router;

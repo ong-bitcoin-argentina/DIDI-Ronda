@@ -4,6 +4,9 @@ const user_services = require("../services/user");
 const { generic } = require("../helpers/errorHandler");
 
 const otherUtils = require("../utils/other");
+const { createNotification } = require("../helpers/notifications/config");
+const { APP_TITLE } = require("../helpers/notifications/notifications");
+const { roundListTest } = require("../helpers/notifications/messages");
 
 // RETURN TEST (async)
 exports.test = async (req, res) => {
@@ -24,7 +27,7 @@ exports.byUsername = async (req, res) => {
 exports.updateByUsername = async (req, res) => {
   try {
     const user = await user_services.updateByUsername(req, res);
-    res.status(200).jsonp(user);  
+    res.status(200).jsonp(user);
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)
@@ -76,5 +79,26 @@ exports.updateToken = async (req, res) => {
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");
+  }
+};
+
+exports.notify = async (req, res) => {
+  try {
+    const user = await user_services.findByUsername(req.params.username);
+    const action = JSON.stringify({
+      routeName: "Rondas"
+    });
+    const notification = await createNotification(
+      [user.token],
+      APP_TITLE,
+      roundListTest(),
+      { action }
+    );
+    console.log(notification);
+    const result = { message: roundListTest(), username: user.username };
+    res.status(200).jsonp(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
   }
 };
