@@ -64,13 +64,13 @@ const Tutorials = props => {
 
   useEffect(() => {
     getTutorialState(() => {
-      props.navigation.navigate("Main");
+      goHome(false);
     }, setLoading);
   }, []);
 
-  const goToRoundList = async () => {
-    await AsyncStorage.setItem("tutorialFinished", "true");
-    props.navigation.navigate("Rondas");
+  const goHome = async (setFinish = true) => {
+    setFinish && (await AsyncStorage.setItem("tutorialFinished", "true"));
+    props.navigation.navigate("Main");
   };
 
   const renderItem = ({ item }) => {
@@ -78,17 +78,14 @@ const Tutorials = props => {
   };
 
   const closeButton = (
-    <TouchableOpacity
-      style={{ flexDirection: "row" }}
-      onPress={() => goToRoundList()}
-    >
+    <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => goHome()}>
       <Text style={styles.closeButton}>Cerrar </Text>
       <Icon style={{ color: "white" }} name="ios-close" />
     </TouchableOpacity>
   );
 
   const onBeforeSnapToItem = index => {
-    if (index === cards.length - 1) return goToRoundList();
+    if (index === cards.length - 1) return goHome();
     return null;
   };
 

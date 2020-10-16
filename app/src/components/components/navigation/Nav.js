@@ -23,7 +23,7 @@ const Main = createBottomTabNavigator(
     Perfil: { screen: UserProfile },
   },
   {
-    initialRouteName: 'Rondas',
+    initialRouteName: 'Inicio',
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarLabel: ({ focused }) => {
         const { routeName } = navigation.state;
