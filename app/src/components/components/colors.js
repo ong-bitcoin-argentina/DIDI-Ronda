@@ -25,4 +25,5 @@ export default {
   white: '#FFFFFF',
   black: '#000',
   secondaryWhite: '#F2F2F2',
+  whiteTransparent: '#ffffff40',
 };

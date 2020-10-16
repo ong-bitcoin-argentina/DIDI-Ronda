@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Config from 'react-native-config';
 import { connect } from 'react-redux';
-import { Button, Spinner } from 'native-base';
+import { Button, Spinner, Icon } from 'native-base';
 import {
   View,
   Text,
@@ -21,29 +21,40 @@ import {
   openAdiLogin,
 } from './../../../utils/appRouter';
 import Logo from '../../../assets/img/app-logo.svg';
+
+const states = {
+  initial: 'initial',
+  success: 'success',
+  denied: 'denied',
+};
+
 const Login = props => {
+  const [state, setState] = useState(states.initial);
+
   const handleLogin = async link => {
     if (!link) return;
-    if (loginSuccess(link)) await loginWithAidi(getToken(link));
-    else if (loginDenied(link)) props.navigation.navigate('AccessDenied');
+    if (loginSuccess(link)) {
+      setState(states.success);
+      await loginWithAidi(getToken(link));
+    } else if (loginDenied(link)) {
+      setState(states.denied);
+    }
   };
-
-  const goToErrorScreen = () => props.navigation.navigate('AccessDenied');
 
   useEffect(deepLinkHandler(handleLogin), []);
 
   useEffect(dynamicLinkHandler(handleLogin), []);
 
-  const sendToken = async () =>
-    await loginWithAidi(
-      'dUESJ7tmSnC4nnoTanLsyO:APA91bGzkN2xVYZhuXN6DKn7o1HtdjsFDbx4gjyORFVHd65tX-Vfh8acL1KgSsc5JJjbCI7OicGFrW0W8izsrScAs5ZwDet3lYIQEZgz5vfroUYKTiTpory2NiWhbJ4MuLOy1yNrt6jN',
-    );
+  // const sendToken = async () =>
+  //   await loginWithAidi(
+  //     'dUESJ7tmSnC4nnoTanLsyO:APA91bGzkN2xVYZhuXN6DKn7o1HtdjsFDbx4gjyORFVHd65tX-Vfh8acL1KgSsc5JJjbCI7OicGFrW0W8izsrScAs5ZwDet3lYIQEZgz5vfroUYKTiTpory2NiWhbJ4MuLOy1yNrt6jN',
+  //   );
 
   const loginWithAidi = async token => await props.loginWithAidi(token);
 
   const onLoginWithAidi = async () => await openAdiLogin();
 
-  const forgot = () => props.navigation.navigate('Forgot');
+  // const forgot = () => props.navigation.navigate('Forgot');
 
   const loading = () => (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -59,13 +70,26 @@ const Login = props => {
 
   if (isLoading) return loading();
 
+  const renderAuthWarning = () => (
+    <View style={styles.warning}>
+      <Icon type="MaterialIcons" name="warning" style={styles.icon} />
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>
+        ¡Error de Autenticación!
+      </Text>
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>
+        Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.
+      </Text>
+      <Text style={styles.warningText}>Por favor, volvé a intentarlo.</Text>
+    </View>
+  );
+
   return (
     <ImageBackground
       source={require('../../../assets/img/loginbackground.png')}
       style={styles.backgroundImage}>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Logo height={140} width={160} />
+          <Logo height={200} width={200} />
         </View>
         <Button
           background={TouchableNativeFeedback.Ripple('lightgray', false)}
@@ -75,6 +99,7 @@ const Login = props => {
             Conectate con ai-di
           </Text>
         </Button>
+        {state === states.denied && renderAuthWarning()}
       </View>
     </ImageBackground>
   );
@@ -95,18 +120,19 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '100%',
     flex: 1,
+    paddingBottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 30,
   },
   input: {
     color: 'white',
   },
   button: {
     marginTop: 30,
-    // backgroundColor: "white",
     backgroundColor: '#24CDD2',
     borderRadius: 8,
-    width: '80%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -129,6 +155,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   subtitle: { color: 'white', fontSize: 18 },
+  icon: {
+    color: colors.yellowStatus,
+    fontSize: 40,
+    marginBottom: 4,
+  },
+  warning: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: colors.whiteTransparent,
+    borderRadius: 8,
+    paddingVertical: 16,
+  },
+  warningText: {
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
+  },
 });
 
 const mapStateToProps = state => {
