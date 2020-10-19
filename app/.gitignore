@@ -64,3 +64,5 @@ ios/Pods/
 .env.production
 
 */gradle.properties
+*/google-services.json
+*/google-services-prod.json
