@@ -63,4 +63,4 @@ ios/Pods/
 .env.uat
 .env.production
 
-*gradle.properties
+*/gradle.properties
