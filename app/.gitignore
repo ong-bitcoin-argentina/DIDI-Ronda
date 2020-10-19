@@ -62,3 +62,5 @@ ios/Pods/
 .env.staging
 .env.uat
 .env.production
+
+*gradle.properties
