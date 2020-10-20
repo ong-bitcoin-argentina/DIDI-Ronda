@@ -1,17 +1,20 @@
 const moment = require("moment");
 
 const fields = {
-  id: "ID Ronda",
-  roundName: "Nombre Ronda",
-  amount: "Monto [$]",
+  id: "Código de Ronda",
+  roundName: "Nombre de Ronda",
+  myNumber: length => (length > 1 ? `Mis números` : `Mi número`),
+  amount: "Monto de la Ronda [$]",
+  individualAmount: "Monto individual [$]",
+  state: "Estado de la Ronda",
   startDate: "Fecha de Inicio",
   endDate: "Fecha de Fin",
   rol: "Rol",
   did: "DID",
   recurrence: "Periodicidad de Ronda",
-  shifts: "Ciclos",
-  defaulted: "Ciclos Vencidos",
-  noPayed: "Ciclos Impagos",
+  shifts: "Cantidad de Números",
+  defaulted: "# Fuera de término",
+  noPayed: "# Impagas",
   name: "NOMBRE",
   lastname: "APELLIDO"
 };

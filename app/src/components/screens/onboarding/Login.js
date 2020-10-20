@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import Config from 'react-native-config';
-import { connect } from 'react-redux';
-import { Button, Spinner, Icon } from 'native-base';
+import React, { useState, useEffect } from "react";
+import Config from "react-native-config";
+import { connect } from "react-redux";
+import { Button, Spinner, Icon } from "native-base";
 import {
   View,
   Text,
@@ -9,9 +9,10 @@ import {
   StyleSheet,
   TouchableNativeFeedback,
   ImageBackground,
-} from 'react-native';
-import colors from '../../components/colors';
-import * as actions from '../../../actions/auth';
+  Linking,
+} from "react-native";
+import colors from "../../components/colors";
+import * as actions from "../../../actions/auth";
 import {
   deepLinkHandler,
   dynamicLinkHandler,
@@ -19,17 +20,20 @@ import {
   loginDenied,
   getToken,
   openAdiLogin,
-} from './../../../utils/appRouter';
-import Logo from '../../../assets/img/app-logo.svg';
+  links,
+} from "./../../../utils/appRouter";
+import Logo from "../../../assets/img/app-logo.svg";
+import LinkModal from "../../components/LinkModal";
 
 const states = {
-  initial: 'initial',
-  success: 'success',
-  denied: 'denied',
+  initial: "initial",
+  success: "success",
+  denied: "denied",
 };
 
 const Login = props => {
   const [state, setState] = useState(states.initial);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogin = async link => {
     if (!link) return;
@@ -52,7 +56,17 @@ const Login = props => {
 
   const loginWithAidi = async token => await props.loginWithAidi(token);
 
-  const onLoginWithAidi = async () => await openAdiLogin();
+  const onLoginWithAidi = async () => {
+    const canOpen = await Linking.canOpenURL(links.login.deepLink);
+    if (!canOpen) {
+      return setModalVisible(true);
+    }
+    await openAdiLogin();
+  };
+
+  const openPlaystore = async () => {
+    await openAdiLogin();
+  };
 
   // const forgot = () => props.navigation.navigate('Forgot');
 
@@ -85,22 +99,28 @@ const Login = props => {
 
   return (
     <ImageBackground
-      source={require('../../../assets/img/loginbackground.png')}
+      source={require("../../../assets/img/loginbackground.png")}
       style={styles.backgroundImage}>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
           <Logo height={200} width={200} />
         </View>
         <Button
-          background={TouchableNativeFeedback.Ripple('lightgray', false)}
+          background={TouchableNativeFeedback.Ripple("lightgray", false)}
           onPress={onLoginWithAidi}
           style={styles.button}>
-          <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-            Conectate con ai-di
+          <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>
+            Conectate con ai·di
           </Text>
         </Button>
         {state === states.denied && renderAuthWarning()}
       </View>
+
+      <LinkModal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        onConfirm={openPlaystore}
+      />
     </ImageBackground>
   );
 };
@@ -108,61 +128,61 @@ const Login = props => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    resizeMode: "cover",
+    justifyContent: "center",
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.mainBlue,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
     flex: 1,
     paddingBottom: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 30,
   },
   input: {
-    color: 'white',
+    color: "white",
   },
   button: {
     marginTop: 30,
-    backgroundColor: '#24CDD2',
+    backgroundColor: "#24CDD2",
     borderRadius: 8,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonTransparent: {
     marginTop: 30,
     borderRadius: 8,
-    backgroundColor: 'transparent',
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "transparent",
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 30,
   },
   title: {
     fontSize: 36,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
-  subtitle: { color: 'white', fontSize: 18 },
+  subtitle: { color: "white", fontSize: 18 },
   icon: {
     color: colors.yellowStatus,
     fontSize: 40,
     marginBottom: 4,
   },
   warning: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 20,
     backgroundColor: colors.whiteTransparent,
     borderRadius: 8,
@@ -170,8 +190,8 @@ const styles = StyleSheet.create({
   },
   warningText: {
     fontSize: 18,
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
   },
 });
 
