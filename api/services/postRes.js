@@ -380,12 +380,6 @@ exports.enableSCToUser = async (user) => {
   console.log("user after sc", user);
 
   await registerUserProcessing(token, username, true);
-
-  try {
-    if (user) await sendVerificationToken(username, verifyToken);  
-  } catch (error) {
-    console.error("send verification token via email failed: ",error)
-  }
 }
 
 
@@ -448,13 +442,6 @@ exports.registerUser = async params => {
   }
 
   await registerUserProcessing(token, username, true);
-
-  try {
-    if (user) await sendVerificationToken(username, verifyToken);  
-  } catch (error) {
-    console.error("send verification token via email failed: ",error)
-  }
-  
 
   return null;
 };
