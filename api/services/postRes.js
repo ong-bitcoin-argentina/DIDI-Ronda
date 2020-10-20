@@ -281,7 +281,7 @@ const sendVerificationToken = async (username, token) => {
 
 exports.registerAidiUser = async params => {
   try {
-    const { nick, username, password, name, token, phone, did, jwtToken } = params;
+    const { nick, username, password, name, lastname, token, phone, did, jwtToken } = params;
 
 
     const { address, privateKey } = await walletUtil.createWallet();
@@ -293,6 +293,7 @@ exports.registerAidiUser = async params => {
       username,
       password,
       name,
+      lastname,
       token,
       verifyToken,
       nick,
