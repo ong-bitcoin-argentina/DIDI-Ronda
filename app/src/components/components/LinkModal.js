@@ -43,8 +43,8 @@ const LinkModal = ({ visible, onRequestClose, onConfirm }) => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 160,
-    height: 60,
+    width: 140,
+    height: 50,
     marginTop: 8,
     marginBottom: 24,
   },
