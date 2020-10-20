@@ -44,26 +44,40 @@ const getPaymentInfo = (participantId, shifts) => {
   };
 };
 
+const getAssignedShifts = (participantId, shifts) => {
+  let assigned = [];
+  shifts.forEach(({ participant, number }) => {
+    participant.forEach(id => {
+      if (participantId === id.toString()) assigned.push(number);
+    });
+  });
+  return assigned;
+};
+
 const getCredential = (participant, round) => {
-  const { defaulted, noPayed } = getPaymentInfo(
-    participant._id.toString(),
-    round.shifts
-  );
+  const participantId = participant._id.toString();
+  const { defaulted, noPayed } = getPaymentInfo(participantId, round.shifts);
+  const assignedShifts = getAssignedShifts(participantId, round.shifts);
+  const myNumberKey = fields.myNumber(assignedShifts.length);
 
   const credential = {
     [fields.id]: round._id,
     [fields.roundName]: round.name,
-    [fields.amount]: round.totalAmount,
-    [fields.startDate]: moment(round.startDate).format("YYYY-MM-DD"),
-    [fields.endDate]: moment(round.endDate).format("YYYY-MM-DD"),
-    [fields.recurrence]: round.normalizedRecurrence,
-    [fields.shifts]: round.shifts.length,
-    [fields.rol]: getRol(participant, round),
     [fields.name]: participant.user.name,
     [fields.lastname]: participant.user.lastname,
+    [fields.amount]: round.totalAmount,
+    [fields.individualAmount]: round.amount,
+    [fields.recurrence]: round.normalizedRecurrence,
+    [fields.shifts]: round.shifts.length,
+    [myNumberKey]: assignedShifts.join(", "),
+    [fields.startDate]: moment(round.startDate).format("YYYY-MM-DD"),
+    [fields.endDate]: moment(round.endDate).format("YYYY-MM-DD"),
     [fields.defaulted]: defaulted,
-    [fields.noPayed]: noPayed
+    [fields.noPayed]: noPayed,
+    [fields.rol]: getRol(participant, round),
+    [fields.state]: "Finalizada"
   };
+
   return { credential, participant };
 };
 
