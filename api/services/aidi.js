@@ -12,7 +12,7 @@ async function formatAidiResponse(user) {
         ...user,
         phone: user.phoneNumber,
         nick: nick,
-        name: user.name || nick,
+        name: user.name || cleanName,
         lastname: user.lastname,
         username,
         jwtToken : JWT.sign({ username })
