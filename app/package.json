@@ -10,7 +10,7 @@
     "bundle-dev": "cd android && ENVFILE=.env.dev ./gradlew bundleRelease",
     "apk:staging": "cd android && ENVFILE=.env.staging ./gradlew assembleDevRelease",
     "apk:uat": "cd android && ENVFILE=.env.uat ./gradlew assembleDevRelease",
-    "apk": "cd android && ENVFILE=.env.production ./gradlew assembleRelease",
+    "apk": "cd android && ENVFILE=.env.production ./gradlew assembleProdRelease",
     "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {

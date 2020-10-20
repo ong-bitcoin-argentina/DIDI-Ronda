@@ -169,6 +169,9 @@ android {
         dev {
             resValue "string", "build_config_package", "com.aidironda"
         }
+        prod {
+            resValue "string", "build_config_package", "com.aidironda"
+        }
     }
 
     buildTypes {
