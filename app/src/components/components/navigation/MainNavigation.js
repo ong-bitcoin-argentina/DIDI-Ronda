@@ -26,8 +26,6 @@ class Home extends React.Component {
   async componentDidMount() {
     const user = await getAuth();
     this.setState({ user: user });
-    const fcmToken = await AsyncStorage.getItem("fcmToken");
-    console.log({ fcmToken });
   }
 
   roundsType = () => {

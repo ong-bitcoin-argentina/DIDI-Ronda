@@ -1,4 +1,11 @@
 apply plugin: "com.android.application"
+
+project.ext.envConfigFiles = [
+    dev: ".env",
+    staging: ".env.staging",
+    uat: ".env.uat",
+    prod: ".env.production",
+]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -154,6 +161,12 @@ android {
         dev {
             resValue "string", "build_config_package", "com.aidi"
         }
+        staging {
+            resValue "string", "build_config_package", "com.aidi"
+        }
+        uat {
+            resValue "string", "build_config_package", "com.aidi"
+        }
         prod {
             resValue "string", "build_config_package", "com.aidi"
         }
@@ -212,6 +225,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-config')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-base:16.1.0"

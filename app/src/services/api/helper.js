@@ -7,12 +7,14 @@ const { API_URL, API_PORT, API_KEY, STG } = Config;
 const apiCall = async (method, url, requestParams = {}) => {
   try {
     const token = await getToken();
-    
+
     let baseURL = `${API_URL}:${API_PORT}`;
-    if (STG) baseURL = `${API_URL}`    
+    if (STG) baseURL = `${API_URL}`;
 
     // TODO:
     // If api call authorization fail, redirect login
+
+    console.log({ baseURL });
 
     // Needs refactor!
     const client = axios.create({

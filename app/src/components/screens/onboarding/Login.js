@@ -24,6 +24,7 @@ import {
 } from "./../../../utils/appRouter";
 import Logo from "../../../assets/img/app-logo.svg";
 import LinkModal from "../../components/LinkModal";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const states = {
   initial: "initial",
@@ -45,9 +46,17 @@ const Login = props => {
     }
   };
 
-  useEffect(deepLinkHandler(handleLogin), []);
+  const init = async () => {
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    console.log({ fcmToken });
+    console.log({ Config });
+    deepLinkHandler(handleLogin);
+    dynamicLinkHandler(handleLogin);
+  };
 
-  useEffect(dynamicLinkHandler(handleLogin), []);
+  useEffect(() => {
+    init();
+  }, []);
 
   // const sendToken = async () =>
   //   await loginWithAidi(
