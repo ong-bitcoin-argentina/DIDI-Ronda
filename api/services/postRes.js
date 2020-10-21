@@ -281,7 +281,7 @@ const sendVerificationToken = async (username, token) => {
 
 exports.registerAidiUser = async params => {
   try {
-    const { nick, username, password, name, token, phone, did, jwtToken } = params;
+    const { nick, username, password, name, lastname, token, phone, did, jwtToken } = params;
 
 
     const { address, privateKey } = await walletUtil.createWallet();
@@ -293,6 +293,7 @@ exports.registerAidiUser = async params => {
       username,
       password,
       name,
+      lastname,
       token,
       verifyToken,
       nick,
@@ -380,12 +381,6 @@ exports.enableSCToUser = async (user) => {
   console.log("user after sc", user);
 
   await registerUserProcessing(token, username, true);
-
-  try {
-    if (user) await sendVerificationToken(username, verifyToken);  
-  } catch (error) {
-    console.error("send verification token via email failed: ",error)
-  }
 }
 
 
@@ -448,13 +443,6 @@ exports.registerUser = async params => {
   }
 
   await registerUserProcessing(token, username, true);
-
-  try {
-    if (user) await sendVerificationToken(username, verifyToken);  
-  } catch (error) {
-    console.error("send verification token via email failed: ",error)
-  }
-  
 
   return null;
 };

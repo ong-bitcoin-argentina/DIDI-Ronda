@@ -32,7 +32,7 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="ronda" />
             <data android:host="loginSuccess" />
-            <data android:host="loginFail" />
+            <data android:host="loginDenied" />
         </intent-filter>
       </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

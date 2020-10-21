@@ -4,3 +4,4 @@ app/.env
 app/.env.staging
 app/package-lock.json
 api/package-lock.json
+*google-services.json

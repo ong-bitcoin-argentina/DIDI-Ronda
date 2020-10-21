@@ -13,7 +13,12 @@ const createToken = async (credential, did) => {
     Ronda: {
       preview: {
         type: 2,
-        fields: [fields.rol, fields.amount, fields.shifts, fields.defaulted]
+        fields: [
+          fields.roundName,
+          fields.recurrence,
+          fields.shifts,
+          fields.endDate
+        ]
       },
       category: "finance",
       data: credential

@@ -48,7 +48,7 @@ exports.login = async (username, password) => {
 };
 
 //REGISTER
-exports.register = async (username, password, name, token, nick) => {
+exports.register = async (username, password, name, lastname, token, nick) => {
   const userExists = await user_manager.byUsername(username);
 
   if (userExists !== null) throw new customError("That user already exists");
@@ -68,7 +68,7 @@ exports.register = async (username, password, name, token, nick) => {
       throw new customError("That nick already exists in the domain");
   }
 
-  const data = { nick, username, password, name, token, success: true };
+  const data = { nick, username, password, name, lastname, token, success: true };
 
   return data;
 };

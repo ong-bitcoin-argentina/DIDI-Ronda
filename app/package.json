@@ -6,10 +6,11 @@
     "start": "react-native start",
     "test": "jest",
     "android": "react-native run-android",
-    "apk-dev": "cd android && ENVFILE=.env.dev ./gradlew assembleRelease",
-    "bundle-dev": "cd android && ENVFILE=.env.dev ./gradlew bundleRelease",
-    "apk-staging": "cd android && ENVFILE=.env.staging ./gradlew assembleRelease",
-    "apk-uat": "cd android && ENVFILE=.env.uat ./gradlew assembleRelease",
+    "apk:dev": "cd android && ENVFILE=.env.dev ./gradlew assembleUat",
+    "bundle-dev": "cd android && ENVFILE=.env.dev ./gradlew bundleUat",
+    "apk:staging": "cd android && ENVFILE=.env.staging ./gradlew assembleUat",
+    "apk:uat": "cd android && ENVFILE=.env.uat ./gradlew assembleUat",
+    "apk": "cd android && ENVFILE=.env.production ./gradlew assembleProd",
     "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
