@@ -26,7 +26,7 @@ exports.loginWithAidi = async (req, res) => {
   try {
     const { token } = req.body;  
     const user = await aidi_service.getUser(token);
-    const {  username, password, name, nick } = user;
+    const {  username, password, name, lastname, nick } = user;
 
     try {
       const userExist = await user_manager.byUsername(username);
@@ -41,6 +41,7 @@ exports.loginWithAidi = async (req, res) => {
         username,
         password,
         name,
+        lastname,
         token,
         nick
       );
