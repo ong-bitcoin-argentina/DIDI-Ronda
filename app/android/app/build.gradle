@@ -148,14 +148,19 @@ android {
         }
     }
 
-    signingConfigs {
-        uat {
-            storeFile file(UAT_STORE_FILE)
-            storePassword UAT_STORE_PASSWORD
-            keyAlias UAT_KEY_ALIAS
-            keyPassword UAT_KEY_PASSWORD
+    flavorDimensions "default"
+
+    productFlavors {
+        dev {
+            resValue "string", "build_config_package", "com.aidi"
         }
         prod {
+            resValue "string", "build_config_package", "com.aidi"
+        }
+    }
+
+    signingConfigs {
+        release {
             storeFile file(PROD_STORE_FILE)
             storePassword PROD_STORE_PASSWORD
             keyAlias PROD_KEY_ALIAS
@@ -165,26 +170,12 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.uat
+            signingConfig signingConfigs.release
         }
         release {
-            signingConfig signingConfigs.uat
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-        uat {
-            signingConfig signingConfigs.uat
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            matchingFallbacks = ['release']
-        }
-        prod {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.prod
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            matchingFallbacks = ['release']
         }
     }
 
@@ -246,3 +237,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
