@@ -149,41 +149,42 @@ android {
     }
 
     signingConfigs {
-        debug {
-            storeFile file(MYAPP_RELEASE_STORE_FILE)
-            storePassword MYAPP_RELEASE_STORE_PASSWORD
-            keyAlias MYAPP_RELEASE_KEY_ALIAS
-            keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        }
-        release {
-            storeFile file(MYAPP_RELEASE_STORE_FILE)
-            storePassword MYAPP_RELEASE_STORE_PASSWORD
-            keyAlias MYAPP_RELEASE_KEY_ALIAS
-            keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        }
-    }
-
-    flavorDimensions "default"
-
-    productFlavors {
-        dev {
-            resValue "string", "build_config_package", "com.aidironda"
+        uat {
+            storeFile file(UAT_STORE_FILE)
+            storePassword UAT_STORE_PASSWORD
+            keyAlias UAT_KEY_ALIAS
+            keyPassword UAT_KEY_PASSWORD
         }
         prod {
-            resValue "string", "build_config_package", "com.aidironda"
+            storeFile file(PROD_STORE_FILE)
+            storePassword PROD_STORE_PASSWORD
+            keyAlias PROD_KEY_ALIAS
+            keyPassword PROD_KEY_PASSWORD
         }
     }
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.uat
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.uat
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        uat {
+            signingConfig signingConfigs.uat
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            matchingFallbacks = ['release']
+        }
+        prod {
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://facebook.github.io/react-native/docs/signed-apk-android.
+            signingConfig signingConfigs.prod
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            matchingFallbacks = ['release']
         }
     }
 
