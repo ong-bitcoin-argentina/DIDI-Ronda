@@ -21,12 +21,20 @@ exports.login = async (req, res) => {
   }
 };
 
+function createNickname(username) {
+  const uniqString = Date.now().toString(36);
+  const emailName = username.split("@")[0];
+  const cleanName = emailName.replace(/\.,+/g, '');
+  const nick = `${cleanName}${uniqString}`;
+  return nick;
+}
+
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
     const { token } = req.body;  
     const user = await aidi_service.getUser(token);
-    const {  username, password, name, lastname, nick } = user;
+    const {  username, password, name, lastname } = user;
 
     try {
       const userExist = await user_manager.byUsername(username);
@@ -35,7 +43,6 @@ exports.loginWithAidi = async (req, res) => {
       console.log("user first login with ronda");
     }
     
-
     try {
       const data = await guest_services.register(
         username,
@@ -43,7 +50,7 @@ exports.loginWithAidi = async (req, res) => {
         name,
         lastname,
         token,
-        nick
+        createNickname(username)
       );
 
       const result = await postResBackground.registerAidiUser({...user,...data});
