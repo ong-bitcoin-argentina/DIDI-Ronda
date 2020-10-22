@@ -133,9 +133,9 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 12
-        versionName "0.0.11"
         missingDimensionStrategy 'react-native-camera', 'general'
+        versionCode project.env.get("VERSIONCODE").toInteger()
+        versionName project.env.get("VERSION")
         multiDexEnabled true
     }
 
@@ -200,6 +200,9 @@ android {
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
             }
 
+        }
+        variant.outputs.all {
+            outputFileName = "${project.env.get("ENV_CODE")}_ronda_${versionName}_v${versionCode}.apk"
         }
     }
 
