@@ -18,10 +18,6 @@ exports.byUsername = async req => {
   return user;
 };
 
-exports.findByUsername = async username => {
-  return await user_manager.byUsername(username);
-};
-
 exports.updateByUsername = async req => {
   const { username } = req.body;
   const user = await user_manager.byUsername(username);
