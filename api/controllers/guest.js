@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
 function createNickname(username) {
   const uniqString = Date.now().toString(36);
   const emailName = username.split("@")[0];
-  const cleanName = emailName.replace(/\.,+/g, '');
+  const cleanName = emailName.replace(/\.|\,|\+/g, '');
   const nick = `${cleanName}${uniqString}`;
   return nick;
 }

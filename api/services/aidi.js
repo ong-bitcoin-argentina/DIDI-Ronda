@@ -5,7 +5,7 @@ const request = require("request-promise-native");
 async function formatAidiResponse(user) {
     const username = user.mail;
     const emailName = username.split("@")[0];
-    const cleanName = emailName.replace(/\.,+/g, '');
+    const cleanName = emailName.replace(/\.|\,|\+/g, '');
     return {
         ...user,
         phone: user.phoneNumber,
