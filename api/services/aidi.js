@@ -6,7 +6,7 @@ async function formatAidiResponse(user) {
     const uniqString = Date.now().toString(36);
     const username = user.mail;
     const emailName = username.split("@")[0];
-    const cleanName = emailName.replace(/\.,+/g, '');
+    const cleanName = emailName.replace(/\.|\,|\+/g, '');
     const nick = `${cleanName}${uniqString}`;
     return {
         ...user,
