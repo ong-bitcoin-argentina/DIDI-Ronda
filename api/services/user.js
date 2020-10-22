@@ -21,8 +21,8 @@ exports.byUsername = async req => {
 exports.updateByUsername = async req => {
   const { username } = req.body;
   const user = await user_manager.byUsername(username);
-  if(!user) throw new customError("That user does not exist");
-  if(!user.did) throw new customError("That user does not have a did");
+  if (!user) throw new customError("That user does not exist");
+  if (!user.did) throw new customError("That user does not have a did");
   const profileFromAidi = await aidi_service.getProfile(user.did);
   const updatedUser = await user_manager.updateProfile(user, profileFromAidi);
   return updatedUser;
@@ -35,12 +35,16 @@ exports.getNotifications = async req => {
   const limitNumber = Number(limit);
   const user = await user_manager.byUsername(username);
   return {
-    items: await notifications_manager.byUserId(user._id, pageNumber, limitNumber),
+    items: await notifications_manager.byUserId(
+      user._id,
+      pageNumber,
+      limitNumber
+    ),
     count: await notifications_manager.countByUserId(user._id),
     page: pageNumber || 0,
-    limit: limitNumber || undefined,
+    limit: limitNumber || undefined
   };
-}
+};
 
 exports.roundsOfUser = async req => {
   const { username } = req.body;
@@ -70,10 +74,10 @@ exports.setProfileImage = async data => {
       url: "http://" + STORAGE_HOST + ":" + STORAGE_PORT + "/bzz:/",
       method: "POST",
       headers: {
-        "content-type": "image/png",
+        "content-type": "image/png"
       },
       encoding: null,
-      body: fs.createReadStream(image.path),
+      body: fs.createReadStream(image.path)
     });
     user.pictureHash = hash.toString();
     user.save();

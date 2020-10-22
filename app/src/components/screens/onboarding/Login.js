@@ -45,9 +45,14 @@ const Login = props => {
     }
   };
 
-  useEffect(deepLinkHandler(handleLogin), []);
+  const init = async () => {
+    deepLinkHandler(handleLogin);
+    dynamicLinkHandler(handleLogin);
+  };
 
-  useEffect(dynamicLinkHandler(handleLogin), []);
+  useEffect(() => {
+    init();
+  }, []);
 
   // const sendToken = async () =>
   //   await loginWithAidi(

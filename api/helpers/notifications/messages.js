@@ -15,7 +15,7 @@ exports.roundAboutToStart = (daysLeft, roundName) => {
 
 // Participant - Confirmation
 // code: 'participant-confirmed'
-exports.participantConfirmed = (participantName) => {
+exports.participantConfirmed = participantName => {
   return `Participante ${participantName} ha aceptado ser parte de la ronda.`;
 };
 
@@ -40,19 +40,19 @@ exports.roundInvite = (roundName, sentBy) => {
 
 // Round - Notification
 // code: 'round-started'
-exports.roundStarted = (roundName) => {
+exports.roundStarted = roundName => {
   return `El administrador ha iniciado la nueva ronda ${roundName}. Ingresá a la aplicación para el seguimiento de la ronda.`;
 };
 
 // Round -  Notification
 // only in jobs
-exports.roundStartedDate = (roundName) => {
+exports.roundStartedDate = roundName => {
   return `El administrador ha iniciado la nueva ronda ${roundName}. Ingresá a la aplicación para el seguimiento de la ronda.`;
 };
 
 // Payments - Alert
 // not used already
-exports.paymentReminder = (roundName) => {
+exports.paymentReminder = roundName => {
   return `Atención: Comenzó el período de pago de la ronda ${roundName} y no está registrado tu pago. Realizá el pago para que su compañero/a pueda recibir su pago en tiempo y forma.`;
 };
 
@@ -64,13 +64,13 @@ exports.shiftPaid = (shiftNumber, nextParticipant) => {
 
 // Payments - Alert
 // not used already
-exports.participantDidNotPaid = (participantName) => {
+exports.participantDidNotPaid = participantName => {
   return `El participante ${participantName} no pagó su número. La deuda tuvo que ser saldada por otro/s particiopante/s.`;
 };
 
 // Round - Notification
 // code: 'shift-assigned'
-exports.shiftAsigned = (participantName) => {
+exports.shiftAsigned = participantName => {
   return `Se ha asignado un número vacante al participante ${participantName}.`;
 };
 
@@ -94,7 +94,7 @@ exports.garantorRequested = () => {
 
 // Payments - Confirmation
 // code: 'participant-pay-number'
-exports.participantPayNumber = (roundName) => {
+exports.participantPayNumber = roundName => {
   return `Tu aporte a la ronda ${roundName} fue registrado con éxito!`;
 };
 
@@ -123,17 +123,17 @@ exports.participantSwapped = (roundName, adminName) =>
 
 // Round - Alert
 // code: 'round-not-started-participant-rejected'
-exports.roundNotStartedParticipantRejected = (roundName) =>
+exports.roundNotStartedParticipantRejected = roundName =>
   `La ronda ${roundName} no ha comenzado porque un participante rechazo su invitación, debes reemplazarlo para poder empezar la ronda`;
 
 //  Round - Notification
 // code: 'round-confirmation-completed'
-exports.roundConfirmationCompleted = (roundName) =>
+exports.roundConfirmationCompleted = roundName =>
   `La ronda ${roundName} se ha procesado! Ya podés entrar desde la sección rondas "Por Iniciar"`;
 
 // Round - Alert
 // code: 'round-confirmation-failed'
-exports.roundConfirmationFailed = (roundName) =>
+exports.roundConfirmationFailed = roundName =>
   `La ronda ${roundName} no se ha podido procesar, deberás crearla de nuevo`;
 
 // Participant - Confirmation
@@ -152,12 +152,12 @@ exports.roundInvitationFailed = (roundName, accepted) =>
 
 // Payments - Confirmation
 // code: 'participant-payment-confirmed'
-exports.participantPaymentConfirmed = (roundName) =>
+exports.participantPaymentConfirmed = roundName =>
   `Tu aporte para la ronda ${roundName} fue procesado con éxito!`;
 
 // Payments - Alert
 // code: 'participant-payment-failed'
-exports.participantPaymentFailed = (roundName) =>
+exports.participantPaymentFailed = roundName =>
   `Tu aporte para la ronda ${roundName} no se ha podido procesar. Por favor, inténtalo nuevamente!`;
 
 // Participant - Confirmation
@@ -176,25 +176,28 @@ exports.adminSwappedFailed = (roundName, participantName, newParticipantName) =>
 
 // Round - Notification
 // code: 'round-start-completed'
-exports.roundStartCompleted = (roundName) =>
+exports.roundStartCompleted = roundName =>
   `La ronda ${roundName} ya ha iniciado! Podés entrar desde la sección "Activas"`;
 
 // Round - Alert
 // code: 'round-start-failed'
-exports.roundStartFailed = (roundName) =>
+exports.roundStartFailed = roundName =>
   `Ups!.. Ocurrió un error al procesar la ronda ${roundName}. Por favor, inténtalo nuevamente!`;
 
 // Participant - Notification (DISABLED)
 // code: 'register-user-completed'
-exports.registerUserCompleted = (email) =>
+exports.registerUserCompleted = email =>
   `Se completó el registro del usuario ${email} ya podés inciar sesión`;
 
 // Participant - Alert - (DISABLED)
 // code: 'register-user-failed'
-exports.registerUserFailed = (email) =>
+exports.registerUserFailed = email =>
   `El registro del usuario ${email} falló, tenés que intentarlo nuevamente`;
 
 // Payments - Confirmation
 // code: 'number-payed-to-user'
 exports.numberPayedToUser = (admin, round, number) =>
   `El Administrador ${admin} de la ronda ${round} ha confirmado tu cobro del número ${number}`;
+
+exports.roundListTest = () =>
+  "Esta es una notificación de prueba, presioná en ella para ir al listado de Rondas.";

@@ -31,10 +31,12 @@ const {
   registerUserCompleted,
   registerUserFailed,
   numberPayedToUser,
-  participantRequestAdminToAcceptPaymentMessage,
+  participantRequestAdminToAcceptPaymentMessage
 } = require("./messages");
 
 const APP_TITLE = "Ronda";
+
+exports.APP_TITLE = APP_TITLE;
 
 async function presistNotification(token, code, body) {
   const user = await User.findByToken(token);
@@ -42,7 +44,7 @@ async function presistNotification(token, code, body) {
     await Notification.create({
       code,
       userId: user._id,
-      body,
+      body
     });
   }
 }
@@ -54,18 +56,18 @@ async function createAndPersistNotification(tokens, code, body, data) {
   return await createNotification(tokens, APP_TITLE, body, data);
 }
 
-exports.inviteRound = async (round) => {
+exports.inviteRound = async round => {
   // Filter accepted === null
-  const participants = round.participants.filter((p) => p.acepted === null);
+  const participants = round.participants.filter(p => p.acepted === null);
   // Only participants with token
-  const tokens = participants.map((p) => p.user.token).filter((t) => t);
+  const tokens = participants.map(p => p.user.token).filter(t => t);
 
   // Create data for redirect
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   const notifications = await createAndPersistNotification(
@@ -78,12 +80,12 @@ exports.inviteRound = async (round) => {
   return notifications;
 };
 
-exports.completedRound = async (round) => {
+exports.completedRound = async round => {
   // Remove admin
-  const participants = round.participants.filter((p) => p.user !== round.admin);
+  const participants = round.participants.filter(p => p.user !== round.admin);
 
   // Get tokens
-  const tokens = participants.map((p) => p.user.token).filter((t) => t);
+  const tokens = participants.map(p => p.user.token).filter(t => t);
 
   const endDate = moment().format("DD/MM/YYYY");
 
@@ -91,8 +93,8 @@ exports.completedRound = async (round) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
@@ -106,15 +108,15 @@ exports.completedRound = async (round) => {
   return notifications;
 };
 
-exports.startedRound = async (round) => {
+exports.startedRound = async round => {
   // Only participants with shift assigned
   const idsMap = {};
-  round.shifts.forEach((shift) => {
+  round.shifts.forEach(shift => {
     const id = shift.participant[0].toString();
     idsMap[id] = id;
   });
 
-  const participants = round.participants.filter((p) => {
+  const participants = round.participants.filter(p => {
     // Remove admin
     if (p.user === round.admin) return false;
     const participantId = p._id.toString();
@@ -123,7 +125,7 @@ exports.startedRound = async (round) => {
   });
 
   // Get tokens
-  const tokens = participants.map((p) => p.user.token).filter((t) => t);
+  const tokens = participants.map(p => p.user.token).filter(t => t);
 
   // Create data for redirect
   const data = {
@@ -132,8 +134,8 @@ exports.startedRound = async (round) => {
       params: { _id: round._id },
       admin: round.admin.id,
       roundName: round.name,
-      intent: INTENTS.ROUND_START,
-    }),
+      intent: INTENTS.ROUND_START
+    })
   };
 
   // Send notifications
@@ -147,12 +149,12 @@ exports.startedRound = async (round) => {
   return notifications;
 };
 
-exports.startedRoundWithoutShift = async (round) => {
+exports.startedRoundWithoutShift = async round => {
   // Only participants without shift assigned
   const participantsWithShift = round.shifts
-    .map((shift) => shift.participant)
+    .map(shift => shift.participant)
     .flat();
-  const participants = round.participants.filter((p) => {
+  const participants = round.participants.filter(p => {
     // Remove admin
     if (p.user === round.admin) {
       return false;
@@ -162,7 +164,7 @@ exports.startedRoundWithoutShift = async (round) => {
   });
 
   // Get tokens
-  const tokens = participants.map((p) => p.user.token).filter((t) => t);
+  const tokens = participants.map(p => p.user.token).filter(t => t);
 
   // Send notifications
   const notifications = await createAndPersistNotification(
@@ -176,17 +178,17 @@ exports.startedRoundWithoutShift = async (round) => {
 
 exports.asignedShift = async (round, participantName) => {
   // Remove admin
-  const participants = round.participants.filter((p) => p.user !== round.admin);
+  const participants = round.participants.filter(p => p.user !== round.admin);
 
   // Get tokens
-  const tokens = participants.map((p) => p.user.token).filter((t) => t);
+  const tokens = participants.map(p => p.user.token).filter(t => t);
 
   // Create data for redirect
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
@@ -208,8 +210,8 @@ exports.participantRejectedInvitation = async (round, participantName) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   await createAndPersistNotification(
@@ -241,8 +243,8 @@ exports.requestedShiftNotification = async (
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
@@ -267,8 +269,8 @@ exports.participantConfirmed = async (round, participantName) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notification
@@ -297,7 +299,7 @@ exports.participantRequestPaymentNoti = async (
   const { user } = participant;
   const currentShift =
     round.shifts.find(
-      (shift) => shift.status === "current" || shift.status === "draw"
+      shift => shift.status === "current" || shift.status === "draw"
     ) || round.shifts[round.shifts.length - 1];
   const data = {
     action: JSON.stringify({
@@ -307,14 +309,14 @@ exports.participantRequestPaymentNoti = async (
           participant,
           id: participant._id,
           name: participant.user.name,
-          picture: participant.user.picture,
+          picture: participant.user.picture
         },
         shifts: round.shifts,
         roundId: round._id,
         number: currentShift.number,
-        initialTab: 0,
-      },
-    }),
+        initialTab: 0
+      }
+    })
   };
   const msgParams = [name, user.name];
   const message = isRequestingPayment
@@ -342,8 +344,8 @@ exports.participantPayNumberNotification = async (round, participant) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
@@ -358,11 +360,11 @@ exports.participantPayNumberNotification = async (round, participant) => {
 };
 
 // SCHEDULES
-exports.schedulePayRemember = (round) => {
+exports.schedulePayRemember = round => {
   // Only if recurrence is not daily
   if (round.recurrence !== "d") {
     // Create task schedule for all shifts
-    round.shifts.forEach(async (shift) => {
+    round.shifts.forEach(async shift => {
       // Notification date
       const objectSubstract = rememberNotifications[round.recurrence];
       const notificationDate = moment(shift.limitDate).subtract(
@@ -388,7 +390,7 @@ exports.participantSwappedInRound = async (round, participant) => {
 
   // Create data for redirect
   const {
-    user: { token },
+    user: { token }
   } = participant;
 
   if (!token) return null;
@@ -403,7 +405,7 @@ exports.participantSwappedInRound = async (round, participant) => {
   return null;
 };
 
-exports.roundNotStarted = async (round) => {
+exports.roundNotStarted = async round => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -413,8 +415,8 @@ exports.roundNotStarted = async (round) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
@@ -428,7 +430,7 @@ exports.roundNotStarted = async (round) => {
   return null;
 };
 
-exports.roundCompletedProcessing = async (round) => {
+exports.roundCompletedProcessing = async round => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -440,9 +442,9 @@ exports.roundCompletedProcessing = async (round) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   // Send notifications
@@ -456,7 +458,7 @@ exports.roundCompletedProcessing = async (round) => {
   return null;
 };
 
-exports.roundFailedProcessing = async (round) => {
+exports.roundFailedProcessing = async round => {
   // Get admin
   const { admin, name: roundName } = round;
 
@@ -482,9 +484,9 @@ exports.invitationProcessCompleted = async (round, participant, accepted) => {
         action: JSON.stringify({
           routeName: "RoundDetail",
           params: {
-            _id: round._id,
-          },
-        }),
+            _id: round._id
+          }
+        })
       }
     : null;
 
@@ -510,9 +512,9 @@ exports.invitationProcessFailed = async (round, participant, accepted) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
@@ -535,9 +537,9 @@ exports.participantPaymentConfirmed = async (round, participant) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
@@ -558,9 +560,9 @@ exports.participantPaymentFailed = async (round, participant) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
@@ -589,9 +591,9 @@ exports.swappedParticipantAdminConfirmation = async (
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const messageParams = [roundName, participantName, newParticipantName];
@@ -614,9 +616,9 @@ exports.roundStartProcessing = async (round, success) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const message = success
@@ -640,7 +642,7 @@ exports.registerUserProcessing = async (token, email, success) => {
 
 exports.numberPayedToUser = async (round, number, participantId) => {
   const { admin, name: roundName } = round;
-  const participant = round.participants.find((p) => p.id === participantId);
+  const participant = round.participants.find(p => p.id === participantId);
   // Get admin token
   const { name } = admin;
   const { token } = participant.user;
@@ -648,9 +650,9 @@ exports.numberPayedToUser = async (round, number, participantId) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const message = numberPayedToUser(name, roundName, number);

@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -152,10 +153,16 @@ android {
 
     productFlavors {
         dev {
-            resValue "string", "build_config_package", "com.aidi"
+            resValue "string", "build_config_package", "com.aidironda"
+        }
+        staging {
+            resValue "string", "build_config_package", "com.aidironda"
+        }
+        uat {
+            resValue "string", "build_config_package", "com.aidironda"
         }
         prod {
-            resValue "string", "build_config_package", "com.aidi"
+            resValue "string", "build_config_package", "com.aidironda"
         }
     }
 

@@ -175,6 +175,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginBottom: 10,
   },
+  quantity: {
+    fontSize: 26,
+    color: "white",
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    marginRight: 8,
+  },
+  title: {
+    fontSize: 25,
+    marginBottom: 10,
+  },
 });
 
 const HomeScreen = connect(
