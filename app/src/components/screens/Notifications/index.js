@@ -1,19 +1,18 @@
-import React from 'react';
+import React from "react";
 import {
   Text,
   StyleSheet,
-  SectionList,
   SafeAreaView,
   ActivityIndicator,
-} from 'react-native';
-import { createStackNavigator } from 'react-navigation-stack';
-import * as UserService from '../../../services/api/user';
-import moment from 'moment';
-import Notification from './Notification';
-import { getAuth } from '../../../utils/utils';
-import colors from '../../components/colors';
+} from "react-native";
+import { createStackNavigator } from "react-navigation-stack";
+import * as UserService from "../../../services/api/user";
+import moment from "moment";
+import NotificationsList from "./NotificationsList";
+import { getAuth } from "../../../utils/utils";
+import colors from "../../components/colors";
 
-const aWeekAgo = moment().subtract(7, 'days');
+const aWeekAgo = moment().subtract(7, "days");
 
 const isRecent = date => {
   const myDate = moment(date);
@@ -58,6 +57,8 @@ class Notifications extends React.Component {
     }
   };
 
+  render;
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -68,26 +69,7 @@ class Notifications extends React.Component {
             style={styles.loader}
           />
         ) : (
-          <SectionList
-            sections={[
-              { title: 'Esta Semana', data: this.state.recent },
-              { title: 'Anteriores', data: this.state.old },
-            ]}
-            renderSectionHeader={({ section }) => (
-              <Text style={styles.title}>{section.title}</Text>
-            )}
-            headerTitleStyle={styles.title}
-            renderSectionFooter={({ section }) =>
-              !section.data.length && <Text>No se encontraron resultados.</Text>
-            }
-            renderItem={({ item }) => <Notification notification={item} />}
-            keyExtractor={(item, index) => item + index}
-            numColumns={1}
-            maxToRenderPerBatch={8}
-            updateCellsBatchingPeriod={30}
-            windowSize={9}
-            contentContainerStyle={{ paddingHorizontal: 16 }}
-          />
+          <NotificationsList data={this.state} />
         )}
       </SafeAreaView>
     );
@@ -99,29 +81,22 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 12,
-    marginBottom: 6,
-    paddingHorizontal: 14,
-  },
   card: {
     borderRadius: 10,
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
     padding: 5,
-    justifyContent: 'space-between',
-    alignContent: 'center',
+    justifyContent: "space-between",
+    alignContent: "center",
   },
   button: {
     marginTop: 30,
-    backgroundColor: '#24CDD2',
+    backgroundColor: "#24CDD2",
     borderRadius: 8,
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   loader: {
     marginTop: 90,
@@ -133,11 +108,11 @@ export default createStackNavigator({
     screen: Notifications,
     navigationOptions: () => ({
       title: `Notificaciones`,
-      headerStyle: { backgroundColor: '#417fd7' },
+      headerStyle: { backgroundColor: "#417fd7" },
       headerTitleStyle: {
-        color: 'white',
-        width: '80%',
-        textAlign: 'left',
+        color: "white",
+        width: "80%",
+        textAlign: "left",
         fontSize: 18,
       },
     }),

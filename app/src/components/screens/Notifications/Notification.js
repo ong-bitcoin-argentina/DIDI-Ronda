@@ -1,9 +1,9 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Text, Icon } from 'native-base';
-import colors from '../../components/colors';
-import moment from 'moment';
-import { getIcon, getColor } from './config';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { View, Text, Icon } from "native-base";
+import colors from "../../components/colors";
+import moment from "moment";
+import { getIcon, getColor } from "./config";
 
 const NotificationDetail = ({ notification }) => {
   const { code, body, date } = notification;
@@ -23,7 +23,7 @@ const NotificationDetail = ({ notification }) => {
         <View style={styles.body}>
           <Text stlye={styles.body}>{body}</Text>
         </View>
-        <View stlye={{ flexDirection: 'row' }}>
+        <View stlye={{ flexDirection: "row" }}>
           <Text style={styles.time}> {ago}</Text>
         </View>
       </View>
@@ -33,9 +33,9 @@ const NotificationDetail = ({ notification }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     // minHeight: 80,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.white,
     paddingVertical: 12,
     borderRadius: 6,
@@ -57,23 +57,23 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: 70,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   contentContainer: {
-    width: '100%',
+    width: "100%",
     flexShrink: 1,
     paddingRight: 4,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.gray,
   },
   body: {
     color: colors.gray,
   },
   time: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.darkishGray,
     flexShrink: 1,
   },

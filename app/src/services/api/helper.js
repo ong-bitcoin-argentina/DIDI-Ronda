@@ -14,8 +14,6 @@ const apiCall = async (method, url, requestParams = {}) => {
     // TODO:
     // If api call authorization fail, redirect login
 
-    console.log({ baseURL });
-
     // Needs refactor!
     const client = axios.create({
       baseURL: baseURL,

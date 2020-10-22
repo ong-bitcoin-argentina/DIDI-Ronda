@@ -49,7 +49,6 @@ const Login = props => {
   const init = async () => {
     const fcmToken = await AsyncStorage.getItem("fcmToken");
     console.log({ fcmToken });
-    console.log({ Config });
     deepLinkHandler(handleLogin);
     dynamicLinkHandler(handleLogin);
   };
