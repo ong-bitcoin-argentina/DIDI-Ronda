@@ -5,7 +5,11 @@ const participant_services = require("../services/participant");
 const credentials_pending_manager = require("../managers/credentials_pending");
 const { createCredentialJWT } = require("../helpers/jwt");
 const { logError } = require("../helpers/utils");
-const { getCredential, fields } = require("../helpers/credential");
+const {
+  getFinishedCredential,
+  fields,
+  getStartedCredential
+} = require("../helpers/credential");
 const { DIDI_SERVER } = process.env;
 
 const createToken = async (credential, did) => {
@@ -55,19 +59,26 @@ const emmit = async ({ credential, participant }) => {
   }
 
   await credentials_pending_manager.deleteByParticipant(participant._id);
-  await participant_services.findAndUpdateJWT(participant._id, jwt);
+  await participant_services.findAndUpdateJWTs(participant._id, jwt);
   return response.data;
 };
 
-const emmitRoundParticipants = async round => {
+const emmitRoundParticipants = async (round, isFinished = false) => {
   const endDate = moment(round.endDate);
   const isAfterNow = endDate.isAfter(moment());
-  if (!endDate || isAfterNow) throw new customError("La ronda aún no finalizó");
+  if (isFinished && (!endDate || isAfterNow))
+    throw new customError("La ronda aún no finalizó");
 
   const filteredParticipants = round.participants.filter(
     participant =>
-      participant.user && participant.user.did && !participant.credentialJWT
+      participant.user &&
+      participant.user.did &&
+      participant.credentialJWTs.length < 2
   );
+
+  const getCredential = isFinished
+    ? getFinishedCredential
+    : getStartedCredential;
   const credentials = filteredParticipants.map(participant =>
     getCredential(participant, round)
   );
@@ -76,6 +87,15 @@ const emmitRoundParticipants = async round => {
   return await Promise.all(requests);
 };
 
+const emmitFinishedRoundParticipants = async round => {
+  return emmitRoundParticipants(round, true);
+};
+
+const emmitStartedRoundParticipants = async round => {
+  return emmitRoundParticipants(round);
+};
+
 module.exports = {
-  emmitRoundParticipants
+  emmitFinishedRoundParticipants,
+  emmitStartedRoundParticipants
 };

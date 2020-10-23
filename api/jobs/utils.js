@@ -54,7 +54,7 @@ const handleRoundNumberChange = async roundId => {
     }
 
     try {
-      await credential_services.emmitRoundParticipants(round);
+      await credential_services.emmitFinishedRoundParticipants(round);
     } catch (error) {
       console.error(
         `Job for round ${roundId} had a failure when try to emmit credentials`

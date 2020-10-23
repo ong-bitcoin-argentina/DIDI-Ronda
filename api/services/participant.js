@@ -192,8 +192,8 @@ exports.participantChargeNumber = async (req, participantId = null) => {
   return updatedRound;
 };
 
-exports.findAndUpdateJWT = async (id, jwt) => {
-  return await participant_manager.findByIdAndUpdateJWT(id, jwt);
+exports.findAndUpdateJWTs = async (id, jwt) => {
+  return await participant_manager.findByIdAndUpdateJWTs(id, jwt);
 };
 
 exports.adminParticipantChargeNumber = async req =>

@@ -62,10 +62,10 @@ exports.findById = async id => {
     .catch(err => ({ error: err }));
 };
 
-exports.findByIdAndUpdateJWT = async (id, credentialJWT) => {
+exports.findByIdAndUpdateJWTs = async (id, jwt) => {
   return await Participant.findByIdAndUpdate(
     id,
-    { $set: { credentialJWT } },
+    { $push: { credentialJWTs: jwt } },
     { new: true }
   );
 };
