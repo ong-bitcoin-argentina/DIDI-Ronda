@@ -208,7 +208,8 @@ class RoundsList extends React.Component {
         <Tabs
           onChangeTab={this.handleChangeTab}
           initialPage={activePage}
-          page={activePage}>
+          page={activePage}
+          locked>
           {this.renderTabs()}
         </Tabs>
         <FloatingActionButton

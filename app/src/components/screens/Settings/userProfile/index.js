@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,22 +6,22 @@ import {
   StyleSheet,
   ScrollView,
   //   ImageStore,
-} from 'react-native';
-import { Spinner, Icon } from 'native-base';
-import { createStackNavigator } from 'react-navigation-stack';
-import ImagePicker from 'react-native-image-crop-picker';
-import Avatar from '../../../components/Avatar';
-import { getAuth } from '../../../../utils/utils';
-import colors from '../../../components/colors';
-import UserData from '../../UserProfile/UserData';
-import InformationRow from '../../../components/InformationRow';
+} from "react-native";
+import { Spinner, Icon } from "native-base";
+import { createStackNavigator } from "react-navigation-stack";
+import ImagePicker from "react-native-image-crop-picker";
+import Avatar from "../../../components/Avatar";
+import { getAuth } from "../../../../utils/utils";
+import colors from "../../../components/colors";
+import UserData from "../../UserProfile/UserData";
+import InformationRow from "../../../components/InformationRow";
 
 const emptyUser = {
   image: null,
-  name: '',
-  nick: '',
-  username: '',
-  phone: '',
+  name: "",
+  nick: "",
+  username: "",
+  phone: "",
 };
 
 const imgPickerOptions = {
@@ -35,7 +35,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(emptyUser);
   const getUser = async () => {
     const data = await getAuth();
-    console.log('getUser', data);
+    console.log("getUser", data);
     setUser(data);
   };
 
@@ -75,23 +75,11 @@ const UserProfile = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flex: 0.3,
-            paddingVertical: 0,
-            backgroundColor: colors.mainBlue,
-          }}>
-          {user.username ? (
-            <UserData username={user.username} />
-          ) : (
-            <Spinner color={colors.mainBlue} />
-          )}
-        </View>
         <View style={styles.dataContainer}>
           <InformationRow
             icon="person"
             label="NOMBRE Y APELLIDO"
-            value={`${user.name ?? ''} ${user.lastname ?? ''}`}
+            value={`${user.name ?? ""} ${user.lastname ?? ""}`}
           />
           <InformationRow
             icon="mail"
@@ -116,13 +104,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   headerTitleStyle: {
-    color: 'white',
-    width: '80%',
-    textAlign: 'left',
+    color: "white",
+    width: "80%",
+    textAlign: "left",
     fontSize: 18,
   },
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.mainBlue,
     flex: 1,
     paddingTop: 35,
@@ -130,29 +118,30 @@ const styles = StyleSheet.create({
   editText: {
     fontSize: 13,
     marginVertical: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   avatarTouchableContainer: {
     marginVertical: 15,
   },
   row: {
-    backgroundColor: 'white',
-    flexDirection: 'row',
+    backgroundColor: "white",
+    flexDirection: "row",
     backgroundColor: colors.mainBlue,
+    paddingVertical: 12,
   },
   dataContainer: {
     paddingLeft: 50,
     flex: 1,
     marginTop: 30,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '100%',
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%",
     backgroundColor: colors.secondaryWhite,
   },
   fieldRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
     marginBottom: 20,
   },
@@ -161,7 +150,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   avatarTouchableCoiner: {
     borderColor: colors.white,
@@ -169,20 +158,20 @@ const styles = StyleSheet.create({
     borderRadius: 80,
     width: 130,
     height: 130,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   editButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: -18,
     backgroundColor: colors.white,
     borderRadius: 15,
     width: 38,
     height: 38,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   editIcon: {
     color: colors.mainBlue,
@@ -195,7 +184,7 @@ export default createStackNavigator({
     screen: UserProfile,
     navigationOptions: () => ({
       title: `Mi Perfil`,
-      headerStyle: { backgroundColor: '#417fd7' },
+      headerStyle: { backgroundColor: "#417fd7" },
       headerTitleStyle: styles.headerTitleStyle,
     }),
   },

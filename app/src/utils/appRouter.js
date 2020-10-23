@@ -30,9 +30,7 @@ export const deepLinkHandler = myHandler => {
   Linking.getInitialURL().then(myHandler);
   Linking.addEventListener("url", myHandler);
   return () => {
-    Linking.removeEventListener("url", e =>
-      console.log("removeEventListener", e),
-    );
+    Linking.removeEventListener("url", myHandler);
   };
 };
 
