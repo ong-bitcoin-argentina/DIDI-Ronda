@@ -59,12 +59,12 @@ const getAssignedShifts = (participantId, shifts) => {
   return assigned;
 };
 
-const getStartedCredential = (participant, round) => {
+const getBaseCredential = (participant, round) => {
   const participantId = participant._id.toString();
   const assignedShifts = getAssignedShifts(participantId, round.shifts);
   const myNumberKey = fields.myNumber(assignedShifts.length);
 
-  const credential = {
+  return {
     [fields.id]: round._id,
     [fields.roundName]: round.name,
     [fields.name]: participant.user.name,
@@ -75,7 +75,13 @@ const getStartedCredential = (participant, round) => {
     [fields.shifts]: round.shifts.length,
     [myNumberKey]: assignedShifts.join(", "),
     [fields.startDate]: moment(round.startDate).format("YYYY-MM-DD"),
-    [fields.endDate]: moment(round.endDate).format("YYYY-MM-DD"),
+    [fields.endDate]: moment(round.endDate).format("YYYY-MM-DD")
+  };
+};
+
+const getStartedCredential = (participant, round) => {
+  const credential = {
+    ...getBaseCredential(participant, round),
     [fields.rol]: getRol(participant, round),
     [fields.state]: states.started
   };
@@ -86,21 +92,9 @@ const getStartedCredential = (participant, round) => {
 const getFinishedCredential = (participant, round) => {
   const participantId = participant._id.toString();
   const { defaulted, noPayed } = getPaymentInfo(participantId, round.shifts);
-  const assignedShifts = getAssignedShifts(participantId, round.shifts);
-  const myNumberKey = fields.myNumber(assignedShifts.length);
 
   const credential = {
-    [fields.id]: round._id,
-    [fields.roundName]: round.name,
-    [fields.name]: participant.user.name,
-    [fields.lastname]: participant.user.lastname,
-    [fields.amount]: round.totalAmount,
-    [fields.individualAmount]: round.amount,
-    [fields.recurrence]: round.normalizedRecurrence,
-    [fields.shifts]: round.shifts.length,
-    [myNumberKey]: assignedShifts.join(", "),
-    [fields.startDate]: moment(round.startDate).format("YYYY-MM-DD"),
-    [fields.endDate]: moment(round.endDate).format("YYYY-MM-DD"),
+    ...getBaseCredential(participant, round),
     [fields.defaulted]: defaulted,
     [fields.noPayed]: noPayed,
     [fields.rol]: getRol(participant, round),
