@@ -47,6 +47,7 @@ const {
 } = require("../helpers/notifications/messages");
 const { SC_FEATURES } = require("../utils/other");
 const { handleRoundNumberChange } = require("./utils");
+const { emmitStartedRoundParticipants } = require("../services/credential");
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -127,6 +128,14 @@ agenda.define(types.ROUND_START_DATE, async job => {
     if (updatedRound === null)
       throw new customError("Error starting round in schedule");
 
+    try {
+      await emmitStartedRoundParticipants(round);
+    } catch (error) {
+      console.error(
+        `Job for round ${roundId} had a failure when try to emmit credentials`
+      );
+    }
+
     // Get round participants user token (avoid nulls)
     const roundUserTokens = round.participants
       .map(p => p.user.token)
@@ -146,7 +155,7 @@ agenda.define(types.ROUND_START_DATE, async job => {
     console.log(`Send scheduled notification...`);
     const notificationResult = await createNotification(
       roundUserTokens,
-      "La ronda",
+      "ronda",
       roundStartedDate(roundName),
       data
     );

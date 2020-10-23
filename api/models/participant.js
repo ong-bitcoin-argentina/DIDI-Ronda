@@ -13,7 +13,10 @@ const participantSchema = new Schema({
   acepted: { type: Boolean, default: null },
   isReceivingOrMakingPayment: { type: Boolean, default: false },
   shiftsQty: { type: Number, default: 1 },
-  credentialJWT: { type: String }
+  credentialJWTs: {
+    type: [String],
+    maxlength: 2
+  }
 });
 
 module.exports = mongoose.model("Participant", participantSchema);
