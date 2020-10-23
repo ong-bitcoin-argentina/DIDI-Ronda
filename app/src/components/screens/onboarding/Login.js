@@ -45,19 +45,14 @@ const Login = props => {
     }
   };
 
-  const init = async () => {
-    deepLinkHandler(handleLogin);
-    dynamicLinkHandler(handleLogin);
-  };
-
   useEffect(() => {
-    init();
+    const unsubscribeDeep = deepLinkHandler(handleLogin);
+    const unsubscribeDynamic = dynamicLinkHandler(handleLogin);
+    return () => {
+      unsubscribeDeep();
+      unsubscribeDynamic();
+    };
   }, []);
-
-  // const sendToken = async () =>
-  //   await loginWithAidi(
-  //     'dUESJ7tmSnC4nnoTanLsyO:APA91bGzkN2xVYZhuXN6DKn7o1HtdjsFDbx4gjyORFVHd65tX-Vfh8acL1KgSsc5JJjbCI7OicGFrW0W8izsrScAs5ZwDet3lYIQEZgz5vfroUYKTiTpory2NiWhbJ4MuLOy1yNrt6jN',
-  //   );
 
   const loginWithAidi = async token => await props.loginWithAidi(token);
 

@@ -72,7 +72,7 @@ const Swap = props => {
             message: "Queremos usar tus contactos, pero necesitamos permisos.",
             buttonNegative: "Cancelar",
             buttonPositive: "OK",
-          }
+          },
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -200,8 +200,7 @@ const Swap = props => {
           });
         }}
         negative={() => {}}
-        positiveTitle="Reemplazar"
-      >
+        positiveTitle="Reemplazar">
         <View style={{ paddingHorizontal: 20 }}>
           <Text style={{ textAlign: "left" }}>
             Los demas integrantes de la ronda no podran saber su nombre
@@ -223,8 +222,7 @@ const Swap = props => {
                 borderColor:
                   phantomName > 0 ? colors.mainBlue : colors.secondary,
               }}
-              stackedLabel
-            >
+              stackedLabel>
               <Label style={{ fontWeight: "bold", color: "black" }}>
                 Nombre invitado sin App
               </Label>
@@ -245,8 +243,7 @@ const Swap = props => {
                 borderColor:
                   phantomName > 0 ? colors.mainBlue : colors.secondary,
               }}
-              stackedLabel
-            >
+              stackedLabel>
               <Label style={{ fontWeight: "bold", color: "black" }}>
                 Número de telefono
               </Label>
@@ -321,8 +318,7 @@ const Swap = props => {
               justifyContent: "center",
               flexDirection: "column",
               alignItems: "center",
-            }}
-          >
+            }}>
             <Item style={styles.searchContainer}>
               <Icon
                 onPress={onSearchIconPress}
@@ -345,8 +341,7 @@ const Swap = props => {
             <TouchableOpacity
               onPress={() => {
                 this.child2.openPopUp();
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 11,
@@ -354,9 +349,8 @@ const Swap = props => {
                   fontStyle: "italic",
                   marginVertical: 10,
                   textDecorationLine: "underline",
-                }}
-              >
-                ¿Querés agregar a alguien que participará sin app DIDI?
+                }}>
+                ¿Querés agregar a alguien que participará sin app ai·di?
               </Text>
             </TouchableOpacity>
           </View>
@@ -408,5 +402,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Swap);

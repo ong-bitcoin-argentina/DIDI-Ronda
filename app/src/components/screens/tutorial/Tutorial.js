@@ -22,21 +22,21 @@ const topOffset = getInset("top");
 const cards = [
   {
     title: "Empezá tu ronda",
-    text: "Invita a las personas que quieras que se sumen a tu ronda.",
+    text: "Invitá a las personas que quieras a qué se sumen a tu ronda.",
     image: tutorial1,
     placeholder: false,
   },
   {
-    title: "¿Cómo funciona",
+    title: "¿Cómo funciona?",
     text:
-      "Indica cuánto aporta cada persona de tu ronda y con qué frecuencia se harán los pagos.",
+      "Indicá cuánto va a aportar cada persona y con qué frecuencia se harán los pagos.",
     image: tutorial2,
     placeholder: false,
   },
   {
     title: "Sorteo o elección grupal",
     text:
-      "El orden de números asignados a quienes participen de la ronda, puede ser por sorteo o por elección del administrador/a.",
+      "Asigná el orden de los números a quienes participen de la ronda, puede ser por sorteo o por elección del administrador/a.",
     image: tutorial3,
     placeholder: false,
   },

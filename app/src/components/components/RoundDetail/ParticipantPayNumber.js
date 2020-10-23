@@ -51,7 +51,7 @@ const ParticipantPayNumber = props => {
   const popUpParams = {
     title: `$${amountFormat(amount)}`,
     content: `¿Confirmás el aporte de $${amountFormat(
-      amount
+      amount,
     )} al ${number} de la Ronda ${roundName}?`,
   };
 
@@ -79,7 +79,7 @@ const ParticipantPayNumber = props => {
               "Queremos usar tu cámara para escanear el código, pero necesitamos permisos.",
             buttonNegative: "Cancelar",
             buttonPositive: "OK",
-          }
+          },
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -137,8 +137,7 @@ const ParticipantPayNumber = props => {
               name="cash-usd"
               style={styles.icon}
             />
-          }
-        >
+          }>
           <Text style={styles.contentText}>{popUpParams.content}</Text>
         </RoundPopUp>
       )}
@@ -149,8 +148,7 @@ const ParticipantPayNumber = props => {
           titleText={confirmPopUpParams.title}
           positive={() => setConfirmPopUp(false)}
           positiveTitle="Ok"
-          icon={<MoneyWithCheck />}
-        >
+          icon={<MoneyWithCheck />}>
           <Text style={styles.contentText}>{confirmPopUpParams.content}</Text>
         </RoundPopUp>
       )}
@@ -161,8 +159,7 @@ const ParticipantPayNumber = props => {
           titleText={qrPopUpParams.title}
           negative={() => setQrPopUp(false)}
           negativeTitle="Cancelar"
-          titleTextStyle={{ fontSize: 15, marginVertical: 5 }}
-        >
+          titleTextStyle={{ fontSize: 15, marginVertical: 5 }}>
           <View style={styles.cameraContainer}>
             <QRCodeScanner
               containerStyle={{ paddingBottom: 10, height: 100, width: 100 }}
@@ -175,7 +172,7 @@ const ParticipantPayNumber = props => {
           <View style={styles.extraInfoContainer}>
             <Text style={styles.extraInfoText}>
               O pedile a {adminName} (administrador/a) que confirme tu aporte
-              desde su app DIDI.
+              desde su app ai·di.
             </Text>
           </View>
         </RoundPopUp>
@@ -251,5 +248,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ParticipantPayNumber);

@@ -86,10 +86,6 @@ class Home extends React.Component {
             style={{ color: "#24CDD2" }}
           />
           <View style={{ paddingLeft: 10 }}>
-            <Text
-              style={{ color: "#24CDD2", fontSize: 16, fontWeight: "bold" }}>
-              {user ? user.nick : "-"}
-            </Text>
             <Text style={{ color: "#24CDD2" }}>
               Accedé a todas tus credenciales de Ronda en ai-di
             </Text>
