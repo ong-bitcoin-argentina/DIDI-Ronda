@@ -10,6 +10,7 @@ const Snippet = ({
   description,
   buttonText,
   onAction,
+  style,
 }) => {
   const renderCustomIcon = () => (
     <CustomIcon style={{ marginHorizontal: 10 }} />
@@ -20,7 +21,7 @@ const Snippet = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={styles.row}>
         <View>{CustomIcon ? renderCustomIcon() : renderImage()}</View>
         <View style={styles.secondCol}>
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 25,
     marginTop: 10,
+    marginBottom: 10,
     borderRadius: 8,
     shadowColor: colors.lightGray,
     shadowOffset: {

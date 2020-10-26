@@ -3,11 +3,11 @@ import { Button, Icon } from "native-base";
 import { StyleSheet, View, Text } from "react-native";
 import colors from "../../components/colors";
 
-const Card = ({ round }) => {
+const Card = ({ round, onAction }) => {
   return (
     <Button
       style={{ backgroundColor: round.color, ...styles.card }}
-      onPress={() => this.props.navigateToRoundsPage(round.page)}>
+      onPress={() => onAction(round.page)}>
       <round.Icon style={styles.icon} />
       <View style={styles.cardContent}>
         <Text style={styles.quantity}>{round.qty}</Text>
