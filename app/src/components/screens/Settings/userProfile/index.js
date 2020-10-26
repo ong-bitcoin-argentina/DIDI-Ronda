@@ -13,7 +13,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import Avatar from "../../../components/Avatar";
 import { getAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
-import UserData from "../../UserProfile/UserData";
+// import UserData from "../../UserProfile/UserData";
 import InformationRow from "../../../components/InformationRow";
 
 const emptyUser = {

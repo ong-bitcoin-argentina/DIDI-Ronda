@@ -17,7 +17,7 @@ export default {
   secondaryGreen: "#6ecc62",
   red: "#F44336",
   lightGray: "#eeeeee",
-  lighterGray: "#e3e3e3",
+  lighterGray: "#E5E5E5",
   secondGray: "#eaeaea",
   statusPurple: "#906ECD",
   iconDisabled: "#c3c3c3",
@@ -27,4 +27,5 @@ export default {
   black: "#000",
   secondaryWhite: "#F2F2F2",
   whiteTransparent: "#ffffff40",
+  alterRed: "#E03C7A",
 };

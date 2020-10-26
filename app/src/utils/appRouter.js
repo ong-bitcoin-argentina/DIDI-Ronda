@@ -10,6 +10,7 @@ export const links = {
     deepLink: `aidi://credentials/ronda`,
     dynamicLink: "https://aidi.page.link/mKfG",
   },
+  playstore: "https://play.google.com/apps/internaltest/4699395559909911910",
 };
 
 export const openAdiLogin = async () => {
