@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Share, ScrollView } from "react-native";
+import { StyleSheet, Share, ScrollView, View, Text } from "react-native";
 import { connect } from "react-redux";
 import { getAuth } from "../../../utils/utils";
 import { openAidiCredentials, links } from "../../../utils/appRouter";
@@ -50,9 +50,14 @@ class Home extends React.Component {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        style={{ backgroundColor: colors.lighterGray }}>
         {cards(this.props).map(round => (
-          <Card round={round} />
+          <Card
+            round={round}
+            onAction={page => this.props.navigateToRoundsPage(page)}
+          />
         ))}
         <Snippet {...snippets[0]} onAction={this.onShare} />
         <Snippet {...snippets[1]} onAction={this.goToCredentials} />
@@ -63,11 +68,8 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
-    flex: 1,
     padding: 10,
     backgroundColor: colors.lighterGray,
-    height: "100%",
   },
   button: {
     marginTop: 30,
