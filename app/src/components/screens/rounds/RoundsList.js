@@ -17,6 +17,7 @@ class RoundsList extends React.Component {
     auth: null,
     openWarningEditModal: false,
     roundEditData: {},
+    loading: true,
   };
 
   async componentDidMount() {
@@ -25,7 +26,7 @@ class RoundsList extends React.Component {
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
     const auth = await getAuth();
-    this.setState({ auth });
+    this.setState({ auth, loading: false });
   }
 
   onDeleteStoredRound = async roundIndex => {
@@ -86,7 +87,7 @@ class RoundsList extends React.Component {
     },
   };
 
-  renderContent = (isLoading, rounds, status) => {
+  renderContent = (rounds, status) => {
     const { auth } = this.state;
 
     let roundsToRender = rounds;
@@ -97,11 +98,11 @@ class RoundsList extends React.Component {
 
     roundsToRender = this.filterRounds(roundsToRender, status);
     // Nothing is available?
-    if (roundsToRender.length === 0 && !isLoading) {
+    if (roundsToRender.length === 0 && !this.state.loading) {
       return this.renderNoRoundsSection(status);
     }
 
-    if (isLoading || auth === null) return <Spinner />;
+    if (this.state.loading) return <Spinner />;
     // We have to append the list of rounds to Edit first.
     return (
       <FlatList
@@ -189,14 +190,16 @@ class RoundsList extends React.Component {
             <Text>{t.title}</Text>
           </TabHeading>
         }>
-        {this.renderContent(requestRounds.loading, roundsList, t.contentType)}
+        {this.renderContent(roundsList, t.contentType)}
       </Tab>
     ));
   };
 
-  handleChangeTab = event => {
+  handleChangeTab = async event => {
     this.props.saveRouteOptions({ roundsList: { page: event.i } });
-    this.props.loadRounds(event);
+    this.setState({ loading: true });
+    await this.props.loadRounds(event);
+    this.setState({ loading: false });
   };
 
   render() {

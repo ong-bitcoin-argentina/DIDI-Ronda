@@ -34,7 +34,6 @@ const UserProfile = () => {
   const [user, setUser] = useState(emptyUser);
   const getUser = async () => {
     const data = await getAuth();
-    console.log("getUser", data);
     setUser(data);
   };
 
@@ -58,40 +57,38 @@ const UserProfile = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={styles.avatarTouchableCoiner}
-            onPress={onPressAvatar}>
-            <Avatar size={130} path={user.picture} />
-            <View style={styles.editButton}>
-              <Icon
-                type="SimpleLineIcons"
-                style={styles.editIcon}
-                name="camera"
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.dataContainer}>
-          <InformationRow
-            icon="person"
-            label="NOMBRE Y APELLIDO"
-            value={`${user.name ?? ""} ${user.lastname ?? ""}`}
-          />
-          <InformationRow
-            icon="mail"
-            label="EMAIL"
-            value={user.username.toLowerCase()}
-          />
-          <InformationRow icon="phone" label="TELÉFONO" value={user.phone} />
-          <InformationRow
-            icon="account-circle"
-            label="NICKNAME"
-            value={user.nick}
-          />
-        </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.avatarTouchableCoiner}
+          onPress={onPressAvatar}>
+          <Avatar size={130} path={user.picture} />
+          <View style={styles.editButton}>
+            <Icon
+              type="SimpleLineIcons"
+              style={styles.editIcon}
+              name="camera"
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.dataContainer}>
+        <InformationRow
+          icon="person"
+          label="NOMBRE Y APELLIDO"
+          value={`${user.name ?? ""} ${user.lastname ?? ""}`}
+        />
+        <InformationRow
+          icon="mail"
+          label="EMAIL"
+          value={user.username.toLowerCase()}
+        />
+        <InformationRow icon="phone" label="TELÉFONO" value={user.phone} />
+        <InformationRow
+          icon="account-circle"
+          label="NICKNAME"
+          value={user.nick}
+        />
       </View>
     </ScrollView>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Share, ScrollView, View, Text } from "react-native";
+import { StyleSheet, Share, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { getAuth } from "../../../utils/utils";
 import { openAidiCredentials, links } from "../../../utils/appRouter";
@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import Card from "./Card";
 import { cards, snippets } from "./helpers";
 import { isActive, isFinished } from "../../../utils/roundsHelper";
+import * as roundsActions from "../../../actions/rounds";
 import Snippet from "./Snippet";
 
 class Home extends React.Component {
@@ -16,6 +17,7 @@ class Home extends React.Component {
     super(props);
     this.state = {
       user: undefined,
+      loading: true,
     };
   }
 
@@ -36,8 +38,13 @@ class Home extends React.Component {
     this.props.navigation.setParams({
       title: `${user.name} ${user.lastname}`,
     });
-    const fcmToken = await AsyncStorage.getItem("fcmToken");
-    console.log({ fcmToken });
+    await this.getRoundData();
+  }
+
+  async getRoundData() {
+    const { requestRounds, loadRounds } = this.props;
+    if (requestRounds.list.length === 0) await loadRounds();
+    this.setState({ loading: false });
   }
 
   goToCredentials = () => openAidiCredentials();
@@ -57,6 +64,7 @@ class Home extends React.Component {
           <Card
             round={round}
             onAction={page => this.props.navigateToRoundsPage(page)}
+            loading={this.state.loading}
           />
         ))}
         <Snippet {...snippets[0]} onAction={this.onShare} />
@@ -87,11 +95,13 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
+    requestRounds: state.rounds.requestRounds,
     activeRounds: state.rounds.requestRounds.list.filter(isActive),
     finishedRounds: state.rounds.requestRounds.list.filter(isFinished),
     userData: state.userData.data,
   }),
   dispatch => ({
     navigateToRoundsPage: page => toRoundListPage(dispatch, page),
+    loadRounds: () => dispatch(roundsActions.loadRounds()),
   }),
 )(Home);
