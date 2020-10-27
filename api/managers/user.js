@@ -1,19 +1,30 @@
+const walletUtil = require("../utils/wallet");
 const User = require("../models/user");
 
-exports.byUsername = async username => {
+exports.byUsername = async (username) => {
   return await User.findOne({
     username: username,
   })
-    .then(user => user)
-    .catch(err => ({ error: `${username}: ${err}` }));
+    .then((user) => user)
+    .catch((err) => ({ error: `${username}: ${err}` }));
 };
 
-exports.fullByUsername = async username => {
+exports.byDID = async (did) => {
+  return await User.findOne({
+    did,
+  })
+    .then((user) => user)
+    .catch((err) => ({ error: `${username}: ${err}` }));
+};
+
+exports.fullByUsername = async (username) => {
   return await User.findOne({
     username: username,
-  }).select("+password").exec()
-    .then(user => user)
-    .catch(err => ({ error: `${username}: ${err}` }));
+  })
+    .select("+password")
+    .exec()
+    .then((user) => user)
+    .catch((err) => ({ error: `${username}: ${err}` }));
 };
 
 exports.updateProfile = async (user, profile) => {
@@ -23,9 +34,9 @@ exports.updateProfile = async (user, profile) => {
   user.username = profile.mail;
   await user.save();
   return user;
-}
+};
 
-exports.byId = async id => {
+exports.byId = async (id) => {
   let user = null;
   try {
     user = await User.findById(id);
@@ -35,12 +46,9 @@ exports.byId = async id => {
   }
 };
 
-exports.manyById = async ids => {
+exports.manyById = async (ids) => {
   try {
-    const users = await User.find()
-      .where("_id")
-      .in(ids)
-      .exec();
+    const users = await User.find().where("_id").in(ids).exec();
     return users;
   } catch (error) {
     console.error(error);
@@ -48,20 +56,20 @@ exports.manyById = async ids => {
   }
 };
 
-exports.byNick = async nick => {
+exports.byNick = async (nick) => {
   return await User.findOne({
     nick: nick,
   })
-    .then(nick => nick)
-    .catch(err => ({ error: `${nick}: ${err}` }));
+    .then((nick) => nick)
+    .catch((err) => ({ error: `${nick}: ${err}` }));
 };
 
-exports.byPhone = async phone => {
+exports.byPhone = async (phone) => {
   return await User.findOne({
     phone: phone,
   })
-    .then(user => user)
-    .catch(err => ({ error: err }));
+    .then((user) => user)
+    .catch((err) => ({ error: err }));
 };
 
 exports.saveUnverified = async (phone, name, walletAddress, walletPk) => {
@@ -73,8 +81,8 @@ exports.saveUnverified = async (phone, name, walletAddress, walletPk) => {
     walletPk,
   })
     .save()
-    .then(newUser => newUser)
-    .catch(err => ({ error: err }));
+    .then((newUser) => newUser)
+    .catch((err) => ({ error: err }));
 };
 
 exports.saveUser = async (
@@ -100,26 +108,24 @@ exports.saveUser = async (
     walletPk,
   })
     .save()
-    .then(newUser => newUser)
-    .catch(err => ({ error: err }));
+    .then((newUser) => newUser)
+    .catch((err) => ({ error: err }));
 };
 
-exports.save = async user => {
+exports.save = async (user) => {
   return await user
     .save()
-    .then(newUser => newUser)
-    .catch(err => ({ error: err }));
+    .then((newUser) => newUser)
+    .catch((err) => ({ error: err }));
 };
 
-exports.manyWithBalanceBelowOrEqual = async minBalance => {
+exports.manyWithBalanceBelowOrEqual = async (minBalance) => {
   try {
     const usersWithoutBalance = await User.find()
       .where("lastBalance")
       .exists(false);
 
-    const users = await User.find()
-      .where("lastBalance")
-      .lte(minBalance);
+    const users = await User.find().where("lastBalance").lte(minBalance);
     return usersWithoutBalance.concat(users);
   } catch (error) {
     console.error(error);
@@ -127,16 +133,16 @@ exports.manyWithBalanceBelowOrEqual = async minBalance => {
   }
 };
 
-exports.remove = async user => {
+exports.remove = async (user) => {
   return await user
     .remove()
-    .then(user => user)
-    .catch(err => ({ error: err }));
+    .then((user) => user)
+    .catch((err) => ({ error: err }));
 };
 
 exports.addWallet = async (_id, walletAddress, walletPk) =>
   User.findById(_id)
-    .then(u => {
+    .then((u) => {
       if (u) {
         u.walletAddress = walletAddress;
         u.walletPk = walletPk;
@@ -148,7 +154,7 @@ exports.addWallet = async (_id, walletAddress, walletPk) =>
     })
     .catch(() => false);
 
-exports.byWalletAddress = async addr => {
+exports.byWalletAddress = async (addr) => {
   try {
     const user = await User.findOne({ walletAddress: addr });
     return user;
@@ -156,4 +162,34 @@ exports.byWalletAddress = async addr => {
     console.error(error);
     return null;
   }
+};
+
+exports.toDTO = async (user) => {
+  user.walletAddress = await walletUtil.getUnencryptedAddress(user.walletAddress);
+  const {
+    nick,
+    username,
+    name,
+    lastname,
+    verified,
+    walletAddress,
+    lastBalance,
+    sc,
+    did,
+    phone,
+    id,
+  } = user;
+  return {
+    nick,
+    username,
+    name,
+    lastname,
+    verified,
+    walletAddress,
+    lastBalance,
+    sc,
+    did,
+    phone,
+    id,
+  };
 };
