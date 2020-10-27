@@ -2,6 +2,18 @@ const round_manager = require("../managers/round");
 const credential_services = require("../services/credential");
 const { completedRound } = require("../helpers/notifications/notifications");
 const { customError } = require("../helpers/errorHandler");
+const userManager = require("../managers/user");
+const cryptoUtil = require("../utils/crypto");
+const walletUtil = require("../utils/wallet");
+const blockchain = require("../services/blockchain");
+const { SC_FEATURES } = require("../utils/other");
+
+const {
+  WALLET_TARGET_BALANCE,
+  WALLET_MIN_BALANCE,
+  REFILL_ORIGIN_ACCOUNT,
+  REFILL_ORIGIN_ACCOUNT_PK
+} = process.env;
 
 const handleRoundNumberChange = async roundId => {
   console.log(`Job for round id ${roundId} change number started`);
@@ -54,7 +66,7 @@ const handleRoundNumberChange = async roundId => {
     }
 
     try {
-      await credential_services.emmitFinishedRoundParticipants(round);
+      await credential_services.emitFinishedRoundParticipants(round);
     } catch (error) {
       console.error(
         `Job for round ${roundId} had a failure when try to emmit credentials`
@@ -70,6 +82,91 @@ const handleRoundNumberChange = async roundId => {
   return true;
 };
 
+const walletRefill = async () => {
+  if (SC_FEATURES) {
+    try {
+      const users = await userManager.manyWithBalanceBelowOrEqual(
+        WALLET_MIN_BALANCE
+      );
+      const WALLET_TARGET_WEI = blockchain.toWei(WALLET_TARGET_BALANCE);
+      const addressIdMap = {};
+      const transactions = users.map(async u => {
+        try {
+          // Users without a private key
+          if (!u.walletAddress) {
+            const { address, privateKey } = await walletUtil.createWallet();
+
+            const encryptedPK = cryptoUtil.cipher(privateKey);
+            const encryptedAddress = cryptoUtil.cipher(address);
+            addressIdMap[address] = u._id;
+            return {
+              walletAddress: encryptedAddress,
+              walletPk: encryptedPK,
+              address,
+              new: true,
+              id: u._id
+            };
+          }
+          const address = cryptoUtil.decipher(u.walletAddress);
+          addressIdMap[address] = u._id;
+          return {
+            address,
+            id: u._id
+          };
+        } catch (error) {
+          console.log("Failure in creating RBTC tx object for user: ", u);
+          return {};
+        }
+      });
+      const finalTransactions = await Promise.all(transactions);
+      const performAddtionOfWallets = finalTransactions.map(async t => {
+        if (t.new) {
+          const result = await userManager.addWallet(
+            t.id,
+            t.walletAddress,
+            t.walletPk
+          );
+          if (!result)
+            return { result, error: `Failed to add wallet to ${t.id}` };
+        }
+        return { result: true };
+      });
+      await Promise.all(performAddtionOfWallets);
+      try {
+        const results = await blockchain.sendManyBalanceTx(
+          REFILL_ORIGIN_ACCOUNT,
+          REFILL_ORIGIN_ACCOUNT_PK,
+          finalTransactions.map(t => t.address),
+          WALLET_TARGET_WEI
+        );
+        const acreditedFinal = await Promise.all(
+          results.map(async ({ address, error, success }) => {
+            if (!success) return { success: false, error };
+            const userId = addressIdMap[address];
+            try {
+              const user = await userManager.byId(userId);
+              if (user) {
+                user.lastBalance = WALLET_TARGET_BALANCE;
+                await user.save();
+                return { success: true, user: user._id };
+              }
+              return { success: false, error: "User not found" };
+            } catch (error) {
+              return { success: false, error: "" };
+            }
+          })
+        );
+        console.log(`Resolved ${acreditedFinal.length} transactions`);
+      } catch (error) {
+        return { result: false, error };
+      }
+    } catch (error) {
+      console.log("Error on WalletRefill Cron: ", error);
+    }
+  }
+};
+
 module.exports = {
-  handleRoundNumberChange
+  handleRoundNumberChange,
+  walletRefill
 };

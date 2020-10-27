@@ -9,6 +9,8 @@ const participant_manager = require("../managers/participant");
 const walletUtil = require("../utils/wallet");
 const crypto = require("../utils/crypto");
 
+const credentials_service = require("../services/credential");
+
 // NOTIFICATIONS
 const {
   inviteRound,
@@ -499,6 +501,8 @@ exports.start = async req => {
     throw new customError("All participants must accept the invitation");
   round.isBeingStarted = true;
   await round.save();
+
+  await credentials_service.emitStartedRoundParticipants(round);
 
   return { round };
 };
