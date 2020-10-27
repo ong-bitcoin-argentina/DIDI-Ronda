@@ -1,16 +1,20 @@
 import React from "react";
 import { Button, Icon } from "native-base";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import colors from "../../components/colors";
 
-const Card = ({ round, onAction }) => {
+const Card = ({ round, loading, onAction }) => {
   return (
     <Button
       style={{ backgroundColor: round.color, ...styles.card }}
       onPress={() => onAction(round.page)}>
       <round.Icon style={styles.icon} />
       <View style={styles.cardContent}>
-        <Text style={styles.quantity}>{round.qty}</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.white} />
+        ) : (
+          <Text style={styles.quantity}>{round.qty}</Text>
+        )}
         <Text style={styles.cardTitle}>{round.title}</Text>
       </View>
       <Icon
@@ -39,7 +43,8 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
+    justifyContent: "center",
     flexWrap: "wrap",
   },
   icon: {
