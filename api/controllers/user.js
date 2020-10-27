@@ -20,6 +20,12 @@ exports.byUsername = async (req, res) => {
   res.status(200).jsonp(user);
 };
 
+// Get user by username
+exports.byDID = async (req, res) => {
+  const user = await user_services.byDID(req, res);
+  res.status(200).jsonp(user);
+};
+
 // Update user by username
 exports.updateByUsername = async (req, res) => {
   try {

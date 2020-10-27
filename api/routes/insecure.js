@@ -21,4 +21,11 @@ router.post(
   round_controller.simulateFinish
 );
 
+router.get(
+  "/user/did/:did",
+  [],
+  validation,
+  user_controller.byDID
+)
+
 module.exports = router;
