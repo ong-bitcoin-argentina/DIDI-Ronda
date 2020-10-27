@@ -7,9 +7,9 @@ const credentialsPendingSchema = new Schema({
   participant: {
     type: ObjectId,
     ref: "Participant",
-    required: true,
-    unique: true
+    required: true
   },
+  jwt: { type: String, required: true, unique: true },
   createdOn: { type: Date, default: new Date() }
 });
 

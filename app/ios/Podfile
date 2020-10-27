@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'aidironda' do
-  # Pods for aidironda
+target 'aidironda2' do
+  # Pods for aidironda2
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -35,10 +35,10 @@ target 'aidironda' do
   use_native_modules!
 end
 
-target 'aidironda-tvOS' do
-  # Pods for aidironda-tvOS
+target 'aidironda2-tvOS' do
+  # Pods for aidironda2-tvOS
 
-  target 'aidironda-tvOSTests' do
+  target 'aidironda2-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

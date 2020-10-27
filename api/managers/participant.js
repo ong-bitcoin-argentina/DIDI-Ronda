@@ -1,4 +1,5 @@
 const Participant = require("../models/participant");
+const { customError } = require("../helpers/errorHandler");
 
 exports.createModel = async (
   user,
@@ -62,12 +63,10 @@ exports.findById = async id => {
     .catch(err => ({ error: err }));
 };
 
-exports.findByIdAndUpdateJWTs = async (id, jwt) => {
-  return await Participant.findByIdAndUpdate(
-    id,
-    { $push: { credentialJWTs: jwt } },
-    { new: true }
-  );
+exports.findByIdAndUpdateJWTs = async (_id, jwt) => {
+  const action = { $push: { credentialJWTs: jwt } };
+  const options = { new: true };
+  return await Participant.updateOne({ _id }, action, options);
 };
 
 exports.updateParticipantUser = async (participant, newUser) => {
