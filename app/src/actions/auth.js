@@ -12,7 +12,7 @@ export const createUser = (username, password, name, token, nick) => {
       password,
       name,
       token,
-      nick
+      nick,
     );
 
     if (response.error) {
@@ -65,7 +65,7 @@ export const verifyEmail = (username, password, name, token) => {
       username.trim(),
       password,
       name,
-      token
+      token,
     );
 
     if (!response.error) {
@@ -143,7 +143,7 @@ export const sendPassword = (username, password, token) => {
     const response = await UserService.forgotNewPassword(
       username,
       password,
-      token
+      token,
     );
 
     dispatch(finishLoadingNewPassword(response));
@@ -156,13 +156,14 @@ export const cleanForgot = () => {
   };
 };
 
-export const loginWithAidi = (token) => {
-  return async (dispatch) => {
+export const loginWithAidi = token => {
+  return async dispatch => {
     dispatch(loginStart());
     const session = await UserService.loginWithAidi(token);
 
     if (!session.error) {
       try {
+        console.log(session.data);
         await setAuth(session.data);
         dispatch(loginSucceded());
         NavigationService.navigate("LoadingAuth");
@@ -173,8 +174,8 @@ export const loginWithAidi = (token) => {
       dispatch(loginFailed(login.error));
     }
   };
-}
- 
+};
+
 export const login = (username, password) => {
   return async dispatch => {
     dispatch(loginStart());
@@ -220,7 +221,7 @@ export const phoneVerifiyCode = (username, phoneNumber, country, code) => {
       username,
       phoneNumber,
       country,
-      code
+      code,
     );
 
     if (!response.error) {

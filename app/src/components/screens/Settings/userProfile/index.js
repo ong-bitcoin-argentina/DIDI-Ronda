@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
   //   ImageStore,
 } from "react-native";
-import { Spinner, Icon } from "native-base";
+import { Icon, Fab } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
 import ImagePicker from "react-native-image-crop-picker";
 import Avatar from "../../../components/Avatar";
-import { getAuth } from "../../../../utils/utils";
+import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
+import { ConfigRight, BackButton } from "../../../components/Header";
+import Settings from "./Settings";
+import AboutAidi from "./AboutAidi";
+import AboutRonda from "./AboutRonda";
+import { updateUserData } from "../../../../services/api/user";
 
 const emptyUser = {
   image: null,
@@ -30,8 +35,10 @@ const imgPickerOptions = {
   cropping: true,
 };
 
-const UserProfile = () => {
+const UserProfile = props => {
   const [user, setUser] = useState(emptyUser);
+  const [loading, setLoading] = useState(false);
+
   const getUser = async () => {
     const data = await getAuth();
     setUser(data);
@@ -40,6 +47,19 @@ const UserProfile = () => {
   useEffect(() => {
     getUser();
   }, []);
+
+  const refreshUserData = async () => {
+    setLoading(true);
+    try {
+      const { username } = await getAuth();
+      const response = await updateUserData(username);
+      console.log(response);
+      if (response.data) await setAuth(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
 
   const onPressAvatar = async () => {
     const img = await ImagePicker.openPicker(imgPickerOptions);
@@ -58,18 +78,26 @@ const UserProfile = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
+        <Icon
+          name="cached"
+          type="MaterialIcons"
+          color={colors.white}
+          style={{ color: colors.white }}
+        />
+      </TouchableOpacity>
       <View style={styles.row}>
         <TouchableOpacity
-          style={styles.avatarTouchableCoiner}
+          style={[styles.avatarTouchableCoiner, styles.shadow]}
           onPress={onPressAvatar}>
           <Avatar size={130} path={user.picture} />
-          <View style={styles.editButton}>
+          {/* <View style={styles.editButton}>
             <Icon
               type="SimpleLineIcons"
               style={styles.editIcon}
               name="camera"
             />
-          </View>
+          </View> */}
         </TouchableOpacity>
       </View>
       <View style={styles.dataContainer}>
@@ -77,17 +105,25 @@ const UserProfile = () => {
           icon="person"
           label="NOMBRE Y APELLIDO"
           value={`${user.name ?? ""} ${user.lastname ?? ""}`}
+          loading={loading}
         />
         <InformationRow
           icon="mail"
           label="EMAIL"
           value={user.username.toLowerCase()}
+          loading={loading}
         />
-        <InformationRow icon="phone" label="TELÉFONO" value={user.phone} />
+        <InformationRow
+          icon="phone"
+          label="TELÉFONO"
+          value={user.phone}
+          loading={loading}
+        />
         <InformationRow
           icon="account-circle"
           label="NICKNAME"
           value={user.nick}
+          loading={loading}
         />
       </View>
     </ScrollView>
@@ -95,6 +131,12 @@ const UserProfile = () => {
 };
 
 const styles = StyleSheet.create({
+  fixedButton: {
+    padding: 20,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
   userDataInfoIcon: {
     color: colors.gray,
     marginBottom: 5,
@@ -107,7 +149,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    backgroundColor: colors.mainBlue,
+    backgroundColor: colors.darkBlue,
     flex: 1,
     paddingTop: 35,
   },
@@ -122,7 +164,7 @@ const styles = StyleSheet.create({
   row: {
     backgroundColor: "white",
     flexDirection: "row",
-    backgroundColor: colors.mainBlue,
+    backgroundColor: "transparent",
     paddingVertical: 12,
   },
   dataContainer: {
@@ -173,15 +215,58 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     fontSize: 16,
   },
-});
-
-export default createStackNavigator({
-  Settings: {
-    screen: UserProfile,
-    navigationOptions: () => ({
-      title: `Mi Perfil`,
-      headerStyle: { backgroundColor: "#417fd7" },
-      headerTitleStyle: styles.headerTitleStyle,
-    }),
+  shadow: {
+    shadowColor: "#FFF",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    elevation: 20,
   },
 });
+
+export default createStackNavigator(
+  {
+    Profile: {
+      screen: UserProfile,
+      navigationOptions: ({ navigation }) => ({
+        title: `Mi Perfil`,
+        headerStyle: { backgroundColor: "#417fd7" },
+        headerTitleStyle: styles.headerTitleStyle,
+        headerRight: <ConfigRight navigation={navigation} />,
+      }),
+    },
+    Settings: {
+      screen: Settings,
+      navigationOptions: ({ navigation }) => ({
+        title: `Configuración`,
+        headerStyle: { backgroundColor: "#417fd7" },
+        headerTitleStyle: styles.headerTitleStyle,
+        headerLeft: <BackButton navigation={navigation} />,
+      }),
+    },
+    AboutAidi: {
+      screen: AboutAidi,
+      navigationOptions: ({ navigation }) => ({
+        title: `Acerca de ai·di`,
+        headerStyle: { backgroundColor: "#417fd7" },
+        headerTitleStyle: styles.headerTitleStyle,
+        headerLeft: <BackButton navigation={navigation} />,
+      }),
+    },
+    AboutRonda: {
+      screen: AboutRonda,
+      navigationOptions: ({ navigation }) => ({
+        title: `Acerca de Ronda`,
+        headerStyle: { backgroundColor: "#417fd7" },
+        headerTitleStyle: styles.headerTitleStyle,
+        headerLeft: <BackButton navigation={navigation} />,
+      }),
+    },
+  },
+  {
+    initialRouteName: "Profile",
+  },
+);
