@@ -281,8 +281,9 @@ const sendVerificationToken = async (username, token) => {
 
 exports.registerAidiUser = async params => {
   try {
-    const { nick, username, password, name, lastname, token, phone, did, jwtToken } = params;
+    const { nick, username, password, name, lastname, token, did, jwtToken } = params;
 
+    const phone = SMS.normalizePhone(params.phone);
 
     const { address, privateKey } = await walletUtil.createWallet();
   
