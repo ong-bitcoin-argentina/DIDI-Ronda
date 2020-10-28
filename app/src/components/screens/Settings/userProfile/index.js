@@ -53,9 +53,12 @@ const UserProfile = props => {
     try {
       const { username } = await getAuth();
       const response = await updateUserData(username);
+
       const { data } = response;
-      if (data) await setAuth(data);
-      setUser(data);
+      if (data) {
+        await setAuth(data);
+        setUser(data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -63,8 +66,8 @@ const UserProfile = props => {
   };
 
   const onPressAvatar = async () => {
-    const img = await ImagePicker.openPicker(imgPickerOptions);
-    setUser({ ...user, picture: img.path });
+    // const img = await ImagePicker.openPicker(imgPickerOptions);
+    // setUser({ ...user, picture: img.path });
     // Se hace lo siguiente para obtener el base64
     // Luego se lo manipula y se sube al endpoint
     // ImageStore.getBase64ForTag(
