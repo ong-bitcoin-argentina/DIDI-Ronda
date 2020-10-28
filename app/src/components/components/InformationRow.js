@@ -1,9 +1,9 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Icon} from 'native-base';
-import colors from './colors';
+import React from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { Icon } from "native-base";
+import colors from "./colors";
 
-const InformationRow = ({label, value, icon}) => {
+const InformationRow = ({ label, value, icon, loading }) => {
   return (
     <View style={styles.fieldRow}>
       <View style={styles}>
@@ -13,9 +13,15 @@ const InformationRow = ({label, value, icon}) => {
           style={styles.userDataInfoIcon}
         />
       </View>
-      <View style={{paddingLeft: 15}}>
-        <Text style={styles.valueTitle}>{label}</Text>
-        <Text style={styles.value}>{value}</Text>
+      <View style={{ paddingLeft: 15 }}>
+        {loading ? (
+          <ActivityIndicator color={colors.gray} />
+        ) : (
+          <>
+            <Text style={styles.valueTitle}>{label}</Text>
+            <Text style={styles.value}>{value}</Text>
+          </>
+        )}
       </View>
     </View>
   );
@@ -27,9 +33,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   fieldRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
     marginBottom: 20,
   },
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
