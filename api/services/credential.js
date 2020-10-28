@@ -4,7 +4,7 @@ const { customError } = require("../helpers/errorHandler");
 const participant_services = require("../services/participant");
 const credentials_pending_manager = require("../managers/credentials_pending");
 const { createCredentialJWT } = require("../helpers/jwt");
-const { logError } = require("../helpers/utils");
+const { logError, logSuccess } = require("../helpers/utils");
 const {
   getFinishedCredential,
   fields,
@@ -12,7 +12,8 @@ const {
 } = require("../helpers/credential");
 const { DIDI_SERVER } = process.env;
 
-const createToken = async (credential, did) => {
+const createToken = async (credential, did, isFinished = false) => {
+  const exp = !isFinished && new Date(credential[fields.endDate]).getTime();
   const data = {
     Ronda: {
       preview: {
@@ -25,18 +26,22 @@ const createToken = async (credential, did) => {
         ]
       },
       category: "finance",
-      data: credential
+      data: credential,
+      exp: exp || undefined
     }
   };
 
   return await createCredentialJWT(data, did);
 };
 
-const emmit = async ({ credential, participant }) => {
+const emit = async (
+  { credential, participant, pendingJwt },
+  isFinished = false
+) => {
   const { did } = participant.user;
   if (!did) return;
 
-  const jwt = await createToken(credential, did);
+  const jwt = pendingJwt || (await createToken(credential, did, isFinished));
 
   const response = await request({
     url: `${DIDI_SERVER}/issuer/issueCertificate`,
@@ -51,14 +56,12 @@ const emmit = async ({ credential, participant }) => {
 
   if (response.status !== "success") {
     logError(response.message);
-    await credentials_pending_manager.create(
-      credential[fields.id],
-      participant
-    );
+    const roundId = credential[fields.id];
+    await credentials_pending_manager.createOrGet(roundId, participant, jwt);
     return `El participante con el DID ${did} no se pudo emitir`;
   }
 
-  await credentials_pending_manager.deleteByParticipant(participant._id);
+  await credentials_pending_manager.deleteByJwt(jwt);
   await participant_services.findAndUpdateJWTs(participant._id, jwt);
   return response.data;
 };
@@ -70,10 +73,7 @@ const emmitRoundParticipants = async (round, isFinished = false) => {
     throw new customError("La ronda aún no finalizó");
 
   const filteredParticipants = round.participants.filter(
-    participant =>
-      participant.user &&
-      participant.user.did &&
-      participant.credentialJWTs.length < 2
+    participant => participant.user && participant.user.did
   );
 
   const getCredential = isFinished
@@ -83,19 +83,44 @@ const emmitRoundParticipants = async (round, isFinished = false) => {
     getCredential(participant, round)
   );
 
-  const requests = credentials.map(emmit);
+  const requests = credentials.map(data => emit(data, isFinished));
   return await Promise.all(requests);
 };
 
-const emmitFinishedRoundParticipants = async round => {
+const emitFinishedRoundParticipants = async round => {
   return emmitRoundParticipants(round, true);
 };
 
-const emmitStartedRoundParticipants = async round => {
+const emitStartedRoundParticipants = async round => {
   return emmitRoundParticipants(round);
 };
 
+const emitPendingCredentials = async () => {
+  const credentialsPending = await credentials_pending_manager.findAll();
+  const count = credentialsPending.length;
+  console.log(`${count} credenciales pendientes de emisión.`);
+  if (!count) {
+    return `No hay credenciales pendientes de emisión.`;
+  }
+  const requests = credentialsPending.map(item =>
+    emit({
+      pendingJwt: item.jwt,
+      participant: item.participant,
+      credential: item.round
+    })
+  );
+  const makedRequests = await Promise.all(requests);
+  const emitted = makedRequests.filter(item => item.hash).length;
+  const noEmitted = makedRequests.filter(item => !item.hash).length;
+  if (emitted)
+    logSuccess(`${emitted} credenciales fueron emitidas correctamente.`);
+  if (noEmitted) logError(`${noEmitted} credenciales fallaron en su emisión.`);
+
+  return makedRequests;
+};
+
 module.exports = {
-  emmitFinishedRoundParticipants,
-  emmitStartedRoundParticipants
+  emitPendingCredentials,
+  emitFinishedRoundParticipants,
+  emitStartedRoundParticipants
 };

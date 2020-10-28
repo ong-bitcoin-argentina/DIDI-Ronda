@@ -2,11 +2,8 @@ require("dotenv").config();
 const { rememberNotifications } = require("../helpers/config");
 const moment = require("moment");
 const round_manager = require("../managers/round");
-const userManager = require("../managers/user");
+const credentials_service = require("../services/credential");
 const config = require("../helpers/config");
-const cryptoUtil = require("../utils/crypto");
-const walletUtil = require("../utils/wallet");
-const blockchain = require("../services/blockchain");
 
 const {
   MONGO_SERVER,
@@ -16,11 +13,7 @@ const {
   REFILL_HOURS,
   REFILL_DAY_OF_MONTH,
   REFILL_MONTH,
-  REFILL_DAY_OF_WEEL,
-  WALLET_TARGET_BALANCE,
-  WALLET_MIN_BALANCE,
-  REFILL_ORIGIN_ACCOUNT,
-  REFILL_ORIGIN_ACCOUNT_PK
+  REFILL_DAY_OF_WEEL
 } = process.env;
 
 const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
@@ -45,9 +38,8 @@ const {
   shiftAboutToEnd,
   roundStartedDate
 } = require("../helpers/notifications/messages");
-const { SC_FEATURES } = require("../utils/other");
-const { handleRoundNumberChange } = require("./utils");
-const { emmitStartedRoundParticipants } = require("../services/credential");
+const { handleRoundNumberChange, walletRefill } = require("./utils");
+const { emitStartedRoundParticipants } = require("../services/credential");
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -129,7 +121,7 @@ agenda.define(types.ROUND_START_DATE, async job => {
       throw new customError("Error starting round in schedule");
 
     try {
-      await emmitStartedRoundParticipants(round);
+      await emitStartedRoundParticipants(round);
     } catch (error) {
       console.error(
         `Job for round ${roundId} had a failure when try to emmit credentials`
@@ -231,105 +223,26 @@ exports.updateStartRoundJob = async (taskDate, roundId) => {
   this.createStartRoundJob(taskDate, roundId);
 };
 
-exports.walletRefillJob = () => {
-  if (SC_FEATURES) {
-    const frequency = [
-      REFILL_SECONDS,
-      REFILL_MINUTES,
-      REFILL_HOURS,
-      REFILL_DAY_OF_MONTH,
-      REFILL_MONTH,
-      REFILL_DAY_OF_WEEL
-    ].join(" ");
-    new CronJob(
-      frequency,
-      async () => {
-        try {
-          const users = await userManager.manyWithBalanceBelowOrEqual(
-            WALLET_MIN_BALANCE
-          );
-          const WALLET_TARGET_WEI = blockchain.toWei(WALLET_TARGET_BALANCE);
-          const addressIdMap = {};
-          const transactions = users.map(async u => {
-            try {
-              // Users without a private key
-              if (!u.walletAddress) {
-                const { address, privateKey } = await walletUtil.createWallet();
-
-                const encryptedPK = cryptoUtil.cipher(privateKey);
-                const encryptedAddress = cryptoUtil.cipher(address);
-                addressIdMap[address] = u._id;
-                return {
-                  walletAddress: encryptedAddress,
-                  walletPk: encryptedPK,
-                  address,
-                  new: true,
-                  id: u._id
-                };
-              }
-              const address = cryptoUtil.decipher(u.walletAddress);
-              addressIdMap[address] = u._id;
-              return {
-                address,
-                id: u._id
-              };
-            } catch (error) {
-              console.log("Failure in creating RBTC tx object for user: ", u);
-              return {};
-            }
-          });
-          const finalTransactions = await Promise.all(transactions);
-          const performAddtionOfWallets = finalTransactions.map(async t => {
-            if (t.new) {
-              const result = await userManager.addWallet(
-                t.id,
-                t.walletAddress,
-                t.walletPk
-              );
-              if (!result)
-                return { result, error: `Failed to add wallet to ${t.id}` };
-            }
-            return { result: true };
-          });
-          await Promise.all(performAddtionOfWallets);
-          try {
-            const results = await blockchain.sendManyBalanceTx(
-              REFILL_ORIGIN_ACCOUNT,
-              REFILL_ORIGIN_ACCOUNT_PK,
-              finalTransactions.map(t => t.address),
-              WALLET_TARGET_WEI
-            );
-            const acreditedFinal = await Promise.all(
-              results.map(async ({ address, error, success }) => {
-                if (!success) return { success: false, error };
-                const userId = addressIdMap[address];
-                try {
-                  const user = await userManager.byId(userId);
-                  if (user) {
-                    user.lastBalance = await web3.eth.getBalance(address);
-                    await user.save();
-                    return { success: true, user: user._id };
-                  }
-                  return { success: false, error: "User not found" };
-                } catch (error) {
-                  return { success: false, error: "" };
-                }
-              })
-            );
-            console.log(`Resolved ${acreditedFinal.length} transactions`);
-          } catch (error) {
-            return { result: false, error };
-          }
-        } catch (error) {
-          console.log("Error on WalletRefill Cron: ", error);
-        }
-      },
-      //Execute once when api started
-      null,
-      true,
-      "America/Argentina/Buenos_Aires",
-      null,
-      true
-    );
-  }
+exports.permanentJob = () => {
+  const frequency = [
+    REFILL_SECONDS,
+    REFILL_MINUTES,
+    REFILL_HOURS,
+    REFILL_DAY_OF_MONTH,
+    REFILL_MONTH,
+    REFILL_DAY_OF_WEEL
+  ].join(" ");
+  new CronJob(
+    frequency,
+    async () => {
+      walletRefill();
+      credentials_service.emitPendingCredentials();
+    },
+    //Execute once when api started
+    null,
+    true,
+    "America/Argentina/Buenos_Aires",
+    null,
+    true
+  );
 };

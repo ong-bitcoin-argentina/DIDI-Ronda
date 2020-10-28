@@ -130,7 +130,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.aidironda"
+        applicationId "com.aidironda2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
@@ -153,16 +153,16 @@ android {
 
     productFlavors {
         dev {
-            resValue "string", "build_config_package", "com.aidironda"
+            resValue "string", "build_config_package", "com.aidironda2"
         }
         staging {
-            resValue "string", "build_config_package", "com.aidironda"
+            resValue "string", "build_config_package", "com.aidironda2"
         }
         uat {
-            resValue "string", "build_config_package", "com.aidironda"
+            resValue "string", "build_config_package", "com.aidironda2"
         }
         prod {
-            resValue "string", "build_config_package", "com.aidironda"
+            resValue "string", "build_config_package", "com.aidironda2"
         }
     }
 

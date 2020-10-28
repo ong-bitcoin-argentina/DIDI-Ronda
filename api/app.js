@@ -15,7 +15,7 @@ const helmet = require("helmet");
 require("dotenv").config();
 
 // Agenda
-const { agendaStart, walletRefillJob } = require("./jobs/jobs");
+const { agendaStart, permanentJob } = require("./jobs/jobs");
 
 const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
@@ -90,7 +90,7 @@ mongoose.connect(
       console.log(`-------------------------- `);
       console.log(`Node server running on http://localhost:${PORT}`);
       agendaStart();
-      walletRefillJob();
+      permanentJob();
     });
   }
 );

@@ -26,6 +26,8 @@ class Notifications extends React.Component {
       recent: [],
       old: [],
       loading: true,
+      bigLoading: true,
+      user: null,
     };
   }
 
@@ -35,21 +37,26 @@ class Notifications extends React.Component {
     },
   };
 
-  componentDidMount(props) {
-    this.getNotifications();
+  async componentDidMount(props) {
+    const user = await getAuth();
+    this.setState({ user }, this.getNotifications);
+    this.props.navigation.addListener("didFocus", this.getNotifications);
   }
 
   getNotifications = async () => {
-    const user = await getAuth();
+    const { user, old, recent } = this.state;
     if (user) {
       const { username } = user;
       try {
+        this.setState({ loading: true });
+        if (!old.length && !recent.length) this.setState({ bigLoading: true });
         const response = await UserService.getNotifications(username);
         const { items } = response.data;
         this.setState({
           recent: items.filter(item => isRecent(item.date)),
           old: items.filter(item => !isRecent(item.date)),
           loading: false,
+          bigLoading: false,
         });
       } catch (error) {
         console.log(error);
@@ -57,19 +64,32 @@ class Notifications extends React.Component {
     }
   };
 
-  render;
+  renderContent = () => {
+    return (
+      <>
+        {this.state.loading && (
+          <ActivityIndicator
+            size="small"
+            color={colors.mainBlue}
+            style={styles.loader}
+          />
+        )}
+        <NotificationsList data={this.state} />
+      </>
+    );
+  };
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        {this.state.loading ? (
+        {this.state.bigLoading ? (
           <ActivityIndicator
             size="large"
             color={colors.mainBlue}
-            style={styles.loader}
+            style={{ marginTop: 80 }}
           />
         ) : (
-          <NotificationsList data={this.state} />
+          this.renderContent()
         )}
       </SafeAreaView>
     );
@@ -99,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loader: {
-    marginTop: 90,
+    marginVertical: 18,
   },
 });
 

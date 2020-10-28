@@ -12,7 +12,6 @@ import {
 import colors from "../../components/colors";
 import Swap from "./Swap";
 import ContextualMenu from "./contextualMenu";
-import UserData from "./UserData";
 import Avatar from "../../components/Avatar";
 
 /**
@@ -45,12 +44,10 @@ class UserProfile extends Component {
                 justifyContent: "center",
                 marginBottom: 15,
                 marginTop: 10,
-              }}
-            >
+              }}>
               <Avatar path={participant.user.picture} size={100} />
               <Text style={styles.profileName}>@{participant.user.name}</Text>
             </View>
-            <UserData username={participant.user.username} />
           </View>
 
           <Tabs tabBarUnderlineStyle={styles.tabHeaderBorder} locked>
@@ -59,8 +56,7 @@ class UserProfile extends Component {
                 <TabHeading style={styles.tabHeader}>
                   <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
                 </TabHeading>
-              }
-            >
+              }>
               <Content>
                 <Swap {...this.props} participant={participant} />
               </Content>

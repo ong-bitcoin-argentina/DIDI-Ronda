@@ -18,6 +18,13 @@ exports.byUsername = async req => {
   return user;
 };
 
+exports.byDID = async req => {
+  const { did } = req.params;
+  const user = await user_manager.byDID(did);
+  if (!user) throw new customError("That user does not exist");
+  return await user_manager.toDTO(user);
+};
+
 exports.updateByUsername = async req => {
   const { username } = req.body;
   const user = await user_manager.byUsername(username);
