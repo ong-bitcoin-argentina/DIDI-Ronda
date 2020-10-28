@@ -53,7 +53,6 @@ const UserProfile = props => {
     try {
       const { username } = await getAuth();
       const response = await updateUserData(username);
-      console.log(response);
       if (response.data) await setAuth(response.data);
     } catch (error) {
       console.log(error);
