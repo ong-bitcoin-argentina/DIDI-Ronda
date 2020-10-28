@@ -184,12 +184,12 @@ exports.roundStartCompleted = roundName =>
 exports.roundStartFailed = roundName =>
   `Ups!.. Ocurrió un error al procesar la ronda ${roundName}. Por favor, inténtalo nuevamente!`;
 
-// Participant - Notification (DISABLED)
+// Participant - Notification
 // code: 'register-user-completed'
 exports.registerUserCompleted = email =>
   `Se completó el registro del usuario ${email} ya podés inciar sesión`;
 
-// Participant - Alert - (DISABLED)
+// Participant - Alert
 // code: 'register-user-failed'
 exports.registerUserFailed = email =>
   `El registro del usuario ${email} falló, tenés que intentarlo nuevamente`;

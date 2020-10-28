@@ -1,5 +1,7 @@
 // SERVICES
 const user_services = require("../services/user");
+const postResBackground = require("../services/postRes");
+const { SC_FEATURES } = require("../utils/other");
 
 const { generic } = require("../helpers/errorHandler");
 
@@ -78,6 +80,21 @@ exports.updateToken = async (req, res) => {
     return updateToken && updateToken.error
       ? res.status(200).jsonp({ error: updateToken.error })
       : res.status(200).jsonp(updateToken);
+  } catch (err) {
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
+};
+
+exports.forceSCEnable = async (req, res) => {
+  const user = await user_manager.byUsername(req.body.username);
+  try {
+    if (SC_FEATURES && !user.sc) {
+      const res = await postResBackground.enableSCToUser(user);
+      return res.status(200).jsonp(res);
+    }
+    return user;
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)
