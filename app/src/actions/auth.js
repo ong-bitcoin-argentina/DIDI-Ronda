@@ -163,7 +163,6 @@ export const loginWithAidi = token => {
 
     if (!session.error) {
       try {
-        console.log(session.data);
         await setAuth(session.data);
         dispatch(loginSucceded());
         NavigationService.navigate("LoadingAuth");
