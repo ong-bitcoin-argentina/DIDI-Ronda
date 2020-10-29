@@ -51,16 +51,20 @@ class Notifications extends React.Component {
         this.setState({ loading: true });
         if (!old.length && !recent.length) this.setState({ bigLoading: true });
         const response = await UserService.getNotifications(username);
-        const { items } = response.data;
-        this.setState({
-          recent: items.filter(item => isRecent(item.date)),
-          old: items.filter(item => !isRecent(item.date)),
-          loading: false,
-          bigLoading: false,
-        });
+        const { data } = response;
+        if (data.items) {
+          this.setState({
+            recent: data.items.filter(item => isRecent(item.date)),
+            old: data.items.filter(item => !isRecent(item.date)),
+          });
+        }
       } catch (error) {
         console.log(error);
       }
+      this.setState({
+        loading: false,
+        bigLoading: false,
+      });
     }
   };
 
