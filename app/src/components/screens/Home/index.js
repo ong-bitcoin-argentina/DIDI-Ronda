@@ -11,6 +11,7 @@ import { cards, snippets } from "./helpers";
 import { isActive, isFinished } from "../../../utils/roundsHelper";
 import * as roundsActions from "../../../actions/rounds";
 import Snippet from "./Snippet";
+import WarningSCModal from "../../components/WarningSCModal";
 
 class Home extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Home extends React.Component {
     this.state = {
       user: undefined,
       loading: true,
+      showSCModal: false,
     };
   }
 
@@ -33,12 +35,9 @@ class Home extends React.Component {
   };
 
   async componentDidMount() {
-    const user = await getAuth();
-    this.setState({ user: user });
-    this.props.navigation.setParams({
-      title: `${user.name} ${user.lastname}`,
-    });
+    const user = await this.updateUser();
     await this.getRoundData();
+    this.showSCWarning(user);
   }
 
   async getRoundData() {
@@ -46,6 +45,30 @@ class Home extends React.Component {
     if (requestRounds.list.length === 0) await loadRounds();
     this.setState({ loading: false });
   }
+
+  async updateUser() {
+    const user = await getAuth();
+    this.setState({ user });
+    this.props.navigation.setParams({
+      title: `${user.name} ${user.lastname}`,
+    });
+    return user;
+  }
+
+  async updateSCModal() {
+    await this.updateUser();
+    this.setState({ showSCModal: false });
+  }
+
+  showSCWarning = auth => {
+    if (!auth._doc.sc) {
+      this.setState({ showSCModal: true });
+    }
+  };
+
+  hideSCWarning = () => {
+    this.setState({ showSCModal: false });
+  };
 
   goToCredentials = () => openAidiCredentials();
 
@@ -69,6 +92,11 @@ class Home extends React.Component {
         ))}
         <Snippet {...snippets[0]} onAction={this.onShare} />
         <Snippet {...snippets[1]} onAction={this.goToCredentials} />
+        <WarningSCModal
+          visible={this.state.showSCModal}
+          onRequestClose={this.hideSCWarning}
+          onConfirm={() => this.updateSCModal()}
+        />
       </ScrollView>
     );
   }

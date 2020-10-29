@@ -11,6 +11,7 @@ import { getAuth } from "../../../utils/utils";
 import WarningEditingRoundModal from "./WarningEditingRoundModal";
 import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
 import { setRouteOptions } from "../../../actions/routeOptions";
+import WarningSCModal from "../../components/WarningSCModal";
 
 class RoundsList extends React.Component {
   state = {
@@ -18,6 +19,7 @@ class RoundsList extends React.Component {
     openWarningEditModal: false,
     roundEditData: {},
     loading: true,
+    showSCModal: false,
   };
 
   async componentDidMount() {
@@ -25,14 +27,36 @@ class RoundsList extends React.Component {
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
-    const auth = await getAuth();
-    this.setState({ auth, loading: false });
+    const auth = await this.updateAuth();
+    this.showSCWarning(auth);
+    this.setState({ loading: false });
   }
 
   onDeleteStoredRound = async roundIndex => {
     const { removeStoredRound } = this.props;
     await removeStoredRound(roundIndex);
   };
+
+  updateAuth = async () => {
+    const auth = await getAuth();
+    this.setState({ auth });
+    return auth;
+  };
+
+  showSCWarning = auth => {
+    if (!auth._doc.sc) {
+      this.setState({ showSCModal: true });
+    }
+  };
+
+  hideSCWarning = () => {
+    this.setState({ showSCModal: false });
+  };
+
+  async updateSCModal() {
+    await this.updateAuth();
+    this.setState({ showSCModal: false });
+  }
 
   filterRounds = (roundsData, currentStatus) => {
     return roundsData.filter(r => {
@@ -204,7 +228,7 @@ class RoundsList extends React.Component {
 
   render() {
     const { navigation, clearData, activePage } = this.props;
-    const { roundEditData, openWarningEditModal } = this.state;
+    const { roundEditData, openWarningEditModal, showSCModal } = this.state;
 
     return (
       <View style={styles.container}>
@@ -215,16 +239,24 @@ class RoundsList extends React.Component {
           locked>
           {this.renderTabs()}
         </Tabs>
+
         <FloatingActionButton
           clearData={clearData}
           nav={val => navigation.navigate(val)}
         />
+
         <WarningEditingRoundModal
           open={openWarningEditModal}
           roundName={roundEditData.name}
           round={roundEditData}
           onCancel={this.onCancelEditing}
           onContinue={this.onContinueEditing}
+        />
+
+        <WarningSCModal
+          visible={showSCModal}
+          onRequestClose={this.hideSCWarning}
+          onConfirm={() => this.updateSCModal()}
         />
       </View>
     );
