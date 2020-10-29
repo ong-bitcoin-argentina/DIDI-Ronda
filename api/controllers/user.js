@@ -88,13 +88,13 @@ exports.updateToken = async (req, res) => {
 };
 
 exports.forceSCEnable = async (req, res) => {
-  const user = await user_manager.byUsername(req.body.username);
   try {
-    if (SC_FEATURES && !user.sc) {
+    const user = await user_manager.byUsername(req.body.username);
+    if (SC_FEATURES && user && !user.sc) {
       const res = await postResBackground.enableSCToUser(user);
       return res.status(200).jsonp(res);
     }
-    return user;
+    return res.status(200).jsonp(user);
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)
