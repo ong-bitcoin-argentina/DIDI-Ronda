@@ -220,9 +220,9 @@ export const updateUserData = async username => {
 
 export const retryRegister = async username => {
   try {
-    return await getAuth();
-    // return await apiCall("post", "/user/register", { username });
+    return await apiCall("post", "/user/force-sc-enable", { username });
   } catch (error) {
+    console.log(error);
     return { error };
   }
 };
