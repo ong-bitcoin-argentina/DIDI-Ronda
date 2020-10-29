@@ -247,12 +247,11 @@ export const forceSCRegister = async dispatch => {
     const user = await getAuth();
     const response = await UserService.retryRegister(user.username);
     dispatch({ type: types.FINISH_FORCE_SC });
-    if (response.error) {
-      console.log(response.error);
-      return { error: errorMessage };
+    if (response && response.data) {
+      await setAuth(response.data);
+    } else {
+      console.log(response);
     }
-    // await setAuth(response);
-    return response.data.items;
   } catch (error) {
     console.log(error);
     dispatch({ type: types.FINISH_FORCE_SC });
