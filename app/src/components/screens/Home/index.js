@@ -64,7 +64,10 @@ class Home extends React.Component {
   async handleSCWarning() {
     await this.props.getNotifications();
     const { user } = this.state;
-    if (this.props.haveFailedRegisterNotification && user._doc.sc) {
+    if (
+      this.props.haveFailedRegisterNotification &&
+      (!user._doc?.sc && !user.sc)
+    ) {
       this.showSCWarning();
     }
   }
