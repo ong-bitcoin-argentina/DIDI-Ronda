@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SectionList, Text, StyleSheet, View } from "react-native";
 import Notification from "./Notification";
 import MessageBox from "../../../assets/img/message-box.svg";
 import colors from "../../components/colors";
+import { connect } from "react-redux";
 
-const NotificationsList = ({ data }) => {
+const NotificationsList = ({ old, recent, list }) => {
   const renderEmpty = () => (
     <View style={styles.emptyView}>
       <Text style={styles.emptyDescription}>Aún no tenés notificaciones.</Text>
@@ -15,28 +16,29 @@ const NotificationsList = ({ data }) => {
     </View>
   );
 
-  return !data.old.length && !data.recent.length ? (
+  return !list.length ? (
     renderEmpty()
   ) : (
     <SectionList
       sections={[
-        { title: "Esta Semana", data: data.recent },
-        { title: "Anteriores", data: data.old },
+        { title: "Esta Semana", data: recent },
+        { title: "Anteriores", data: old },
       ]}
-      renderSectionHeader={({ section }) => (
-        <Text style={styles.title}>{section.title}</Text>
-      )}
-      headerTitleStyle={styles.title}
-      renderSectionFooter={({ section }) =>
-        !section.data.length && <Text>No se encontraron resultados.</Text>
+      renderSectionHeader={({ section }) =>
+        !!section.data.length && (
+          <Text style={styles.title}>{section.title}</Text>
+        )
       }
+      ListFooterComponent={() => <View style={{ marginBottom: 40 }}></View>}
+      ListHeaderComponent={() => <View style={{ marginTop: 10 }}></View>}
       renderItem={({ item }) => <Notification notification={item} />}
+      headerTitleStyle={styles.title}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
       keyExtractor={(item, index) => item + index}
       numColumns={1}
       maxToRenderPerBatch={8}
       updateCellsBatchingPeriod={30}
       windowSize={9}
-      contentContainerStyle={{ paddingHorizontal: 16 }}
     />
   );
 };
@@ -66,4 +68,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationsList;
+export default connect(
+  state => ({
+    old: state.notifications.old,
+    recent: state.notifications.recent,
+    list: state.notifications.list,
+  }),
+  dispatch => ({}),
+)(NotificationsList);

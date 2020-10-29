@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Modal from "react-native-modal";
 import {
   View,
@@ -10,23 +10,18 @@ import {
 import { Button, Icon } from "native-base";
 import colors from "./colors";
 import { connect } from "react-redux";
-import { setAuth, getAuth } from "../../utils/utils";
-import { retryRegister } from "../../services/api/user";
+import * as AuthActions from "../../actions/auth";
 
-const WarningSCModal = ({ visible, onRequestClose, onConfirm }) => {
-  const [loading, setLoading] = useState(false);
-
+const WarningSCModal = ({
+  visible,
+  onRequestClose,
+  onConfirm,
+  registerSCLoading,
+  forceSCRegister,
+}) => {
   const handleConfirm = async () => {
-    setLoading(true);
-    try {
-      const user = await getAuth();
-      const result = await retryRegister(user.username);
-      await setAuth(result);
-      onConfirm();
-    } catch (error) {
-      console.log({ error });
-    }
-    setLoading(false);
+    onConfirm();
+    forceSCRegister();
   };
 
   return (
@@ -51,8 +46,11 @@ const WarningSCModal = ({ visible, onRequestClose, onConfirm }) => {
                 Cerrar
               </Text>
             </Button>
-            <Button onPress={handleConfirm} style={styles.button}>
-              {loading ? (
+            <Button
+              onPress={handleConfirm}
+              style={styles.button}
+              disabled={registerSCLoading}>
+              {registerSCLoading ? (
                 <ActivityIndicator color={colors.white} />
               ) : (
                 <Text style={styles.buttonText}>Reintentar</Text>
@@ -128,6 +126,10 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  state => ({}),
-  dispatch => ({}),
+  state => ({
+    registerSCLoading: state.registerSC.loading,
+  }),
+  dispatch => ({
+    forceSCRegister: () => AuthActions.forceSCRegister(dispatch),
+  }),
 )(WarningSCModal);

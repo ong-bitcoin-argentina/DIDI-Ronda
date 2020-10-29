@@ -1,6 +1,6 @@
 import * as types from "./types";
 import * as UserService from "../services/api/user";
-import { setAuth, logOut } from "../utils/utils";
+import { setAuth, logOut, getAuth } from "../utils/utils";
 import NavigationService from "../services/navigation";
 
 export const createUser = (username, password, name, token, nick) => {
@@ -238,6 +238,26 @@ export const cleanPhone = () => {
   return async dispatch => {
     dispatch(phoneClean());
   };
+};
+
+export const forceSCRegister = async dispatch => {
+  const errorMessage = "Ocurrió un error al reintentar el registro.";
+  dispatch({ type: types.START_FORCE_SC });
+  try {
+    const user = await getAuth();
+    const response = await UserService.retryRegister(user.username);
+    dispatch({ type: types.FINISH_FORCE_SC });
+    if (response.error) {
+      console.log(response.error);
+      return { error: errorMessage };
+    }
+    // await setAuth(response);
+    return response.data.items;
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: types.FINISH_FORCE_SC });
+    return { error: errorMessage };
+  }
 };
 
 // Phone

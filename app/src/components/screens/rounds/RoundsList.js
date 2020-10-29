@@ -6,12 +6,14 @@ import { connect } from "react-redux";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import RoundListItem from "./RoundsListItem";
 import * as roundsActions from "../../../actions/rounds";
+import * as notificationsActions from "../../../actions/notifications";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
 import WarningEditingRoundModal from "./WarningEditingRoundModal";
 import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
 import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
+import { notificationsCodes } from "../../../utils/constants";
 
 class RoundsList extends React.Component {
   state = {
@@ -27,8 +29,8 @@ class RoundsList extends React.Component {
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
-    const auth = await this.updateAuth();
-    this.showSCWarning(auth);
+    await this.updateAuth();
+    this.handleSCWarning();
     this.setState({ loading: false });
   }
 
@@ -40,12 +42,17 @@ class RoundsList extends React.Component {
   updateAuth = async () => {
     const auth = await getAuth();
     this.setState({ auth });
-    return auth;
   };
 
-  showSCWarning = auth => {
-    if (!auth._doc.sc) {
-      this.setState({ showSCModal: true });
+  showSCWarning = () => {
+    this.setState({ showSCModal: true });
+  };
+
+  handleSCWarning = async () => {
+    await this.props.getNotifications();
+    const { auth } = this.state;
+    if (this.props.haveFailedRegisterNotification && auth._doc.sc) {
+      this.showSCWarning();
     }
   };
 
@@ -268,6 +275,9 @@ const mapStateToPropsList = state => {
     storedRounds: state.rounds.storedRounds,
     nameFromCreation: state.roundCreation.name,
     activePage: state.routeOptions?.roundsList?.page,
+    haveFailedRegisterNotification: state.notifications.list.some(
+      item => item.code === notificationsCodes.errorSC,
+    ),
   };
 };
 
@@ -279,6 +289,7 @@ const mapDispatchToPropsList = dispatch => ({
     dispatch(roundsActions.removeStoredRound(roundIndex)),
   editRound: round => dispatch(setEditRoundData(round)),
   saveRouteOptions: options => dispatch(setRouteOptions(options)),
+  getNotifications: () => notificationsActions.getNotifications(dispatch),
 });
 
 const styles = StyleSheet.create({
