@@ -382,6 +382,8 @@ exports.enableSCToUser = async (user) => {
   console.log("user after sc", user);
 
   await registerUserProcessing(token, username, true);
+
+  return user;
 }
 
 

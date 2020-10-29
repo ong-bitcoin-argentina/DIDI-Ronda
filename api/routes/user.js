@@ -22,10 +22,28 @@ const round_controller = require("../controllers/round");
 router.get("/", [username], validation, user_controller.byUsername);
 
 // User notifications
-router.post("/notifications", [username], validation, user_controller.getNotifications);
+router.post(
+  "/notifications",
+  [username],
+  validation,
+  user_controller.getNotifications
+);
 
 // Update user information
-router.post("/update", [username], validation, user_controller.updateByUsername);
+router.post(
+  "/update",
+  [username],
+  validation,
+  user_controller.updateByUsername
+);
+
+// force de sc features registration
+router.post(
+  "/force-sc-enable",
+  [username],
+  validation,
+  user_controller.forceSCEnable
+);
 
 router.post("/setProfileImage", user_controller.setProfileImage);
 
