@@ -66,7 +66,7 @@ class Home extends React.Component {
     const { user } = this.state;
     if (
       this.props.haveFailedRegisterNotification &&
-      (!user._doc?.sc || !user.sc)
+      (!user._doc?.sc && !user.sc)
     ) {
       this.showSCWarning();
     }
