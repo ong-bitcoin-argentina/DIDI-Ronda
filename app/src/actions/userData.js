@@ -25,7 +25,7 @@ const finishGetUserData = () => {
 export const updateAidiUserData = async (dispatch, username) => {
   dispatch(startGetUserData());
   const response = await UserService.updateUserData(username);
-  if (response) {
+  if (response && response.data) {
     await setAuth(response.data);
   }
   dispatch(finishGetUserData());
