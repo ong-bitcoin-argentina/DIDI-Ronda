@@ -1,6 +1,7 @@
 // SERVICES
 const user_services = require("../services/user");
 const postResBackground = require("../services/postRes");
+const user_manager = require("../managers/user");
 const { SC_FEATURES } = require("../utils/other");
 
 const { generic } = require("../helpers/errorHandler");
