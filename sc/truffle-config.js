@@ -18,11 +18,11 @@
  *
  */
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 const PrivateKeyProvider = require("truffle-privatekey-provider");
 
@@ -51,6 +51,12 @@ module.exports = {
       port: 4444, // Standard Ethereum port (default: none)
       network_id: 33, // Any network (default: none)
     },
+    developmentMnemonic: {
+      // provider: () => new HDWalletProvider(mnemonic, 'http://localhost:8545'),
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 8545, // Standard Ethereum port (default: none)
+      network_id: '*', // Any network (default: none)
+    },
 
     rskregtest: {
       provider: () =>
@@ -60,7 +66,13 @@ module.exports = {
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
-
+    rskregtestMnemonic: {
+      provider: () => new HDWalletProvider(mnemonic, 'http://localhost:4444'),
+      network_id: 33, // Ropsten's id
+      gas: 6800000, //
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
     rsktestnet: {
       provider: () =>
         new PrivateKeyProvider(
@@ -72,7 +84,13 @@ module.exports = {
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
-
+    rsktestnetMnemonic: {
+      provider: () =>() => new HDWalletProvider(mnemonic, 'https://testnet.rsk.didi.org.ar:4444'),
+      network_id: 31, // Ropsten's id
+      gas: 6800000, //
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
