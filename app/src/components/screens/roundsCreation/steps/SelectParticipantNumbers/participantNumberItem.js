@@ -29,18 +29,19 @@ const ParticipantNumberItem = props => {
   const onPressReplace = () => onPressRemoveParticipantNumber(number);
 
   const handleOpacityPress = () => {
-    if (!openList && scrollableRef) {
+    if (!openList && scrollableRef && scrollableRef.current) {
       setopenList(!openList);
+      const scrollIndex = number - 1 >= 0 ? number - 1 : 0;
       if (number !== maxNumber)
-        scrollableRef.scrollToIndex({
-          index: number - 1,
+        scrollableRef.current.scrollToIndex({
+          index: scrollIndex,
           viewPosition: 0,
         });
       if (number === maxNumber)
         setTimeout(
           () =>
-            scrollableRef.scrollToIndex({
-              index: number - 1,
+            scrollableRef.current.scrollToIndex({
+              index: scrollIndex,
               viewPosition: 0,
               viewOffset: -30,
             }),

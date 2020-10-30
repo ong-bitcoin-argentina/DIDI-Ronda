@@ -72,7 +72,8 @@ const NumberPay = props => {
   shift.pays.forEach(p => {
     usersThatPaidShiftMap[p.participant] = p.participant;
   });
-  const allParticipantsPaid = round.participants.length === Object.keys(usersThatPaidShiftMap).length;
+  const allParticipantsPaid =
+    round.participants.length === Object.keys(usersThatPaidShiftMap).length;
   const participantPaid =
     shift.pays.filter(p => {
       return p.participant === fullParticipant.id;
@@ -89,10 +90,14 @@ const NumberPay = props => {
   const shiftCompleted = currentShift.status === "completed";
   const nextShift = round.shifts.find(s => s.number === number + 1);
   const nextShiftParticipants = nextShift && nextShift.participant;
+  const currentShiftIsParticipants = currentShift.participant.includes(
+    fullParticipant.id
+  );
+  const isCurrentShiftPayed = currentShift.isPayedToParticipant;
   const enabledForPayRound =
-    currentShift.participant.includes(fullParticipant.id) &&
+    currentShiftIsParticipants &&
+    !isCurrentShiftPayed &&
     currentShift.status === "current";
-
   // Methods
   const pay = async () => {
     const participantId = fullParticipant.id;
@@ -142,7 +147,8 @@ const NumberPay = props => {
                     <QRCode value={qrCode} size={150} />
                     {!shiftCompleted &&
                       !loading &&
-                      !isReceivingOrMakingPayment && (
+                      !isReceivingOrMakingPayment &&
+                      !isCurrentShiftPayed && (
                         <Button
                           onPress={openPayNumberPopUp}
                           disabled={participantPaid}
@@ -181,6 +187,24 @@ const NumberPay = props => {
                           nextShiftParticipants={nextShiftParticipants}
                           number={number}
                         />
+                      )}
+
+                    {!loading &&
+                      isCurrentShiftPayed &&
+                      currentShiftIsParticipants && (
+                        <View style={{ alignItems: "center" }}>
+                          <Button
+                            disabled
+                            style={{
+                              ...styles.payButton,
+                              backgroundColor: participantPaid
+                                ? colors.inactiveBlue
+                                : colors.mainBlue,
+                            }}
+                          >
+                            <Text uppercase={false}>Número ya pagado</Text>
+                          </Button>
+                        </View>
                       )}
 
                     {isReceivingOrMakingPayment && (

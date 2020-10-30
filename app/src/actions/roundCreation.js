@@ -72,6 +72,7 @@ export const saveCreationForLater = cb => async (dispatch, getState) => {
   const dataToSave = { ...roundCreation, isEditing: true };
   await saveRoundToStorage(dataToSave);
   if (cb) return cb();
+  return null;
 };
 
 export const setEditRoundData = round => async dispatch => {
@@ -127,15 +128,17 @@ export const deleteFromRoundDetail = id => async (dispatch, getState) => {
     return dispatch(
       openRoundDetailRootModal("No se pueden eliminar Rondas ya iniciadas")
     );
+  return null;
 };
 
 export const editRoundRequest = () => async (dispatch, getState) => {
   const { roundCreation } = getState();
-  const { name, amount, frequency, date, id } = roundCreation;
+  const { name, amount, frequency, date, id, shifts } = roundCreation;
+  const numbersQuantity = shifts.length;
   const updateBody = {
     name,
     id,
-    amount: parseInt(amount, 10),
+    amount: parseInt(amount, 10) * numbersQuantity,
     recurrence: frequency,
     startDate: new Date(date).toISOString(),
   };
@@ -164,9 +167,9 @@ export const createRound = () => {
       turns,
       roundIndex,
     } = getState().roundCreation;
-
+    const numbersQuantity = assignedNumbers.length;
     const createdRound = await UserService.createRound(
-      amount,
+      amount * numbersQuantity,
       frequency,
       name,
       assignedNumbers,

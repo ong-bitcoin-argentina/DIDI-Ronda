@@ -1,7 +1,8 @@
-package com.aidironda;
+package com.larondaapp;
 
 import android.app.Application;
 import android.util.Log;
+import androidx.multidex.MultiDexApplication;
 
 import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
@@ -10,7 +11,11 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import androidx.multidex.MultiDexApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
+
 import java.util.List;
 
 
@@ -29,6 +34,9 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
       List<ReactPackage> packages = new PackageList(this).getPackages();
       // Packages that cannot be autolinked yet can be added manually here, for example:
       // packages.add(new MyReactNativePackage());
+      packages.add(new RNFirebaseMessagingPackage()); 
+      packages.add(new RNFirebaseNotificationsPackage());
+      packages.add(new RNFirebaseCrashlyticsPackage());
       return packages;
     }
 

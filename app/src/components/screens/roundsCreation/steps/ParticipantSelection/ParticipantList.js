@@ -251,7 +251,7 @@ class ParticipantList extends Component {
         const { openedDoubleNumberNotice } = this.state;
         if (!openedDoubleNumberNotice && !newContactData.admin) {
           this.openModal(
-            "Si algún participante quiere tener 2 números, debes tenés que 2 veces.",
+            "Si algún participante quiere tener 2 o más números, debés elegirlo la misma cantidad de veces.",
             null,
             <PeopleWithExclamation />
           );

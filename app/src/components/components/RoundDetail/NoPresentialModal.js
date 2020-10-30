@@ -45,8 +45,12 @@ const NoPresentialModal = ({
   onCancel,
   isLoading,
   adminName,
+  isRequestingPayment = true,
 }) => {
-  const text = `¿Querés pedirle a ${adminName} el cobro de tu número de Ronda?`;
+  const shouldAskPayment = isRequestingPayment
+    ? "el cobro de tu número"
+    : "que acepte el aporte al número";
+  const text = `¿Querés pedirle a ${adminName} ${shouldAskPayment} de Ronda?`;
   const acceptText = "Aceptar";
   const cancelText = "Cancelar";
 

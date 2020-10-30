@@ -1,17 +1,17 @@
-import React from 'react';
-import {Provider} from 'react-redux';
-import firebase from '@react-native-firebase/app';
-import {Root} from 'native-base';
-import {MenuProvider} from 'react-native-popup-menu';
-import store from './src/store/store';
-import Nav from './src/components/components/navigation/Nav';
-import checkPermission from './src/services/notifications';
+import React from "react";
+import { Provider } from "react-redux";
+import firebase from "react-native-firebase";
+import { Root } from "native-base";
+import { MenuProvider } from "react-native-popup-menu";
+import store from "./src/store/store";
+import Nav from "./src/components/components/navigation/Nav";
+import checkPermission from "./src/services/notifications";
 import {
   enabledNotifications,
   notificationListener,
   notificationOpen,
-} from './src/services/notifications/bgActions';
-import NavigationService from './src/services/navigation';
+} from "./src/services/notifications/bgActions";
+import NavigationService from "./src/services/navigation";
 
 class App extends React.Component {
   async componentDidMount() {
@@ -22,9 +22,9 @@ class App extends React.Component {
         // NOTIFICATIONS LISTENERS
         this.onNotificationListener = notificationListener(this.navigator);
         this.notificationOpenListener = firebase
-          .messaging()
-          .onNotificationOpened(({notification: {data}}) =>
-            notificationOpen(this.navigator, data),
+          .notifications()
+          .onNotificationOpened(({ notification: { data } }) =>
+            notificationOpen(this.navigator, data)
           );
         await notificationOpen(this.navigator);
       }

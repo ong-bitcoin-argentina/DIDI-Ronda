@@ -14,11 +14,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React Native!"
 
-@interface aidirondaTests : XCTestCase
+@interface larondaappTests : XCTestCase
 
 @end
 
-@implementation aidirondaTests
+@implementation larondaappTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {
