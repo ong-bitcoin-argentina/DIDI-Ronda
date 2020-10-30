@@ -7,15 +7,14 @@ http.createServer(app);
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
-const blacklistedPasswordManager = require('./managers/blacklisted_password');
-
+const blacklistedPasswordManager = require("./managers/blacklisted_password");
+const { version } = require("./package.json");
 const helmet = require("helmet");
 const envs = {
   3030: "PROD         ",
   3001: "DEV          ",
   3002: "STAGING      ",
 };
-const version = "0.0.13";
 
 // CONFIGS
 require("dotenv").config();
@@ -77,19 +76,22 @@ mongoose.connect(
       console.log("ERROR: connecting to Database. " + err);
     }
     const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
-    blacklistedPasswordManager.insertPasswords(blacklistedPasswords).finally(() => {
-      app.listen(PORT, () => {
-        console.log(`------ LA RONDA API ------`);
-        console.log(`-      version ${version}    -`);
-        console.log(`-      ${envs[PORT]}     - `);
-        console.log(`-------------------------- `);
-  
-        console.log(`Node server running on http://localhost:${PORT}`);
-  
-        agendaStart();
-        walletRefillJob();
+    blacklistedPasswordManager
+      .insertPasswords(blacklistedPasswords)
+      .catch(() => null)
+      .finally(() => {
+        app.listen(PORT, () => {
+          console.log(`------ LA RONDA API ------`);
+          console.log(`-      version ${version}    -`);
+          console.log(`-      ${envs[PORT]}     - `);
+          console.log(`-------------------------- `);
+
+          console.log(`Node server running on http://localhost:${PORT}`);
+
+          agendaStart();
+          walletRefillJob();
+        });
       });
-    });
   }
 );
 /*** ./SERVER ****/

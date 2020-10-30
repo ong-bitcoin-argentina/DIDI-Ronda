@@ -12,6 +12,7 @@ exports.test = async (req, res) => {
 
 // SERVICES
 const round_services = require("../services/round");
+const participant_services = require("../services/participant");
 
 /*
     Fetch round by id
@@ -187,16 +188,19 @@ exports.assignShiftNumber = async (req, res) => {
 };
 
 /*
-    Admin complete round shift
-    POST
-    /round/:roundId/number/:number/complete
+  Admin pays the number toa participant
+  POST
+    "/admin/round/:roundId/number/:number/payNumberToParticipant",
 */
-exports.completeShift = async (req, res) => {
+exports.payNumberToParticipant = async (req, res) => {
   try {
-    const completeShift = await round_services.completeShift(req, res);
-    return completeShift && completeShift.error
-      ? res.status(200).jsonp({ error: completeShift.error })
-      : res.status(200).jsonp(completeShift);
+    const participantChargeNumber = await participant_services.participantChargeNumber(
+      req,
+      req.body.participantId
+    );
+    return participantChargeNumber && participantChargeNumber.error
+      ? res.status(200).jsonp({ error: participantChargeNumber.error })
+      : res.status(200).jsonp(participantChargeNumber);
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)

@@ -7,11 +7,10 @@ const {
   phone,
   name,
   number,
-  nextParticipants,
   amount,
   recurrence,
   startDate,
-  id
+  id,
 } = require("../helpers/validators");
 const routesMiddleware = require("../middleware/routesMiddleware");
 
@@ -69,13 +68,13 @@ router.post(
 );
 
 // Delete round
-    router.delete(
-      "/round/:roundId",
-      [username],
-      validation,
-      routesMiddleware.admin,
-      round_controller.delete
-    );
+router.delete(
+  "/round/:roundId",
+  [username],
+  validation,
+  routesMiddleware.admin,
+  round_controller.delete
+);
 
 // Start round
 router.post(
@@ -95,16 +94,6 @@ router.post(
   round_controller.assignShiftNumber
 );
 
-// Complete a shift
-router.post(
-  "/round/:roundId/number/:number/complete",
-  [objectId("roundId"), username, number, nextParticipants],
-  validation,
-  routesMiddleware.admin,
-  round_controller.completeShift
-);
-
-
 // Accept an user payment
 router.post(
   "/round/:roundId/number/:number/pay",
@@ -112,6 +101,15 @@ router.post(
   validation,
   routesMiddleware.admin,
   participant_controller.adminPayNumber
+);
+
+// Pay number to participant
+router.post(
+  "/round/:roundId/number/:number/payNumberToParticipant",
+  [objectId("roundId"), objectId("participantId"), username, number],
+  validation,
+  routesMiddleware.admin,
+  round_controller.payNumberToParticipant
 );
 
 module.exports = router;

@@ -11,7 +11,10 @@ const user_manager = require("../managers/user");
 const round_manager = require("../managers/round");
 const participant_manager = require("../managers/participant");
 const SMS = require("../helpers/phones");
-const { createStartRoundJob } = require("../jobs/jobs");
+const {
+  createStartRoundJob,
+  createNumberChangeRoundJob,
+} = require("../jobs/jobs");
 
 const {
   inviteRound,
@@ -91,7 +94,7 @@ exports.createdRound = async params => {
     round.isConfirmed = true;
     await round.save();
     await roundCompletedProcessing(round);
-    inviteRound(foundRound);
+    await inviteRound(foundRound);
 
     // Send SMSs
     const phones = foundRound.participants
@@ -132,6 +135,9 @@ exports.acceptOrRejecInvitation = async params => {
           await blockchain.rejectInvitationToParticipate(...callParams);
       }
     } catch (error) {
+      participant.isConfirmingTransaction = false;
+
+      await participant_manager.save(participant);
       await invitationProcessFailed(...userNotiParams);
       return null;
     }
@@ -155,7 +161,7 @@ exports.acceptOrRejecInvitation = async params => {
 exports.payNumber = async params => {
   const { round, participant, number } = params;
   if (SC_FEATURES) {
-    const amountPaid = round.amount / participant.shiftsQty;
+    const amountPaid = Math.round(round.amount / participant.shiftsQty);
     const payerAddress = crypto.decipher(participant.user.walletAddress);
     const payerPk = crypto.decipher(participant.user.walletPk);
     try {
@@ -163,6 +169,9 @@ exports.payNumber = async params => {
     } catch (error) {
       // If this fails, we have to make sure that we restore the participant to a non payment state
       // As well as inform them or the admin
+      console.error("Participant Payment Failed");
+      console.error("Received error:")
+      console.error(error);
       participant.isReceivingOrMakingPayment = false;
       await participant.save();
       return await participantPaymentFailed(round, participant);
@@ -237,7 +246,7 @@ exports.startRound = async params => {
     try {
       await blockchain.start(round.id, adminAddress, adminPk);
     } catch (error) {
-      await roundStartProcessing(round, true);
+      await roundStartProcessing(round, false);
       round.isBeingStarted = false;
       await round.save();
       return null;
@@ -256,11 +265,12 @@ exports.startRound = async params => {
   await startedRound(round);
   // Schedule pays notifications
   schedulePayRemember(round);
+  createNumberChangeRoundJob(round);
   return null;
 };
 
-const sendVerificationToken = (username, token) => {
-  mailing.sendMail(
+const sendVerificationToken = async (username, token) => {
+ await mailing.sendMail(
     username,
     "La Ronda",
     `Tu codigo de verificacion es: ${token}`
@@ -321,14 +331,14 @@ exports.registerUser = async params => {
     encryptedAddress,
     encryptedPK
   );
-  
-  if(addedBalance){ 
+
+  if (addedBalance) {
     user.lastBalance = WALLET_TARGET_BALANCE;
     await user.save();
   }
 
   await registerUserProcessing(token, username, true);
-  if (user) sendVerificationToken(username, verifyToken);
+  if (user) await sendVerificationToken(username, verifyToken);
 
   return null;
 };

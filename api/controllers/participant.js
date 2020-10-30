@@ -91,8 +91,7 @@ exports.payNumber = async (req, res) => {
 exports.chargeNumber = async (req, res) => {
   try {
     const participantChargeNumber = await participant_services.participantChargeNumber(
-      req,
-      res
+      req
     );
     return participantChargeNumber && participantChargeNumber.error
       ? res.status(200).jsonp({ error: participantChargeNumber.error })
@@ -131,6 +130,24 @@ exports.adminPayNumber = async (req, res) => {
 exports.requestPayment = async (req, res) => {
   try {
     const result = await participant_services.requestPayment(req);
+    return result && result.error
+      ? res.status(200).jsonp({ error: result.error })
+      : res.status(200).jsonp(result);
+  } catch (err) {
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
+};
+
+/*
+    Participant requests admin to be accept an user payment
+    POST
+  "/round/:roundId/participant/:participantId/requestAdminAcceptPayment",
+*/
+exports.requestAdminToAcceptPayment = async (req, res) => {
+  try {
+    const result = await participant_services.requestPayment(req, false);
     return result && result.error
       ? res.status(200).jsonp({ error: result.error })
       : res.status(200).jsonp(result);

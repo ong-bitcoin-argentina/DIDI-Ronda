@@ -12,9 +12,7 @@ const crypto = require("../utils/crypto");
 // NOTIFICATIONS
 const {
   inviteRound,
-  completedRound,
   asignedShift,
-  numberPayedToUser,
 } = require("../helpers/notifications/notifications");
 
 // PHONE FORMAT
@@ -371,12 +369,7 @@ exports.participantSwap = async req => {
 };
 
 exports.participantReasignNumber = async req => {
-  const {
-    participantId,
-    targetParticipantId,
-    number,
-    roundId,
-  } = req.body;
+  const { participantId, targetParticipantId, number, roundId } = req.body;
 
   // Find round
   const round = await round_manager.findById(roundId);
@@ -422,7 +415,6 @@ exports.participantRemove = async req => {
   // Find round
   const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("Round not exist");
-
 
   // Check round start = false
   if (round.start)
@@ -546,57 +538,6 @@ exports.assignShiftNumber = async req => {
 
   // Send notifications
   asignedShift(updatedRound, participant.name);
-
-  return updatedRound;
-};
-
-exports.completeShift = async req => {
-  const { roundId, number } = req.params;
-  const { nextParticipants } = req.body;
-
-  // Find round
-  const round = await round_manager.findById(roundId);
-  if (round === null) throw new customError("Round not exist");
-
-  // Check number exist in round shift
-  if (number > round.shifts.length)
-    throw new customError("Number not exist in this round");
-
-  // Check shift status is current
-  const shift = round.shifts.find(e => e.number === parseInt(number));
-  if (!shift || shift.status !== "current")
-    throw new customError("Shift must be 'current' for mark as ompleted");
-
-  // Mark shift as completed
-  const participantId = round.shifts.find(e => e.number === parseInt(number)).participant[0]._id.toString();
-  round.shifts.find(e => e.number === parseInt(number)).status = "completed";
-
-  // If exist next shift
-  const nextShift = round.shifts.find(e => e.number === parseInt(number) + 1);
-  if (nextShift) {
-    // Set next shift as current
-    round.shifts.find(e => e.number === parseInt(number) + 1).status =
-      "current";
-
-    // Set next shift participants
-    if (
-      nextParticipants.length > 0 &&
-      round.shifts.find(e => e.number === parseInt(number) + 1).participant
-        .length === 0
-    ) {
-      round.shifts.find(
-        e => e.number === parseInt(number) + 1
-      ).participant = nextParticipants;
-    }
-  } else {
-    // Round completed notification
-    completedRound(round);
-  }
-
-  // Save changes to round
-  await numberPayedToUser(round, number, participantId);
-  const updatedRound = await round_manager.save(round);
-  if (updatedRound === null) throw new customError("Error saving payment");
 
   return updatedRound;
 };

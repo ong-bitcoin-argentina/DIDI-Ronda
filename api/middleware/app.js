@@ -3,6 +3,7 @@ const jwt = require("../helpers/jwt");
 
 const log = (req, res, next) => {
   console.log("====================================");
+  console.log("TIME", new Date());
   console.log("NEW REQUEST");
   console.log("URL", req.url);
   console.log("HEADERS", req.headers);

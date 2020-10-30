@@ -115,7 +115,7 @@ exports.forgot = async username => {
 
   await user.save();
 
-  mailing.sendMail(
+  await mailing.sendMail(
     username,
     "La Ronda",
     `Tu codigo para cambiar tu contraseña es: ${token}`

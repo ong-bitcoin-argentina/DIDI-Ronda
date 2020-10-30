@@ -71,7 +71,7 @@ exports.rejectRound = async req => {
   return { round, participant, accepted: false, username };
 };
 
-exports.requestPayment = async req => {
+exports.requestPayment = async (req, isRequestingPayment = true) => {
   const { roundId } = req.params;
   const { username } = req.body;
   const { participantId } = req.middlewareData;
@@ -86,7 +86,7 @@ exports.requestPayment = async req => {
   // Find round
   const round = await round_manager.findById(roundId);
   if (round === null) throw new customError("That round does not exists");
-  await participantRequestPaymentNoti(round, participant);
+  await participantRequestPaymentNoti(round, participant, isRequestingPayment);
 
   return true;
 };
@@ -172,21 +172,17 @@ exports.participantChargeNumber = async (req, participantId = null) => {
   if (!shift || shift.status !== "current")
     throw new customError("Shift must be 'current' for mark as completed");
 
-  // Check shift includes participantId
   if (!shift.participant.includes(finalParticipantId))
+    // Check shift includes participantId
     throw new customError("Participant is not on the shift");
 
-  // Mark shift as completed
-  round.shifts.find(e => e.number === parseInt(number)).status = "completed";
+  // Check if shift is payed
+  if (shift.isPayedToParticipant) throw new customError("Shift already payed");
 
-  // Set next shift status depend on nextDraw value
-  const nextStatus = "current";
-  const nextShift = round.shifts.find(e => e.number === parseInt(number) + 1);
-  if (nextShift)
-    round.shifts.find(
-      e => e.number === parseInt(number) + 1
-    ).status = nextStatus;
-
+  // Change payed status
+   const shiftIndex = round.shifts.findIndex(e => e.number === parseInt(number));
+  round.shifts[shiftIndex].isPayedToParticipant = true;
+  await round.save();
   await numberPayedToUser(round, number, finalParticipantId);
 
   // Save changes to round

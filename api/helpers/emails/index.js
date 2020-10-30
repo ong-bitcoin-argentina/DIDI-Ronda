@@ -1,34 +1,31 @@
-var nodemailer = require("nodemailer");
+const axios = require("axios");
+const qs = require("querystring");
 
+const { MAILGUN_ENCODED_AUTH, MAILGUN_DOMAIN } = process.env;
 require("dotenv").config();
 
-//Gmail credentials need to be stored as env variables, just security requirements :)
-const { GMAIL_USER, GMAIL_PASSWORD } = process.env;
-
-var transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: GMAIL_USER,
-    pass: GMAIL_PASSWORD,
-  },
-});
-
-exports.sendMail = (to, subject, text) => {
-  var mailOptions = {
-    from: "larondainfuy@gmail.com",
+exports.sendMail = async (to, subject, text) => {
+  const from = `No responder <no-responder@${MAILGUN_DOMAIN}>`;
+  const body = {
+    from,
     to,
     subject,
     text,
   };
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Basic ${MAILGUN_ENCODED_AUTH}`,
+    },
+  };
+  const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
+  try {
+    const result = await axios.post(url, qs.stringify(body), config);
+    console.log("Email send success: ", result);
+  } catch (error) {
+    console.error("Error sending email: ", error);
+  }
 
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+
 };
 
-//Email sending example
-// mailing.sendMail("email@domain.com", 'La Ronda', 'Un saludo a nuestro usuario!')

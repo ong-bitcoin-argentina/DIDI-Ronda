@@ -28,6 +28,7 @@ const {
   registerUserCompleted,
   registerUserFailed,
   numberPayedToUser,
+  participantRequestAdminToAcceptPaymentMessage,
 } = require("./messages");
 
 exports.inviteRound = async round => {
@@ -258,7 +259,11 @@ exports.participantConfirmed = async (round, participantName) => {
   return notification;
 };
 
-exports.participantRequestPaymentNoti = async (round, participant) => {
+exports.participantRequestPaymentNoti = async (
+  round,
+  participant,
+  isRequestingPayment = true
+) => {
   // Get admin
   const { admin, name } = round;
 
@@ -288,12 +293,15 @@ exports.participantRequestPaymentNoti = async (round, participant) => {
       },
     }),
   };
-
+  const msgParams = [name, user.name];
+  const message = isRequestingPayment
+    ? participantRequestPaymentMessage(...msgParams)
+    : participantRequestAdminToAcceptPaymentMessage(...msgParams);
   // Send notification
   const notification = await createNotification(
     [token],
     "La Ronda",
-    participantRequestPaymentMessage(name, user.name),
+    message,
     data
   );
 

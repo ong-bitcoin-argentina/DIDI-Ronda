@@ -63,6 +63,12 @@ exports.participantPayNumber = roundName => {
 exports.participantRequestPaymentMessage = (roundName, participantName) =>
   `El participante ${participantName} de la Ronda ${roundName} esta pidiendo cobrar su numero`;
 
+exports.participantRequestAdminToAcceptPaymentMessage = (
+  roundName,
+  participantName
+) =>
+  `El participante ${participantName} de la Ronda ${roundName} esta pidiendo que se acepte su aporte`;
+
 exports.participantRejected = (roundName, participantName) =>
   `El participante ${participantName} de la Ronda ${roundName} ha rechazado su invitacion para participar`;
 

@@ -69,7 +69,7 @@ router.post(
   participant_controller.payNumber
 );
 
-// Charge participant round number (complete)
+// Charge participant round number , so participant get its number payed
 router.post(
   "/round/:roundId/number/:number/charge",
   [objectId("roundId"), objectId("participantId"), username, number],
@@ -85,6 +85,14 @@ router.post(
   validation,
   routesMiddleware.participant,
   participant_controller.requestPayment
+);
+
+router.post(
+  "/round/:roundId/participant/:participantId/requestAdminAcceptPayment",
+  [objectId("roundId"), objectId("participantId"), username],
+  validation,
+  routesMiddleware.participant,
+  participant_controller.requestAdminToAcceptPayment
 );
 
 module.exports = router;

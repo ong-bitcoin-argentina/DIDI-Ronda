@@ -37,10 +37,11 @@ const roundSchema = new Schema(
             },
           ],
           limitDate: { type: Date, required: true },
+          isPayedToParticipant: { type: Boolean, default: false },
+          isBeingPayed: { type: Boolean, default: false },
           status: {
             type: String,
             required: true,
-            isBeingPayed: { type: Boolean, default: false },
             enum: config.shiftStatus,
             default: "pending",
           },

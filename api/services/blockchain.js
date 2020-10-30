@@ -361,6 +361,18 @@ const updateLastBalance = async addr => {
   }
 };
 
+const getMinimumGasPrice = async () => {
+  // Get latest block minimum gas price
+  // If not do not do anything
+  try {
+    const { minimumGasPrice } = await web3.eth.getBlock("latest");
+    return minimumGasPrice || GAS_PRICE_HEX;
+  } catch (error) {
+    console.error("Error when getting last block ", error);
+    return GAS_PRICE_HEX;
+  }
+};
+
 const makeTransaction = async (
   contractAbi,
   ownerAddress,
@@ -371,9 +383,11 @@ const makeTransaction = async (
 ) => {
   // TODO: Hay que parametrizar todo esto
   const transactionCount = await web3.eth.getTransactionCount(ownerAddress);
+  const gasPrice = await getMinimumGasPrice();
+
   const transaction = {
     nonce: web3.utils.toHex(exTc > 0 ? exTc : transactionCount),
-    gasPrice: GAS_PRICE_HEX,
+    gasPrice,
     gasLimit: web3.utils.toHex(setprice),
     to: instanceAddress,
     value: "0x00",
@@ -384,17 +398,27 @@ const makeTransaction = async (
     transaction,
     ownerPk
   );
-  const result = await web3.eth.sendSignedTransaction(
-    signedTransaction.rawTransaction
-  );
-  // Update last Balance
   try {
-    updateLastBalance(ownerAddress);
+    
+    const result = await web3.eth.sendSignedTransaction(
+      signedTransaction.rawTransaction
+    );
+    // Update last Balance
+    try {
+      await updateLastBalance(ownerAddress);
+    } catch (error) {
+      console.log(error);
+    }
+    if(result.logsBloom) delete result.logsBloom;
+    console.log("Result Transaction: ", result);
+    return result;
   } catch (error) {
-    console.log(error);
+    console.error("ERROR ON SC INVOCATION")
+    console.error("ERROR TIME: ", new Date());
+    console.error(error)
+    console.error("==============")
+    throw error;
   }
-  console.log("Result Transaction: ", result);
-  return result;
 };
 
 exports.getTransactionCount = async address => {
@@ -409,6 +433,7 @@ exports.sendManyBalanceTx = async (from, fromPk, addresses, amount) => {
   for (const addr of addresses) {
     try {
       const nonce = await web3.eth.getTransactionCount(from);
+      const gasPrice = await getMinimumGasPrice();
       counter += 1;
       if (counter > maxTransactions + 1) break;
       console.log("Processing filling of nonce: ", nonce);
@@ -418,7 +443,7 @@ exports.sendManyBalanceTx = async (from, fromPk, addresses, amount) => {
         to: addr,
         gas: "21000",
         value: amount,
-        gasPrice: GAS_PRICE_HEX,
+        gasPrice,
         chainId: CHAIN_ID,
       };
       const transactionSigned = await web3.eth.accounts.signTransaction(
