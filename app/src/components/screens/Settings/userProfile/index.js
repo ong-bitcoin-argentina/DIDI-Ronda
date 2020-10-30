@@ -51,13 +51,13 @@ const UserProfile = props => {
   const refreshUserData = async () => {
     setLoading(true);
     try {
-      const { username } = await getAuth();
-      const response = await updateUserData(username);
-
+      const user = await getAuth();
+      const response = await updateUserData(user.username);
       const { data } = response;
       if (data) {
-        await setAuth(data);
-        setUser(data);
+        const newUserData = { ...user, ...data };
+        await setAuth(newUserData);
+        setUser(newUserData);
       }
     } catch (error) {
       console.log(error);

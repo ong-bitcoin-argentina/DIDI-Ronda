@@ -1,6 +1,6 @@
 import * as types from "./types";
 import * as UserService from "../services/api/user";
-import { setAuth } from "../utils/utils";
+import { setAuth, getAuth } from "../utils/utils";
 
 export const getData = () => {
   return async dispatch => {
@@ -24,9 +24,10 @@ const finishGetUserData = () => {
 
 export const updateAidiUserData = async (dispatch, username) => {
   dispatch(startGetUserData());
-  const response = await UserService.updateUserData(username);
+  const user = await getAuth();
+  const response = await UserService.updateUserData(user.username);
   if (response && response.data) {
-    await setAuth(response.data);
+    await setAuth({ ...user, ...response.data });
   }
   dispatch(finishGetUserData());
 };
