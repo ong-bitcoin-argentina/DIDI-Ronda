@@ -13,7 +13,9 @@ const {
 const { DIDI_SERVER } = process.env;
 
 const createToken = async (credential, did, isFinished = false) => {
-  const exp = !isFinished && new Date(credential[fields.endDate]).getTime();
+  const possibleExpiration =
+    new Date(credential[fields.endDate]).getTime() / 1000;
+  const exp = !isFinished && possibleExpiration;
   const data = {
     Ronda: {
       preview: {
