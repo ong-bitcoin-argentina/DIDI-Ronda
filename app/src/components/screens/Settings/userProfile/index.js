@@ -263,7 +263,7 @@ export default createStackNavigator(
     AboutRonda: {
       screen: AboutRonda,
       navigationOptions: ({ navigation }) => ({
-        title: `Acerca de Ronda`,
+        title: `Acerca de ronda`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,

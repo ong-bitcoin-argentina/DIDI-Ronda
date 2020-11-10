@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
 });
 
 const aidiName = "ai·di";
-const rondaName = "Ronda";
+const rondaName = "ronda";
 
 export const aboutAidi = [
   [

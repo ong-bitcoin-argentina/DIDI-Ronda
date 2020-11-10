@@ -100,7 +100,7 @@ class Home extends React.Component {
             loading={this.state.loading}
           />
         ))}
-        <Snippet {...snippets[0]} onAction={this.onShare} />
+        {/* <Snippet {...snippets[0]} onAction={this.onShare} /> */}
         <Snippet {...snippets[1]} onAction={this.goToCredentials} />
         <WarningSCModal
           visible={this.state.showSCModal}
