@@ -23,13 +23,13 @@ export const cards = ({ activeRounds, finishedRounds }) => [
 export const snippets = [
   {
     primaryColor: colors.alterRed,
-    description: "Invitá a tus amigos a participar de Rondas!",
+    description: "Invitá a tus amigos a participar de rondas!",
     ImageSource: require("../../../assets/img/person.png"),
     buttonText: "Invitar Amig@s",
   },
   {
     primaryColor: colors.secondaryBlue,
-    description: "Accedé a todas tus credenciales de Ronda en ai.di",
+    description: "Accedé a todas tus credenciales de ronda en ai.di",
     ImageSource: require("../../../assets/img/see-credencials.png"),
     buttonText: "Ver Credenciales",
   },
