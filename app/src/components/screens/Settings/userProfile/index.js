@@ -123,12 +123,6 @@ const UserProfile = props => {
           value={user.phone}
           loading={loading}
         />
-        <InformationRow
-          icon="account-circle"
-          label="NICKNAME"
-          value={user.nick}
-          loading={loading}
-        />
       </View>
     </ScrollView>
   );

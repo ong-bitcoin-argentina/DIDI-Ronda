@@ -30,7 +30,7 @@ export const snippets = [
   {
     primaryColor: colors.secondaryBlue,
     description: "Accedé a todas tus credenciales de Ronda en ai.di",
-    CustomIcon: Credential,
+    ImageSource: require("../../../assets/img/see-credencials.png"),
     buttonText: "Ver Credenciales",
   },
 ];
