@@ -14,7 +14,7 @@ import Avatar from "../../../components/Avatar";
 import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
-import { ConfigRight, BackButton } from "../../../components/Header";
+import { BackButton, ConfigIcon } from "../../../components/Header";
 import Settings from "./Settings";
 import AboutAidi from "./AboutAidi";
 import AboutRonda from "./AboutRonda";
@@ -233,7 +233,7 @@ export default createStackNavigator(
         title: `Mi Perfil`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
-        headerRight: <ConfigRight navigation={navigation} />,
+        headerRight: <ConfigIcon navigation={navigation} />,
       }),
     },
     Settings: {
