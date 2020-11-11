@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
+  Dimensions,
   //   ImageStore,
 } from "react-native";
 import { Icon, Fab } from "native-base";
@@ -14,11 +14,14 @@ import Avatar from "../../../components/Avatar";
 import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
-import { ConfigRight, BackButton } from "../../../components/Header";
+import { BackButton, ConfigIcon } from "../../../components/Header";
 import Settings from "./Settings";
 import AboutAidi from "./AboutAidi";
 import AboutRonda from "./AboutRonda";
 import { updateUserData } from "../../../../services/api/user";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const avatarSize = SCREEN_HEIGHT / 4;
 
 const emptyUser = {
   image: null,
@@ -94,7 +97,7 @@ const UserProfile = props => {
         <TouchableOpacity
           style={[styles.avatarTouchableCoiner, styles.shadow]}
           onPress={onPressAvatar}>
-          <Avatar size={130} path={user.picture} />
+          <Avatar size={avatarSize} path={user.picture} />
           {/* <View style={styles.editButton}>
             <Icon
               type="SimpleLineIcons"
@@ -123,12 +126,6 @@ const UserProfile = props => {
           value={user.phone}
           loading={loading}
         />
-        <InformationRow
-          icon="account-circle"
-          label="NICKNAME"
-          value={user.nick}
-          loading={loading}
-        />
       </View>
     </ScrollView>
   );
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.mainBlue,
     flex: 1,
     paddingTop: 35,
   },
@@ -197,9 +194,9 @@ const styles = StyleSheet.create({
   avatarTouchableCoiner: {
     borderColor: colors.white,
     backgroundColor: colors.mainBlue,
-    borderRadius: 80,
-    width: 130,
-    height: 130,
+    borderRadius: avatarSize / 2,
+    width: avatarSize,
+    height: avatarSize,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -239,7 +236,7 @@ export default createStackNavigator(
         title: `Mi Perfil`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
-        headerRight: <ConfigRight navigation={navigation} />,
+        headerRight: <ConfigIcon navigation={navigation} />,
       }),
     },
     Settings: {
@@ -263,7 +260,7 @@ export default createStackNavigator(
     AboutRonda: {
       screen: AboutRonda,
       navigationOptions: ({ navigation }) => ({
-        title: `Acerca de Ronda`,
+        title: `Acerca de ronda`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,

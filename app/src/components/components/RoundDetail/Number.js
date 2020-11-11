@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 import { Icon } from "native-base";
 // import Participants from "./ParticipantSelection";
-import Avatar from "../../../assets/img/avatar.jpg";
+import Avatar from "../../../assets/img/avatar.png";
 import avatarWithoutAssignment from "../../../assets/img/withoutAssignment.jpg";
 import Bookmark from "../Bookmark";
 
@@ -55,8 +55,7 @@ const Number = props => {
 
           open && styles.numberShadow,
         ]}
-        onPress={() => setOpen(!open)}
-      >
+        onPress={() => setOpen(!open)}>
         <Bookmark number={index} />
         <Image
           source={
@@ -89,7 +88,7 @@ const Number = props => {
         )}
         <View style={styles.participant}>
           <View style={styles.participantIdentification}>
-            <View style={{ flexDirection: "column", justiContent: "center" }}>
+            <View style={{ flexDirection: "column", justifyContent: "center" }}>
               <Text style={styles.participantName}>
                 {selectedParticipants.length
                   ? selectedParticipants[0].name
@@ -115,9 +114,7 @@ const Number = props => {
             )}
           </View>
         </View>
-        <View
-          style={{ flexDirection: "column", width: 40, alignItems: "center" }}
-        >
+        <View style={styles.viewContainer}>
           <Text style={styles.month}>
             {month.substring(0, 3).toUpperCase()}
           </Text>
@@ -126,15 +123,15 @@ const Number = props => {
             <Text style={{ textAlign: "center" }}>{numberDate}</Text>
           </View>
         </View>
-        <View
-          style={{ flexDirection: "column", width: 40, alignItems: "center" }}
-        >
+        <View style={styles.viewContainer}>
           <Text style={styles.month} />
         </View>
       </TouchableOpacity>
     </View>
   );
 };
+
+const ColumsCenter = { flexDirection: "column", alignItems: "center" };
 
 const styles = StyleSheet.create({
   number: {
@@ -178,8 +175,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    flexDirection: "column",
-    alignItems: "center",
+    ...ColumsCenter,
   },
   month: {
     textAlign: "center",
@@ -199,8 +195,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    flexDirection: "column",
-    alignItems: "center",
+    ...ColumsCenter,
     justifyContent: "center",
   },
   participant: {
@@ -238,6 +233,11 @@ const styles = StyleSheet.create({
     width: 40,
     borderRadius: 20,
     marginRight: 12,
+  },
+
+  viewContainer: {
+    ...ColumsCenter,
+    width: 40,
   },
 });
 

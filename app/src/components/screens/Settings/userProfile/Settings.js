@@ -35,7 +35,7 @@ const Settings = ({ navigation }) => {
       <Option icon="info" label="Acerca de ai·di" onPress={goToAboutAidi} />
       <Option
         icon="filter-tilt-shift"
-        label="Acerca de Ronda"
+        label="Acerca de ronda"
         onPress={goToAboutRonda}
       />
       <Option

@@ -46,22 +46,17 @@ export const SessionDropdown = () => {
   );
 };
 
-export const ConfigRight = props => {
+export const ConfigIcon = props => {
   const goToSettings = () => {
     props.navigation.push("Settings");
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        color: colors.white,
-      }}>
-      <Dropdown>
-        <Option icon="settings" label="Configuración" onSelect={goToSettings} />
-      </Dropdown>
-    </View>
+    <Icon
+      style={{ ...styles.colorWhite, marginRight: 20 }}
+      name="settings"
+      onPress={goToSettings}
+    />
   );
 };
 

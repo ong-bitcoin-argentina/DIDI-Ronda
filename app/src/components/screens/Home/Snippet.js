@@ -31,7 +31,9 @@ const Snippet = ({
           <Button
             style={[styles.button, { backgroundColor: primaryColor }]}
             onPress={onAction}>
-            <Text style={styles.buttonInner}>{buttonText}</Text>
+            <Text style={styles.buttonInner} numberOfLines={1}>
+              {buttonText}
+            </Text>
           </Button>
         </View>
       </View>
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 6,
     justifyContent: "center",
-    paddingHorizontal: 34,
+    paddingHorizontal: 25,
     paddingVertical: 10,
   },
   description: {
