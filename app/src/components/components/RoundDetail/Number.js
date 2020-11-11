@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 import { Icon } from "native-base";
 // import Participants from "./ParticipantSelection";
-import Avatar from "../../../assets/img/avatar.jpg";
+import Avatar from "../../../assets/img/avatar.png";
 import avatarWithoutAssignment from "../../../assets/img/withoutAssignment.jpg";
 import Bookmark from "../Bookmark";
 
@@ -36,7 +36,7 @@ const Number = props => {
 
   const [open, setOpen] = useState(false);
   const [selectedParticiPantsState, setselectedParticiPantsState] = useState(
-    selectedParticipants
+    selectedParticipants,
   );
   const numberDate = date.getDate();
   const month = months[date.getMonth()] || "";
@@ -55,8 +55,7 @@ const Number = props => {
 
           open && styles.numberShadow,
         ]}
-        onPress={() => setOpen(!open)}
-      >
+        onPress={() => setOpen(!open)}>
         <Bookmark number={index} />
         <Image
           source={
@@ -116,8 +115,7 @@ const Number = props => {
           </View>
         </View>
         <View
-          style={{ flexDirection: "column", width: 40, alignItems: "center" }}
-        >
+          style={{ flexDirection: "column", width: 40, alignItems: "center" }}>
           <Text style={styles.month}>
             {month.substring(0, 3).toUpperCase()}
           </Text>
@@ -127,8 +125,7 @@ const Number = props => {
           </View>
         </View>
         <View
-          style={{ flexDirection: "column", width: 40, alignItems: "center" }}
-        >
+          style={{ flexDirection: "column", width: 40, alignItems: "center" }}>
           <Text style={styles.month} />
         </View>
       </TouchableOpacity>

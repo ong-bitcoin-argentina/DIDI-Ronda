@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
-import emptyAvatar from "../../assets/img/avatar.jpg";
+import emptyAvatar from "../../assets/img/avatar.png";
 import colors from "./colors";
 
 const Avatar = ({ path, size, selected }) => {

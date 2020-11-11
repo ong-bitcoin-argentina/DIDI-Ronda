@@ -7,7 +7,7 @@ import LottieView from "lottie-react-native";
 import Bookmark from "../../../components/Bookmark";
 import CircleArrows from "../../../../assets/img/circle-arrows.svg";
 import RoundPopUp from "../../../components/RoundPopUp";
-import emptyAvatar from "../../../../assets/img/avatar.jpg";
+import emptyAvatar from "../../../../assets/img/avatar.png";
 import colors from "../../../components/colors";
 
 const confettiAnimation = require("../../../../assets/animations/confetti.json");
@@ -81,8 +81,7 @@ const RuffleRoulette = props => {
         <Text style={styles.textName}>{wheelWinner.name}</Text>
         <Button
           style={styles.button}
-          onPress={() => onFinish(number, wheelWinner)}
-        >
+          onPress={() => onFinish(number, wheelWinner)}>
           <Text style={styles.buttonText}>Ok</Text>
         </Button>
       </View>
@@ -109,8 +108,7 @@ const RuffleRoulette = props => {
         positive={() => positiveAction()}
         positiveTitle={winnerParticipant ? "Ok" : "Girar Ruleta"}
         disablePositive={disableRoulette}
-        notCloseAfterPositive={!winnerParticipant}
-      >
+        notCloseAfterPositive={!winnerParticipant}>
         <View style={{ flexDirection: "column", width: "100%" }}>
           {candidates.length > 1 && (
             <View style={{ height: 300 }}>
