@@ -23,9 +23,9 @@ export const cards = ({ activeRounds, finishedRounds }) => [
 export const snippets = [
   {
     primaryColor: colors.alterRed,
-    description: "Invitá a tus amigos a participar de rondas!",
+    description: "Invitá a tus amigos a participar de rondas",
     ImageSource: require("../../../assets/img/person.png"),
-    buttonText: "Invitar Amig@s",
+    buttonText: "¡Iniciar una ronda!",
   },
   {
     primaryColor: colors.secondaryBlue,
