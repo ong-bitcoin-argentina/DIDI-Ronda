@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
+  Dimensions,
   //   ImageStore,
 } from "react-native";
 import { Icon, Fab } from "native-base";
@@ -19,6 +19,9 @@ import Settings from "./Settings";
 import AboutAidi from "./AboutAidi";
 import AboutRonda from "./AboutRonda";
 import { updateUserData } from "../../../../services/api/user";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const avatarSize = SCREEN_HEIGHT / 4;
 
 const emptyUser = {
   image: null,
@@ -94,7 +97,7 @@ const UserProfile = props => {
         <TouchableOpacity
           style={[styles.avatarTouchableCoiner, styles.shadow]}
           onPress={onPressAvatar}>
-          <Avatar size={130} path={user.picture} />
+          <Avatar size={avatarSize} path={user.picture} />
           {/* <View style={styles.editButton}>
             <Icon
               type="SimpleLineIcons"
@@ -191,9 +194,9 @@ const styles = StyleSheet.create({
   avatarTouchableCoiner: {
     borderColor: colors.white,
     backgroundColor: colors.mainBlue,
-    borderRadius: 80,
-    width: 130,
-    height: 130,
+    borderRadius: avatarSize / 2,
+    width: avatarSize,
+    height: avatarSize,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
