@@ -9,9 +9,7 @@ import Card from "./Card";
 import { cards, snippets } from "./helpers";
 import { isActive, isFinished } from "../../../utils/roundsHelper";
 import * as roundsActions from "../../../actions/rounds";
-import * as notificationsActions from "../../../actions/notifications";
 import Snippet from "./Snippet";
-import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
 
 class Home extends React.Component {
@@ -20,7 +18,6 @@ class Home extends React.Component {
     this.state = {
       user: undefined,
       loading: true,
-      showSCModal: false,
     };
   }
 
@@ -38,7 +35,6 @@ class Home extends React.Component {
   async componentDidMount() {
     const user = await this.updateUser();
     await this.getRoundData();
-    this.handleSCWarning(user);
   }
 
   async getRoundData() {
@@ -55,30 +51,6 @@ class Home extends React.Component {
     });
     return user;
   }
-
-  async updateSCModal() {
-    await this.updateUser();
-    this.setState({ showSCModal: false });
-  }
-
-  async handleSCWarning() {
-    await this.props.getNotifications();
-    const { user } = this.state;
-    if (
-      this.props.haveFailedRegisterNotification &&
-      (!user._doc?.sc && !user.sc)
-    ) {
-      this.showSCWarning();
-    }
-  }
-
-  showSCWarning = () => {
-    this.setState({ showSCModal: true });
-  };
-
-  hideSCWarning = () => {
-    this.setState({ showSCModal: false });
-  };
 
   goToCredentials = () => openAidiCredentials();
 
@@ -107,11 +79,6 @@ class Home extends React.Component {
         ))}
         <Snippet {...snippets[0]} onAction={this.onNewRonda} />
         <Snippet {...snippets[1]} onAction={this.goToCredentials} />
-        <WarningSCModal
-          visible={this.state.showSCModal}
-          onRequestClose={this.hideSCWarning}
-          onConfirm={() => this.updateSCModal()}
-        />
       </ScrollView>
     );
   }
@@ -150,6 +117,5 @@ export default connect(
   dispatch => ({
     navigateToRoundsPage: page => toRoundListPage(dispatch, page),
     loadRounds: () => dispatch(roundsActions.loadRounds()),
-    getNotifications: () => notificationsActions.getNotifications(dispatch),
   })
 )(Home);
