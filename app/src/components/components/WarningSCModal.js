@@ -16,12 +16,14 @@ const WarningSCModal = ({
   visible,
   onRequestClose,
   onConfirm,
+  onFinish,
   registerSCLoading,
   forceSCRegister,
 }) => {
   const handleConfirm = async () => {
     onConfirm();
-    forceSCRegister();
+    const result = await forceSCRegister();
+    onFinish(result);
   };
 
   return (
@@ -131,5 +133,5 @@ export default connect(
   }),
   dispatch => ({
     forceSCRegister: () => AuthActions.forceSCRegister(dispatch),
-  }),
+  })
 )(WarningSCModal);

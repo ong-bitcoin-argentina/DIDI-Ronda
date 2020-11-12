@@ -12,7 +12,7 @@ export const createUser = (username, password, name, token, nick) => {
       password,
       name,
       token,
-      nick,
+      nick
     );
 
     if (response.error) {
@@ -65,7 +65,7 @@ export const verifyEmail = (username, password, name, token) => {
       username.trim(),
       password,
       name,
-      token,
+      token
     );
 
     if (!response.error) {
@@ -143,7 +143,7 @@ export const sendPassword = (username, password, token) => {
     const response = await UserService.forgotNewPassword(
       username,
       password,
-      token,
+      token
     );
 
     dispatch(finishLoadingNewPassword(response));
@@ -220,7 +220,7 @@ export const phoneVerifiyCode = (username, phoneNumber, country, code) => {
       username,
       phoneNumber,
       country,
-      code,
+      code
     );
 
     if (!response.error) {
@@ -241,7 +241,6 @@ export const cleanPhone = () => {
 };
 
 export const forceSCRegister = async dispatch => {
-  const errorMessage = "Ocurrió un error al reintentar el registro.";
   dispatch({ type: types.START_FORCE_SC });
   try {
     const user = await getAuth();
@@ -249,13 +248,13 @@ export const forceSCRegister = async dispatch => {
     dispatch({ type: types.FINISH_FORCE_SC });
     if (response && response.data) {
       await setAuth({ ...user, ...response.data });
+      return { error: false };
     } else {
-      console.log(response);
+      return { error: true };
     }
   } catch (error) {
-    console.log(error);
     dispatch({ type: types.FINISH_FORCE_SC });
-    return { error: errorMessage };
+    return { error: true };
   }
 };
 

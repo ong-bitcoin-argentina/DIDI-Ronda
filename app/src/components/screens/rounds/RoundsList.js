@@ -14,6 +14,7 @@ import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
 import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
+import ConfirmModal from "../../components/ConfirmModal";
 
 class RoundsList extends React.Component {
   state = {
@@ -22,6 +23,7 @@ class RoundsList extends React.Component {
     roundEditData: {},
     loading: true,
     showSCModal: false,
+    confirmAlert: null,
   };
 
   async componentDidMount() {
@@ -41,6 +43,7 @@ class RoundsList extends React.Component {
 
   updateAuth = async () => {
     const auth = await getAuth();
+
     this.setState({ auth });
   };
 
@@ -62,8 +65,21 @@ class RoundsList extends React.Component {
 
   async updateSCModal() {
     await this.updateAuth();
+
     this.setState({ showSCModal: false });
   }
+
+  showWarningModalResult = result => {
+    const message = {
+      title: result.error
+        ? "Error al registrarte! Por favor, volvé a intertarlo"
+        : "Reintento enviado con éxito! En unos minutos, recibirás una notificación confirmando tu registro",
+      positive: () => this.setState({ confirmAlert: null }),
+      iconType: this.state.auth === null ? "error" : null,
+    };
+
+    this.setState({ confirmAlert: message });
+  };
 
   filterRounds = (roundsData, currentStatus) => {
     return roundsData.filter(r => {
@@ -264,7 +280,11 @@ class RoundsList extends React.Component {
           visible={showSCModal}
           onRequestClose={this.hideSCWarning}
           onConfirm={() => this.updateSCModal()}
+          onFinish={result => this.showWarningModalResult(result)}
         />
+        {this.state.confirmAlert && (
+          <ConfirmModal {...this.state.confirmAlert} />
+        )}
       </View>
     );
   }
@@ -276,7 +296,7 @@ const mapStateToPropsList = state => {
     nameFromCreation: state.roundCreation.name,
     activePage: state.routeOptions?.roundsList?.page,
     haveFailedRegisterNotification: state.notifications.list.some(
-      item => item.code === notificationsCodes.errorSC,
+      item => item.code === notificationsCodes.errorSC
     ),
   };
 };
@@ -320,5 +340,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToPropsList,
-  mapDispatchToPropsList,
+  mapDispatchToPropsList
 )(RoundsList);
