@@ -97,8 +97,9 @@ class Home extends React.Component {
       <ScrollView
         contentContainerStyle={styles.container}
         style={{ backgroundColor: colors.lighterGray }}>
-        {cards(this.props).map(round => (
+        {cards(this.props).map((round, index) => (
           <Card
+            key={index}
             round={round}
             onAction={page => this.props.navigateToRoundsPage(page)}
             loading={this.state.loading}
@@ -143,12 +144,12 @@ export default connect(
     userData: state.userData.data,
     notifications: state.notifications,
     haveFailedRegisterNotification: state.notifications.list.some(
-      item => item.code === notificationsCodes.errorSC,
+      item => item.code === notificationsCodes.errorSC
     ),
   }),
   dispatch => ({
     navigateToRoundsPage: page => toRoundListPage(dispatch, page),
     loadRounds: () => dispatch(roundsActions.loadRounds()),
     getNotifications: () => notificationsActions.getNotifications(dispatch),
-  }),
+  })
 )(Home);
