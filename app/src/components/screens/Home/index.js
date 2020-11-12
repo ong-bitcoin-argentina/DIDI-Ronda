@@ -69,8 +69,9 @@ class Home extends React.Component {
       <ScrollView
         contentContainerStyle={styles.container}
         style={{ backgroundColor: colors.lighterGray }}>
-        {cards(this.props).map(round => (
+        {cards(this.props).map((round, index) => (
           <Card
+            key={index}
             round={round}
             onAction={page => this.props.navigateToRoundsPage(page)}
             loading={this.state.loading}
