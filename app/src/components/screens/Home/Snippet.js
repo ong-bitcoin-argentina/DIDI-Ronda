@@ -1,9 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Text, Image, Dimensions } from "react-native";
+import { View, StyleSheet, Text, Image, PixelRatio } from "react-native";
 import colors from "../../components/colors";
 import { Button, Icon } from "native-base";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const FONT_SCALE = PixelRatio.getFontScale();
 
 const Snippet = ({
   ImageSource,
@@ -22,7 +22,6 @@ const Snippet = ({
     return <Image source={ImageSource} style={{ height: 100, width: 100 }} />;
   };
 
-  console.log(SCREEN_WIDTH);
   return (
     <View style={[styles.container, style]}>
       <View style={styles.row}>
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonInner: {
-    fontSize: SCREEN_WIDTH >= 320 ? 17 : 14,
+    fontSize: 17 / FONT_SCALE,
     color: "white",
     textAlign: "center",
   },
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
   },
   description: {
     marginBottom: 14,
-    fontSize: SCREEN_WIDTH >= 320 ? 16 : 13,
+    fontSize: 16,
   },
   secondCol: {
     flex: 1,
