@@ -248,7 +248,7 @@ export const forceSCRegister = async dispatch => {
     dispatch({ type: types.FINISH_FORCE_SC });
     if (response && response.data) {
       await setAuth({ ...user, ...response.data });
-      return { error: false };
+      return response;
     } else {
       return { error: true };
     }
