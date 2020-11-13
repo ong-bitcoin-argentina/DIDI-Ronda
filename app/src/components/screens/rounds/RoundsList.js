@@ -54,7 +54,10 @@ class RoundsList extends React.Component {
   handleSCWarning = async () => {
     await this.props.getNotifications();
     const { auth } = this.state;
-    if (this.props.haveFailedRegisterNotification && auth._doc.sc) {
+    if (
+      this.props.haveFailedRegisterNotification &&
+      (!auth._doc?.sc && !auth.sc)
+    ) {
       this.showSCWarning();
     }
   };
