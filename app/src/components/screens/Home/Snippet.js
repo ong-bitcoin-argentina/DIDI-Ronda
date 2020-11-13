@@ -70,9 +70,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
+    width: "100%",
     borderRadius: 6,
     justifyContent: "center",
-    paddingHorizontal: 25,
+    paddingHorizontal: 15,
     paddingVertical: 10,
   },
   description: {
