@@ -29,7 +29,7 @@ export const snippets = [
   },
   {
     primaryColor: colors.secondaryBlue,
-    description: "Accedé a todas tus credenciales de ronda en ai.di",
+    description: "Accedé a todas tus credenciales de ronda en ai·di",
     ImageSource: require("../../../assets/img/see-credencials.png"),
     buttonText: "Ver Credenciales",
   },
