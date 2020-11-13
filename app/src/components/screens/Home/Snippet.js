@@ -1,9 +1,17 @@
 import React from "react";
-import { View, StyleSheet, Text, Image, PixelRatio } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  PixelRatio,
+  Dimensions,
+} from "react-native";
 import colors from "../../components/colors";
 import { Button, Icon } from "native-base";
 
 const FONT_SCALE = PixelRatio.getFontScale();
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const Snippet = ({
   ImageSource,
@@ -33,7 +41,10 @@ const Snippet = ({
           <Button
             style={[styles.button, { backgroundColor: primaryColor }]}
             onPress={onAction}>
-            <Text style={styles.buttonInner} numberOfLines={1}>
+            <Text
+              style={styles.buttonInner}
+              numberOfLines={1}
+              adjustsFontSizeToFit>
               {buttonText}
             </Text>
           </Button>
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonInner: {
-    fontSize: 17 / FONT_SCALE,
+    fontSize: SCREEN_WIDTH <= 320 ? null : 17 / FONT_SCALE,
     color: "white",
     textAlign: "center",
   },
