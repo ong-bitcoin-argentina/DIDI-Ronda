@@ -68,21 +68,6 @@ const UserProfile = props => {
     setLoading(false);
   };
 
-  const onPressAvatar = async () => {
-    // const img = await ImagePicker.openPicker(imgPickerOptions);
-    // setUser({ ...user, picture: img.path });
-    // Se hace lo siguiente para obtener el base64
-    // Luego se lo manipula y se sube al endpoint
-    // ImageStore.getBase64ForTag(
-    //   img.path,
-    //   imageFile => {
-    //
-    //       const imgData = imageFile.replace(/\n/g, "");
-    //   },
-    //   error => console.log(error)
-    // );
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
@@ -94,18 +79,9 @@ const UserProfile = props => {
         />
       </TouchableOpacity>
       <View style={styles.row}>
-        <TouchableOpacity
-          style={[styles.avatarTouchableCoiner, styles.shadow]}
-          onPress={onPressAvatar}>
+        <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
           <Avatar size={avatarSize} path={user.picture} />
-          {/* <View style={styles.editButton}>
-            <Icon
-              type="SimpleLineIcons"
-              style={styles.editIcon}
-              name="camera"
-            />
-          </View> */}
-        </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.dataContainer}>
         <InformationRow
@@ -269,5 +245,5 @@ export default createStackNavigator(
   },
   {
     initialRouteName: "Profile",
-  },
+  }
 );
