@@ -80,7 +80,7 @@ const Login = props => {
     </KeyboardAvoidingView>
   );
 
-  const { loading: isLoading } = props;
+  const { loading: isLoading, error } = props;
 
   if (isLoading) return loading();
 
@@ -113,7 +113,7 @@ const Login = props => {
             Conectate con ai·di
           </Text>
         </Button>
-        {state === states.denied && renderAuthWarning()}
+        {(state === states.denied || error) && renderAuthWarning()}
       </View>
 
       <LinkModal
@@ -216,5 +216,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Login);
