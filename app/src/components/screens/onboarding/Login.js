@@ -84,15 +84,27 @@ const Login = props => {
 
   if (isLoading) return loading();
 
-  const renderAuthWarning = () => (
+  const renderAuthWarning = () => {
+    const title = "¡Error de Autenticación!";
+    const message =
+      "Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.";
+
+    return renderWarning(title, message);
+  };
+
+  const renderErrorLoginWarning = () => {
+    const title = "¡Error de inicio de sesión!";
+    const message =
+      "Ha ocurrido un error al intentar iniciar sesión en Ronda con tu cuenta de ai·di.";
+
+    return renderWarning(title, message);
+  };
+
+  const renderWarning = (title, message) => (
     <View style={styles.warning}>
       <Icon type="MaterialIcons" name="warning" style={styles.icon} />
-      <Text style={[styles.warningText, { marginBottom: 6 }]}>
-        ¡Error de Autenticación!
-      </Text>
-      <Text style={[styles.warningText, { marginBottom: 6 }]}>
-        Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.
-      </Text>
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>{title}</Text>
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>{message}</Text>
       <Text style={styles.warningText}>Por favor, volvé a intentarlo.</Text>
     </View>
   );
@@ -113,7 +125,11 @@ const Login = props => {
             Conectate con ai·di
           </Text>
         </Button>
-        {(state === states.denied || error) && renderAuthWarning()}
+        {state === states.denied
+          ? renderAuthWarning()
+          : error
+          ? renderErrorLoginWarning()
+          : null}
       </View>
 
       <LinkModal
