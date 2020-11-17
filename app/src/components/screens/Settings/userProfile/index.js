@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { Icon, Fab } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
-import ImagePicker from "react-native-image-crop-picker";
 import Avatar from "../../../components/Avatar";
+import Divider from "../../../components/Divider";
 import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
@@ -94,14 +94,14 @@ const UserProfile = props => {
             value={`${user.name ?? ""} ${user.lastname ?? ""}`}
             loading={loading}
           />
-          <View style={styles.lineSeparator}></View>
+          <Divider />
           <InformationRow
             icon="mail"
             label="EMAIL"
             value={user.username.toLowerCase()}
             loading={loading}
           />
-          <View style={styles.lineSeparator}></View>
+          <Divider />
           <InformationRow
             icon="phone"
             label="TELÉFONO"
@@ -190,11 +190,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 20,
   },
-  lineSeparator: {
-    height: 1,
-    width: "100%",
-    backgroundColor: colors.gray,
-  },
+
   titleText: {
     marginTop: 20,
     color: "white",
