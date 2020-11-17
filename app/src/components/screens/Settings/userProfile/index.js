@@ -5,7 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  //   ImageStore,
+  Text,
 } from "react-native";
 import { Icon, Fab } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
@@ -79,8 +79,11 @@ const UserProfile = props => {
         />
       </TouchableOpacity>
       <View style={styles.row}>
-        <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
-          <Avatar size={avatarSize} path={user.picture} />
+        <View style={styles.photoTextContainer}>
+          <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
+            <Avatar size={avatarSize} path={user.picture} />
+          </View>
+          <Text style={styles.titleText}>{user.name.split(" ")[0]}</Text>
         </View>
       </View>
       <View style={styles.dataContainer}>
@@ -90,12 +93,14 @@ const UserProfile = props => {
           value={`${user.name ?? ""} ${user.lastname ?? ""}`}
           loading={loading}
         />
+        <View style={styles.lineSeparator}></View>
         <InformationRow
           icon="mail"
           label="EMAIL"
           value={user.username.toLowerCase()}
           loading={loading}
         />
+        <View style={styles.lineSeparator}></View>
         <InformationRow
           icon="phone"
           label="TELÉFONO"
@@ -113,10 +118,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
-  },
-  userDataInfoIcon: {
-    color: colors.gray,
-    marginBottom: 5,
   },
   headerTitleStyle: {
     color: "white",
@@ -142,30 +143,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
     backgroundColor: "transparent",
-    paddingVertical: 12,
+    paddingTop: 12,
   },
   dataContainer: {
-    paddingLeft: 50,
+    paddingHorizontal: 50,
     flex: 1,
     marginTop: 30,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
     backgroundColor: colors.secondaryWhite,
-  },
-  fieldRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  valueTitle: {
-    fontSize: 11,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
   avatarTouchableCoiner: {
     borderColor: colors.white,
@@ -201,6 +188,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 20,
+  },
+  lineSeparator: {
+    height: 1,
+    width: "100%",
+    backgroundColor: colors.gray,
+  },
+  titleText: {
+    marginTop: 20,
+    color: "white",
+    fontSize: 24,
+    lineHeight: 26,
+  },
+  photoTextContainer: {
+    alignItems: "center",
   },
 });
 
