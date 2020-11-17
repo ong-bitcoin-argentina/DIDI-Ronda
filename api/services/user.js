@@ -1,7 +1,7 @@
 // MANAGERS
 const aidi_service = require("./aidi");
 const user_manager = require("../managers/user");
-const notifications_manager = require("../managers/notifications");
+const notifications_manager = require("../managers/notification");
 const round_manager = require("../managers/round");
 const participant_manager = require("../managers/participant");
 const { STORAGE_HOST, STORAGE_PORT } = process.env;
