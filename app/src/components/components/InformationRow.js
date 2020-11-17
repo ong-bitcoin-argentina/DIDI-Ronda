@@ -6,7 +6,7 @@ import colors from "./colors";
 const InformationRow = ({ label, value, icon, loading }) => {
   return (
     <View style={styles.fieldRow}>
-      <View style={styles}>
+      <View>
         <Icon
           type="MaterialIcons"
           name={icon}
@@ -30,7 +30,6 @@ const InformationRow = ({ label, value, icon, loading }) => {
 const styles = StyleSheet.create({
   userDataInfoIcon: {
     color: colors.gray,
-    marginBottom: 5,
   },
   fieldRow: {
     flexDirection: "row",

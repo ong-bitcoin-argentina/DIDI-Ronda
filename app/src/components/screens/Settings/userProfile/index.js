@@ -83,7 +83,7 @@ const UserProfile = props => {
           <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
             <Avatar size={avatarSize} path={user.picture} />
           </View>
-          <Text style={styles.titleText}>{user.name.split(" ")[0]}</Text>
+          <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
         </View>
       </View>
       <View style={styles.dataContainer}>
