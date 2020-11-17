@@ -86,28 +86,30 @@ const UserProfile = props => {
           <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
         </View>
       </View>
-      <View style={styles.dataContainer}>
-        <InformationRow
-          icon="person"
-          label="NOMBRE Y APELLIDO"
-          value={`${user.name ?? ""} ${user.lastname ?? ""}`}
-          loading={loading}
-        />
-        <View style={styles.lineSeparator}></View>
-        <InformationRow
-          icon="mail"
-          label="EMAIL"
-          value={user.username.toLowerCase()}
-          loading={loading}
-        />
-        <View style={styles.lineSeparator}></View>
-        <InformationRow
-          icon="phone"
-          label="TELÉFONO"
-          value={user.phone}
-          loading={loading}
-        />
-      </View>
+      <ScrollView>
+        <View style={styles.dataContainer}>
+          <InformationRow
+            icon="person"
+            label="NOMBRE Y APELLIDO"
+            value={`${user.name ?? ""} ${user.lastname ?? ""}`}
+            loading={loading}
+          />
+          <View style={styles.lineSeparator}></View>
+          <InformationRow
+            icon="mail"
+            label="EMAIL"
+            value={user.username.toLowerCase()}
+            loading={loading}
+          />
+          <View style={styles.lineSeparator}></View>
+          <InformationRow
+            icon="phone"
+            label="TELÉFONO"
+            value={user.phone}
+            loading={loading}
+          />
+        </View>
+      </ScrollView>
     </ScrollView>
   );
 };
@@ -129,7 +131,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.mainBlue,
     flex: 1,
-    paddingTop: 35,
   },
   editText: {
     fontSize: 13,
@@ -147,12 +148,12 @@ const styles = StyleSheet.create({
   },
   dataContainer: {
     paddingHorizontal: 50,
-    flex: 1,
     marginTop: 30,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
     backgroundColor: colors.secondaryWhite,
+    paddingBottom: 35,
   },
   avatarTouchableCoiner: {
     borderColor: colors.white,
