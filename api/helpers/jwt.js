@@ -57,13 +57,14 @@ const getUsernameFromToken = req => {
   return username;
 };
 
-const createCredentialJWT = async (credential, participantDID) => {
+const createCredentialJWT = async (credential, participantDID, exp) => {
   const issuer = new EthrDID({
     address: getDidAddress(DID),
     privateKey: PRIVATE_KEY
   });
 
   const payload = {
+    exp,
     sub: participantDID,
     vc: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
