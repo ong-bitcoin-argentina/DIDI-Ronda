@@ -35,9 +35,10 @@ const styles = StyleSheet.create({
   fieldRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     marginTop: 20,
     marginBottom: 20,
+    width: "100%",
   },
   valueTitle: {
     fontSize: 11,
