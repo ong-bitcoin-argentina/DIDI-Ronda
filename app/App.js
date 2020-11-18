@@ -11,33 +11,48 @@ import NavigationService from "./src/services/navigation";
 import messaging from "@react-native-firebase/messaging";
 
 import PushNotification from "react-native-push-notification";
+import * as roundaActions from "./src/actions/rounds";
+import { NavigationActions } from "react-navigation";
 
 import moment from "moment";
 import "moment/locale/es";
 moment.locale("es");
 
-const App = () => {
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
-    });
+const App = props => {
+  PushNotification.configure({
+    onNotification: function(notification) {
+      if (!notification.userInteraction) {
+        const notificationObject = {
+          title: notification.title,
+          message: notification.message,
+          channelId: "ronda",
+          foreground: true,
+          userInteraction: false,
+          data: notification.data,
+        };
 
-    PushNotification.localNotification({
-      title: "Ronda",
-      message:
-        'La ronda Test se ha procesado! Ya podés entrar desde la sección rondas "Por Iniciar"',
-      channelId: "ronda",
-      foreground: true,
-      userInteraction: false,
-      data: {
-        action: {
-          routeName: "RoundDetail",
-          params: { _id: "5fb5411b85f379a7feaef701" },
-        },
-      },
-    });
-    return unsubscribe;
-  }, []);
+        PushNotification.localNotification(notificationObject);
+      }
+
+      if (
+        notification.userInteraction &&
+        notification.data &&
+        notification.data.action
+      ) {
+        const { routeName, params } = JSON.parse(notification.data.action);
+        store.dispatch(roundaActions.loadRounds());
+        navigator.dispatch(NavigationActions.navigate({ routeName, params }));
+      }
+    },
+
+    // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+    onRegistrationError: function(err) {
+      console.error(err.message, err);
+    },
+    popInitialNotification: true,
+    senderID: "323695863108",
+    requestPermissions: true,
+  });
 
   return (
     <Provider store={store}>
@@ -45,6 +60,7 @@ const App = () => {
         <Root>
           <Nav
             ref={nav => {
+              navigator = nav;
               NavigationService.setTopLevelNavigator(nav);
             }}
           />
