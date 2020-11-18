@@ -31,7 +31,7 @@ const createToken = async (credential, did, isFinished = false) => {
 
   const possibleExpiration =
     new Date(credential[fields.endDate]).getTime() / 1000;
-  const exp = !isFinished && possibleExpiration;
+  const exp = isFinished ? undefined : possibleExpiration;
 
   return await createCredentialJWT(data, did, exp);
 };
