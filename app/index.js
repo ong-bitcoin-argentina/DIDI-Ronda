@@ -8,6 +8,8 @@ import {
   notificationOpen,
 } from "./src/services/notifications/bgActions";
 import PushNotification from "react-native-push-notification";
+import store from "./src/store/store";
+import roundaActions from "./src/actions/rounds";
 
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
 global.FormData = global.originalFormData || global.FormData;
@@ -28,7 +30,7 @@ YellowBox.ignoreWarnings([
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log("Message handled in the background!", remoteMessage);
-  notificationOpen(remoteMessage);
+  // notificationOpen(remoteMessage);
 });
 
 PushNotification.configure({
@@ -41,7 +43,26 @@ PushNotification.configure({
   onNotification: function(notification) {
     console.log("NOTIFICATION:", notification);
 
-    // process the notification
+    if (notification.foreground && !notification.userInteraction) {
+      const notificationData = {
+        channelId: "ronda",
+        title: notification.title,
+        messege: notification.message,
+        data: notification.data,
+      };
+
+      PushNotification.localNotification(notificationData);
+    }
+
+    if (
+      notification.userInteraction &&
+      notification.data &&
+      notification.data.action
+    ) {
+      const { routeName, params } = notification.data.action;
+      console.log(routeName, params);
+      // store.dispatch(roundaActions.loadRounds());
+    }
   },
 
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)

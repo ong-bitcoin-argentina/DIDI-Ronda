@@ -22,6 +22,20 @@ const App = () => {
       console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
     });
 
+    PushNotification.localNotification({
+      title: "Ronda",
+      message:
+        'La ronda Test se ha procesado! Ya podés entrar desde la sección rondas "Por Iniciar"',
+      channelId: "ronda",
+      foreground: true,
+      userInteraction: false,
+      data: {
+        action: {
+          routeName: "RoundDetail",
+          params: { _id: "5fb5411b85f379a7feaef701" },
+        },
+      },
+    });
     return unsubscribe;
   }, []);
 
@@ -31,7 +45,6 @@ const App = () => {
         <Root>
           <Nav
             ref={nav => {
-              this.navigator = nav;
               NavigationService.setTopLevelNavigator(nav);
             }}
           />

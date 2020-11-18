@@ -1,5 +1,5 @@
-import firebase from '@react-native-firebase/app';
-import messaging from '@react-native-firebase/messaging';
+import firebase from "@react-native-firebase/app";
+import messaging from "@react-native-firebase/messaging";
 import { Platform } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { getAuth } from "../../utils/utils";
@@ -13,13 +13,13 @@ export const enabledNotifications = true;
 // WITH OPEN APP
 export const notificationListener = () => {
   const listener = messaging().onNotificationOpenedApp(notification => {
-    console.log("notification",notification);
+    console.log("notification", notification);
     const newNotification = new firebase.notifications.Notification({
       data: notification.data,
       sound: "default",
       show_in_foreground: true,
       title: notification.title,
-      body: notification.body
+      body: notification.body,
     });
 
     if (Platform.OS === "android") {
@@ -39,11 +39,10 @@ export const notificationListener = () => {
 
 // BACKGROUND
 export const notificationOpen = async (navigator, notificationData) => {
-  console.log("notificationData",notificationData);
+  console.log("notificationData", notificationData);
   let finalData = notificationData;
   if (!finalData) {
-    const openNotificationData = await messaging()
-      .getInitialNotification();
+    const openNotificationData = await messaging().getInitialNotification();
     if (openNotificationData) {
       const { notification } = openNotificationData;
       const { data } = notification;
