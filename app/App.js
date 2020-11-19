@@ -17,6 +17,7 @@ moment.locale("es");
 const App = () => {
   PushNotification.configure({
     onNotification: function(notification) {
+      console.log("Notificacion", notification);
       if (!notification.userInteraction) {
         const notificationObject = {
           title: notification.title,
@@ -45,7 +46,7 @@ const App = () => {
     onRegistrationError: function(err) {
       console.error(err.message, err);
     },
-    popInitialNotification: true,
+    popInitialNotification: false,
     senderID: "323695863108",
     requestPermissions: true,
   });
