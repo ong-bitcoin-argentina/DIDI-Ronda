@@ -5,12 +5,12 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  //   ImageStore,
+  Text,
 } from "react-native";
 import { Icon, Fab } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
-import ImagePicker from "react-native-image-crop-picker";
 import Avatar from "../../../components/Avatar";
+import Divider from "../../../components/Divider";
 import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
@@ -68,21 +68,6 @@ const UserProfile = props => {
     setLoading(false);
   };
 
-  const onPressAvatar = async () => {
-    // const img = await ImagePicker.openPicker(imgPickerOptions);
-    // setUser({ ...user, picture: img.path });
-    // Se hace lo siguiente para obtener el base64
-    // Luego se lo manipula y se sube al endpoint
-    // ImageStore.getBase64ForTag(
-    //   img.path,
-    //   imageFile => {
-    //
-    //       const imgData = imageFile.replace(/\n/g, "");
-    //   },
-    //   error => console.log(error)
-    // );
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
@@ -94,39 +79,37 @@ const UserProfile = props => {
         />
       </TouchableOpacity>
       <View style={styles.row}>
-        <TouchableOpacity
-          style={[styles.avatarTouchableCoiner, styles.shadow]}
-          onPress={onPressAvatar}>
-          <Avatar size={avatarSize} path={user.picture} />
-          {/* <View style={styles.editButton}>
-            <Icon
-              type="SimpleLineIcons"
-              style={styles.editIcon}
-              name="camera"
-            />
-          </View> */}
-        </TouchableOpacity>
+        <View style={styles.photoTextContainer}>
+          <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
+            <Avatar size={avatarSize} path={user.picture} />
+          </View>
+          <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
+        </View>
       </View>
-      <View style={styles.dataContainer}>
-        <InformationRow
-          icon="person"
-          label="NOMBRE Y APELLIDO"
-          value={`${user.name ?? ""} ${user.lastname ?? ""}`}
-          loading={loading}
-        />
-        <InformationRow
-          icon="mail"
-          label="EMAIL"
-          value={user.username.toLowerCase()}
-          loading={loading}
-        />
-        <InformationRow
-          icon="phone"
-          label="TELÉFONO"
-          value={user.phone}
-          loading={loading}
-        />
-      </View>
+      <ScrollView>
+        <View style={styles.dataContainer}>
+          <InformationRow
+            icon="person"
+            label="NOMBRE Y APELLIDO"
+            value={`${user.name ?? ""} ${user.lastname ?? ""}`}
+            loading={loading}
+          />
+          <Divider />
+          <InformationRow
+            icon="mail"
+            label="EMAIL"
+            value={user.username.toLowerCase()}
+            loading={loading}
+          />
+          <Divider />
+          <InformationRow
+            icon="phone"
+            label="TELÉFONO"
+            value={user.phone}
+            loading={loading}
+          />
+        </View>
+      </ScrollView>
     </ScrollView>
   );
 };
@@ -138,10 +121,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
   },
-  userDataInfoIcon: {
-    color: colors.gray,
-    marginBottom: 5,
-  },
   headerTitleStyle: {
     color: "white",
     width: "80%",
@@ -152,7 +131,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.mainBlue,
     flex: 1,
-    paddingTop: 35,
   },
   editText: {
     fontSize: 13,
@@ -166,30 +144,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
     backgroundColor: "transparent",
-    paddingVertical: 12,
+    paddingTop: 12,
   },
   dataContainer: {
-    paddingLeft: 50,
-    flex: 1,
+    paddingHorizontal: 50,
     marginTop: 30,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
     backgroundColor: colors.secondaryWhite,
-  },
-  fieldRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  valueTitle: {
-    fontSize: 11,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: "bold",
+    paddingBottom: 35,
   },
   avatarTouchableCoiner: {
     borderColor: colors.white,
@@ -225,6 +189,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 20,
+  },
+
+  titleText: {
+    marginTop: 20,
+    color: "white",
+    fontSize: 24,
+    lineHeight: 26,
+  },
+  photoTextContainer: {
+    alignItems: "center",
   },
 });
 
@@ -269,5 +243,5 @@ export default createStackNavigator(
   },
   {
     initialRouteName: "Profile",
-  },
+  }
 );

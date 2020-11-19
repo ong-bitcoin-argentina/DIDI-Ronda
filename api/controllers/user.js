@@ -1,5 +1,6 @@
 // SERVICES
 const user_services = require("../services/user");
+const notification_service = require("../services/notification");
 const postResBackground = require("../services/postRes");
 const user_manager = require("../managers/user");
 const { SC_FEATURES } = require("../utils/other");
@@ -44,6 +45,21 @@ exports.updateByUsername = async (req, res) => {
 // Get user's notification by username
 exports.getNotifications = async (req, res) => {
   res.status(200).jsonp(await user_services.getNotifications(req));
+};
+
+// Mark user's notification as viewed with date
+exports.markNotificationsAsViewed = async (req, res) => {
+  try {
+    const result = await notification_service.markNotificationsAsViewed(req);
+    return result && result.error
+      ? res.status(500).jsonp({ error: result.error })
+      : res.status(200).jsonp(result);
+  } catch (err) {
+    console.log(err);
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
 };
 
 // set user profile picture
