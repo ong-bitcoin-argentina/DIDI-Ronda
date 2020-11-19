@@ -44,7 +44,7 @@ const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
 
     return <Text style={styles.title}>{section.title}</Text>;
   };
-  console.log(list);
+
   return !list.length ? (
     renderEmpty()
   ) : (

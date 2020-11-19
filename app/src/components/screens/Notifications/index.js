@@ -34,7 +34,6 @@ class Notifications extends React.Component {
   };
 
   onMarkAsViewd = async () => {
-    console.log("object");
     await markAsViewed();
     await this.getNotifications();
   };
