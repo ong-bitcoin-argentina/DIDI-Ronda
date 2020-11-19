@@ -11,7 +11,11 @@ const NotificationDetail = ({ notification }) => {
   const ago = moment(date).fromNow(true);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: notification.viewedAt ? "#EEE" : colors.white,
+      }}>
       <View style={styles.imageContainer}>
         <Icon
           type="MaterialIcons"
@@ -36,7 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // minHeight: 80,
     alignItems: "center",
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white ,
     paddingVertical: 12,
     borderRadius: 6,
     shadowColor: colors.black,

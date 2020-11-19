@@ -6,6 +6,7 @@ import { getAuth } from "../../../utils/utils";
 import colors from "../../components/colors";
 import { connect } from "react-redux";
 import * as notificationsActions from "../../../actions/notifications";
+import { markAsViewed } from "../../../services/api/notification";
 
 class Notifications extends React.Component {
   constructor(props) {
@@ -32,6 +33,12 @@ class Notifications extends React.Component {
     await this.props.getNotifications();
   };
 
+  onMarkAsViewd = async () => {
+    console.log("object");
+    await markAsViewed();
+    await this.getNotifications();
+  };
+
   render() {
     const { bigLoading } = this.props;
     return (
@@ -51,7 +58,7 @@ class Notifications extends React.Component {
                 style={styles.loader}
               />
             )}
-            <NotificationsList />
+            <NotificationsList onMarkAsViewd={this.onMarkAsViewd} />
           </>
         )}
       </SafeAreaView>
@@ -89,7 +96,7 @@ const NotificationsScreen = connect(
   }),
   dispatch => ({
     getNotifications: () => notificationsActions.getNotifications(dispatch),
-  }),
+  })
 )(Notifications);
 
 export default createStackNavigator({
