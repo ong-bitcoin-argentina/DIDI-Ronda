@@ -48,7 +48,7 @@ app.use("/participant", appMiddleware.jwtCheck);
 app.use("/admin", appMiddleware.jwtCheck);
 
 // Credentials
-app.use("/credentials", appMiddleware.jwtCheck);
+app.use("/credentials", appMiddleware.auth);
 
 // Insecure endpoints (for QA testing)
 app.use("/insecure", appMiddleware.insecure);
