@@ -27,6 +27,7 @@ const App = () => {
           foreground: true,
           userInteraction: false,
           data: notification.data,
+          smallIcon: "@drawable/ic_notification",
         };
 
         PushNotification.localNotification(notificationObject);
