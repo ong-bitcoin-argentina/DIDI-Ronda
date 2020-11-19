@@ -6,7 +6,7 @@ import moment from "moment";
 import { getIcon, getColor } from "./config";
 
 const NotificationDetail = ({ notification }) => {
-  const { code, body, date } = notification;
+  const { code, body, date, viewedAt } = notification;
 
   const ago = moment(date).fromNow(true);
 
@@ -14,7 +14,9 @@ const NotificationDetail = ({ notification }) => {
     <View
       style={{
         ...styles.container,
-        backgroundColor: notification.viewedAt ? "#EEE" : colors.white,
+        backgroundColor: viewedAt ? colors.lightGray : colors.white,
+        borderWidth: viewedAt ? null : 1,
+        borderColor: viewedAt ? null : colors.gray,
       }}>
       <View style={styles.imageContainer}>
         <Icon
@@ -38,9 +40,7 @@ const NotificationDetail = ({ notification }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    // minHeight: 80,
     alignItems: "center",
-    // backgroundColor: colors.white ,
     paddingVertical: 12,
     borderRadius: 6,
     shadowColor: colors.black,
