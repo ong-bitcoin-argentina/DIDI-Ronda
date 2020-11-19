@@ -9,6 +9,7 @@ import NavigationService from "./src/services/navigation";
 import PushNotification from "react-native-push-notification";
 import * as roundaActions from "./src/actions/rounds";
 import { NavigationActions } from "react-navigation";
+import messaging from "@react-native-firebase/messaging";
 
 import moment from "moment";
 import "moment/locale/es";
@@ -17,7 +18,7 @@ moment.locale("es");
 const App = () => {
   PushNotification.configure({
     onNotification: function(notification) {
-      console.log("Notificacion", notification);
+      // console.log("Notificacion", notification);
       if (!notification.userInteraction) {
         const notificationObject = {
           title: notification.title,
@@ -33,10 +34,13 @@ const App = () => {
 
       if (
         notification.userInteraction &&
-        notification.data &&
-        notification.data.action
+        (notification.data.action || notification.action)
       ) {
-        const { routeName, params } = JSON.parse(notification.data.action);
+        // Messeges recived in background doesn't have data info
+        const action = notification.data.action
+          ? notification.data.action
+          : notification.action;
+        const { routeName, params } = JSON.parse(action);
         store.dispatch(roundaActions.loadRounds());
         navigator.dispatch(NavigationActions.navigate({ routeName, params }));
       }
@@ -49,6 +53,17 @@ const App = () => {
     popInitialNotification: false,
     senderID: "323695863108",
     requestPermissions: true,
+  });
+
+  messaging().setBackgroundMessageHandler(async notification => {
+    console.log("Message handled in the background!", notification);
+
+    // if (notification.data && notification.data.action) {
+    //   console.log("ruteando desde setBackgroundMessageHandler");
+    //   const { routeName, params } = JSON.parse(notification.data.action);
+    //   store.dispatch(roundaActions.loadRounds());
+    //   navigator.dispatch(NavigationActions.navigate({ routeName, params }));
+    // }
   });
 
   return (
