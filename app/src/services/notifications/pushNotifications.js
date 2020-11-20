@@ -2,7 +2,13 @@ import PushNotification from "react-native-push-notification";
 import { NavigationActions } from "react-navigation";
 import * as roundaActions from "../../actions/rounds";
 
-export const initializePushNotification = (navigator, store) => {
+let navigator = null;
+
+export const setNavigator = nav => {
+  navigator = nav;
+};
+
+export const initializePushNotification = store => {
   PushNotification.configure({
     onNotification: function(notification) {
       if (!notification.userInteraction) {

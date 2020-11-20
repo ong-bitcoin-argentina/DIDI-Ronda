@@ -8,14 +8,17 @@ import NavigationService from "./src/services/navigation";
 
 import messaging from "@react-native-firebase/messaging";
 
-import { initializePushNotification } from "./src/services/notifications/pushNotifications";
+import {
+  initializePushNotification,
+  setNavigator,
+} from "./src/services/notifications/pushNotifications";
 
 import moment from "moment";
 import "moment/locale/es";
 moment.locale("es");
 
 const App = () => {
-  initializePushNotification(navigator, store);
+  initializePushNotification(store);
 
   messaging().setBackgroundMessageHandler(async notification => {
     console.log("Message handled in the background!", notification);
@@ -27,7 +30,7 @@ const App = () => {
         <Root>
           <Nav
             ref={nav => {
-              navigator = nav;
+              setNavigator(nav);
               NavigationService.setTopLevelNavigator(nav);
             }}
           />
