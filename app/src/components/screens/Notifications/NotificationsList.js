@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SectionList,
   Text,
@@ -13,6 +13,25 @@ import { connect } from "react-redux";
 import { Icon } from "native-base";
 
 const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
+  const [isAllViewed, setIsAllViewed] = useState(false);
+
+  const checkAllViewed = () => {
+    for (let i = 0; i < list.length; i++) {
+      const notification = list[i];
+
+      if (!notification.hasOwnProperty("viewedAt")) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  useEffect(() => {
+    const allViewed = checkAllViewed();
+    setIsAllViewed(allViewed);
+  }, [list]);
+
   const renderEmpty = () => (
     <View style={styles.emptyView}>
       <Text style={styles.emptyDescription}>Aún no tenés notificaciones.</Text>
@@ -28,16 +47,18 @@ const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
       return (
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{section.title}</Text>
-          <TouchableOpacity
-            style={styles.markAsReadContainer}
-            onPress={() => onMarkAsViewd()}>
-            <Icon
-              type="MaterialIcons"
-              name="check-circle"
-              style={styles.markAsReadIcon}
-            />
-            <Text style={styles.markAsReadText}>Marcar como leídas</Text>
-          </TouchableOpacity>
+          {!isAllViewed ? (
+            <TouchableOpacity
+              style={styles.markAsReadContainer}
+              onPress={() => onMarkAsViewd()}>
+              <Icon
+                type="MaterialIcons"
+                name="check-circle"
+                style={styles.markAsReadIcon}
+              />
+              <Text style={styles.markAsReadText}>Marcar como leídas</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       );
     }
