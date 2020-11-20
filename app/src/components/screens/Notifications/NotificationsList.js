@@ -1,11 +1,18 @@
-import React, { useEffect } from "react";
-import { SectionList, Text, StyleSheet, View } from "react-native";
+import React from "react";
+import {
+  SectionList,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import Notification from "./Notification";
 import MessageBox from "../../../assets/img/message-box.svg";
 import colors from "../../components/colors";
 import { connect } from "react-redux";
+import { Icon } from "native-base";
 
-const NotificationsList = ({ old, recent, list }) => {
+const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
   const renderEmpty = () => (
     <View style={styles.emptyView}>
       <Text style={styles.emptyDescription}>Aún no tenés notificaciones.</Text>
@@ -16,6 +23,28 @@ const NotificationsList = ({ old, recent, list }) => {
     </View>
   );
 
+  const renderSectionTitle = section => {
+    if (section.data.length > 0 && section.title === "Esta Semana") {
+      return (
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{section.title}</Text>
+          <TouchableOpacity
+            style={styles.markAsReadContainer}
+            onPress={() => onMarkAsViewd()}>
+            <Icon
+              type="MaterialIcons"
+              name="check-circle"
+              style={styles.markAsReadIcon}
+            />
+            <Text style={styles.markAsReadText}>Marcar como leídas</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return <Text style={styles.title}>{section.title}</Text>;
+  };
+
   return !list.length ? (
     renderEmpty()
   ) : (
@@ -25,9 +54,7 @@ const NotificationsList = ({ old, recent, list }) => {
         { title: "Anteriores", data: old },
       ]}
       renderSectionHeader={({ section }) =>
-        !!section.data.length && (
-          <Text style={styles.title}>{section.title}</Text>
-        )
+        !!section.data.length && renderSectionTitle(section)
       }
       ListFooterComponent={() => <View style={{ marginBottom: 40 }}></View>}
       ListHeaderComponent={() => <View style={{ marginTop: 10 }}></View>}
@@ -66,6 +93,28 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.darkestGray,
   },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  markAsReadContainer: {
+    marginTop: 12,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  markAsReadIcon: {
+    color: colors.mainBlue,
+    fontSize: 15,
+  },
+  markAsReadText: {
+    marginLeft: 5,
+    color: colors.mainBlue,
+    fontSize: 12,
+    lineHeight: 14,
+  },
 });
 
 export default connect(
@@ -74,5 +123,5 @@ export default connect(
     recent: state.notifications.recent,
     list: state.notifications.list,
   }),
-  dispatch => ({}),
+  dispatch => ({})
 )(NotificationsList);
