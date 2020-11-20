@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
 function createNickname(username) {
   const uniqString = Date.now().toString(36);
   const emailName = username.split("@")[0];
-  const cleanName = emailName.replace(/\.|\,|\+/g, '');
+  const cleanName = emailName.replace(/\.|\,|\+/g, "");
   const nick = `${cleanName}${uniqString}`;
   return nick;
 }
@@ -32,17 +32,20 @@ function createNickname(username) {
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
-    const { token } = req.body;  
+    const { token } = req.body;
     const user = await aidi_service.getUser(token);
-    const {  username, password, name, lastname } = user;
+    const { username, password, name, lastname, imageUrl } = user;
 
     try {
       const userExist = await user_manager.byUsername(username);
-      if (userExist) return res.status(200).jsonp({ ...user, ...userExist, id:userExist._id });
+      if (userExist)
+        return res
+          .status(200)
+          .jsonp({ ...user, ...userExist, id: userExist._id });
     } catch (error) {
       console.log("user first login with ronda");
     }
-    
+
     try {
       const data = await guest_services.register(
         username,
@@ -50,22 +53,23 @@ exports.loginWithAidi = async (req, res) => {
         name,
         lastname,
         token,
-        createNickname(username)
+        createNickname(username),
+        imageUrl
       );
 
-      const result = await postResBackground.registerAidiUser({...user,...data});
+      const result = await postResBackground.registerAidiUser({
+        ...user,
+        ...data
+      });
       console.log("registeredUser", result.appUser);
       res.status(200).jsonp(result.appUser);
-      return postResBackground.enableSCToUser(result.user)
+      return postResBackground.enableSCToUser(result.user);
     } catch (error) {
       console.log("user couldn't be register bcz: ", error);
     }
-    
   } catch (error) {
-    console.log(error,error);
-    err.name === "customError"
-    ? generic(res, err.message)
-    : generic(res, "");
+    console.log(error, error);
+    err.name === "customError" ? generic(res, err.message) : generic(res, "");
   }
 };
 

@@ -25,10 +25,10 @@ const userSchema = new Schema(
     walletAddress: { type: String, default: null },
     walletPk: { type: String, default: null },
     pictureHash: { type: String, default: null },
+    imageUrl: { type: String, default: null },
     lastBalance: { type: String, default: "0", required: true },
     sc: { type: Boolean, default: false },
     did: { type: String, default: null }
-
   },
   {
     toObject: {
@@ -41,11 +41,8 @@ const userSchema = new Schema(
 );
 
 userSchema.virtual("picture").get(function() {
-  if (this.pictureHash !== null) {
-    return `http://${STORAGE_HOST}:${STORAGE_PORT}/bzz:/${this.pictureHash}`;
-  } else {
-    return null;
-  }
+  // For retro-compatibility
+  return this.imageUrl;
 });
 
 // Before saving the user in any case, we hash the password that is set to it.
@@ -69,6 +66,6 @@ userSchema.methods.comparePassword = async function plaintext(plaintext) {
 
 userSchema.statics.findByToken = function(token) {
   return this.findOne({ token });
-}
+};
 
 module.exports = mongoose.model("User", userSchema);
