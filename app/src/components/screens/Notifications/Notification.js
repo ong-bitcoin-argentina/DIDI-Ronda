@@ -15,8 +15,6 @@ const NotificationDetail = ({ notification }) => {
       style={{
         ...styles.container,
         backgroundColor: viewedAt ? colors.lightGray : colors.white,
-        borderWidth: viewedAt ? null : 1,
-        borderColor: viewedAt ? null : colors.gray,
       }}>
       <View style={styles.imageContainer}>
         <Icon
