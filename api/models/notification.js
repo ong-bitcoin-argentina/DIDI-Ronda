@@ -7,7 +7,13 @@ const notificationSchema = new Schema({
   date: { type: Date, default: Date.now, required: true },
   body: { type: String, required: true },
   userId: { type: ObjectId, ref: "User", required: true },
-  viewedAt: { type: Date }
+  viewedAt: { type: Date },
+  action: {
+    type: {
+      routeName: { type: String },
+      params: { type: Object }
+    }
+  }
 });
 
 module.exports = mongoose.model("Notification", notificationSchema);
