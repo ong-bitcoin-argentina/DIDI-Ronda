@@ -35,24 +35,6 @@ exports.updateByUsername = async req => {
   return updatedUser;
 };
 
-exports.getNotifications = async req => {
-  const { username } = req.body;
-  const { page, limit } = req.query;
-  const pageNumber = Number(page);
-  const limitNumber = Number(limit);
-  const user = await user_manager.byUsername(username);
-  return {
-    items: await notifications_manager.byUserId(
-      user._id,
-      pageNumber,
-      limitNumber
-    ),
-    count: await notifications_manager.countByUserId(user._id),
-    page: pageNumber || 0,
-    limit: limitNumber || undefined
-  };
-};
-
 exports.roundsOfUser = async req => {
   const { username } = req.body;
 

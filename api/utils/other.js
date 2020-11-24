@@ -26,3 +26,9 @@ exports.parseValues = req => {
   });
   return promise;
 };
+
+exports.responseHandler = (res, result) => {
+  return result && result.error
+    ? res.status(500).jsonp({ error: result.error })
+    : res.status(200).jsonp(result);
+};
