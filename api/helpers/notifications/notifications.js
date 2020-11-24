@@ -43,7 +43,7 @@ async function presistNotification(token, code, body, data) {
   if (user) {
     await Notification.create({
       userId: user._id,
-      action: data.action,
+      action: data && data.action ? JSON.parse(data.action) : undefined,
       code,
       body
     });
