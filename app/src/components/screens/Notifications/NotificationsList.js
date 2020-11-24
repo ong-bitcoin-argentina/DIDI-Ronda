@@ -12,7 +12,7 @@ import colors from "../../components/colors";
 import { connect } from "react-redux";
 import { Icon } from "native-base";
 
-const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
+const NotificationsList = ({ old, recent, list, onMarkAsViewed }) => {
   const [isAllViewed, setIsAllViewed] = useState(false);
 
   const checkAllViewed = () => {
@@ -47,10 +47,10 @@ const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
       return (
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{section.title}</Text>
-          {!isAllViewed ? (
+          {isAllViewed ? null : (
             <TouchableOpacity
               style={styles.markAsReadContainer}
-              onPress={() => onMarkAsViewd()}>
+              onPress={onMarkAsViewed}>
               <Icon
                 type="MaterialIcons"
                 name="check-circle"
@@ -58,7 +58,7 @@ const NotificationsList = ({ old, recent, list, onMarkAsViewd }) => {
               />
               <Text style={styles.markAsReadText}>Marcar como leídas</Text>
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
       );
     }

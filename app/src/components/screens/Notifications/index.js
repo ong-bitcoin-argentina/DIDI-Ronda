@@ -33,7 +33,7 @@ class Notifications extends React.Component {
     await this.props.getNotifications();
   };
 
-  onMarkAsViewd = async () => {
+  onMarkAsViewed = async () => {
     await markAsViewed();
     await this.getNotifications();
   };
@@ -57,7 +57,7 @@ class Notifications extends React.Component {
                 style={styles.loader}
               />
             )}
-            <NotificationsList onMarkAsViewd={this.onMarkAsViewd} />
+            <NotificationsList onMarkAsViewed={this.onMarkAsViewed} />
           </>
         )}
       </SafeAreaView>
