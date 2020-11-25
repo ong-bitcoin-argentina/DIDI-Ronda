@@ -97,6 +97,7 @@ exports.saveUser = async (
   token,
   verifyToken,
   nick,
+  imageUrl,
   walletAddress,
   walletPk
 ) => {
@@ -108,6 +109,7 @@ exports.saveUser = async (
     token,
     verifyToken,
     nick,
+    imageUrl,
     walletAddress,
     walletPk
   })
@@ -185,6 +187,7 @@ exports.toDTO = async user => {
     sc,
     did,
     phone,
+    imageUrl,
     id
   } = user;
   return {
@@ -198,6 +201,7 @@ exports.toDTO = async user => {
     sc,
     did,
     phone,
+    imageUrl,
     id
   };
 };

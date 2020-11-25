@@ -13,7 +13,7 @@ const participant_manager = require("../managers/participant");
 const SMS = require("../helpers/phones");
 const {
   createStartRoundJob,
-  createNumberChangeRoundJob,
+  createNumberChangeRoundJob
 } = require("../jobs/jobs");
 
 const {
@@ -31,13 +31,13 @@ const {
   roundStartProcessing,
   startedRound,
   schedulePayRemember,
-  registerUserProcessing,
+  registerUserProcessing
 } = require("../helpers/notifications/notifications");
 
 const {
   REFILL_ORIGIN_ACCOUNT,
   REFILL_ORIGIN_ACCOUNT_PK,
-  WALLET_TARGET_BALANCE,
+  WALLET_TARGET_BALANCE
 } = process.env;
 
 const getParticipantAddresses = async ids => {
@@ -121,7 +121,7 @@ exports.acceptOrRejecInvitation = async params => {
           round.id,
           participantAddress,
           adminAddress,
-          adminPk,
+          adminPk
         ];
         if (accepted) await blockchain.acceptInvitationByAdmin(...callParams);
         if (!accepted) await blockchain.rejectInvitationByAdmin(...callParams);
@@ -170,7 +170,7 @@ exports.payNumber = async params => {
       // If this fails, we have to make sure that we restore the participant to a non payment state
       // As well as inform them or the admin
       console.error("Participant Payment Failed");
-      console.error("Received error:")
+      console.error("Received error:");
       console.error(error);
       participant.isReceivingOrMakingPayment = false;
       await participant.save();
@@ -181,7 +181,7 @@ exports.payNumber = async params => {
   // Create pay object (Approved if user is admin)
   const payObject = {
     participant: participant,
-    approved: participant.user._id.toString() === round.admin._id.toString(),
+    approved: participant.user._id.toString() === round.admin._id.toString()
   };
 
   // Push payment on round
@@ -270,7 +270,7 @@ exports.startRound = async params => {
 };
 
 const sendVerificationToken = async (username, token) => {
- await mailing.sendMail(
+  await mailing.sendMail(
     username,
     "La Ronda",
     `Tu codigo de verificacion es: ${token}`
@@ -281,12 +281,22 @@ const sendVerificationToken = async (username, token) => {
 
 exports.registerAidiUser = async params => {
   try {
-    const { nick, username, password, name, lastname, token, did, jwtToken } = params;
+    const {
+      nick,
+      username,
+      password,
+      name,
+      lastname,
+      token,
+      did,
+      jwtToken,
+      imageUrl
+    } = params;
 
     const phone = SMS.normalizePhone(params.phone);
 
     const { address, privateKey } = await walletUtil.createWallet();
-  
+
     const encryptedAddress = crypto.cipher(address);
     const encryptedPK = crypto.cipher(privateKey);
     const verifyToken = tokens.generate();
@@ -298,6 +308,7 @@ exports.registerAidiUser = async params => {
       token,
       verifyToken,
       nick,
+      imageUrl,
       encryptedAddress,
       encryptedPK
     );
@@ -316,18 +327,16 @@ exports.registerAidiUser = async params => {
         username: user.username,
         emailVerified: true,
         phone: user.phone,
-        jwtToken: jwtToken,
+        jwtToken: jwtToken
       }
     };
-
   } catch (error) {
     console.log("registerAidiUser error", error);
     return error;
   }
-}
+};
 
-
-exports.enableSCToUser = async (user) => {
+exports.enableSCToUser = async user => {
   console.log("enableSCToUser");
   let addedBalance = false;
   let subDomainCreated = false;
@@ -336,7 +345,7 @@ exports.enableSCToUser = async (user) => {
   const address = crypto.decipher(walletAddress);
 
   try {
-    console.log("creating subdomain...",nick, address);
+    console.log("creating subdomain...", nick, address);
     await blockchain.createSubdomain(nick, address);
     subDomainCreated = true;
   } catch (error) {
@@ -369,7 +378,7 @@ exports.enableSCToUser = async (user) => {
     console.log("===================");
   }
 
-  if (subDomainCreated){
+  if (subDomainCreated) {
     user.sc = true;
     await user.save();
   }
@@ -384,8 +393,7 @@ exports.enableSCToUser = async (user) => {
   await registerUserProcessing(token, username, true);
 
   return user;
-}
-
+};
 
 exports.registerUser = async params => {
   const { nick, username, password, name, token } = params;

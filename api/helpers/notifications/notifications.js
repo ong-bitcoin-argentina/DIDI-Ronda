@@ -38,12 +38,13 @@ const APP_TITLE = "Ronda";
 
 exports.APP_TITLE = APP_TITLE;
 
-async function presistNotification(token, code, body) {
+async function presistNotification(token, code, body, data) {
   const user = await User.findByToken(token);
   if (user) {
     await Notification.create({
-      code,
       userId: user._id,
+      action: data && data.action ? JSON.parse(data.action) : undefined,
+      code,
       body
     });
   }
@@ -51,7 +52,7 @@ async function presistNotification(token, code, body) {
 
 async function createAndPersistNotification(tokens, code, body, data) {
   for (const token of tokens) {
-    await presistNotification(token, code, body);
+    await presistNotification(token, code, body, data);
   }
   return await createNotification(tokens, APP_TITLE, body, data);
 }

@@ -1,10 +1,16 @@
 import PushNotification from "react-native-push-notification";
 import { NavigationActions } from "react-navigation";
-import * as roundaActions from "../../actions/rounds";
+import * as roundsActions from "../../actions/rounds";
 
-export const initializePushNotification = (navigator, store) => {
+let navigator = null;
+
+export const setNavigator = nav => {
+  navigator = nav;
+};
+
+export const initializePushNotification = store => {
   PushNotification.configure({
-    onNotification: function(notification) {
+    onNotification: async function(notification) {
       if (!notification.userInteraction) {
         const notificationObject = {
           title: notification.title,
@@ -27,19 +33,24 @@ export const initializePushNotification = (navigator, store) => {
         const action = notification.data.action
           ? notification.data.action
           : notification.action;
-        const { routeName, params } = JSON.parse(action);
-        store.dispatch(roundaActions.loadRounds());
-        navigator.dispatch(NavigationActions.navigate({ routeName, params }));
+        const { routeName, params, intent } = JSON.parse(action);
+        redirectUserToContext(routeName, params, intent, store);
       }
     },
 
-    // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-    onRegistrationError: function(err) {
-      console.error(err.message, err);
-    },
-
-    popInitialNotification: false,
+    popInitialNotification: true,
     senderID: "323695863108",
     requestPermissions: true,
   });
+};
+
+export const redirectUserToContext = async (
+  routeName,
+  params,
+  intent,
+  store
+) => {
+  await store.dispatch(roundsActions.loadRounds());
+  if (intent) await store.dispatch(roundsActions.intentManager(data));
+  navigator.dispatch(NavigationActions.navigate({ routeName, params }));
 };
