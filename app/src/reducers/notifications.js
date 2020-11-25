@@ -6,6 +6,7 @@ const defaultState = {
   list: [],
   old: [],
   recent: [],
+  unreaded: 0,
 };
 
 const aWeekAgo = moment().subtract(7, "days");
@@ -23,12 +24,13 @@ function notifications(state = defaultState, action) {
         loading: true,
       };
     case types.SET_NOTIFICATIONS:
-      const list = action.payload;
+      const list = action.payload.items;
       return {
         list,
         old: list.filter(item => !isRecent(item.date)) || [],
         recent: list.filter(item => isRecent(item.date)) || [],
         loading: false,
+        unreaded: action.payload.unreaded,
       };
     default:
       return state;

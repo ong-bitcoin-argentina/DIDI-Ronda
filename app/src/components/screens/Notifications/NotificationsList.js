@@ -12,25 +12,8 @@ import colors from "../../components/colors";
 import { connect } from "react-redux";
 import { Icon } from "native-base";
 
-const NotificationsList = ({ old, recent, list, onMarkAsViewed }) => {
-  const [isAllViewed, setIsAllViewed] = useState(false);
-
-  const checkAllViewed = () => {
-    for (let i = 0; i < list.length; i++) {
-      const notification = list[i];
-
-      if (!notification.hasOwnProperty("viewedAt")) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  useEffect(() => {
-    const allViewed = checkAllViewed();
-    setIsAllViewed(allViewed);
-  }, [list]);
+const NotificationsList = ({ old, recent, list, unreaded, onMarkAsViewed }) => {
+  // const [isAllViewed, setIsAllViewed] = useState(false);
 
   const renderEmpty = () => (
     <View style={styles.emptyView}>
@@ -42,6 +25,7 @@ const NotificationsList = ({ old, recent, list, onMarkAsViewed }) => {
     </View>
   );
 
+  const isAllViewed = parseInt(unreaded) === 0;
   const renderSectionTitle = section => {
     if (section.data.length > 0 && section.title === "Esta Semana") {
       return (
@@ -143,6 +127,7 @@ export default connect(
     old: state.notifications.old,
     recent: state.notifications.recent,
     list: state.notifications.list,
+    unreaded: state.notifications.unreaded,
   }),
   dispatch => ({})
 )(NotificationsList);
