@@ -68,6 +68,8 @@ const UserProfile = props => {
     setLoading(false);
   };
 
+  const picture = user.picture ? user.picture : user.imageUrl;
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
@@ -81,7 +83,7 @@ const UserProfile = props => {
       <View style={styles.row}>
         <View style={styles.photoTextContainer}>
           <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
-            <Avatar size={avatarSize} path={user.picture} />
+            <Avatar size={avatarSize} path={picture} />
           </View>
           <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
         </View>

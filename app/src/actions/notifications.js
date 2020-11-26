@@ -13,7 +13,7 @@ export const getNotifications = async dispatch => {
     }
     dispatch({
       type: types.SET_NOTIFICATIONS,
-      payload: response.data.items,
+      payload: response.data,
     });
     return response.data.items;
   } catch (error) {

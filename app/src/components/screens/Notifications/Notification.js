@@ -1,17 +1,26 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text, Icon } from "native-base";
 import colors from "../../components/colors";
 import moment from "moment";
 import { getIcon, getColor } from "./config";
+import store from "../../../store/store";
+import { redirectUserToContext } from "../../../services/notifications/pushNotifications";
 
 const NotificationDetail = ({ notification }) => {
-  const { code, body, date, viewedAt } = notification;
+  const { code, body, date, viewedAt, action } = notification;
 
   const ago = moment(date).fromNow(true);
 
+  const onPressNotification = () => {
+    if (action) {
+      redirectUserToContext(action.routeName, action.params, null, store);
+    }
+  };
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPressNotification}
       style={{
         ...styles.container,
         backgroundColor: viewedAt ? colors.lightGray : colors.white,
@@ -31,7 +40,7 @@ const NotificationDetail = ({ notification }) => {
           <Text style={styles.time}> {ago}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
