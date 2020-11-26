@@ -29,7 +29,7 @@ const InformationRow = ({ label, value, icon, loading }) => {
 
 const styles = StyleSheet.create({
   userDataInfoIcon: {
-    color: colors.gray,
+    color: colors.secondary,
   },
   fieldRow: {
     flexDirection: "row",
