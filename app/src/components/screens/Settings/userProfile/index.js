@@ -92,21 +92,21 @@ const UserProfile = props => {
         <View style={styles.dataContainer}>
           <InformationRow
             icon="person"
-            label="NOMBRE Y APELLIDO"
+            label="Nombre"
             value={`${user.name ?? ""} ${user.lastname ?? ""}`}
             loading={loading}
           />
           <Divider />
           <InformationRow
             icon="mail"
-            label="EMAIL"
+            label="E-mail"
             value={user.username.toLowerCase()}
             loading={loading}
           />
           <Divider />
           <InformationRow
             icon="phone"
-            label="TELÉFONO"
+            label="Teléfono"
             value={user.phone}
             loading={loading}
           />
