@@ -105,7 +105,7 @@ const UserProfile = props => {
           />
           <Divider />
           <InformationRow
-            icon="phone"
+            icon="phone-iphone"
             label="Teléfono"
             value={user.phone}
             loading={loading}
