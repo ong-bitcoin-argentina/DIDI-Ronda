@@ -149,13 +149,10 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   dataContainer: {
-    paddingHorizontal: 50,
     paddingTop: 10,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    minWidth: "100%",
     minHeight: "100%",
-    backgroundColor: colors.secondaryWhite,
     paddingBottom: 35,
   },
   avatarTouchableCoiner: {
@@ -205,6 +202,9 @@ const styles = StyleSheet.create({
   },
   scroll: {
     marginTop: 20,
+    backgroundColor: colors.secondaryWhite,
+    width: "100%",
+    paddingHorizontal: 40,
   },
 });
 
