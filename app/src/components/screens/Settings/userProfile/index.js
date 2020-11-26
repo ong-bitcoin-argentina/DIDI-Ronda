@@ -71,7 +71,7 @@ const UserProfile = props => {
   const picture = user.picture ? user.picture : user.imageUrl;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
         <Icon
           name="cached"
@@ -88,7 +88,7 @@ const UserProfile = props => {
           <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.scroll}>
         <View style={styles.dataContainer}>
           <InformationRow
             icon="person"
@@ -112,7 +112,7 @@ const UserProfile = props => {
           />
         </View>
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   dataContainer: {
     paddingHorizontal: 50,
-    marginTop: 30,
+    paddingTop: 10,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     minWidth: "100%",
@@ -202,6 +202,9 @@ const styles = StyleSheet.create({
   },
   photoTextContainer: {
     alignItems: "center",
+  },
+  scroll: {
+    marginTop: 20,
   },
 });
 
