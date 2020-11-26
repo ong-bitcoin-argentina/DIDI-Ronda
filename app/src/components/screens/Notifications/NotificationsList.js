@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   markAsReadText: {
     marginLeft: 5,
     color: colors.mainBlue,
-    fontSize: 12,
-    lineHeight: 14,
+    fontSize: 14,
+    lineHeight: 16,
   },
 });
 
