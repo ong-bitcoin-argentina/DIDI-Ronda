@@ -71,7 +71,7 @@ const UserProfile = props => {
   const picture = user.picture ? user.picture : user.imageUrl;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
         <Icon
           name="cached"
@@ -88,31 +88,31 @@ const UserProfile = props => {
           <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.scroll}>
         <View style={styles.dataContainer}>
           <InformationRow
             icon="person"
-            label="NOMBRE Y APELLIDO"
+            label="Nombre"
             value={`${user.name ?? ""} ${user.lastname ?? ""}`}
             loading={loading}
           />
           <Divider />
           <InformationRow
             icon="mail"
-            label="EMAIL"
+            label="E-mail"
             value={user.username.toLowerCase()}
             loading={loading}
           />
           <Divider />
           <InformationRow
-            icon="phone"
-            label="TELÉFONO"
+            icon="phone-iphone"
+            label="Teléfono"
             value={user.phone}
             loading={loading}
           />
         </View>
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -149,13 +149,10 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   dataContainer: {
-    paddingHorizontal: 50,
-    marginTop: 30,
+    paddingTop: 10,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    minWidth: "100%",
     minHeight: "100%",
-    backgroundColor: colors.secondaryWhite,
     paddingBottom: 35,
   },
   avatarTouchableCoiner: {
@@ -202,6 +199,12 @@ const styles = StyleSheet.create({
   },
   photoTextContainer: {
     alignItems: "center",
+  },
+  scroll: {
+    marginTop: 20,
+    backgroundColor: colors.secondaryWhite,
+    width: "100%",
+    paddingHorizontal: 40,
   },
 });
 

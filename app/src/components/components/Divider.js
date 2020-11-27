@@ -10,6 +10,6 @@ const styles = StyleSheet.create({
   lineSeparator: {
     height: 1,
     width: "100%",
-    backgroundColor: colors.gray,
+    backgroundColor: colors.secondary,
   },
 });
