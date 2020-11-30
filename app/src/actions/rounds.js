@@ -75,7 +75,7 @@ export const swapParticipant = (idParticipant, newUser, roundId) => {
     const swapedParticipant = await AdminService.swapParticipant(
       idParticipant,
       newUser,
-      roundId,
+      roundId
     );
 
     if (!swapedParticipant.error) {
@@ -91,13 +91,13 @@ export const reasignNumber = (
   participantId,
   targetParticipantId,
   number,
-  roundId,
+  roundId
 ) => async dispatch => {
   const reasigned = await AdminService.reasignParticipant(
     participantId,
     targetParticipantId,
     number,
-    roundId,
+    roundId
   );
 
   if (!reasigned.error) {
@@ -113,7 +113,7 @@ export const removeParticipant = (idParticipant, roundId) => {
 
     const removedParticipant = await AdminService.removeParticipant(
       idParticipant,
-      roundId,
+      roundId
     );
 
     if (!removedParticipant.error) {
@@ -132,7 +132,7 @@ export const assignParticipant = (idParticipant, roundId, shiftNumber) => {
     const assignedParticipant = await AdminService.assignParticipantToNumber(
       idParticipant,
       roundId,
-      shiftNumber,
+      shiftNumber
     );
 
     if (!assignedParticipant.error) {
@@ -147,7 +147,7 @@ export const payRound = (
   roundId,
   number,
   participantId,
-  useAdminEndpoint = false,
+  useAdminEndpoint = false
 ) => {
   return async dispatch => {
     dispatch(startRoundLoad());
@@ -156,7 +156,7 @@ export const payRound = (
       roundId,
       number,
       participantId,
-      useAdminEndpoint,
+      useAdminEndpoint
     );
 
     if (!payedRound.error) {
@@ -169,44 +169,17 @@ export const payRound = (
   };
 };
 
-export const closeRound = (
-  roundId,
-  number,
-  nextParticipants,
-  loadRoundAfter = true,
-) => {
-  return async dispatch => {
-    dispatch(startRoundLoad());
-
-    const closedRound = await AdminService.closeRound(
-      roundId,
-      number,
-      nextParticipants,
-    );
-
-    if (!closedRound.error) {
-      dispatch(closeRoundData(closedRound.data));
-    } else {
-      dispatch(closeRoundFailed(closedRound.error));
-    }
-
-    if (loadRoundAfter) {
-      dispatch(loadRounds());
-    }
-  };
-};
-
 export const acceptInvitation = (
   idParticipant,
   roundId,
-  acceptAndRequest = false,
+  acceptAndRequest = false
 ) => {
   return async dispatch => {
     dispatch(invitationStart());
 
     const acceptedInvitation = await ParticipantService.acceptInvitation(
       idParticipant,
-      roundId,
+      roundId
     );
 
     if (!acceptedInvitation.error) {
@@ -228,7 +201,7 @@ export const rejectInvitation = (idParticipant, roundId) => {
 
     const rejectedInvitation = await ParticipantService.rejectInvitation(
       idParticipant,
-      roundId,
+      roundId
     );
 
     if (!rejectedInvitation.error) {
@@ -248,7 +221,7 @@ export const requestNumbers = (idParticipant, roundId, numbers) => {
     const requestedNumbers = await ParticipantService.requestNumbers(
       idParticipant,
       roundId,
-      numbers,
+      numbers
     );
 
     if (!requestedNumbers.error) {
@@ -268,7 +241,7 @@ export const chargeNumber = (roundId, participantId, number) => {
     const chargedNumber = await ParticipantService.chargeNumber(
       roundId,
       participantId,
-      number,
+      number
     );
 
     if (!chargedNumber.error) {
@@ -321,7 +294,7 @@ export const intentManager = data => async dispatch => {
     if (admin === auth.id) {
       const roundModalMessage = `La ronda "${roundName}" se está procesando. Cuando comience, todos los participantes recibirán una notificación.`;
       return dispatch(
-        openRoundDetailRootModal(roundModalMessage, "roundCheck"),
+        openRoundDetailRootModal(roundModalMessage, "roundCheck")
       );
     }
   }
@@ -329,11 +302,11 @@ export const intentManager = data => async dispatch => {
     const { roundName, shiftNumber, limitDate } = actionData;
     const dateObj = new Date(limitDate);
     const dateText = `${dateObj.getUTCDate()} de ${getMonthName(
-      dateObj.getUTCMonth(),
+      dateObj.getUTCMonth()
     )}`;
     const roundModalMessage = `Acuerdate que tienes hasta el ${dateText} Para pagar el #${shiftNumber} de la Ronda "${roundName}"`;
     return dispatch(
-      openRoundDetailRootModal(roundModalMessage, "roundExclamation"),
+      openRoundDetailRootModal(roundModalMessage, "roundExclamation")
     );
   }
   return null;
@@ -527,18 +500,6 @@ const payRoundData = data => ({
 // Pay round (failed)
 const payRoundFailed = error => ({
   type: types.PAY_ROUND_FAILED,
-  payload: error,
-});
-
-// Close round (data)
-const closeRoundData = data => ({
-  type: types.CLOSE_ROUND,
-  data: { res: data },
-});
-
-// Close round (failed)
-const closeRoundFailed = error => ({
-  type: types.CLOSE_ROUND_FAILED,
   payload: error,
 });
 

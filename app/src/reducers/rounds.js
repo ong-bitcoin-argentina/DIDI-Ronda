@@ -34,9 +34,6 @@ const defaultState = {
     error: null,
     round: null,
   },
-  closeRound: {
-    error: null,
-  },
   payRound: {
     error: null,
     round: null,
@@ -253,22 +250,6 @@ function rounds(state = defaultState, action) {
           loading: false,
           error: action.payload,
           round: null,
-        },
-      };
-    case types.CLOSE_ROUND:
-      return {
-        ...state,
-        closeRound: {
-          ...state.closeRound,
-          error: null,
-        },
-      };
-    case types.CLOSE_ROUND_FAILED:
-      return {
-        ...state,
-        closeRound: {
-          ...state.closeRound,
-          error: action.payload,
         },
       };
     case types.LOGOUT:
