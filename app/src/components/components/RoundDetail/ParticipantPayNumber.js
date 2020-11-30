@@ -12,6 +12,8 @@ import colors from "../colors";
 import { amountFormat } from "../../../utils/utils";
 import MoneyWithCheck from "../icons/MoneyWithCheck";
 
+import NoPresentialModal from "./NoPresentialModal";
+
 const ParticipantPayNumber = props => {
   // Props
   const {
@@ -34,6 +36,8 @@ const ParticipantPayNumber = props => {
   const [popUp, setPopUp] = useState(false);
   const [confirmPopUp, setConfirmPopUp] = useState(false);
   const [qrPopUp, setQrPopUp] = useState(false);
+  const [openNoPresential, setopenNoPresential] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
 
   // payRound listener
   useEffect(() => {
@@ -47,6 +51,16 @@ const ParticipantPayNumber = props => {
       pay_round_clean();
     }
   }, [payRound]);
+
+  const openNoPresentialPayment = () => {
+    setQrPopUp(false);
+    setopenNoPresential(true);
+  };
+
+  const closeNoPresentialPayment = () => {
+    setQrPopUp(true);
+    setopenNoPresential(false);
+  };
 
   const requestAddPaymentadmin = async () => {
     setisLoading(true);
@@ -69,7 +83,7 @@ const ParticipantPayNumber = props => {
   };
 
   const qrPopUpParams = {
-    title: `Para confirmar tu aporte, escaneá el código QR que te muestra ${adminName} (admin)`,
+    title: `Para confirmar tu aporte, escaneá el código QR que te muestra ${adminName} (admin)\nTambién podés optar por confirmar tu aporte de forma no presencial haciendo click en el botón que figura más abajo.`,
   };
 
   // Methods
@@ -167,6 +181,8 @@ const ParticipantPayNumber = props => {
           titleText={qrPopUpParams.title}
           negative={() => setQrPopUp(false)}
           negativeTitle="Cancelar"
+          positiveTitle="Aporte no presencial"
+          positive={openNoPresentialPayment}
           titleTextStyle={{ fontSize: 15, marginVertical: 5 }}>
           <View style={styles.cameraContainer}>
             <QRCodeScanner
@@ -177,15 +193,16 @@ const ParticipantPayNumber = props => {
               cameraStyle={styles.cameraStyle}
             />
           </View>
-          <View style={styles.extraInfoContainer}>
-            <Text style={styles.extraInfoText}>
-              O pedile a {adminName} (administrador/a) que confirme tu aporte
-              desde su app ai·di.
-            </Text>
-          </View>
         </RoundPopUp>
       )}
-
+      <NoPresentialModal
+        adminName={adminName}
+        open={openNoPresential}
+        isLoading={isLoading}
+        isRequestingPayment={false}
+        onAccept={requestAddPaymentadmin}
+        onCancel={closeNoPresentialPayment}
+      />
       {loading ? (
         <Spinner />
       ) : (
