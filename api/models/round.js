@@ -20,6 +20,7 @@ const roundSchema = new Schema(
     participants: [{ type: ObjectId, ref: "Participant" }],
     isConfirmed: { type: Boolean, default: false },
     isBeingStarted: { type: Boolean, default: false },
+    createdAt: { type: Date, default: new Date() },
     shifts: {
       type: [
         {

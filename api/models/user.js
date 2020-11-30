@@ -28,7 +28,9 @@ const userSchema = new Schema(
     imageUrl: { type: String, default: null },
     lastBalance: { type: String, default: "0", required: true },
     sc: { type: Boolean, default: false },
-    did: { type: String, default: null }
+    did: { type: String, default: null },
+    createdAt: { type: Date, default: new Date() },
+    updatedAt: { type: Date }
   },
   {
     toObject: {
@@ -49,6 +51,7 @@ userSchema.virtual("picture").get(function() {
 // The passwords are never stored in clear text.
 userSchema.pre("save", function(next) {
   const user = this;
+  user.updatedAt = new Date();
   if (!user.isModified("password")) {
     next();
   } else {
