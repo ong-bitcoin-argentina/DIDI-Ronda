@@ -253,6 +253,27 @@ export const chargeNumber = (roundId, participantId, number) => {
   };
 };
 
+export const payNumberToParticipant = (roundId, participantId, number) => {
+  return async dispatch => {
+    dispatch(startRoundLoad());
+
+    const chargedNumber = await ParticipantService.adminPaysNumberToUser(
+      roundId,
+      participantId,
+      number
+    );
+
+    if (!chargedNumber.error) {
+      await dispatch(await loadRounds());
+      dispatch({ type: types.STOP_ROUND_DETAIL_LOADING });
+      return true;
+    }
+    dispatch({ type: types.STOP_ROUND_DETAIL_LOADING });
+    dispatch(openRoundDetailRootModal("Error al pagar el numero"));
+    return false;
+  };
+};
+
 export const getRoundData = roundId => async dispatch => {
   const res = await ParticipantService.getRoundData(roundId);
 
@@ -267,6 +288,22 @@ export const getRoundData = roundId => async dispatch => {
 
 export const requestPayment = (roundId, participantId) => async () => {
   const res = await ParticipantService.requestPayment(roundId, participantId);
+
+  if (!res.error) {
+    const { data } = res;
+    if (data) return true;
+  }
+  return null;
+};
+
+export const requestAdminToAcceptPayment = (
+  roundId,
+  participantId
+) => async () => {
+  const res = await ParticipantService.requestAdminAcceptPayment(
+    roundId,
+    participantId
+  );
 
   if (!res.error) {
     const { data } = res;

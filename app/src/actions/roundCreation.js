@@ -128,6 +128,7 @@ export const deleteFromRoundDetail = id => async (dispatch, getState) => {
     return dispatch(
       openRoundDetailRootModal("No se pueden eliminar Rondas ya iniciadas")
     );
+  return null;
 };
 
 export const editRoundRequest = () => async (dispatch, getState) => {

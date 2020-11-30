@@ -27,6 +27,7 @@ const ParticipantPayNumber = props => {
     participantPayRound,
     alertModal,
     adminName,
+    reqAdminAcceptPayment,
   } = props;
 
   // Hooks
@@ -47,11 +48,18 @@ const ParticipantPayNumber = props => {
     }
   }, [payRound]);
 
+  const requestAddPaymentadmin = async () => {
+    setisLoading(true);
+    await reqAdminAcceptPayment(roundId, participantId);
+    setisLoading(false);
+    setopenNoPresential(false);
+  };
+
   //   Variables
   const popUpParams = {
     title: `$${amountFormat(amount)}`,
     content: `¿Confirmás el aporte de $${amountFormat(
-      amount,
+      amount
     )} al ${number} de la Ronda ${roundName}?`,
   };
 
@@ -79,7 +87,7 @@ const ParticipantPayNumber = props => {
               "Queremos usar tu cámara para escanear el código, pero necesitamos permisos.",
             buttonNegative: "Cancelar",
             buttonPositive: "OK",
-          },
+          }
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -243,10 +251,14 @@ const mapDispatchToProps = dispatch => {
     pay_round_clean: () => {
       dispatch(roundsActions.payRoundClean());
     },
+    reqAdminAcceptPayment: (roundId, participantId) =>
+      dispatch(
+        roundsActions.requestAdminToAcceptPayment(roundId, participantId)
+      ),
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ParticipantPayNumber);

@@ -115,6 +115,14 @@ function rounds(state = defaultState, action) {
           loading: true,
         },
       };
+    case types.STOP_ROUND_DETAIL_LOADING:
+      return {
+        ...state,
+        numberDetails: {
+          ...state.numberDetails,
+          loading: false,
+        },
+      };
     case types.START_ROUND_SUCCEEDED:
       return {
         ...state,
