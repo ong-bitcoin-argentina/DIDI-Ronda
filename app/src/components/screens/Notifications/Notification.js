@@ -21,6 +21,7 @@ const NotificationDetail = ({ notification }) => {
   return (
     <TouchableOpacity
       onPress={onPressNotification}
+      disabled={!action}
       style={{
         ...styles.container,
         backgroundColor: viewedAt ? colors.lightGray : colors.white,
