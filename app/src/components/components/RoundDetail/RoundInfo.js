@@ -102,7 +102,11 @@ const RoundInfo = props => {
   const participantTotalPay = amountPerShift * participantNumbers.length;
 
   const enabledForPayRound =
-    round.start && allPaysCompleted && currentShift.status === "current";
+    round.start &&
+    allPaysCompleted &&
+    currentShift.status === "current" &&
+    !currentShift.isPayedToParticipant;
+
   const { number: myNumber } = round.shifts.find(
     s => s.participant[0] === userParticipant._id
   );
@@ -156,7 +160,9 @@ const RoundInfo = props => {
     if (!isNumberFromParticipant) return false;
     const limitDate = new Date(number.limitDate);
     const today = new Date();
+    const { isPayedToParticipant } = number;
     return (
+      !isPayedToParticipant &&
       round.start &&
       number.status === "current" &&
       allPaysCompleted &&
@@ -246,14 +252,12 @@ const RoundInfo = props => {
                   justifyContent: "center",
                   marginLeft: 30,
                   flexDirection: "row",
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     ...styles.participantPaymentRedText,
                     color: isShiftAvailableToPay ? "green" : "red",
-                  }}
-                >
+                  }}>
                   {isShiftAvailableToPay ? "+" : "-"}
                 </Text>
                 <Icon
@@ -268,8 +272,7 @@ const RoundInfo = props => {
                   style={{
                     ...styles.participantPaymentRedText,
                     color: isShiftAvailableToPay ? "green" : "red",
-                  }}
-                >
+                  }}>
                   {isShiftAvailableToPay
                     ? amountFormat(roundTotalAmount)
                     : amountFormat(participantTotalPay)}
@@ -381,8 +384,7 @@ const RoundInfo = props => {
       {userAdmin && (
         <CaptionInfo
           title={`Estado #${currentNumber}`}
-          subTitle={`${currentNumber} de ${totalShifts}`}
-        >
+          subTitle={`${currentNumber} de ${totalShifts}`}>
           <View>
             <ParticipantList
               participants={round.participants}
