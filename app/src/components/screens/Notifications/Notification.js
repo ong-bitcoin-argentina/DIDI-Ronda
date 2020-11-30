@@ -28,13 +28,13 @@ const NotificationDetail = ({ notification }) => {
         ...styles.container,
         backgroundColor: viewedAt ? colors.lightGray : colors.white,
       }}>
-      {isRedirecting ? (
+      {isRedirecting && (
         <ActivityIndicator
           size="large"
           color={colors.mainBlue}
           style={styles.loading}
         />
-      ) : null}
+      )}
 
       <View style={styles.imageContainer}>
         <Icon
