@@ -16,7 +16,7 @@ const RoundDetail = props => {
     requestRounds,
     navigation,
     refreshRoundData,
-    invitationClean,
+    clearInvitation,
   } = props;
   const roundId = navigation.getParam("_id", null);
   const reduxRoundObject =
