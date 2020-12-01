@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { View, Text, Icon } from "native-base";
 import colors from "../../components/colors";
 import moment from "moment";
@@ -8,23 +8,34 @@ import store from "../../../store/store";
 import { redirectUserToContext } from "../../../services/notifications/pushNotifications";
 
 const NotificationDetail = ({ notification }) => {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const { code, body, date, viewedAt, action } = notification;
 
   const ago = moment(date).fromNow(true);
 
-  const onPressNotification = () => {
-    if (action) {
-      redirectUserToContext(action.routeName, action.params, null, store);
-    }
+  const onPressNotification = async () => {
+    setIsRedirecting(true);
+    await redirectUserToContext(action.routeName, action.params, null, store);
+    setIsRedirecting(false);
   };
 
   return (
     <TouchableOpacity
       onPress={onPressNotification}
+      disabled={!action}
       style={{
         ...styles.container,
         backgroundColor: viewedAt ? colors.lightGray : colors.white,
       }}>
+      {isRedirecting && (
+        <ActivityIndicator
+          size="large"
+          color={colors.mainBlue}
+          style={styles.loading}
+        />
+      )}
+
       <View style={styles.imageContainer}>
         <Icon
           type="MaterialIcons"
@@ -87,6 +98,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.darkishGray,
     flexShrink: 1,
+  },
+  loading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    zIndex: 10,
   },
 });
 
