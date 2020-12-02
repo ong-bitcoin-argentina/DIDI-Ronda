@@ -13,8 +13,6 @@ import { connect } from "react-redux";
 import { Icon } from "native-base";
 
 const NotificationsList = ({ old, recent, list, unreaded, onMarkAsViewed }) => {
-  // const [isAllViewed, setIsAllViewed] = useState(false);
-
   const renderEmpty = () => (
     <View style={styles.emptyView}>
       <Text style={styles.emptyDescription}>Aún no tenés notificaciones.</Text>
