@@ -48,7 +48,7 @@ const NotificationDetail = ({ notification }) => {
           <Text
             style={{
               ...styles.body,
-              fontWeight: viewedAt ? null : "700",
+              fontWeight: viewedAt ? null : "bold",
               color: viewedAt ? colors.darkestGray : colors.black,
             }}>
             {body}
