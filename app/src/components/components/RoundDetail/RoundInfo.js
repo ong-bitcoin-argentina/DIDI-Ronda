@@ -246,14 +246,12 @@ const RoundInfo = props => {
                   justifyContent: "center",
                   marginLeft: 30,
                   flexDirection: "row",
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     ...styles.participantPaymentRedText,
                     color: isShiftAvailableToPay ? "green" : "red",
-                  }}
-                >
+                  }}>
                   {isShiftAvailableToPay ? "+" : "-"}
                 </Text>
                 <Icon
@@ -268,8 +266,7 @@ const RoundInfo = props => {
                   style={{
                     ...styles.participantPaymentRedText,
                     color: isShiftAvailableToPay ? "green" : "red",
-                  }}
-                >
+                  }}>
                   {isShiftAvailableToPay
                     ? amountFormat(roundTotalAmount)
                     : amountFormat(participantTotalPay)}
@@ -381,8 +378,7 @@ const RoundInfo = props => {
       {userAdmin && (
         <CaptionInfo
           title={`Estado #${currentNumber}`}
-          subTitle={`${currentNumber} de ${totalShifts}`}
-        >
+          subTitle={`${currentNumber} de ${totalShifts}`}>
           <View>
             <ParticipantList
               participants={round.participants}
@@ -405,17 +401,6 @@ const RoundInfo = props => {
           </View>
         </View>
       )}
-
-      {userAdmin &&
-        (enabledForPayRound && (
-          <View style={styles.buttonContainer}>
-            <PayRound
-              number={currentNumber}
-              currentShiftParticipants={participantsOfNumber}
-              navigateParticipant={navigateParticipant}
-            />
-          </View>
-        ))}
 
       {confirmAlert && <ConfirmModal {...confirmAlert} />}
     </View>
