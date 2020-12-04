@@ -408,17 +408,6 @@ const RoundInfo = props => {
         </View>
       )}
 
-      {userAdmin &&
-        (enabledForPayRound && (
-          <View style={styles.buttonContainer}>
-            <PayRound
-              number={currentNumber}
-              currentShiftParticipants={participantsOfNumber}
-              navigateParticipant={navigateParticipant}
-            />
-          </View>
-        ))}
-
       {confirmAlert && <ConfirmModal {...confirmAlert} />}
     </View>
   );

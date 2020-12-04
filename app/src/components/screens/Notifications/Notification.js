@@ -47,7 +47,7 @@ const NotificationDetail = props => {
       disabled={!action}
       style={{
         ...styles.container,
-        backgroundColor: viewedAt ? colors.lightGray : colors.white,
+        backgroundColor: viewedAt ? colors.secondGray : colors.white,
       }}>
       {isRedirecting && (
         <ActivityIndicator
@@ -65,8 +65,15 @@ const NotificationDetail = props => {
         />
       </View>
       <View style={styles.contentContainer}>
-        <View style={styles.body}>
-          <Text stlye={styles.body}>{body}</Text>
+        <View>
+          <Text
+            style={{
+              ...styles.body,
+              fontWeight: viewedAt ? null : "bold",
+              color: viewedAt ? colors.darkestGray : colors.black,
+            }}>
+            {body}
+          </Text>
         </View>
         <View stlye={{ flexDirection: "row" }}>
           <Text style={styles.time}> {ago}</Text>
@@ -82,14 +89,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderRadius: 6,
-    shadowColor: colors.black,
+    shadowColor: colors.lightGray,
     shadowOffset: {
       width: 0,
       height: 0,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 4.65,
-    elevation: 7,
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 6,
     marginVertical: 7,
   },
   icon: {
@@ -117,7 +124,7 @@ const styles = StyleSheet.create({
   },
   time: {
     fontWeight: "bold",
-    color: colors.darkishGray,
+    color: colors.darkestGray,
     flexShrink: 1,
   },
   loading: {
