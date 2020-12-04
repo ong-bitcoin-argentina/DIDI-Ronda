@@ -502,8 +502,6 @@ exports.start = async req => {
   round.isBeingStarted = true;
   await round.save();
 
-  await credentials_service.emitStartedRoundParticipants(round);
-
   return { round };
 };
 

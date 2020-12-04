@@ -1,9 +1,27 @@
 require("dotenv").config();
 const { rememberNotifications } = require("../helpers/config");
 const moment = require("moment");
+const Agenda = require("agenda");
+const CronJob = require("cron").CronJob;
 const round_manager = require("../managers/round");
 const credentials_service = require("../services/credential");
 const config = require("../helpers/config");
+const types = require("./types");
+
+const {
+  roundNotStarted,
+  roundStartAdminProcessing
+} = require("../helpers/notifications/notifications");
+const {
+  createNotification,
+  INTENTS
+} = require("../helpers/notifications/config");
+const { shiftAboutToEnd } = require("../helpers/notifications/messages");
+
+const { customError } = require("../helpers/errorHandler");
+
+const { handleRoundNumberChange, walletRefill } = require("./utils");
+const { startRound } = require("../services/postRes");
 
 const {
   MONGO_SERVER,
@@ -15,31 +33,12 @@ const {
   REFILL_MONTH,
   REFILL_DAY_OF_WEEL
 } = process.env;
-
 const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
-
-const Agenda = require("agenda");
-const types = require("./types");
-const { roundNotStarted } = require("../helpers/notifications/notifications");
-const {
-  createNotification,
-  INTENTS
-} = require("../helpers/notifications/config");
-const { customError } = require("../helpers/errorHandler");
-const CronJob = require("cron").CronJob;
 
 const agenda = new Agenda({
   db: { address: mongoConnectionString },
   processEvery: "1 minutes"
 });
-
-// Messages
-const {
-  shiftAboutToEnd,
-  roundStartedDate
-} = require("../helpers/notifications/messages");
-const { handleRoundNumberChange, walletRefill } = require("./utils");
-const { emitStartedRoundParticipants } = require("../services/credential");
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -111,46 +110,19 @@ agenda.define(types.ROUND_START_DATE, async job => {
     );
     if (rejectedParticipants.length) return roundNotStarted(round);
 
-    // Start round
-    round.start = true;
-    // Mark first shift as current
-    round.shifts[0].status = "current";
-    // Save changes to round
-    const updatedRound = await round_manager.save(round);
-    if (updatedRound === null)
-      throw new customError("Error starting round in schedule");
-
+    let notificationResult;
     try {
-      await emitStartedRoundParticipants(round);
+      const updatedRound = await startRound({ round }, false);
+      if (updatedRound) {
+        notificationResult = await roundStartAdminProcessing(round, true);
+      } else {
+        throw new customError("Error starting round in schedule");
+      }
     } catch (error) {
-      console.error(
-        `Job for round ${roundId} had a failure when try to emmit credentials`
-      );
+      logError("Error starting round in schedule");
+      console.log(error);
+      notificationResult = await roundStartAdminProcessing(round, false);
     }
-
-    // Get round participants user token (avoid nulls)
-    const roundUserTokens = round.participants
-      .map(p => p.user.token)
-      .filter(t => t);
-
-    // Round name
-    const roundName = round.name;
-    const data = {
-      action: JSON.stringify({
-        routeName: "RoundDetail",
-        params: { _id: round._id },
-        admin: round.admin,
-        roundName: round.name,
-        intent: INTENTS.ROUND_START
-      })
-    };
-    console.log(`Send scheduled notification...`);
-    const notificationResult = await createNotification(
-      roundUserTokens,
-      "ronda",
-      roundStartedDate(roundName),
-      data
-    );
 
     return notificationResult;
   }

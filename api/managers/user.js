@@ -188,6 +188,8 @@ exports.toDTO = async user => {
     did,
     phone,
     imageUrl,
+    createdAt,
+    updatedAt,
     id
   } = user;
   return {
@@ -202,6 +204,8 @@ exports.toDTO = async user => {
     did,
     phone,
     imageUrl,
+    createdAt,
+    updatedAt,
     id
   };
 };
