@@ -4,6 +4,7 @@ const crypto = require("../utils/crypto");
 const tokens = require("../helpers/tokenGenerator");
 const mailing = require("../helpers/emails");
 const blockchain = require("./blockchain");
+const credentials_service = require("./credential");
 const { SC_FEATURES } = require("../utils/other");
 const moment = require("moment");
 
@@ -28,11 +29,12 @@ const {
   participantPaymentFailed,
   swappedParticipantAdminConfirmation,
   participantSwappedInRound,
-  roundStartProcessing,
+  roundStartAdminProcessing,
   startedRound,
   schedulePayRemember,
   registerUserProcessing
 } = require("../helpers/notifications/notifications");
+const { logError } = require("../helpers/utils");
 
 const {
   REFILL_ORIGIN_ACCOUNT,
@@ -236,7 +238,29 @@ exports.swapParticipant = async params => {
   return null;
 };
 
-exports.startRound = async params => {
+const processStartedRound = async (round, processAdminNotification = true) => {
+  // Schedule pays notifications
+  schedulePayRemember(round);
+  createNumberChangeRoundJob(round);
+
+  // Send notification to admin
+  if (processAdminNotification) await roundStartAdminProcessing(round, true);
+  // Send notifications to participants
+  startedRound(round);
+
+  try {
+    await credentials_service.emitStartedRoundParticipants(round);
+  } catch (error) {
+    logError(
+      `Process for round ${roundId} had a failure when try to emmit credentials`
+    );
+    console.log(error);
+  }
+
+  return;
+};
+
+exports.startRound = async (params, processAdminNotification = true) => {
   const { round } = params;
 
   if (SC_FEATURES) {
@@ -246,7 +270,8 @@ exports.startRound = async params => {
     try {
       await blockchain.start(round.id, adminAddress, adminPk);
     } catch (error) {
-      await roundStartProcessing(round, false);
+      if (processAdminNotification)
+        await roundStartAdminProcessing(round, false);
       round.isBeingStarted = false;
       await round.save();
       return null;
@@ -259,14 +284,10 @@ exports.startRound = async params => {
   round.isBeingStarted = false;
   // Save changes to round
   await round_manager.save(round);
-  await roundStartProcessing(round, true);
 
-  // Send notifications to participants
-  await startedRound(round);
-  // Schedule pays notifications
-  schedulePayRemember(round);
-  createNumberChangeRoundJob(round);
-  return null;
+  await processStartedRound(round, processAdminNotification);
+
+  return round;
 };
 
 const sendVerificationToken = async (username, token) => {

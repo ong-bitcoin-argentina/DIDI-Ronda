@@ -607,7 +607,7 @@ exports.swappedParticipantAdminConfirmation = async (
   await createAndPersistNotification([token], code, message, data);
 };
 
-exports.roundStartProcessing = async (round, success) => {
+exports.roundStartAdminProcessing = async (round, success) => {
   const { admin, name: roundName } = round;
 
   // Get admin token
@@ -628,7 +628,7 @@ exports.roundStartProcessing = async (round, success) => {
   const code = success ? "round-start-completed" : "round-start-failed";
 
   // Send notifications
-  await createAndPersistNotification([token], code, message, data);
+  return await createAndPersistNotification([token], code, message, data);
 };
 
 exports.registerUserProcessing = async (token, email, success) => {
