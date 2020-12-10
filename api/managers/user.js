@@ -173,7 +173,7 @@ exports.byWalletAddress = async addr => {
   }
 };
 
-exports.toDTO = async user => {
+const toDTO = async user => {
   user.walletAddress = await walletUtil.getUnencryptedAddress(
     user.walletAddress
   );
@@ -211,54 +211,27 @@ exports.toDTO = async user => {
   };
 };
 
+exports.toDTO = toDTO;
+
 exports.toFullDTO = async user => {
-  user.walletAddress = await walletUtil.getUnencryptedAddress(
-    user.walletAddress
-  );
+  const baseDTO = await toDTO(user);
   const {
-    nick,
-    username,
-    name,
-    lastname,
-    verified,
-    token,
-    verifyToken,
-    forgotToken,
-    phoneToken,
-    walletAddress,
-    walletPk,
-    pictureHash,
-    imageUrl,
-    lastBalance,
-    sc,
-    did,
-    createdAt,
-    phone,
-    updatedAt,
     picture,
-    id
+    walletPk,
+    phoneToken,
+    forgotToken,
+    verifyToken,
+    token,
+    pictureHash
   } = user;
   return {
-    nick,
-    username,
-    name,
-    lastname,
-    verified,
-    token,
-    verifyToken,
-    forgotToken,
-    phoneToken,
-    walletAddress,
-    walletPk,
-    pictureHash,
-    imageUrl,
-    lastBalance,
-    sc,
-    did,
-    createdAt,
-    phone,
-    updatedAt,
+    ...baseDTO,
     picture,
-    id
+    walletPk,
+    phoneToken,
+    forgotToken,
+    verifyToken,
+    token,
+    pictureHash
   };
 };
