@@ -39,7 +39,7 @@ app.use("/", appMiddleware.auth);
 // JWT
 
 // User
-app.use("/user", appMiddleware.jwtCheck);
+// app.use("/user", appMiddleware.jwtCheck);
 
 // Participant
 app.use("/participant", appMiddleware.jwtCheck);

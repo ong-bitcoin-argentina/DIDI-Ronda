@@ -1,4 +1,5 @@
 const walletUtil = require("../utils/wallet");
+const JWT = require("../helpers/jwt");
 const User = require("../models/user");
 
 exports.byUsername = async username => {
@@ -207,5 +208,58 @@ exports.toDTO = async user => {
     createdAt,
     updatedAt,
     id
+  };
+};
+
+exports.toFullDTO = async user => {
+  user.walletAddress = await walletUtil.getUnencryptedAddress(
+    user.walletAddress
+  );
+  const {
+    nick,
+    username,
+    name,
+    lastname,
+    verified,
+    token,
+    verifyToken,
+    forgotToken,
+    phoneToken,
+    walletAddress,
+    walletPk,
+    pictureHash,
+    imageUrl,
+    lastBalance,
+    sc,
+    did,
+    createdAt,
+    phone,
+    updatedAt,
+    picture,
+    id
+  } = user;
+  return {
+    nick,
+    username,
+    name,
+    lastname,
+    verified,
+    token,
+    verifyToken,
+    forgotToken,
+    phoneToken,
+    walletAddress,
+    walletPk,
+    pictureHash,
+    imageUrl,
+    lastBalance,
+    sc,
+    did,
+    createdAt,
+    phone,
+    updatedAt,
+    picture,
+    id,
+    jwtToken: JWT.sign({ username })
   };
 };
