@@ -238,13 +238,13 @@ exports.swapParticipant = async params => {
   return null;
 };
 
-const processStartedRound = async (round, processAdminNotification = true) => {
+const processStartedRound = async round => {
   // Schedule pays notifications
   schedulePayRemember(round);
   createNumberChangeRoundJob(round);
 
   // Send notification to admin
-  if (processAdminNotification) await roundStartAdminProcessing(round, true);
+  await roundStartAdminProcessing(round, true);
   // Send notifications to participants
   startedRound(round);
 
@@ -260,7 +260,7 @@ const processStartedRound = async (round, processAdminNotification = true) => {
   return;
 };
 
-exports.startRound = async (params, processAdminNotification = true) => {
+exports.startRound = async params => {
   const { round } = params;
 
   if (SC_FEATURES) {
@@ -270,8 +270,7 @@ exports.startRound = async (params, processAdminNotification = true) => {
     try {
       await blockchain.start(round.id, adminAddress, adminPk);
     } catch (error) {
-      if (processAdminNotification)
-        await roundStartAdminProcessing(round, false);
+      await roundStartAdminProcessing(round, false);
       round.isBeingStarted = false;
       await round.save();
       return null;
@@ -285,7 +284,7 @@ exports.startRound = async (params, processAdminNotification = true) => {
   // Save changes to round
   await round_manager.save(round);
 
-  await processStartedRound(round, processAdminNotification);
+  await processStartedRound(round);
 
   return round;
 };
