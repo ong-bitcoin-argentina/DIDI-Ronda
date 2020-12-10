@@ -110,21 +110,17 @@ agenda.define(types.ROUND_START_DATE, async job => {
     );
     if (rejectedParticipants.length) return roundNotStarted(round);
 
-    let notificationResult;
     try {
-      const updatedRound = await startRound({ round }, false);
-      if (updatedRound) {
-        notificationResult = await roundStartAdminProcessing(round, true);
-      } else {
+      const updatedRound = await startRound({ round });
+      if (!updatedRound) {
         throw new customError("Error starting round in schedule");
       }
     } catch (error) {
       logError("Error starting round in schedule");
       console.log(error);
-      notificationResult = await roundStartAdminProcessing(round, false);
     }
 
-    return notificationResult;
+    return;
   }
 });
 
