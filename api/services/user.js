@@ -32,7 +32,11 @@ exports.updateByUsername = async req => {
   if (!user.did) throw new customError("That user does not have a did");
   const profileFromAidi = await aidi_service.getProfile(user.did);
   const updatedUser = await user_manager.updateProfile(user, profileFromAidi);
-  return await user_manager.toFullDTO(updatedUser);
+  const userDTO = await user_manager.toFullDTO(updatedUser);
+  return {
+    ...userDTO,
+    jwtToken: profileFromAidi.jwtToken
+  };
 };
 
 exports.roundsOfUser = async req => {
