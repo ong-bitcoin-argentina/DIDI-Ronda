@@ -259,7 +259,6 @@ exports.toFullDTO = async user => {
     phone,
     updatedAt,
     picture,
-    id,
-    jwtToken: JWT.sign({ username })
+    id
   };
 };
