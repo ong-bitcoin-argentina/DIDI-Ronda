@@ -1,3 +1,4 @@
+const moment = require("moment");
 // This file include all the post response actions to be performed.
 const walletUtil = require("../utils/wallet");
 const crypto = require("../utils/crypto");
@@ -6,7 +7,6 @@ const mailing = require("../helpers/emails");
 const blockchain = require("./blockchain");
 const credentials_service = require("./credential");
 const { SC_FEATURES } = require("../utils/other");
-const moment = require("moment");
 
 const user_manager = require("../managers/user");
 const round_manager = require("../managers/round");
@@ -15,7 +15,7 @@ const SMS = require("../helpers/phones");
 const {
   createStartRoundJob,
   createNumberChangeRoundJob
-} = require("../jobs/jobs");
+} = require("../jobs/creation");
 
 const {
   inviteRound,
@@ -238,28 +238,6 @@ exports.swapParticipant = async params => {
   return null;
 };
 
-const processStartedRound = async round => {
-  // Schedule pays notifications
-  schedulePayRemember(round);
-  createNumberChangeRoundJob(round);
-
-  // Send notification to admin
-  await roundStartAdminProcessing(round, true);
-  // Send notifications to participants
-  startedRound(round);
-
-  try {
-    await credentials_service.emitStartedRoundParticipants(round);
-  } catch (error) {
-    logError(
-      `Process for round ${roundId} had a failure when try to emmit credentials`
-    );
-    console.log(error);
-  }
-
-  return;
-};
-
 exports.startRound = async params => {
   const { round } = params;
 
@@ -284,7 +262,28 @@ exports.startRound = async params => {
   // Save changes to round
   await round_manager.save(round);
 
-  await processStartedRound(round);
+  // Schedule pays notifications
+  try {
+    schedulePayRemember(round);
+    createNumberChangeRoundJob(round);
+  } catch (error) {
+    logError("Error on job scheduling");
+    console.log(error);
+  }
+
+  // Send notification to admin
+  await roundStartAdminProcessing(round, true);
+  // Send notifications to participants
+  startedRound(round);
+
+  try {
+    await credentials_service.emitStartedRoundParticipants(round);
+  } catch (error) {
+    logError(
+      `Process for round ${roundId} had a failure when try to emmit credentials`
+    );
+    console.log(error);
+  }
 
   return round;
 };

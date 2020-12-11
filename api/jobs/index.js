@@ -1,17 +1,12 @@
 require("dotenv").config();
 const { rememberNotifications } = require("../helpers/config");
-const moment = require("moment");
-const Agenda = require("agenda");
 const CronJob = require("cron").CronJob;
+const { agenda } = require("./creation");
 const round_manager = require("../managers/round");
 const credentials_service = require("../services/credential");
-const config = require("../helpers/config");
 const types = require("./types");
 
-const {
-  roundNotStarted,
-  roundStartAdminProcessing
-} = require("../helpers/notifications/notifications");
+const { roundNotStarted } = require("../helpers/notifications/notifications");
 const {
   createNotification,
   INTENTS
@@ -24,8 +19,6 @@ const { handleRoundNumberChange, walletRefill } = require("./utils");
 const { startRound } = require("../services/postRes");
 
 const {
-  MONGO_SERVER,
-  MONGO_DATABASE,
   REFILL_SECONDS,
   REFILL_MINUTES,
   REFILL_HOURS,
@@ -33,12 +26,6 @@ const {
   REFILL_MONTH,
   REFILL_DAY_OF_WEEL
 } = process.env;
-const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
-
-const agenda = new Agenda({
-  db: { address: mongoConnectionString },
-  processEvery: "1 minutes"
-});
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
@@ -133,62 +120,6 @@ agenda.define(types.ROUND_NUMBER_CHANGE, async job => {
 exports.agendaStart = () => {
   console.log("Starting agenda...");
   agenda.start();
-};
-
-// Create job
-exports.createPayRememberJob = (taskDate, roundId, number) => {
-  const scheduleDate = config.scheduleNotificationsTime(
-    taskDate.year(),
-    taskDate.month(),
-    taskDate.date()
-  );
-  console.log(`Creating task for ${scheduleDate}...`);
-  const notificationData = { roundId, number };
-  agenda.schedule(
-    scheduleDate,
-    types.NOTIFICATIONS_PAYS_REMEMBER,
-    notificationData
-  );
-};
-
-exports.createNumberChangeRoundJob = round => {
-  const dates = round.shifts.map(s => s.limitDate);
-  const { id } = round;
-  const data = { roundId: id };
-  dates.forEach((d, i) => {
-    const offSet = moment().utcOffset();
-    const date = moment
-      .utc(d)
-      .add("minutes", offSet)
-      .toDate();
-    console.log("Creating schedule for number ", i + 1);
-    console.log("Date will be ", date);
-    agenda.schedule(date, types.ROUND_NUMBER_CHANGE, data);
-  });
-};
-
-exports.createStartRoundJob = (taskDate, roundId) => {
-  const scheduleDate = config.scheduleJobsTime(
-    taskDate.year(),
-    taskDate.month(),
-    taskDate.date()
-  );
-  console.log(`Creating task for ${scheduleDate}...`);
-  const data = { roundId };
-  agenda.schedule(scheduleDate, types.ROUND_START_DATE, data);
-};
-
-exports.updateStartRoundJob = async (taskDate, roundId) => {
-  const scheduleDate = config.scheduleJobsTime(
-    taskDate.year(),
-    taskDate.month(),
-    taskDate.date()
-  );
-  console.log(`Removing task for ${scheduleDate}...`);
-  const data = { roundId };
-  const jobs = await agenda.jobs({ data });
-  await jobs[0].remove();
-  this.createStartRoundJob(taskDate, roundId);
 };
 
 exports.permanentJob = () => {
