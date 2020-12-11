@@ -2,7 +2,7 @@ const moment = require("moment");
 const { rememberNotifications } = require("../config");
 // NOTIFICATIONS
 const { createNotification, INTENTS } = require("./config");
-const jobs = require("../../jobs/jobs");
+const jobs = require("../../jobs/creation");
 const User = require("../../models/user");
 const Notification = require("../../models/notification");
 
@@ -113,8 +113,8 @@ exports.startedRound = async round => {
   // Only participants with shift assigned
   const idsMap = {};
   round.shifts.forEach(shift => {
-    const id = shift.participant[0].toString();
-    idsMap[id] = id;
+    const id = shift.participant[0] && shift.participant[0].toString();
+    if (id) idsMap[id] = id;
   });
 
   const participants = round.participants.filter(p => {

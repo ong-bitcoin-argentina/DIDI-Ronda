@@ -21,7 +21,7 @@ const {
 const { normalizePhone } = require("../helpers/phones");
 
 // Jobs
-const { updateStartRoundJob } = require("../jobs/jobs");
+const { updateStartRoundJob } = require("../jobs/creation");
 const {
   getSimulatedFirstPaymentDate,
   getSimulatedPayment,

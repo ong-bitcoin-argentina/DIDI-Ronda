@@ -15,7 +15,7 @@ const helmet = require("helmet");
 require("dotenv").config();
 
 // Agenda
-const { agendaStart, permanentJob } = require("./jobs/jobs");
+const { agendaStart, permanentJob } = require("./jobs");
 
 const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
