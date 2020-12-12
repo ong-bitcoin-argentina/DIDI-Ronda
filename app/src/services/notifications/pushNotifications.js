@@ -1,6 +1,7 @@
 import PushNotification from "react-native-push-notification";
 import { NavigationActions } from "react-navigation";
 import * as roundsActions from "../../actions/rounds";
+import * as notificationsActions from "../../actions/notifications";
 
 let navigator = null;
 
@@ -23,6 +24,7 @@ export const initializePushNotification = store => {
         };
 
         PushNotification.localNotification(notificationObject);
+        await notificationsActions.getNotifications(store.dispatch);
       }
 
       if (
