@@ -54,3 +54,7 @@ export const redirectUserToContext = async (
   if (intent) await store.dispatch(roundsActions.intentManager(data));
   navigator.dispatch(NavigationActions.navigate({ routeName, params }));
 };
+
+export const resetNotificationCount = () => {
+  PushNotification.setApplicationIconBadgeNumber(0);
+};
