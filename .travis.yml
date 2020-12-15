@@ -2,13 +2,18 @@ language: node_js
 cache:
   npm: false
 services:
-  - mongodb
+- mongodb
 install:
-  - npm i -g ganache-cli
-  - npm i -g truffle
-  - cd sc && npm ci && cd ..
+- npm i -g ganache-cli
+- npm i -g truffle
+- cd sc && npm ci && cd ..
 before_script:
-  - sleep 15
+- sleep 15
 script:
-  - cd sc
-  - npm run test 
+- cd sc
+- npm run test
+before_install:
+- cd sc
+- openssl aes-256-cbc -K $encrypted_1a9d6c8ad656_key -iv $encrypted_1a9d6c8ad656_iv
+  -in .secret.enc -out .secret -d
+- cd ..
