@@ -3,9 +3,11 @@ cache:
   npm: false
 services:
   - mongodb
-before_script:
+install:
   - npm i -g ganache-cli
   - npm i -g truffle
+  - cd sc && npm ci && cd ..
+before_script:
   - sleep 15
 script:
   - cd sc
