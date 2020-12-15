@@ -5,8 +5,8 @@ services:
   - mongodb
 before_script:
   - npm i -g ganache-cli
+  - npm i -g truffle
   - sleep 15
 script:
   - cd sc
-  - npm run build 
   - npm run test 
