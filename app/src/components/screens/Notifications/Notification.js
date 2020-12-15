@@ -36,7 +36,7 @@ const NotificationDetail = props => {
     setIsRedirecting(true);
     if (requestRounds.list.length === 0) await loadRounds();
     if (checkIfGoToExistingRonda()) {
-      await redirectUserToContext(action.routeName, action.params, null, store);
+      await redirectUserToContext(action, store);
     }
     setIsRedirecting(false);
   };

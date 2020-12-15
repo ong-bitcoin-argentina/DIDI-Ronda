@@ -323,7 +323,9 @@ export const removeStoredRound = roundIndex => async dispatch => {
 };
 
 export const intentManager = data => async dispatch => {
-  const actionData = JSON.parse(data.action);
+  const actionData =
+    typeof data.action !== "object" ? JSON.parse(data.action) : data.action;
+
   const { intent } = actionData;
   if (intent === ROUND_START) {
     const { admin, roundName } = actionData;
