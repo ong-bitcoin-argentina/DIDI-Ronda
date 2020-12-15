@@ -21,7 +21,7 @@ const {
 const { normalizePhone } = require("../helpers/phones");
 
 // Jobs
-const { updateStartRoundJob } = require("../jobs/jobs");
+const { updateStartRoundJob } = require("../jobs/creation");
 const {
   getSimulatedFirstPaymentDate,
   getSimulatedPayment,
@@ -501,8 +501,6 @@ exports.start = async req => {
     throw new customError("All participants must accept the invitation");
   round.isBeingStarted = true;
   await round.save();
-
-  await credentials_service.emitStartedRoundParticipants(round);
 
   return { round };
 };

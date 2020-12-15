@@ -5,12 +5,12 @@ import { getAuth } from "../../../utils/utils";
 import { openAidiCredentials, links } from "../../../utils/appRouter";
 import { toRoundListPage } from "../../../utils/deepNavigation";
 import colors from "../../components/colors";
-import AsyncStorage from "@react-native-community/async-storage";
 import Card from "./Card";
 import { cards, snippets } from "./helpers";
 import { isActive, isFinished } from "../../../utils/roundsHelper";
 import * as roundsActions from "../../../actions/rounds";
 import Snippet from "./Snippet";
+import { notificationsCodes } from "../../../utils/constants";
 
 class Home extends React.Component {
   constructor(props) {
@@ -33,11 +33,7 @@ class Home extends React.Component {
   };
 
   async componentDidMount() {
-    const user = await getAuth();
-    this.setState({ user: user });
-    this.props.navigation.setParams({
-      title: `${user.name} ${user.lastname}`,
-    });
+    const user = await this.updateUser();
     await this.getRoundData();
   }
 
@@ -45,6 +41,15 @@ class Home extends React.Component {
     const { requestRounds, loadRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     this.setState({ loading: false });
+  }
+
+  async updateUser() {
+    const user = await getAuth();
+    this.setState({ user });
+    this.props.navigation.setParams({
+      title: `${user.name} ${user.lastname}`,
+    });
+    return user;
   }
 
   goToCredentials = () => openAidiCredentials();
@@ -55,19 +60,24 @@ class Home extends React.Component {
     });
   };
 
+  onNewRonda = () => {
+    this.props.navigation.navigate("Create");
+  };
+
   render() {
     return (
       <ScrollView
         contentContainerStyle={styles.container}
         style={{ backgroundColor: colors.lighterGray }}>
-        {cards(this.props).map(round => (
+        {cards(this.props).map((round, index) => (
           <Card
+            key={index}
             round={round}
             onAction={page => this.props.navigateToRoundsPage(page)}
             loading={this.state.loading}
           />
         ))}
-        <Snippet {...snippets[0]} onAction={this.onShare} />
+        <Snippet {...snippets[0]} onAction={this.onNewRonda} />
         <Snippet {...snippets[1]} onAction={this.goToCredentials} />
       </ScrollView>
     );
@@ -99,9 +109,13 @@ export default connect(
     activeRounds: state.rounds.requestRounds.list.filter(isActive),
     finishedRounds: state.rounds.requestRounds.list.filter(isFinished),
     userData: state.userData.data,
+    notifications: state.notifications,
+    haveFailedRegisterNotification: state.notifications.list.some(
+      item => item.code === notificationsCodes.errorSC
+    ),
   }),
   dispatch => ({
     navigateToRoundsPage: page => toRoundListPage(dispatch, page),
     loadRounds: () => dispatch(roundsActions.loadRounds()),
-  }),
+  })
 )(Home);

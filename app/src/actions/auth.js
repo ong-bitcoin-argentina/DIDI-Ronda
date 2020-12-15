@@ -1,6 +1,6 @@
 import * as types from "./types";
 import * as UserService from "../services/api/user";
-import { setAuth, logOut } from "../utils/utils";
+import { setAuth, logOut, getAuth } from "../utils/utils";
 import NavigationService from "../services/navigation";
 
 export const createUser = (username, password, name, token, nick) => {
@@ -12,7 +12,7 @@ export const createUser = (username, password, name, token, nick) => {
       password,
       name,
       token,
-      nick,
+      nick
     );
 
     if (response.error) {
@@ -65,7 +65,7 @@ export const verifyEmail = (username, password, name, token) => {
       username.trim(),
       password,
       name,
-      token,
+      token
     );
 
     if (!response.error) {
@@ -143,7 +143,7 @@ export const sendPassword = (username, password, token) => {
     const response = await UserService.forgotNewPassword(
       username,
       password,
-      token,
+      token
     );
 
     dispatch(finishLoadingNewPassword(response));
@@ -220,7 +220,7 @@ export const phoneVerifiyCode = (username, phoneNumber, country, code) => {
       username,
       phoneNumber,
       country,
-      code,
+      code
     );
 
     if (!response.error) {
@@ -238,6 +238,24 @@ export const cleanPhone = () => {
   return async dispatch => {
     dispatch(phoneClean());
   };
+};
+
+export const forceSCRegister = async dispatch => {
+  dispatch({ type: types.START_FORCE_SC });
+  try {
+    const user = await getAuth();
+    const response = await UserService.retryRegister(user.username);
+    dispatch({ type: types.FINISH_FORCE_SC });
+    if (response && response.data) {
+      await setAuth({ ...user, ...response.data });
+      return response;
+    } else {
+      return { error: true };
+    }
+  } catch (error) {
+    dispatch({ type: types.FINISH_FORCE_SC });
+    return { error: true };
+  }
 };
 
 // Phone

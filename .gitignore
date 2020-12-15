@@ -4,4 +4,5 @@ app/.env
 app/.env.staging
 app/package-lock.json
 api/package-lock.json
+api/firebase-adminsdk.json
 *google-services.json

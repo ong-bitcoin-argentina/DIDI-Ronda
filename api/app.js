@@ -15,7 +15,7 @@ const helmet = require("helmet");
 require("dotenv").config();
 
 // Agenda
-const { agendaStart, permanentJob } = require("./jobs/jobs");
+const { agendaStart, permanentJob } = require("./jobs");
 
 const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
@@ -48,7 +48,7 @@ app.use("/participant", appMiddleware.jwtCheck);
 app.use("/admin", appMiddleware.jwtCheck);
 
 // Credentials
-app.use("/credentials", appMiddleware.jwtCheck);
+app.use("/credentials", appMiddleware.auth);
 
 // Insecure endpoints (for QA testing)
 app.use("/insecure", appMiddleware.insecure);

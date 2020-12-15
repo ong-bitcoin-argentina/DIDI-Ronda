@@ -4,21 +4,24 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
-  //   ImageStore,
+  Dimensions,
+  Text,
 } from "react-native";
 import { Icon, Fab } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
-import ImagePicker from "react-native-image-crop-picker";
 import Avatar from "../../../components/Avatar";
+import Divider from "../../../components/Divider";
 import { getAuth, setAuth } from "../../../../utils/utils";
 import colors from "../../../components/colors";
 import InformationRow from "../../../components/InformationRow";
-import { ConfigRight, BackButton } from "../../../components/Header";
+import { BackButton, ConfigIcon } from "../../../components/Header";
 import Settings from "./Settings";
 import AboutAidi from "./AboutAidi";
 import AboutRonda from "./AboutRonda";
 import { updateUserData } from "../../../../services/api/user";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const avatarSize = SCREEN_HEIGHT / 4;
 
 const emptyUser = {
   image: null,
@@ -51,13 +54,13 @@ const UserProfile = props => {
   const refreshUserData = async () => {
     setLoading(true);
     try {
-      const { username } = await getAuth();
-      const response = await updateUserData(username);
-
+      const user = await getAuth();
+      const response = await updateUserData(user.username);
       const { data } = response;
       if (data) {
-        await setAuth(data);
-        setUser(data);
+        const newUserData = { ...user, ...data };
+        await setAuth(newUserData);
+        setUser(newUserData);
       }
     } catch (error) {
       console.log(error);
@@ -65,23 +68,10 @@ const UserProfile = props => {
     setLoading(false);
   };
 
-  const onPressAvatar = async () => {
-    // const img = await ImagePicker.openPicker(imgPickerOptions);
-    // setUser({ ...user, picture: img.path });
-    // Se hace lo siguiente para obtener el base64
-    // Luego se lo manipula y se sube al endpoint
-    // ImageStore.getBase64ForTag(
-    //   img.path,
-    //   imageFile => {
-    //
-    //       const imgData = imageFile.replace(/\n/g, "");
-    //   },
-    //   error => console.log(error)
-    // );
-  };
+  const picture = user.picture ? user.picture : user.imageUrl;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={refreshUserData} style={styles.fixedButton}>
         <Icon
           name="cached"
@@ -91,46 +81,38 @@ const UserProfile = props => {
         />
       </TouchableOpacity>
       <View style={styles.row}>
-        <TouchableOpacity
-          style={[styles.avatarTouchableCoiner, styles.shadow]}
-          onPress={onPressAvatar}>
-          <Avatar size={130} path={user.picture} />
-          {/* <View style={styles.editButton}>
-            <Icon
-              type="SimpleLineIcons"
-              style={styles.editIcon}
-              name="camera"
-            />
-          </View> */}
-        </TouchableOpacity>
+        <View style={styles.photoTextContainer}>
+          <View style={[styles.avatarTouchableCoiner, styles.shadow]}>
+            <Avatar size={avatarSize} path={picture} />
+          </View>
+          <Text style={styles.titleText}>@{user.name.split(" ")[0]}</Text>
+        </View>
       </View>
-      <View style={styles.dataContainer}>
-        <InformationRow
-          icon="person"
-          label="NOMBRE Y APELLIDO"
-          value={`${user.name ?? ""} ${user.lastname ?? ""}`}
-          loading={loading}
-        />
-        <InformationRow
-          icon="mail"
-          label="EMAIL"
-          value={user.username.toLowerCase()}
-          loading={loading}
-        />
-        <InformationRow
-          icon="phone"
-          label="TELÉFONO"
-          value={user.phone}
-          loading={loading}
-        />
-        <InformationRow
-          icon="account-circle"
-          label="NICKNAME"
-          value={user.nick}
-          loading={loading}
-        />
-      </View>
-    </ScrollView>
+      <ScrollView style={styles.scroll}>
+        <View style={styles.dataContainer}>
+          <InformationRow
+            icon="person"
+            label="Nombre"
+            value={`${user.name ?? ""} ${user.lastname ?? ""}`}
+            loading={loading}
+          />
+          <Divider />
+          <InformationRow
+            icon="mail"
+            label="E-mail"
+            value={user.username.toLowerCase()}
+            loading={loading}
+          />
+          <Divider />
+          <InformationRow
+            icon="phone-iphone"
+            label="Teléfono"
+            value={user.phone}
+            loading={loading}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -141,10 +123,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
   },
-  userDataInfoIcon: {
-    color: colors.gray,
-    marginBottom: 5,
-  },
   headerTitleStyle: {
     color: "white",
     width: "80%",
@@ -153,9 +131,8 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.mainBlue,
     flex: 1,
-    paddingTop: 35,
   },
   editText: {
     fontSize: 13,
@@ -169,37 +146,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
     backgroundColor: "transparent",
-    paddingVertical: 12,
+    paddingTop: 12,
   },
   dataContainer: {
-    paddingLeft: 50,
-    flex: 1,
-    marginTop: 30,
+    paddingTop: 10,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    width: "100%",
-    backgroundColor: colors.secondaryWhite,
-  },
-  fieldRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  valueTitle: {
-    fontSize: 11,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: "bold",
+    minHeight: "100%",
+    paddingBottom: 35,
   },
   avatarTouchableCoiner: {
     borderColor: colors.white,
     backgroundColor: colors.mainBlue,
-    borderRadius: 80,
-    width: 130,
-    height: 130,
+    borderRadius: avatarSize / 2,
+    width: avatarSize,
+    height: avatarSize,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -229,6 +190,22 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 20,
   },
+
+  titleText: {
+    marginTop: 20,
+    color: "white",
+    fontSize: 24,
+    lineHeight: 26,
+  },
+  photoTextContainer: {
+    alignItems: "center",
+  },
+  scroll: {
+    marginTop: 20,
+    backgroundColor: colors.secondaryWhite,
+    width: "100%",
+    paddingHorizontal: 40,
+  },
 });
 
 export default createStackNavigator(
@@ -239,7 +216,7 @@ export default createStackNavigator(
         title: `Mi Perfil`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
-        headerRight: <ConfigRight navigation={navigation} />,
+        headerRight: <ConfigIcon navigation={navigation} />,
       }),
     },
     Settings: {
@@ -263,7 +240,7 @@ export default createStackNavigator(
     AboutRonda: {
       screen: AboutRonda,
       navigationOptions: ({ navigation }) => ({
-        title: `Acerca de Ronda`,
+        title: `Acerca de ronda`,
         headerStyle: { backgroundColor: "#417fd7" },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,
@@ -272,5 +249,5 @@ export default createStackNavigator(
   },
   {
     initialRouteName: "Profile",
-  },
+  }
 );

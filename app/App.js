@@ -1,27 +1,28 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import firebase from '@react-native-firebase/app';
-import { Root } from 'native-base';
-import { MenuProvider } from 'react-native-popup-menu';
-import store from './src/store/store';
-import Nav from './src/components/components/navigation/Nav';
-import checkPermission from './src/services/notifications';
+import React from "react";
+import { Provider } from "react-redux";
+import { Root } from "native-base";
+import { MenuProvider } from "react-native-popup-menu";
+import store from "./src/store/store";
+import Nav from "./src/components/components/navigation/Nav";
+import NavigationService from "./src/services/navigation";
 
-import NavigationService from './src/services/navigation';
-import messaging from '@react-native-firebase/messaging';
+import messaging from "@react-native-firebase/messaging";
 
-import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+import {
+  initializePushNotification,
+  setNavigator,
+} from "./src/services/notifications/pushNotifications";
+
+import moment from "moment";
+import "moment/locale/es";
+moment.locale("es");
 
 const App = () => {
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
+  initializePushNotification(store);
 
-    return unsubscribe;
-  }, []);
+  messaging().setBackgroundMessageHandler(async notification => {
+    console.log("Message handled in the background!", notification);
+  });
 
   return (
     <Provider store={store}>
@@ -29,7 +30,7 @@ const App = () => {
         <Root>
           <Nav
             ref={nav => {
-              this.navigator = nav;
+              setNavigator(nav);
               NavigationService.setTopLevelNavigator(nav);
             }}
           />

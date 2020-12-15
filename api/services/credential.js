@@ -13,7 +13,6 @@ const {
 const { DIDI_SERVER } = process.env;
 
 const createToken = async (credential, did, isFinished = false) => {
-  const exp = !isFinished && new Date(credential[fields.endDate]).getTime();
   const data = {
     Ronda: {
       preview: {
@@ -26,12 +25,15 @@ const createToken = async (credential, did, isFinished = false) => {
         ]
       },
       category: "finance",
-      data: credential,
-      exp: exp || undefined
+      data: credential
     }
   };
 
-  return await createCredentialJWT(data, did);
+  const possibleExpiration =
+    new Date(credential[fields.endDate]).getTime() / 1000;
+  const exp = isFinished ? undefined : possibleExpiration;
+
+  return await createCredentialJWT(data, did, exp);
 };
 
 const emit = async (

@@ -7,6 +7,7 @@ const cryptoUtil = require("../utils/crypto");
 const walletUtil = require("../utils/wallet");
 const blockchain = require("../services/blockchain");
 const { SC_FEATURES } = require("../utils/other");
+const { logError } = require("../helpers/utils");
 
 const {
   WALLET_TARGET_BALANCE,
@@ -14,6 +15,17 @@ const {
   REFILL_ORIGIN_ACCOUNT,
   REFILL_ORIGIN_ACCOUNT_PK
 } = process.env;
+
+const emitRoundCredentialsWrapper = async round => {
+  try {
+    await credential_services.emitFinishedRoundParticipants(round);
+  } catch (error) {
+    logError(
+      `Job for round ${roundId} had a failure when try to emmit credentials`
+    );
+    console.log(error);
+  }
+};
 
 const handleRoundNumberChange = async roundId => {
   console.log(`Job for round id ${roundId} change number started`);
@@ -58,6 +70,7 @@ const handleRoundNumberChange = async roundId => {
       console.log(`Job for round ${roundId} ran successfuly`);
       if (sendCompletedNotification)
         console.log(`Job for round ${roundId} will send ending notifications`);
+
       if (updatedRound === null)
         throw new customError("Error changing round number");
     } catch (error) {
@@ -65,17 +78,10 @@ const handleRoundNumberChange = async roundId => {
       console.error(error);
     }
 
-    try {
-      await credential_services.emitFinishedRoundParticipants(round);
-    } catch (error) {
-      console.error(
-        `Job for round ${roundId} had a failure when try to emmit credentials`
-      );
-    }
-
     if (sendCompletedNotification) {
       // TODO: encolar participantes o emitir ronda
       await completedRound(round);
+      emitRoundCredentialsWrapper(round);
     }
   }
 

@@ -9,7 +9,7 @@ const {
   limitDate,
   firstPaymentDate,
   username,
-  newToken,
+  newToken
 } = require("../helpers/validators");
 
 // CONTROLLERS
@@ -27,6 +27,13 @@ router.post(
   [username],
   validation,
   user_controller.getNotifications
+);
+
+router.post(
+  "/notifications/markAsViewed",
+  [username],
+  validation,
+  user_controller.markNotificationsAsViewed
 );
 
 // Update user information

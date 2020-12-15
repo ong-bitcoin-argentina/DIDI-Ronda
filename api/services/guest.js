@@ -41,14 +41,22 @@ exports.login = async (username, password) => {
     phone: user.phone,
     token: user.token,
     jwtToken: jwtToken,
-    picture: user.picture,
+    picture: user.picture
   };
 
   return returnUser;
 };
 
 //REGISTER
-exports.register = async (username, password, name, lastname, token, nick) => {
+exports.register = async (
+  username,
+  password,
+  name,
+  lastname,
+  token,
+  nick,
+  imageUrl
+) => {
   const userExists = await user_manager.byUsername(username);
 
   if (userExists !== null) throw new customError("That user already exists");
@@ -68,7 +76,16 @@ exports.register = async (username, password, name, lastname, token, nick) => {
       throw new customError("That nick already exists in the domain");
   }
 
-  const data = { nick, username, password, name, lastname, token, success: true };
+  const data = {
+    nick,
+    username,
+    password,
+    name,
+    lastname,
+    token,
+    imageUrl,
+    success: true
+  };
 
   return data;
 };
@@ -95,7 +112,7 @@ exports.verify = async (username, token) => {
       username: user.username,
       emailVerified: user.verifyToken === null,
       phone: user.phone,
-      token: token,
+      token: token
     };
 
     return { returnUser };
@@ -200,7 +217,7 @@ exports.phoneCode = async (username, phone, country, token) => {
       username: user.username,
       emailVerified: user.verifyToken === null,
       phone: user.phone,
-      jwtToken: jwtToken,
+      jwtToken: jwtToken
     };
 
     await user.save();

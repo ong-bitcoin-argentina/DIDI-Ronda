@@ -2,6 +2,9 @@ import React from "react";
 import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { aboutRonda } from "./constants";
 import BigLogo from "../../../../assets/img/logo-big.svg";
+import Config from "react-native-config";
+
+const appVersion = Config.VERSION;
 
 const AboutRonda = () => {
   return (
@@ -18,6 +21,7 @@ const AboutRonda = () => {
           ))}
         </Text>
       ))}
+      <Text style={styles.paragraph}>{`versión: ${appVersion}`}</Text>
     </ScrollView>
   );
 };

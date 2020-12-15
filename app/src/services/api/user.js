@@ -1,5 +1,6 @@
 import apiCall from "./helper";
 import { getPaymentDate } from "../../utils/dates";
+import { getAuth } from "../../utils/utils";
 
 // Login
 export const login = async (username, password) => {
@@ -213,6 +214,15 @@ export const updateUserData = async username => {
   try {
     return await apiCall("post", "/user/update", { username });
   } catch (error) {
+    return { error };
+  }
+};
+
+export const retryRegister = async username => {
+  try {
+    return await apiCall("post", "/user/force-sc-enable", { username });
+  } catch (error) {
+    console.log(error);
     return { error };
   }
 };

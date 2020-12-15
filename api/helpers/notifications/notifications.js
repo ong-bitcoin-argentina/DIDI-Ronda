@@ -2,7 +2,7 @@ const moment = require("moment");
 const { rememberNotifications } = require("../config");
 // NOTIFICATIONS
 const { createNotification, INTENTS } = require("./config");
-const jobs = require("../../jobs/jobs");
+const jobs = require("../../jobs/creation");
 const User = require("../../models/user");
 const Notification = require("../../models/notification");
 
@@ -38,12 +38,13 @@ const APP_TITLE = "Ronda";
 
 exports.APP_TITLE = APP_TITLE;
 
-async function presistNotification(token, code, body) {
+async function presistNotification(token, code, body, data) {
   const user = await User.findByToken(token);
   if (user) {
     await Notification.create({
-      code,
       userId: user._id,
+      action: data && data.action ? JSON.parse(data.action) : undefined,
+      code,
       body
     });
   }
@@ -51,7 +52,7 @@ async function presistNotification(token, code, body) {
 
 async function createAndPersistNotification(tokens, code, body, data) {
   for (const token of tokens) {
-    await presistNotification(token, code, body);
+    await presistNotification(token, code, body, data);
   }
   return await createNotification(tokens, APP_TITLE, body, data);
 }
@@ -112,8 +113,8 @@ exports.startedRound = async round => {
   // Only participants with shift assigned
   const idsMap = {};
   round.shifts.forEach(shift => {
-    const id = shift.participant[0].toString();
-    idsMap[id] = id;
+    const id = shift.participant[0] && shift.participant[0].toString();
+    if (id) idsMap[id] = id;
   });
 
   const participants = round.participants.filter(p => {
@@ -606,7 +607,7 @@ exports.swappedParticipantAdminConfirmation = async (
   await createAndPersistNotification([token], code, message, data);
 };
 
-exports.roundStartProcessing = async (round, success) => {
+exports.roundStartAdminProcessing = async (round, success) => {
   const { admin, name: roundName } = round;
 
   // Get admin token
@@ -627,7 +628,7 @@ exports.roundStartProcessing = async (round, success) => {
   const code = success ? "round-start-completed" : "round-start-failed";
 
   // Send notifications
-  await createAndPersistNotification([token], code, message, data);
+  return await createAndPersistNotification([token], code, message, data);
 };
 
 exports.registerUserProcessing = async (token, email, success) => {

@@ -6,11 +6,15 @@ import { connect } from "react-redux";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import RoundListItem from "./RoundsListItem";
 import * as roundsActions from "../../../actions/rounds";
+import * as notificationsActions from "../../../actions/notifications";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
 import WarningEditingRoundModal from "./WarningEditingRoundModal";
 import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
 import { setRouteOptions } from "../../../actions/routeOptions";
+import WarningSCModal from "../../components/WarningSCModal";
+import { notificationsCodes } from "../../../utils/constants";
+import ConfirmModal from "../../components/ConfirmModal";
 
 class RoundsList extends React.Component {
   state = {
@@ -18,6 +22,8 @@ class RoundsList extends React.Component {
     openWarningEditModal: false,
     roundEditData: {},
     loading: true,
+    showSCModal: false,
+    confirmAlert: null,
   };
 
   async componentDidMount() {
@@ -25,13 +31,57 @@ class RoundsList extends React.Component {
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
-    const auth = await getAuth();
-    this.setState({ auth, loading: false });
+    await this.updateAuth();
+    this.handleSCWarning();
+    this.setState({ loading: false });
   }
 
   onDeleteStoredRound = async roundIndex => {
     const { removeStoredRound } = this.props;
     await removeStoredRound(roundIndex);
+  };
+
+  updateAuth = async () => {
+    const auth = await getAuth();
+
+    this.setState({ auth });
+  };
+
+  showSCWarning = () => {
+    this.setState({ showSCModal: true });
+  };
+
+  handleSCWarning = async () => {
+    await this.props.getNotifications();
+    const { auth } = this.state;
+    if (
+      this.props.haveFailedRegisterNotification &&
+      (!auth._doc?.sc && !auth.sc)
+    ) {
+      this.showSCWarning();
+    }
+  };
+
+  hideSCWarning = () => {
+    this.setState({ showSCModal: false });
+  };
+
+  async updateSCModal() {
+    await this.updateAuth();
+
+    this.setState({ showSCModal: false });
+  }
+
+  showWarningModalResult = result => {
+    const message = {
+      title: result.error
+        ? "Error al registrarte! Por favor, volvé a intertarlo"
+        : "Reintento enviado con éxito! En unos minutos, recibirás una notificación confirmando tu registro",
+      positive: () => this.setState({ confirmAlert: null }),
+      iconType: this.state.auth === null ? "error" : null,
+    };
+
+    this.setState({ confirmAlert: message });
   };
 
   filterRounds = (roundsData, currentStatus) => {
@@ -204,7 +254,7 @@ class RoundsList extends React.Component {
 
   render() {
     const { navigation, clearData, activePage } = this.props;
-    const { roundEditData, openWarningEditModal } = this.state;
+    const { roundEditData, openWarningEditModal, showSCModal } = this.state;
 
     return (
       <View style={styles.container}>
@@ -215,10 +265,12 @@ class RoundsList extends React.Component {
           locked>
           {this.renderTabs()}
         </Tabs>
+
         <FloatingActionButton
           clearData={clearData}
           nav={val => navigation.navigate(val)}
         />
+
         <WarningEditingRoundModal
           open={openWarningEditModal}
           roundName={roundEditData.name}
@@ -226,6 +278,16 @@ class RoundsList extends React.Component {
           onCancel={this.onCancelEditing}
           onContinue={this.onContinueEditing}
         />
+
+        <WarningSCModal
+          visible={showSCModal}
+          onRequestClose={this.hideSCWarning}
+          onConfirm={() => this.updateSCModal()}
+          onFinish={result => this.showWarningModalResult(result)}
+        />
+        {this.state.confirmAlert && (
+          <ConfirmModal {...this.state.confirmAlert} />
+        )}
       </View>
     );
   }
@@ -236,6 +298,9 @@ const mapStateToPropsList = state => {
     storedRounds: state.rounds.storedRounds,
     nameFromCreation: state.roundCreation.name,
     activePage: state.routeOptions?.roundsList?.page,
+    haveFailedRegisterNotification: state.notifications.list.some(
+      item => item.code === notificationsCodes.errorSC
+    ),
   };
 };
 
@@ -247,6 +312,7 @@ const mapDispatchToPropsList = dispatch => ({
     dispatch(roundsActions.removeStoredRound(roundIndex)),
   editRound: round => dispatch(setEditRoundData(round)),
   saveRouteOptions: options => dispatch(setRouteOptions(options)),
+  getNotifications: () => notificationsActions.getNotifications(dispatch),
 });
 
 const styles = StyleSheet.create({
@@ -277,5 +343,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToPropsList,
-  mapDispatchToPropsList,
+  mapDispatchToPropsList
 )(RoundsList);

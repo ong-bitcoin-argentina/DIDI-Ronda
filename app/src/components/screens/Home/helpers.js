@@ -5,14 +5,14 @@ import Credential from "../../../assets/img/credential";
 
 export const cards = ({ activeRounds, finishedRounds }) => [
   {
-    title: "Rondas Activas",
+    title: "rondas Activas",
     qty: activeRounds.length,
     Icon: Round,
     color: colors.secondaryBlue,
     page: 0,
   },
   {
-    title: "Rondas Terminadas",
+    title: "rondas Terminadas",
     qty: finishedRounds.length,
     Icon: RoundCheck,
     color: colors.secondaryGreen,
@@ -23,14 +23,14 @@ export const cards = ({ activeRounds, finishedRounds }) => [
 export const snippets = [
   {
     primaryColor: colors.alterRed,
-    description: "Invitá a tus amigos a participar de Rondas!",
+    description: "Invitá a tus amigos a participar de rondas",
     ImageSource: require("../../../assets/img/person.png"),
-    buttonText: "Invitar Amig@s",
+    buttonText: "¡Iniciar una ronda!",
   },
   {
     primaryColor: colors.secondaryBlue,
-    description: "Accedé a todas tus credenciales de Ronda en ai.di",
-    CustomIcon: Credential,
+    description: "Accedé a todas tus credenciales de ronda en ai·di",
+    ImageSource: require("../../../assets/img/see-credencials.png"),
     buttonText: "Ver Credenciales",
   },
 ];

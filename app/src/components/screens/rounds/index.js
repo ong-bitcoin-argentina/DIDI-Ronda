@@ -33,7 +33,6 @@ const List = createStackNavigator({
       title: `Ronda`,
       headerStyle: { backgroundColor: "#417fd7", elevation: 0 },
       headerTitleStyle: styles.headerTitleStyle,
-      headerRight: <SessionDropdown />,
     }),
   },
   NumberDetail: {
