@@ -14,11 +14,11 @@ const IconBadge = props => {
         size={20}
         style={{ color: tintColor, marginTop: 5 }}
       />
-      {parseInt(unreaded) > 0 ? (
+      {parseInt(unreaded) > 0 && (
         <View style={styles.badgeContainer}>
           <Text style={styles.badgeText}>{parseInt(unreaded)}</Text>
         </View>
-      ) : null}
+      )}
     </>
   );
 };
