@@ -6,6 +6,7 @@ const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
 const { customError } = require("../helpers/errorHandler");
 const user_manager = require("../managers/user");
+const { decodeJWT } = require("did-jwt");
 
 /*
     /login
@@ -30,23 +31,23 @@ function createNickname(username) {
 }
 
 exports.loginWithAidi = async (req, res) => {
-  console.log("running loginWithAidi.....");
   try {
     const { token } = req.body;
-    const user = await aidi_service.getUser(token);
-    const { username, password, name, lastname, imageUrl } = user;
+    const userDid = decodeJWT(token).payload.iss;
 
     try {
-      const userExist = await user_manager.byUsername(username);
-      if (userExist)
-        return res
-          .status(200)
-          .jsonp({ ...user, ...userExist, id: userExist._id });
+      const existingUser = await user_manager.byDID(userDid);
+      if (existingUser) {
+        const result = await user_manager.toFullDTO(existingUser);
+        return res.status(200).jsonp(result);
+      }
     } catch (error) {
       console.log("user first login with ronda");
     }
 
     try {
+      const user = await aidi_service.getUser(token);
+      const { username, password, name, lastname, imageUrl } = user;
       const data = await guest_services.register(
         username,
         password,
