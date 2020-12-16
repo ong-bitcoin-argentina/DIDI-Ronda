@@ -35,8 +35,9 @@ export const initializePushNotification = store => {
         const action = notification.data.action
           ? notification.data.action
           : notification.action;
-        const { routeName, params, intent } = JSON.parse(action);
-        redirectUserToContext(routeName, params, intent, store);
+
+        const actionObject = JSON.parse(action);
+        redirectUserToContext(actionObject, store);
       }
     },
 
@@ -46,14 +47,11 @@ export const initializePushNotification = store => {
   });
 };
 
-export const redirectUserToContext = async (
-  routeName,
-  params,
-  intent,
-  store
-) => {
+export const redirectUserToContext = async (action, store) => {
+  const { routeName, params, intent } = action;
+
   await store.dispatch(roundsActions.loadRounds());
-  if (intent) await store.dispatch(roundsActions.intentManager(data));
+  if (intent) await store.dispatch(roundsActions.intentManager({ action }));
   navigator.dispatch(NavigationActions.navigate({ routeName, params }));
 };
 
