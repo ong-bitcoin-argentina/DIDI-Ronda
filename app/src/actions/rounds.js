@@ -323,8 +323,7 @@ export const removeStoredRound = roundIndex => async dispatch => {
 };
 
 export const intentManager = data => async dispatch => {
-  const actionData =
-    typeof data.action !== "object" ? JSON.parse(data.action) : data.action;
+  const actionData = data.action.intent ? data.action : JSON.parse(data.action);
 
   const { intent } = actionData;
   if (intent === ROUND_START) {
