@@ -330,7 +330,7 @@ export const intentManager = data => async (dispatch, getState) => {
     const { admin, roundName, params } = actionData;
     const auth = await getAuth();
     const rounds = getState().rounds.requestRounds.list;
-    const round = rounds.filter(item => item._id === params._id)[0];
+    const round = rounds.find(item => item._id === params._id);
 
     if (admin === auth.id && !round.start) {
       const roundModalMessage = `La ronda "${roundName}" se está procesando. Cuando comience, todos los participantes recibirán una notificación.`;
