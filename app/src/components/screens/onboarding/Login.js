@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Config from "react-native-config";
 import { connect } from "react-redux";
+import { AppInstalledChecker } from "react-native-check-app-install";
 import { Button, Spinner, Icon } from "native-base";
 import {
   View,
@@ -21,6 +22,7 @@ import {
   getToken,
   openAdiLogin,
   links,
+  openPlayStoreToUpdateAidi,
 } from "./../../../utils/appRouter";
 import Logo from "../../../assets/img/app-logo.svg";
 import LinkModal from "../../components/LinkModal";
@@ -65,7 +67,11 @@ const Login = props => {
   };
 
   const openPlaystore = async () => {
-    await openAdiLogin();
+    const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
+      "com.aidi"
+    );
+
+    isInstalled ? await openPlayStoreToUpdateAidi() : await openAdiLogin();
   };
 
   // const forgot = () => props.navigation.navigate('Forgot');
