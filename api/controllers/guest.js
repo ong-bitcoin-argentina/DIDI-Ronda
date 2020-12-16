@@ -33,9 +33,9 @@ function createNickname(username) {
 exports.loginWithAidi = async (req, res) => {
   try {
     const { token } = req.body;
-    const userDid = decodeJWT(token).payload.iss;
 
     try {
+      const userDid = decodeJWT(token).payload.iss;
       const existingUser = await user_manager.byDID(userDid);
       if (existingUser) {
         const result = await user_manager.toFullDTO(existingUser);
