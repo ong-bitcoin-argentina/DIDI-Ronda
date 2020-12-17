@@ -314,28 +314,35 @@ exports.registerAidiUser = async params => {
 
     const phone = SMS.normalizePhone(params.phone);
 
-    const { address, privateKey } = await walletUtil.createWallet();
-
-    const encryptedAddress = crypto.cipher(address);
-    const encryptedPK = crypto.cipher(privateKey);
+    const existingUser = await user_manager.byPhone(phone);
     const verifyToken = tokens.generate();
-    const user = await user_manager.saveUser(
-      username,
-      password,
-      name,
-      lastname,
-      token,
-      verifyToken,
-      nick,
-      imageUrl,
-      encryptedAddress,
-      encryptedPK
-    );
-    user.verified = true;
-    user.phone = phone;
-    user.sc = false;
-    user.did = did;
-    user.save();
+    let user;
+    if (existingUser) {
+      const newData = { ...params, verifyToken };
+      user = await user_manager.convertToVerified(existingUser, newData);
+    } else {
+      const { address, privateKey } = await walletUtil.createWallet();
+      const encryptedAddress = crypto.cipher(address);
+      const encryptedPK = crypto.cipher(privateKey);
+      user = await user_manager.saveUser(
+        username,
+        password,
+        name,
+        lastname,
+        token,
+        verifyToken,
+        nick,
+        imageUrl,
+        encryptedAddress,
+        encryptedPK
+      );
+      user.verified = true;
+      user.phone = phone;
+      user.sc = false;
+      user.did = did;
+      user.save();
+    }
+
     return {
       user: user,
       appUser: {
@@ -359,7 +366,7 @@ exports.enableSCToUser = async user => {
   console.log("enableSCToUser");
   let addedBalance = false;
   let subDomainCreated = false;
-  const { nick, walletAddress, token, username, verifyToken } = user;
+  const { nick, walletAddress, token, username } = user;
 
   const address = crypto.decipher(walletAddress);
 
