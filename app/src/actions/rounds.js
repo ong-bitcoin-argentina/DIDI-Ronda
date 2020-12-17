@@ -322,14 +322,17 @@ export const removeStoredRound = roundIndex => async dispatch => {
   if (removed) dispatch(getAllStoredRounds());
 };
 
-export const intentManager = data => async dispatch => {
+export const intentManager = data => async (dispatch, getState) => {
   const actionData = data.action.intent ? data.action : JSON.parse(data.action);
 
   const { intent } = actionData;
   if (intent === ROUND_START) {
-    const { admin, roundName } = actionData;
+    const { admin, roundName, params } = actionData;
     const auth = await getAuth();
-    if (admin === auth.id) {
+    const rounds = getState().rounds.requestRounds.list;
+    const round = rounds.find(item => item._id === params._id);
+
+    if (admin === auth.id && !round.start) {
       const roundModalMessage = `La ronda "${roundName}" se está procesando. Cuando comience, todos los participantes recibirán una notificación.`;
       return dispatch(
         openRoundDetailRootModal(roundModalMessage, "roundCheck")
