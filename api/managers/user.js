@@ -90,6 +90,22 @@ exports.saveUnverified = async (phone, name, walletAddress, walletPk) => {
     .catch(err => ({ error: err }));
 };
 
+exports.convertToVerified = async (user, data) => {
+  user.username = data.username;
+  user.password = data.password;
+  user.name = data.name;
+  user.lastname = data.lastname;
+  user.token = data.token;
+  user.verifyToken = data.verifyToken;
+  user.nick = data.nick;
+  user.imageUrl = data.imageUrl;
+  user.did = data.did;
+  user.verified = true;
+  user.sc = false;
+  await user.save();
+  return user;
+};
+
 exports.saveUser = async (
   username,
   password,

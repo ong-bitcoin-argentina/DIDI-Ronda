@@ -68,7 +68,7 @@ exports.loginWithAidi = async (req, res) => {
       console.log("user couldn't be register bcz: ", error);
     }
   } catch (error) {
-    console.log(error, error);
+    console.log(error);
     err.name === "customError" ? generic(res, err.message) : generic(res, "");
   }
 };
