@@ -222,7 +222,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-base:16.1.0"
-    
+
     implementation 'androidx.multidex:multidex:2.0.1'
 
     if (enableHermes) {

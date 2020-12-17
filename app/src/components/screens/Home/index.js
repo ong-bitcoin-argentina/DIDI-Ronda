@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Share, ScrollView } from "react-native";
+import analytics from "@react-native-firebase/analytics";
 import { connect } from "react-redux";
 import { getAuth } from "../../../utils/utils";
 import { openAidiCredentials, links } from "../../../utils/appRouter";
