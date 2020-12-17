@@ -5,7 +5,7 @@ import { Button } from "native-base";
 import PlaystoreLogo from "../../assets/img/playstore.svg";
 import colors from "./colors";
 
-const LinkModal = ({ visible, onRequestClose, onConfirm }) => {
+const LinkModal = ({ visible, onRequestClose, onConfirm, needUpdate }) => {
   return (
     <Modal
       animationType="slide"
@@ -14,7 +14,9 @@ const LinkModal = ({ visible, onRequestClose, onConfirm }) => {
       backdropColor="rgba(0,0,0,0.5)">
       <View style={styles.container}>
         <Text style={[styles.text, { fontSize: 18 }]}>
-          Para continuar, necesitás instalar una aplicación:
+          {needUpdate
+            ? "Para usar ronda necesitás actualizar tu versión de la aplicación ai·di"
+            : "Para continuar, necesitás instalar una aplicación:"}
         </Text>
         <Image
           style={styles.image}

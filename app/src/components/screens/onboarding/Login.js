@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Config from "react-native-config";
+import analytics from "@react-native-firebase/analytics";
 import { connect } from "react-redux";
 import { AppInstalledChecker } from "react-native-check-app-install";
 import { Button, Spinner, Icon } from "native-base";
@@ -36,6 +36,7 @@ const states = {
 const Login = props => {
   const [state, setState] = useState(states.initial);
   const [modalVisible, setModalVisible] = useState(false);
+  const [needUpdate, setNeedUpdate] = useState(false);
 
   const handleLogin = async link => {
     if (!link) return;
@@ -61,17 +62,24 @@ const Login = props => {
   const onLoginWithAidi = async () => {
     const canOpen = await Linking.canOpenURL(links.login.deepLink);
     if (!canOpen) {
+      const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
+        "com.aidi"
+      );
+      setNeedUpdate(isInstalled);
+
+      const name = isInstalled ? "ModalUpdateAidi" : "ModalInstallAidi";
+      analytics().logScreenView({
+        screen_class: name,
+        screen_name: name,
+      });
+
       return setModalVisible(true);
     }
     await openAdiLogin();
   };
 
   const openPlaystore = async () => {
-    const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
-      "com.aidi"
-    );
-
-    isInstalled ? await openPlayStoreToUpdateAidi() : await openAdiLogin();
+    needUpdate ? await openPlayStoreToUpdateAidi() : await openAdiLogin();
   };
 
   // const forgot = () => props.navigation.navigate('Forgot');
@@ -142,6 +150,7 @@ const Login = props => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         onConfirm={openPlaystore}
+        needUpdate={needUpdate}
       />
     </ImageBackground>
   );
