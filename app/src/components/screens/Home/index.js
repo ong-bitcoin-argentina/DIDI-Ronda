@@ -49,7 +49,7 @@ class Home extends React.Component {
     const user = await getAuth();
     this.setState({ user });
     this.props.navigation.setParams({
-      title: `${user.name} ${user.lastname}`,
+      title: user.lastname ? `${user.name} ${user.lastname}` : user.name,
     });
     return user;
   }

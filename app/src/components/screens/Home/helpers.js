@@ -5,14 +5,14 @@ import Credential from "../../../assets/img/credential";
 
 export const cards = ({ activeRounds, finishedRounds }) => [
   {
-    title: "rondas Activas",
+    title: "rondas activas",
     qty: activeRounds.length,
     Icon: Round,
     color: colors.secondaryBlue,
     page: 0,
   },
   {
-    title: "rondas Terminadas",
+    title: "rondas terminadas",
     qty: finishedRounds.length,
     Icon: RoundCheck,
     color: colors.secondaryGreen,
