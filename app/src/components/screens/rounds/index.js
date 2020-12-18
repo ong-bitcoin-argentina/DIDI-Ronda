@@ -65,7 +65,7 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       headerTintColor: "white",
-      title: `Mis Rondas`,
+      title: `Mis rondas`,
       headerStyle: { backgroundColor: "#417fd7" },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: <BackButton navigation={navigation} />,

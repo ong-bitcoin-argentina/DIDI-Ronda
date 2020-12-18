@@ -34,7 +34,7 @@ const Main = createBottomTabNavigator(
             break;
           case "Rondas":
             label = focused ? (
-              <Text style={styles.tabText}>Mis Rondas</Text>
+              <Text style={styles.tabText}>Mis rondas</Text>
             ) : null;
             break;
           case "Notificaciones":

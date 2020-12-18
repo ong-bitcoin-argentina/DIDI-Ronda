@@ -94,12 +94,12 @@ export const editFromRoundDetail = id => async (dispatch, getState) => {
   if (!round.isConfirmed)
     return dispatch(
       openRoundDetailRootModal(
-        "No se pueden editar Rondas que se estan confirmando"
+        "No se pueden editar rondas que se estan confirmando"
       )
     );
   if (round.start)
     return dispatch(
-      openRoundDetailRootModal("No se pueden editar Rondas ya iniciadas")
+      openRoundDetailRootModal("No se pueden editar rondas ya iniciadas")
     );
   const turns = String(round.shifts.length);
   const date = round.startDate.split("T")[0];
@@ -126,7 +126,7 @@ export const deleteFromRoundDetail = id => async (dispatch, getState) => {
     return dispatch(openRoundDetailRootModal("Opcion inhabilitada"));
   if (round.start)
     return dispatch(
-      openRoundDetailRootModal("No se pueden eliminar Rondas ya iniciadas")
+      openRoundDetailRootModal("No se pueden eliminar rondas ya iniciadas")
     );
   return null;
 };
