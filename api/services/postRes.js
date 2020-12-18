@@ -298,6 +298,22 @@ const sendVerificationToken = async (username, token) => {
   return token;
 };
 
+const normalizeRegisterResponse = (user, jwtToken) => {
+  return {
+    user: user,
+    appUser: {
+      id: user._id,
+      name: user.name,
+      nick: user.nick,
+      lastname: user.lastname,
+      username: user.username,
+      phone: user.phone,
+      emailVerified: true,
+      jwtToken
+    }
+  };
+};
+
 exports.registerAidiUser = async params => {
   try {
     const {
@@ -316,46 +332,38 @@ exports.registerAidiUser = async params => {
 
     const existingUser = await user_manager.byPhone(phone);
     const verifyToken = tokens.generate();
-    let user;
+    const extraFields = { verified: true, sc: false, verifyToken };
+
     if (existingUser) {
-      const newData = { ...params, verifyToken };
-      user = await user_manager.convertToVerified(existingUser, newData);
-    } else {
-      const { address, privateKey } = await walletUtil.createWallet();
-      const encryptedAddress = crypto.cipher(address);
-      const encryptedPK = crypto.cipher(privateKey);
-      user = await user_manager.saveUser(
-        username,
-        password,
-        name,
-        lastname,
-        token,
-        verifyToken,
-        nick,
-        imageUrl,
-        encryptedAddress,
-        encryptedPK
+      const user = await user_manager.convertToVerified(
+        existingUser,
+        params,
+        extraFields
       );
-      user.verified = true;
-      user.phone = phone;
-      user.sc = false;
-      user.did = did;
-      user.save();
+      return normalizeRegisterResponse(user, jwtToken);
     }
 
-    return {
-      user: user,
-      appUser: {
-        id: user._id,
-        name: user.name,
-        nick: user.nick,
-        lastname: user.lastname,
-        username: user.username,
-        emailVerified: true,
-        phone: user.phone,
-        jwtToken: jwtToken
-      }
-    };
+    const { address, privateKey } = await walletUtil.createWallet();
+    const encryptedAddress = crypto.cipher(address);
+    const encryptedPK = crypto.cipher(privateKey);
+    const user = await user_manager.saveUser(
+      username,
+      password,
+      name,
+      lastname,
+      token,
+      extraFields.verifyToken,
+      nick,
+      imageUrl,
+      encryptedAddress,
+      encryptedPK
+    );
+    user.verified = extraFields.verified;
+    user.phone = phone;
+    user.sc = extraFields.sc;
+    user.did = did;
+    user.save();
+    return normalizeRegisterResponse(user, jwtToken);
   } catch (error) {
     console.log("registerAidiUser error", error);
     return error;
