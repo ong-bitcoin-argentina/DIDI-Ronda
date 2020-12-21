@@ -18,6 +18,7 @@ exports.password = check("password").isLength({ min: 5 });
 exports.phone = value => check(value).isLength({ min: 5, max: 20 });
 exports.displayName = check("name").isLength({ min: 2 });
 exports.newToken = check("newToken").isLength({ min: 1 });
+exports.token = check("newToken").isLength({ min: 1 });
 exports.userId = check("userId").isLength({ min: 1 });
 
 // Round
@@ -54,7 +55,8 @@ exports.validation = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+    console.log(errors);
+    return res.status(400).json({ errors: errors.array() });
   }
 
   next();

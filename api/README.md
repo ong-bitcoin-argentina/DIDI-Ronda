@@ -15,7 +15,7 @@
 ## .env configuration
 
 - ENVIROMENT: `dev` or `prod`
-- PORT: Api port to run server. Example: `3000`
+- PORT: Api port to run server. Example: `3200`
 - API_KEY: Create api key authorization to make request. Example: `123456`
 
 - JWT_SECRET: Secret string to generate JWT tokens. Example: `thisisastring`
@@ -32,10 +32,6 @@
 - TWILIO_ACCOUNT_SID: Twilio account SID
 - TWILIO_AUTHTOKEN: Twilio auth token
 - TWILIO_PHONE_NUMBER: Twilio phone number
-
-- REDIS_HOST: Redis host. Example: `127.0.0.1`
-- REDIS_PORT: Redis port. Example: `6379`
-- REDIS_PASSWORD: Redis password. Example: `laronda123`
 
 The other parameters in the .env.example are exemplified in there, in the case of addresses or keys, checksumed addresses must be used
 

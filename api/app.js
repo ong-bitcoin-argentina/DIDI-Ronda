@@ -10,17 +10,12 @@ const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
 const blacklistedPasswordManager = require("./managers/blacklisted_password");
 const { version } = require("./package.json");
 const helmet = require("helmet");
-const envs = {
-  3030: "PROD         ",
-  3001: "DEV          ",
-  3002: "STAGING      ",
-};
 
 // CONFIGS
 require("dotenv").config();
 
 // Agenda
-const { agendaStart, walletRefillJob } = require("./jobs/jobs");
+const { agendaStart, permanentJob } = require("./jobs");
 
 const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
 
@@ -52,6 +47,12 @@ app.use("/participant", appMiddleware.jwtCheck);
 // Admin
 app.use("/admin", appMiddleware.jwtCheck);
 
+// Credentials
+app.use("/credentials", appMiddleware.auth);
+
+// Insecure endpoints (for QA testing)
+app.use("/insecure", appMiddleware.insecure);
+
 /*** ./MIDDLEWARES ****/
 
 /*** ROUTES ****/
@@ -59,11 +60,18 @@ const guest = require("./routes/guest"); // Imports routes for guest
 const user = require("./routes/user"); // Imports routes for user
 const participant = require("./routes/participant"); // Imports routes for participant
 const admin = require("./routes/admin"); // Imports routes for admin
+const credentials = require("./routes/credentials");
+const insecure = require("./routes/insecure");
 
 app.use("/", guest);
 app.use("/user", user);
 app.use("/participant", participant);
 app.use("/admin", admin);
+app.use("/credentials", credentials);
+app.use("/insecure", insecure);
+app.use("*", function notFoundRoute(req, res) {
+  res.status(404).json({ message: "route not found" });
+});
 /*** ./ROUTES ****/
 
 /*** SERVER ****/
@@ -75,27 +83,19 @@ mongoose.connect(
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
     }
-    const blacklistedPasswords = JSON.parse(blacklistedPasswordsJSON);
-    blacklistedPasswordManager
-      .insertPasswords(blacklistedPasswords)
-      .catch(() => null)
-      .finally(() => {
-        app.listen(PORT, () => {
-          console.log(`------ LA RONDA API ------`);
-          console.log(`-      version ${version}    -`);
-          console.log(`-      ${envs[PORT]}     - `);
-          console.log(`-------------------------- `);
-
-          console.log(`Node server running on http://localhost:${PORT}`);
-
-          agendaStart();
-          walletRefillJob();
-        });
-      });
+    app.listen(PORT, () => {
+      console.log(`------ LA RONDA API ------`);
+      console.log(`-   version ${version}   -`);
+      console.log(`-   ENV: ${ENVIROMENT}   - `);
+      console.log(`-------------------------- `);
+      console.log(`Node server running on http://localhost:${PORT}`);
+      agendaStart();
+      permanentJob();
+    });
   }
 );
 /*** ./SERVER ****/
 
 /*** EXPORT FOR TESTING PURPOSE ****/
 module.exports = app;
-/*** ./EXPORT FOR TESTING PURPOSE ****/
+/*** EXPORT FOR TESTING PURPOSE ****/

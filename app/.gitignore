@@ -58,3 +58,9 @@ buck-out/
 
 # Pods
 ios/Pods/
+
+.env.staging
+.env.uat
+.env.production
+
+*gradle.properties

@@ -2,7 +2,10 @@ const moment = require("moment");
 const { rememberNotifications } = require("../config");
 // NOTIFICATIONS
 const { createNotification, INTENTS } = require("./config");
-const jobs = require("../../jobs/jobs");
+const jobs = require("../../jobs/creation");
+const User = require("../../models/user");
+const Notification = require("../../models/notification");
+
 const {
   roundInvite,
   roundCompleted,
@@ -28,8 +31,31 @@ const {
   registerUserCompleted,
   registerUserFailed,
   numberPayedToUser,
-  participantRequestAdminToAcceptPaymentMessage,
+  participantRequestAdminToAcceptPaymentMessage
 } = require("./messages");
+
+const APP_TITLE = "Ronda";
+
+exports.APP_TITLE = APP_TITLE;
+
+async function presistNotification(token, code, body, data) {
+  const user = await User.findByToken(token);
+  if (user) {
+    await Notification.create({
+      userId: user._id,
+      action: data && data.action ? JSON.parse(data.action) : undefined,
+      code,
+      body
+    });
+  }
+}
+
+async function createAndPersistNotification(tokens, code, body, data) {
+  for (const token of tokens) {
+    await presistNotification(token, code, body, data);
+  }
+  return await createNotification(tokens, APP_TITLE, body, data);
+}
 
 exports.inviteRound = async round => {
   // Filter accepted === null
@@ -41,13 +67,13 @@ exports.inviteRound = async round => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-invite",
     roundInvite(round.name, round.admin.name),
     data
   );
@@ -68,14 +94,14 @@ exports.completedRound = async round => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-completed",
     roundCompleted(round.name, endDate),
     data
   );
@@ -87,8 +113,8 @@ exports.startedRound = async round => {
   // Only participants with shift assigned
   const idsMap = {};
   round.shifts.forEach(shift => {
-    const id = shift.participant[0].toString();
-    idsMap[id] = id;
+    const id = shift.participant[0] && shift.participant[0].toString();
+    if (id) idsMap[id] = id;
   });
 
   const participants = round.participants.filter(p => {
@@ -109,14 +135,14 @@ exports.startedRound = async round => {
       params: { _id: round._id },
       admin: round.admin.id,
       roundName: round.name,
-      intent: INTENTS.ROUND_START,
-    }),
+      intent: INTENTS.ROUND_START
+    })
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-started",
     roundStarted(round.name),
     data
   );
@@ -142,9 +168,9 @@ exports.startedRoundWithoutShift = async round => {
   const tokens = participants.map(p => p.user.token).filter(t => t);
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "round-started",
     roundStarted(round.name)
   );
 
@@ -162,14 +188,14 @@ exports.asignedShift = async (round, participantName) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La Ronda",
+    "shift-assigned",
     shiftAsigned(participantName),
     data
   );
@@ -185,13 +211,13 @@ exports.participantRejectedInvitation = async (round, participantName) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-rejected",
     participantRejected(name, participantName),
     data
   );
@@ -218,14 +244,14 @@ exports.requestedShiftNotification = async (
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     [token],
-    "La ronda",
+    "shift-requested",
     shiftRequested(participantName, stringNumbers),
     data
   );
@@ -244,14 +270,14 @@ exports.participantConfirmed = async (round, participantName) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notification
-  const notification = await createNotification(
+  const notification = await createAndPersistNotification(
     [token],
-    "La Ronda",
+    "participant-confirmed",
     participantConfirmed(participantName),
     data
   );
@@ -284,23 +310,26 @@ exports.participantRequestPaymentNoti = async (
           participant,
           id: participant._id,
           name: participant.user.name,
-          picture: participant.user.picture,
+          picture: participant.user.picture
         },
         shifts: round.shifts,
         roundId: round._id,
         number: currentShift.number,
-        initialTab: 0,
-      },
-    }),
+        initialTab: 0
+      }
+    })
   };
   const msgParams = [name, user.name];
   const message = isRequestingPayment
     ? participantRequestPaymentMessage(...msgParams)
     : participantRequestAdminToAcceptPaymentMessage(...msgParams);
+  const code = isRequestingPayment
+    ? "participant-request-payment"
+    : "participant-request-admin-accept-payment";
   // Send notification
-  const notification = await createNotification(
+  const notification = await createAndPersistNotification(
     [token],
-    "La Ronda",
+    code,
     message,
     data
   );
@@ -316,14 +345,14 @@ exports.participantPayNumberNotification = async (round, participant) => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
-  const notifications = await createNotification(
+  const notifications = await createAndPersistNotification(
     tokens,
-    "La ronda",
+    "participant-pay-number",
     participantPayNumber(round.name),
     data
   );
@@ -362,14 +391,14 @@ exports.participantSwappedInRound = async (round, participant) => {
 
   // Create data for redirect
   const {
-    user: { token },
+    user: { token }
   } = participant;
 
   if (!token) return null;
 
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-swapped",
     participantSwapped(roundName, name),
     null
   );
@@ -387,14 +416,14 @@ exports.roundNotStarted = async round => {
   const data = {
     action: JSON.stringify({
       routeName: "RoundDetail",
-      params: { _id: round._id },
-    }),
+      params: { _id: round._id }
+    })
   };
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-not-started-participant-rejected",
     roundNotStartedParticipantRejected(roundName),
     data
   );
@@ -414,15 +443,15 @@ exports.roundCompletedProcessing = async round => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-confirmation-completed",
     roundConfirmationCompleted(roundName),
     data
   );
@@ -438,9 +467,9 @@ exports.roundFailedProcessing = async round => {
   const { token } = admin;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-confirmation-failed",
     roundConfirmationFailed(roundName)
   );
 
@@ -456,9 +485,9 @@ exports.invitationProcessCompleted = async (round, participant, accepted) => {
         action: JSON.stringify({
           routeName: "RoundDetail",
           params: {
-            _id: round._id,
-          },
-        }),
+            _id: round._id
+          }
+        })
       }
     : null;
 
@@ -466,9 +495,9 @@ exports.invitationProcessCompleted = async (round, participant, accepted) => {
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-invitation-completed",
     roundInvitationCompleted(round.name, accepted),
     data
   );
@@ -484,17 +513,17 @@ exports.invitationProcessFailed = async (round, participant, accepted) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "round-invitation-failed",
     roundInvitationFailed(round.name, accepted),
     data
   );
@@ -509,17 +538,17 @@ exports.participantPaymentConfirmed = async (round, participant) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-payment-confirmed",
     participantPaymentConfirmed(round.name),
     data
   );
@@ -532,17 +561,17 @@ exports.participantPaymentFailed = async (round, participant) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const { token } = user;
 
   // Send notifications
-  await createNotification(
+  await createAndPersistNotification(
     [token],
-    "La ronda",
+    "participant-payment-failed",
     participantPaymentFailed(round.name),
     data
   );
@@ -563,21 +592,22 @@ exports.swappedParticipantAdminConfirmation = async (
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const messageParams = [roundName, participantName, newParticipantName];
   const message = success
     ? adminSwappedConfirmed(...messageParams)
     : adminSwappedFailed(...messageParams);
+  const code = success ? "admin-swapped-confirmed" : "admin-swapped-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  await createAndPersistNotification([token], code, message, data);
 };
 
-exports.roundStartProcessing = async (round, success) => {
+exports.roundStartAdminProcessing = async (round, success) => {
   const { admin, name: roundName } = round;
 
   // Get admin token
@@ -587,26 +617,28 @@ exports.roundStartProcessing = async (round, success) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const message = success
     ? roundStartCompleted(roundName)
     : roundStartFailed(roundName);
+  const code = success ? "round-start-completed" : "round-start-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  return await createAndPersistNotification([token], code, message, data);
 };
 
 exports.registerUserProcessing = async (token, email, success) => {
   const message = success
     ? registerUserCompleted(email)
     : registerUserFailed(email);
+  const code = success ? "register-user-completed" : "register-user-failed";
 
   // Send notifications
-  await createNotification([token], "La ronda", message, null);
+  await createAndPersistNotification([token], code, message, null);
 };
 
 exports.numberPayedToUser = async (round, number, participantId) => {
@@ -619,13 +651,18 @@ exports.numberPayedToUser = async (round, number, participantId) => {
     action: JSON.stringify({
       routeName: "RoundDetail",
       params: {
-        _id: round._id,
-      },
-    }),
+        _id: round._id
+      }
+    })
   };
 
   const message = numberPayedToUser(name, roundName, number);
 
   // Send notifications
-  await createNotification([token], "La ronda", message, data);
+  await createAndPersistNotification(
+    [token],
+    "number-payed-to-user",
+    message,
+    data
+  );
 };

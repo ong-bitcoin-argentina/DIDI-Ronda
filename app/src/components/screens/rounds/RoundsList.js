@@ -1,22 +1,29 @@
 import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Text, Spinner, Tab, Tabs, TabHeading, Icon } from "native-base";
-
 import { connect } from "react-redux";
+
 import FloatingActionButton from "../../components/FloatingActionButton";
 import RoundListItem from "./RoundsListItem";
-
 import * as roundsActions from "../../../actions/rounds";
+import * as notificationsActions from "../../../actions/notifications";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
 import WarningEditingRoundModal from "./WarningEditingRoundModal";
 import { setEditRoundData, clearStore } from "../../../actions/roundCreation";
+import { setRouteOptions } from "../../../actions/routeOptions";
+import WarningSCModal from "../../components/WarningSCModal";
+import { notificationsCodes } from "../../../utils/constants";
+import ConfirmModal from "../../components/ConfirmModal";
 
 class RoundsList extends React.Component {
   state = {
     auth: null,
     openWarningEditModal: false,
     roundEditData: {},
+    loading: true,
+    showSCModal: false,
+    confirmAlert: null,
   };
 
   async componentDidMount() {
@@ -24,13 +31,57 @@ class RoundsList extends React.Component {
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
-    const auth = await getAuth();
-    this.setState({ auth });
+    await this.updateAuth();
+    this.handleSCWarning();
+    this.setState({ loading: false });
   }
 
   onDeleteStoredRound = async roundIndex => {
     const { removeStoredRound } = this.props;
     await removeStoredRound(roundIndex);
+  };
+
+  updateAuth = async () => {
+    const auth = await getAuth();
+
+    this.setState({ auth });
+  };
+
+  showSCWarning = () => {
+    this.setState({ showSCModal: true });
+  };
+
+  handleSCWarning = async () => {
+    await this.props.getNotifications();
+    const { auth } = this.state;
+    if (
+      this.props.haveFailedRegisterNotification &&
+      (!auth._doc?.sc && !auth.sc)
+    ) {
+      this.showSCWarning();
+    }
+  };
+
+  hideSCWarning = () => {
+    this.setState({ showSCModal: false });
+  };
+
+  async updateSCModal() {
+    await this.updateAuth();
+
+    this.setState({ showSCModal: false });
+  }
+
+  showWarningModalResult = result => {
+    const message = {
+      title: result.error
+        ? "Error al registrarte! Por favor, volvé a intertarlo"
+        : "Reintento enviado con éxito! En unos minutos, recibirás una notificación confirmando tu registro",
+      positive: () => this.setState({ confirmAlert: null }),
+      iconType: this.state.auth === null ? "error" : null,
+    };
+
+    this.setState({ confirmAlert: message });
   };
 
   filterRounds = (roundsData, currentStatus) => {
@@ -86,7 +137,7 @@ class RoundsList extends React.Component {
     },
   };
 
-  renderContent = (isLoading, rounds, status) => {
+  renderContent = (rounds, status) => {
     const { auth } = this.state;
 
     let roundsToRender = rounds;
@@ -97,11 +148,11 @@ class RoundsList extends React.Component {
 
     roundsToRender = this.filterRounds(roundsToRender, status);
     // Nothing is available?
-    if (roundsToRender.length === 0 && !isLoading) {
+    if (roundsToRender.length === 0 && !this.state.loading) {
       return this.renderNoRoundsSection(status);
     }
 
-    if (isLoading || auth === null) return <Spinner />;
+    if (this.state.loading) return <Spinner />;
     // We have to append the list of rounds to Edit first.
     return (
       <FlatList
@@ -131,8 +182,7 @@ class RoundsList extends React.Component {
 
     return (
       <View
-        style={{ flex: 0.8, justifyContent: "center", alignItems: "center" }}
-      >
+        style={{ flex: 0.8, justifyContent: "center", alignItems: "center" }}>
         <View style={{ flexDirection: "row", flex: 0.15 }}>
           <Icon
             type="MaterialCommunityIcons"
@@ -148,8 +198,7 @@ class RoundsList extends React.Component {
               fontWeight: "bold",
               color: colors.mainBlue,
               textAlign: "center",
-            }}
-          >
+            }}>
             {statuses[status]}
           </Text>
         </View>
@@ -179,37 +228,49 @@ class RoundsList extends React.Component {
         return 0;
       });
     const tabsObj = [
-      { title: "ACTIVAS", contentType: "active" },
-      { title: "POR INICIAR", contentType: "starting" },
-      { title: "TERMINADAS", contentType: "completed" },
+      { title: "ACTIVAS", contentType: "active", key: 0 },
+      { title: "POR INICIAR", contentType: "starting", key: 1 },
+      { title: "TERMINADAS", contentType: "completed", key: 2 },
     ];
     return tabsObj.map(t => (
       <Tab
-        key={t.title}
+        key={t.key}
         heading={
           <TabHeading style={styles.roundsTabs}>
             <Text>{t.title}</Text>
           </TabHeading>
-        }
-      >
-        {this.renderContent(requestRounds.loading, roundsList, t.contentType)}
+        }>
+        {this.renderContent(roundsList, t.contentType)}
       </Tab>
     ));
   };
 
+  handleChangeTab = async event => {
+    this.props.saveRouteOptions({ roundsList: { page: event.i } });
+    this.setState({ loading: true });
+    await this.props.loadRounds(event);
+    this.setState({ loading: false });
+  };
+
   render() {
-    const { navigation, loadRounds, clearData } = this.props;
-    const { roundEditData, openWarningEditModal } = this.state;
+    const { navigation, clearData, activePage } = this.props;
+    const { roundEditData, openWarningEditModal, showSCModal } = this.state;
 
     return (
       <View style={styles.container}>
-        <Tabs onChangeTab={loadRounds} locked>
+        <Tabs
+          onChangeTab={this.handleChangeTab}
+          initialPage={activePage}
+          page={activePage}
+          locked>
           {this.renderTabs()}
         </Tabs>
+
         <FloatingActionButton
           clearData={clearData}
           nav={val => navigation.navigate(val)}
         />
+
         <WarningEditingRoundModal
           open={openWarningEditModal}
           roundName={roundEditData.name}
@@ -217,6 +278,16 @@ class RoundsList extends React.Component {
           onCancel={this.onCancelEditing}
           onContinue={this.onContinueEditing}
         />
+
+        <WarningSCModal
+          visible={showSCModal}
+          onRequestClose={this.hideSCWarning}
+          onConfirm={() => this.updateSCModal()}
+          onFinish={result => this.showWarningModalResult(result)}
+        />
+        {this.state.confirmAlert && (
+          <ConfirmModal {...this.state.confirmAlert} />
+        )}
       </View>
     );
   }
@@ -226,6 +297,10 @@ const mapStateToPropsList = state => {
     requestRounds: state.rounds.requestRounds,
     storedRounds: state.rounds.storedRounds,
     nameFromCreation: state.roundCreation.name,
+    activePage: state.routeOptions?.roundsList?.page,
+    haveFailedRegisterNotification: state.notifications.list.some(
+      item => item.code === notificationsCodes.errorSC
+    ),
   };
 };
 
@@ -236,6 +311,8 @@ const mapDispatchToPropsList = dispatch => ({
   removeStoredRound: roundIndex =>
     dispatch(roundsActions.removeStoredRound(roundIndex)),
   editRound: round => dispatch(setEditRoundData(round)),
+  saveRouteOptions: options => dispatch(setRouteOptions(options)),
+  getNotifications: () => notificationsActions.getNotifications(dispatch),
 });
 
 const styles = StyleSheet.create({

@@ -1,50 +1,74 @@
-import React, { useState } from "react";
-import { Sae } from "react-native-textinput-effects";
+import React, { useState, useEffect } from "react";
+import Config from "react-native-config";
 import { connect } from "react-redux";
-import { Button, Toast, Spinner } from "native-base";
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { Button, Spinner, Icon } from "native-base";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   StyleSheet,
-  TouchableOpacity,
   TouchableNativeFeedback,
+  ImageBackground,
+  Linking,
 } from "react-native";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/auth";
+import {
+  deepLinkHandler,
+  dynamicLinkHandler,
+  loginSuccess,
+  loginDenied,
+  getToken,
+  openAdiLogin,
+  links,
+} from "./../../../utils/appRouter";
+import Logo from "../../../assets/img/app-logo.svg";
+import LinkModal from "../../components/LinkModal";
+
+const states = {
+  initial: "initial",
+  success: "success",
+  denied: "denied",
+};
 
 const Login = props => {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [state, setState] = useState(states.initial);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const onChangeEmail = newEmail => {
-    setEmail(newEmail);
-  };
-
-  const onChangePassword = newPassowrd => {
-    setPassword(newPassowrd);
-  };
-
-  const onLogin = async () => {
-    if (email.trim() && password.trim()) {
-      await props.login(email, password);
-    } else {
-      Toast.show({
-        text: "Usuario o contraseña no rellenados",
-        position: "top",
-        type: "warning",
-      });
+  const handleLogin = async link => {
+    if (!link) return;
+    if (loginSuccess(link)) {
+      setState(states.success);
+      await loginWithAidi(getToken(link));
+    } else if (loginDenied(link)) {
+      setState(states.denied);
     }
   };
 
-  const register = () => {
-    props.navigation.navigate("Register");
+  useEffect(() => {
+    const unsubscribeDeep = deepLinkHandler(handleLogin);
+    const unsubscribeDynamic = dynamicLinkHandler(handleLogin);
+    return () => {
+      unsubscribeDeep();
+      unsubscribeDynamic();
+    };
+  }, []);
+
+  const loginWithAidi = async token => await props.loginWithAidi(token);
+
+  const onLoginWithAidi = async () => {
+    const canOpen = await Linking.canOpenURL(links.login.deepLink);
+    if (!canOpen) {
+      return setModalVisible(true);
+    }
+    await openAdiLogin();
   };
 
-  const forgot = () => {
-    props.navigation.navigate("Forgot");
+  const openPlaystore = async () => {
+    await openAdiLogin();
   };
+
+  // const forgot = () => props.navigation.navigate('Forgot');
 
   const loading = () => (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -56,78 +80,73 @@ const Login = props => {
     </KeyboardAvoidingView>
   );
 
-  let subtitle = "Inicio de sesión";
-  const { error, loading: isLoading } = props;
-
-  if (error) subtitle = "Usuario o contraseña incorrectos";
+  const { loading: isLoading, error } = props;
 
   if (isLoading) return loading();
 
+  const renderAuthWarning = () => {
+    const title = "¡Error de Autenticación!";
+    const message =
+      "Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.";
+
+    return renderWarning(title, message);
+  };
+
+  const renderErrorLoginWarning = () => {
+    const title = "¡Error de inicio de sesión!";
+    const message =
+      "Ha ocurrido un error al intentar iniciar sesión en Ronda con tu cuenta de ai·di.";
+
+    return renderWarning(title, message);
+  };
+
+  const renderWarning = (title, message) => (
+    <View style={styles.warning}>
+      <Icon type="MaterialIcons" name="warning" style={styles.icon} />
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>{title}</Text>
+      <Text style={[styles.warningText, { marginBottom: 6 }]}>{message}</Text>
+      <Text style={styles.warningText}>Por favor, volvé a intentarlo.</Text>
+    </View>
+  );
+
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <ImageBackground
+      source={require("../../../assets/img/loginbackground.png")}
+      style={styles.backgroundImage}>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <Logo height={200} width={200} />
         </View>
-        <Sae
-          label="Email"
-          value={email}
-          onChangeText={onChangeEmail}
-          iconClass={FontAwesomeIcon}
-          iconName="user"
-          iconColor="white"
-          inputPadding={16}
-          labelHeight={24}
-          borderHeight={2}
-          style={{ width: "80%" }}
-          autoCapitalize="none"
-          autoCorrect={false}
-          labelStyle={{ color: "white" }}
-        />
-        <Sae
-          label="Contraseña"
-          onChangeText={onChangePassword}
-          iconClass={FontAwesomeIcon}
-          iconName="unlock-alt"
-          iconColor="white"
-          secureTextEntry
-          inputPadding={16}
-          labelHeight={24}
-          value={password}
-          borderHeight={2}
-          style={{ width: "80%" }}
-          autoCapitalize="none"
-          autoCorrect={false}
-          labelStyle={{ color: "white" }}
-        />
-
         <Button
           background={TouchableNativeFeedback.Ripple("lightgray", false)}
-          onPress={onLogin}
-          style={styles.button}
-        >
-          <Text style={{ color: "black" }}>Iniciar sesión</Text>
+          onPress={onLoginWithAidi}
+          style={styles.button}>
+          <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>
+            Conectate con ai·di
+          </Text>
         </Button>
-        <Button
-          background={TouchableNativeFeedback.Ripple("lightgray", false)}
-          onPress={register}
-          style={[styles.button, { marginTop: 10 }]}
-        >
-          <Text style={{ color: "black" }}>Registrate</Text>
-        </Button>
-        <TouchableOpacity
-          onPress={forgot}
-          style={[styles.button, { backgroundColor: colors.mainBlue }]}
-        >
-          <Text style={{ color: "white" }}>Olvide mi contraseña</Text>
-        </TouchableOpacity>
+        {state === states.denied
+          ? renderAuthWarning()
+          : error
+          ? renderErrorLoginWarning()
+          : null}
       </View>
-    </KeyboardAvoidingView>
+
+      <LinkModal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        onConfirm={openPlaystore}
+      />
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -137,16 +156,26 @@ const styles = StyleSheet.create({
   formContainer: {
     width: "100%",
     flex: 1,
+    paddingBottom: 50,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 30,
   },
   input: {
     color: "white",
   },
   button: {
     marginTop: 30,
-    backgroundColor: "white",
+    backgroundColor: "#24CDD2",
     borderRadius: 8,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonTransparent: {
+    marginTop: 30,
+    borderRadius: 8,
+    backgroundColor: "transparent",
     width: "80%",
     justifyContent: "center",
     alignItems: "center",
@@ -162,6 +191,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subtitle: { color: "white", fontSize: 18 },
+  icon: {
+    color: colors.yellowStatus,
+    fontSize: 40,
+    marginBottom: 4,
+  },
+  warning: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    backgroundColor: colors.whiteTransparent,
+    borderRadius: 8,
+    paddingVertical: 16,
+  },
+  warningText: {
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
+  },
 });
 
 const mapStateToProps = state => {
@@ -176,6 +223,9 @@ const mapDispatchToProps = dispatch => {
   return {
     login: (username, password) => {
       dispatch(actions.login(username, password));
+    },
+    loginWithAidi: token => {
+      dispatch(actions.loginWithAidi(token));
     },
   };
 };

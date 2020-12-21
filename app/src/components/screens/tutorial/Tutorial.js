@@ -22,21 +22,21 @@ const topOffset = getInset("top");
 const cards = [
   {
     title: "Empezá tu ronda",
-    text: "Invita a las personas que quieras que se sumen a tu ronda.",
+    text: "Invitá a las personas que quieras a qué se sumen a tu ronda.",
     image: tutorial1,
     placeholder: false,
   },
   {
-    title: "¿Cómo funciona",
+    title: "¿Cómo funciona?",
     text:
-      "Indica cuánto aporta cada persona de tu ronda y con qué frecuencia se harán los pagos.",
+      "Indicá cuánto va a aportar cada persona y con qué frecuencia se harán los pagos.",
     image: tutorial2,
     placeholder: false,
   },
   {
     title: "Sorteo o elección grupal",
     text:
-      "El orden de números asignados a quienes participen de la ronda, puede ser por sorteo o por elección del administrador/a.",
+      "Asigná el orden de los números a quienes participen de la ronda, puede ser por sorteo o por elección del administrador/a.",
     image: tutorial3,
     placeholder: false,
   },
@@ -64,13 +64,13 @@ const Tutorials = props => {
 
   useEffect(() => {
     getTutorialState(() => {
-      props.navigation.navigate("Main");
+      goHome(false);
     }, setLoading);
   }, []);
 
-  const goToRoundList = async () => {
-    await AsyncStorage.setItem("tutorialFinished", "true");
-    props.navigation.navigate("Rondas");
+  const goHome = async (setFinish = true) => {
+    setFinish && (await AsyncStorage.setItem("tutorialFinished", "true"));
+    props.navigation.navigate("Main");
   };
 
   const renderItem = ({ item }) => {
@@ -78,17 +78,14 @@ const Tutorials = props => {
   };
 
   const closeButton = (
-    <TouchableOpacity
-      style={{ flexDirection: "row" }}
-      onPress={() => goToRoundList()}
-    >
+    <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => goHome()}>
       <Text style={styles.closeButton}>Cerrar </Text>
       <Icon style={{ color: "white" }} name="ios-close" />
     </TouchableOpacity>
   );
 
   const onBeforeSnapToItem = index => {
-    if (index === cards.length - 1) return goToRoundList();
+    if (index === cards.length - 1) return goHome();
     return null;
   };
 

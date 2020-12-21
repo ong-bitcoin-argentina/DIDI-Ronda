@@ -1,4 +1,5 @@
 const Participant = require("../models/participant");
+const { customError } = require("../helpers/errorHandler");
 
 exports.createModel = async (
   user,
@@ -14,7 +15,7 @@ exports.createModel = async (
     acepted: acepted,
     shiftsQty: shiftsQty,
     guarantor: guarantor,
-    date: date,
+    date: date
   });
 };
 
@@ -40,9 +41,9 @@ exports.participantsOfUser = async user => {
       model: "Participant",
       populate: {
         path: "user",
-        model: "User",
-      },
-    },
+        model: "User"
+      }
+    }
   });
 
   return participants;
@@ -52,14 +53,20 @@ exports.findById = async id => {
   return await Participant.findById(id)
     .populate({
       path: "admin",
-      model: "User",
+      model: "User"
     })
     .populate({
       path: "user",
-      model: "User",
+      model: "User"
     })
     .then(participant => participant)
     .catch(err => ({ error: err }));
+};
+
+exports.findByIdAndUpdateJWTs = async (_id, jwt) => {
+  const action = { $push: { credentialJWTs: jwt } };
+  const options = { new: true };
+  return await Participant.updateOne({ _id }, action, options);
 };
 
 exports.updateParticipantUser = async (participant, newUser) => {
@@ -67,7 +74,7 @@ exports.updateParticipantUser = async (participant, newUser) => {
     .updateOne({
       acepted: null,
       user: newUser,
-      isBeingSwapped: false,
+      isBeingSwapped: false
     })
     .then(updatedParticipant => updatedParticipant)
     .catch(err => ({ error: err }));

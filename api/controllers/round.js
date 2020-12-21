@@ -13,6 +13,7 @@ exports.test = async (req, res) => {
 // SERVICES
 const round_services = require("../services/round");
 const participant_services = require("../services/participant");
+const { handleRoundNumberChange } = require("../jobs/utils");
 
 /*
     Fetch round by id
@@ -38,6 +39,7 @@ exports.byId = async (req, res) => {
     /user/round/
 */
 exports.create = async (req, res) => {
+  console.log("creating round....");
   try {
     const create = await round_services.create(req, res);
     create && create.error
@@ -45,6 +47,7 @@ exports.create = async (req, res) => {
       : res.status(200).jsonp(create.round);
     backgroundPostRes.createdRound(create);
   } catch (err) {
+    console.log(err);
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");
@@ -201,6 +204,25 @@ exports.payNumberToParticipant = async (req, res) => {
     return participantChargeNumber && participantChargeNumber.error
       ? res.status(200).jsonp({ error: participantChargeNumber.error })
       : res.status(200).jsonp(participantChargeNumber);
+  } catch (err) {
+    return err.name === "customError"
+      ? generic(res, err.message)
+      : generic(res, "");
+  }
+};
+
+/*
+  Simulate round finishing
+  "/insecure/round/:id/finish",
+*/
+exports.simulateFinish = async (req, res) => {
+  try {
+    const { roundId } = req.params;
+    const result = await round_services.simulateFinish(roundId);
+    await handleRoundNumberChange(roundId);
+    return result && result.error
+      ? res.status(200).jsonp({ error: result.error })
+      : res.status(200).jsonp(result);
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)

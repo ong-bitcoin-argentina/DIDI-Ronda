@@ -1,31 +1,42 @@
 import React from "react";
-import { View } from "react-native";
-import { createStackNavigator } from "react-navigation";
-
-class Home extends React.Component {
-  static navigationOptions = {
-    tabBarOptions: {
-      showLabel: true,
-    },
-  };
-
-  render() {
-    return <View style={{ flexDirection: "column", flex: 1 }} />;
-  }
-}
+import { createStackNavigator } from "react-navigation-stack";
+import HomeScreen from "../../screens/Home";
+import LogoCleaned from "../../../assets/img/logo-clean-white";
+import { View, Text, StyleSheet } from "react-native";
 
 export default createStackNavigator({
   Home: {
-    screen: Home,
-    navigationOptions: () => ({
-      title: `Mis Rondas`,
-      headerStyle: { backgroundColor: "#417fd7" },
-      headerTitleStyle: {
-        color: "white",
-        width: "80%",
-        textAlign: "left",
-        fontSize: 18,
-      },
-    }),
+    screen: HomeScreen,
+    navigationOptions: ({ navigation }) => {
+      const { params = {} } = navigation.state;
+      return {
+        headerStyle: {
+          backgroundColor: "#417fd7",
+          height: 76,
+        },
+        headerTitle: (
+          <View style={styles.titleContainer}>
+            <LogoCleaned />
+            <Text style={styles.title}>{params.title}</Text>
+          </View>
+        ),
+      };
+    },
+  },
+});
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    paddingLeft: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    color: "white",
+    width: "80%",
+    textAlign: "left",
+    fontSize: 18,
+    marginLeft: 15,
   },
 });

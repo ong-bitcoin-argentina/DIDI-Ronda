@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { View, Text } from "native-base";
 import colors from "../../components/colors";
-import UserData from "./UserData";
 import Avatar from "../../components/Avatar";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -21,15 +20,12 @@ const UserProfile = props => {
             flexDirection: "column",
             justifyContent: "center",
             marginTop: 15,
-          }}
-        >
+            marginBottom: 20,
+            backgroundColor: colors.mainBlue,
+          }}>
           <Avatar path={participant.user.picture} size={avatarSize} />
           <Text style={styles.profileName}>@{participant.user.name}</Text>
         </View>
-        <UserData
-          SCREEN_HEIGHT={SCREEN_HEIGHT}
-          username={participant.user.username}
-        />
       </View>
       <View style={styles.profileContainer}>{children}</View>
     </View>
@@ -41,17 +37,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.backgroundGray,
+    backgroundColor: colors.mainBlue,
+    backgroundColor: "#417FD7",
   },
   avatarContainer: {
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: colors.secondaryBackground,
+    backgroundColor: colors.mainBlue,
     width: "100%",
+    paddingBottom: 15,
   },
   profileContainer: {
     flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   profileName: {
     marginTop: 5,

@@ -60,7 +60,7 @@ class ParticipantList extends Component {
           this.addAdminParticipant();
         }
         this.checkPermissions();
-      }
+      },
     );
   }
 
@@ -167,7 +167,7 @@ class ParticipantList extends Component {
     };
 
     const exists = participants.find(
-      p => p.phantom && p.phone === phantomNumber
+      p => p.phantom && p.phone === phantomNumber,
     );
 
     const { phantomsToAppend } = { ...this.state };
@@ -225,7 +225,7 @@ class ParticipantList extends Component {
 
     if (!admin && takenShifts >= totalShifts) {
       this.openModal(
-        "¡Alcanzaste el número máximo de participantes de esta Ronda!"
+        "¡Alcanzaste el número máximo de participantes de esta Ronda!",
       );
     } else {
       const contactPhoneNumber = contact.phantom
@@ -251,9 +251,9 @@ class ParticipantList extends Component {
         const { openedDoubleNumberNotice } = this.state;
         if (!openedDoubleNumberNotice && !newContactData.admin) {
           this.openModal(
-            "Si algún participante quiere tener 2 números, debes tenés que 2 veces.",
+            "Si algún participante quiere tener 2 o más números, debés elegirlo la misma cantidad de veces.",
             null,
-            <PeopleWithExclamation />
+            <PeopleWithExclamation />,
           );
           this.setState({ openedDoubleNumberNotice: true });
         }
@@ -282,7 +282,7 @@ class ParticipantList extends Component {
     }
 
     const found = data.find(p =>
-      p.phantom ? true : p.phone === contact.phone
+      p.phantom ? true : p.phone === contact.phone,
     );
 
     if (found && !found.admin) {
@@ -330,7 +330,7 @@ class ParticipantList extends Component {
           />
           <TouchableOpacity onPress={this.showPhantomModal}>
             <Text style={styles.phantomButtonText}>
-              ¿Querés agregar a alguien que participará sin app DIDI?
+              ¿Querés agregar a alguien que participará sin app ai·di?
             </Text>
           </TouchableOpacity>
           <View style={{ flex: 1 }}>

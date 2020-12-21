@@ -1,11 +1,12 @@
+const moment = require("moment");
 // This file include all the post response actions to be performed.
 const walletUtil = require("../utils/wallet");
 const crypto = require("../utils/crypto");
 const tokens = require("../helpers/tokenGenerator");
 const mailing = require("../helpers/emails");
 const blockchain = require("./blockchain");
+const credentials_service = require("./credential");
 const { SC_FEATURES } = require("../utils/other");
-const moment = require("moment");
 
 const user_manager = require("../managers/user");
 const round_manager = require("../managers/round");
@@ -13,8 +14,8 @@ const participant_manager = require("../managers/participant");
 const SMS = require("../helpers/phones");
 const {
   createStartRoundJob,
-  createNumberChangeRoundJob,
-} = require("../jobs/jobs");
+  createNumberChangeRoundJob
+} = require("../jobs/creation");
 
 const {
   inviteRound,
@@ -28,16 +29,17 @@ const {
   participantPaymentFailed,
   swappedParticipantAdminConfirmation,
   participantSwappedInRound,
-  roundStartProcessing,
+  roundStartAdminProcessing,
   startedRound,
   schedulePayRemember,
-  registerUserProcessing,
+  registerUserProcessing
 } = require("../helpers/notifications/notifications");
+const { logError } = require("../helpers/utils");
 
 const {
   REFILL_ORIGIN_ACCOUNT,
   REFILL_ORIGIN_ACCOUNT_PK,
-  WALLET_TARGET_BALANCE,
+  WALLET_TARGET_BALANCE
 } = process.env;
 
 const getParticipantAddresses = async ids => {
@@ -121,7 +123,7 @@ exports.acceptOrRejecInvitation = async params => {
           round.id,
           participantAddress,
           adminAddress,
-          adminPk,
+          adminPk
         ];
         if (accepted) await blockchain.acceptInvitationByAdmin(...callParams);
         if (!accepted) await blockchain.rejectInvitationByAdmin(...callParams);
@@ -170,7 +172,7 @@ exports.payNumber = async params => {
       // If this fails, we have to make sure that we restore the participant to a non payment state
       // As well as inform them or the admin
       console.error("Participant Payment Failed");
-      console.error("Received error:")
+      console.error("Received error:");
       console.error(error);
       participant.isReceivingOrMakingPayment = false;
       await participant.save();
@@ -181,7 +183,7 @@ exports.payNumber = async params => {
   // Create pay object (Approved if user is admin)
   const payObject = {
     participant: participant,
-    approved: participant.user._id.toString() === round.admin._id.toString(),
+    approved: participant.user._id.toString() === round.admin._id.toString()
   };
 
   // Push payment on round
@@ -246,7 +248,7 @@ exports.startRound = async params => {
     try {
       await blockchain.start(round.id, adminAddress, adminPk);
     } catch (error) {
-      await roundStartProcessing(round, false);
+      await roundStartAdminProcessing(round, false);
       round.isBeingStarted = false;
       await round.save();
       return null;
@@ -259,24 +261,172 @@ exports.startRound = async params => {
   round.isBeingStarted = false;
   // Save changes to round
   await round_manager.save(round);
-  await roundStartProcessing(round, true);
 
-  // Send notifications to participants
-  await startedRound(round);
   // Schedule pays notifications
-  schedulePayRemember(round);
-  createNumberChangeRoundJob(round);
-  return null;
+  try {
+    schedulePayRemember(round);
+    createNumberChangeRoundJob(round);
+  } catch (error) {
+    logError("Error on job scheduling");
+    console.log(error);
+  }
+
+  // Send notification to admin
+  await roundStartAdminProcessing(round, true);
+  // Send notifications to participants
+  startedRound(round);
+
+  try {
+    await credentials_service.emitStartedRoundParticipants(round);
+  } catch (error) {
+    logError(
+      `Process for round ${roundId} had a failure when try to emmit credentials`
+    );
+    console.log(error);
+  }
+
+  return round;
 };
 
 const sendVerificationToken = async (username, token) => {
- await mailing.sendMail(
+  await mailing.sendMail(
     username,
     "La Ronda",
     `Tu codigo de verificacion es: ${token}`
   );
 
   return token;
+};
+
+const normalizeRegisterResponse = (user, jwtToken) => {
+  return {
+    user: user,
+    appUser: {
+      id: user._id,
+      name: user.name,
+      nick: user.nick,
+      lastname: user.lastname,
+      username: user.username,
+      phone: user.phone,
+      emailVerified: true,
+      jwtToken
+    }
+  };
+};
+
+exports.registerAidiUser = async params => {
+  try {
+    const {
+      nick,
+      username,
+      password,
+      name,
+      lastname,
+      token,
+      did,
+      jwtToken,
+      imageUrl
+    } = params;
+
+    const phone = SMS.normalizePhone(params.phone);
+
+    const existingUser = await user_manager.byPhone(phone);
+    const verifyToken = tokens.generate();
+    const extraFields = { verified: true, sc: false, verifyToken };
+
+    if (existingUser) {
+      const user = await user_manager.convertToVerified(
+        existingUser,
+        params,
+        extraFields
+      );
+      return normalizeRegisterResponse(user, jwtToken);
+    }
+
+    const { address, privateKey } = await walletUtil.createWallet();
+    const encryptedAddress = crypto.cipher(address);
+    const encryptedPK = crypto.cipher(privateKey);
+    const user = await user_manager.saveUser(
+      username,
+      password,
+      name,
+      lastname,
+      token,
+      extraFields.verifyToken,
+      nick,
+      imageUrl,
+      encryptedAddress,
+      encryptedPK
+    );
+    user.verified = extraFields.verified;
+    user.phone = phone;
+    user.sc = extraFields.sc;
+    user.did = did;
+    user.save();
+    return normalizeRegisterResponse(user, jwtToken);
+  } catch (error) {
+    console.log("registerAidiUser error", error);
+    return error;
+  }
+};
+
+exports.enableSCToUser = async user => {
+  console.log("enableSCToUser");
+  let addedBalance = false;
+  let subDomainCreated = false;
+  const { nick, walletAddress, token, username } = user;
+
+  const address = crypto.decipher(walletAddress);
+
+  try {
+    console.log("creating subdomain...", nick, address);
+    await blockchain.createSubdomain(nick, address);
+    subDomainCreated = true;
+  } catch (error) {
+    console.log("createSubdomain", error);
+    // Send failure notification
+    await registerUserProcessing(token, username, false);
+    return null;
+  }
+  try {
+    const WALLET_TARGET_WEI = blockchain.toWei(WALLET_TARGET_BALANCE);
+
+    const results = await blockchain.sendManyBalanceTx(
+      REFILL_ORIGIN_ACCOUNT,
+      REFILL_ORIGIN_ACCOUNT_PK,
+      [address],
+      WALLET_TARGET_WEI
+    );
+    await Promise.all(
+      results.map(async ({ error, success }) => {
+        if (!success) throw error;
+        addedBalance = true;
+        return { success: true };
+      })
+    );
+    console.log("await Promise.all ended");
+  } catch (error) {
+    console.log("===================");
+    console.log("Error when giving RBTC to new user");
+    console.log(error);
+    console.log("===================");
+  }
+
+  if (subDomainCreated) {
+    user.sc = true;
+    await user.save();
+  }
+
+  if (addedBalance) {
+    user.lastBalance = WALLET_TARGET_BALANCE;
+    await user.save();
+  }
+
+  console.log("user after sc", user);
+
+  await registerUserProcessing(token, username, true);
+
+  return user;
 };
 
 exports.registerUser = async params => {
@@ -304,7 +454,7 @@ exports.registerUser = async params => {
         [address],
         WALLET_TARGET_WEI
       );
-      await Promise.all(
+      return await Promise.all(
         results.map(async ({ error, success }) => {
           if (!success) throw error;
           addedBalance = true;
@@ -338,7 +488,6 @@ exports.registerUser = async params => {
   }
 
   await registerUserProcessing(token, username, true);
-  if (user) await sendVerificationToken(username, verifyToken);
 
   return null;
 };

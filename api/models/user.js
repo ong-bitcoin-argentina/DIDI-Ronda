@@ -10,7 +10,7 @@ const userSchema = new Schema(
       trim: true,
       index: true,
       unique: true,
-      sparse: true,
+      sparse: true
     },
     nick: { type: String, default: null },
     username: { type: String, default: null },
@@ -25,31 +25,33 @@ const userSchema = new Schema(
     walletAddress: { type: String, default: null },
     walletPk: { type: String, default: null },
     pictureHash: { type: String, default: null },
+    imageUrl: { type: String, default: null },
     lastBalance: { type: String, default: "0", required: true },
+    sc: { type: Boolean, default: false },
+    did: { type: String, default: null },
+    createdAt: { type: Date, default: new Date() },
+    updatedAt: { type: Date }
   },
   {
     toObject: {
-      virtuals: true,
+      virtuals: true
     },
     toJSON: {
-      virtuals: true,
-    },
+      virtuals: true
+    }
   }
 );
 
 userSchema.virtual("picture").get(function() {
-  if (this.pictureHash !== null) {
-    return `http://${STORAGE_HOST}:${STORAGE_PORT}/bzz:/${this.pictureHash}`;
-  } else {
-    return null;
-  }
+  // For retro-compatibility
+  return this.imageUrl;
 });
-
 
 // Before saving the user in any case, we hash the password that is set to it.
 // The passwords are never stored in clear text.
 userSchema.pre("save", function(next) {
   const user = this;
+  user.updatedAt = new Date();
   if (!user.isModified("password")) {
     next();
   } else {
@@ -63,6 +65,10 @@ userSchema.pre("save", function(next) {
 userSchema.methods.comparePassword = async function plaintext(plaintext) {
   const { result } = await compareString(plaintext, this.password);
   return result;
+};
+
+userSchema.statics.findByToken = function(token) {
+  return this.findOne({ token });
 };
 
 module.exports = mongoose.model("User", userSchema);

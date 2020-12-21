@@ -2,6 +2,10 @@
 const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
+const { createNotification } = require("../helpers/notifications/config");
+const aidi_service = require("../services/aidi");
+const { customError } = require("../helpers/errorHandler");
+const user_manager = require("../managers/user");
 
 /*
     /login
@@ -11,13 +15,61 @@ exports.login = async (req, res) => {
 
   try {
     const auth = await guest_services.login(username, password);
-    return auth && auth.error
-      ? res.status(200).jsonp({ error: auth.error })
-      : res.status(200).jsonp(auth);
+    return res.status(200).jsonp(auth);
   } catch (err) {
-    return err.name === "customError"
-      ? generic(res, err.message)
-      : generic(res, "");
+    return generic(res, err.message);
+  }
+};
+
+function createNickname(username) {
+  const uniqString = Date.now().toString(36);
+  const emailName = username.split("@")[0];
+  const cleanName = emailName.replace(/\.|\,|\+/g, "");
+  const nick = `${cleanName}${uniqString}`;
+  return nick;
+}
+
+exports.loginWithAidi = async (req, res) => {
+  console.log("running loginWithAidi.....");
+  try {
+    const { token } = req.body;
+    const user = await aidi_service.getUser(token);
+    const { username, password, name, lastname, imageUrl } = user;
+
+    try {
+      const userExist = await user_manager.byUsername(username);
+      if (userExist)
+        return res
+          .status(200)
+          .jsonp({ ...user, ...userExist, id: userExist._id });
+    } catch (error) {
+      console.log("user first login with ronda");
+    }
+
+    try {
+      const data = await guest_services.register(
+        username,
+        password,
+        name,
+        lastname,
+        token,
+        createNickname(username),
+        imageUrl
+      );
+
+      const result = await postResBackground.registerAidiUser({
+        ...user,
+        ...data
+      });
+      console.log("registeredUser", result.appUser);
+      res.status(200).jsonp(result.appUser);
+      return postResBackground.enableSCToUser(result.user);
+    } catch (error) {
+      console.log("user couldn't be register bcz: ", error);
+    }
+  } catch (error) {
+    console.log(error);
+    err.name === "customError" ? generic(res, err.message) : generic(res, "");
   }
 };
 

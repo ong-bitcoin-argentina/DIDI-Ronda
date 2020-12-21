@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
-import emptyAvatar from "../../../../../assets/img/avatar.jpg";
+import emptyAvatar from "../../../../../assets/img/avatar.png";
 
 const Avatar = props => {
   const { path, size = 40 } = props;

@@ -1,5 +1,6 @@
 import apiCall from "./helper";
 import { getPaymentDate } from "../../utils/dates";
+import { getAuth } from "../../utils/utils";
 
 // Login
 export const login = async (username, password) => {
@@ -9,6 +10,20 @@ export const login = async (username, password) => {
       password,
     });
   } catch (error) {
+    return { error };
+  }
+};
+
+// loginWithAidi
+export const loginWithAidi = async token => {
+  console.log("sending request.... loginWithAidi");
+  console.log(token);
+  try {
+    return await apiCall("post", "/login/aidi", {
+      token,
+    });
+  } catch (error) {
+    console.log("error loginWithAidi", error);
     return { error };
   }
 };
@@ -90,7 +105,7 @@ export const createRound = async (
   frequency,
   roundName,
   participants,
-  date
+  date,
 ) => {
   const participantsObj = {};
   participants.forEach(contact => {
@@ -182,6 +197,32 @@ export const updateToken = async token => {
       newToken: token,
     });
   } catch (error) {
+    return { error };
+  }
+};
+
+// Get notifications list of user
+export const getNotifications = async username => {
+  try {
+    return await apiCall("post", "/user/notifications", { username });
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const updateUserData = async username => {
+  try {
+    return await apiCall("post", "/user/update", { username });
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const retryRegister = async username => {
+  try {
+    return await apiCall("post", "/user/force-sc-enable", { username });
+  } catch (error) {
+    console.log(error);
     return { error };
   }
 };

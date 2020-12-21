@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const recurrenceKeys = Object.keys(config.recurrenceConfig);
+const { normalRecurrenceValues } = config;
 
 const roundSchema = new Schema(
   {
@@ -19,6 +20,7 @@ const roundSchema = new Schema(
     participants: [{ type: ObjectId, ref: "Participant" }],
     isConfirmed: { type: Boolean, default: false },
     isBeingStarted: { type: Boolean, default: false },
+    createdAt: { type: Date, default: new Date() },
     shifts: {
       type: [
         {
@@ -29,12 +31,12 @@ const roundSchema = new Schema(
               participant: {
                 type: ObjectId,
                 ref: "Participant",
-                required: true,
+                required: true
               },
               date: { type: Date, default: Date.now, required: true },
               guarantor: { type: Number, default: null },
-              approved: { type: Boolean, default: false },
-            },
+              approved: { type: Boolean, default: false }
+            }
           ],
           limitDate: { type: Date, required: true },
           isPayedToParticipant: { type: Boolean, default: false },
@@ -43,21 +45,21 @@ const roundSchema = new Schema(
             type: String,
             required: true,
             enum: config.shiftStatus,
-            default: "pending",
+            default: "pending"
           },
-          requests: [{ type: ObjectId, ref: "Participant" }],
-        },
+          requests: [{ type: ObjectId, ref: "Participant" }]
+        }
       ],
-      validate: [validateShifts, "Must be greater than 1"],
-    },
+      validate: [validateShifts, "Must be greater than 1"]
+    }
   },
   {
     toObject: {
-      virtuals: true,
+      virtuals: true
     },
     toJSON: {
-      virtuals: true,
-    },
+      virtuals: true
+    }
   }
 );
 
@@ -87,6 +89,10 @@ roundSchema.virtual("totalAmount").get(function() {
 roundSchema.virtual("completed").get(function() {
   const { shifts } = this;
   return !shifts.some(s => s.status !== "completed");
+});
+
+roundSchema.virtual("normalizedRecurrence").get(function() {
+  return normalRecurrenceValues[this.recurrence];
 });
 
 module.exports = mongoose.model("Round", roundSchema);

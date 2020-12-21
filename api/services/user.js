@@ -1,5 +1,7 @@
 // MANAGERS
+const aidi_service = require("./aidi");
 const user_manager = require("../managers/user");
+const notifications_manager = require("../managers/notification");
 const round_manager = require("../managers/round");
 const participant_manager = require("../managers/participant");
 const { STORAGE_HOST, STORAGE_PORT } = process.env;
@@ -14,6 +16,27 @@ exports.byUsername = async req => {
   const { username } = req.body;
   const user = await user_manager.byUsername(username);
   return user;
+};
+
+exports.byDID = async req => {
+  const { did } = req.params;
+  const user = await user_manager.byDID(did);
+  if (!user) throw new customError("That user does not exist");
+  return await user_manager.toDTO(user);
+};
+
+exports.updateByUsername = async req => {
+  const { username } = req.body;
+  const user = await user_manager.byUsername(username);
+  if (!user) throw new customError("That user does not exist");
+  if (!user.did) throw new customError("That user does not have a did");
+  const profileFromAidi = await aidi_service.getProfile(user.did);
+  const updatedUser = await user_manager.updateProfile(user, profileFromAidi);
+  const userDTO = await user_manager.toFullDTO(updatedUser);
+  return {
+    ...userDTO,
+    jwtToken: profileFromAidi.jwtToken
+  };
 };
 
 exports.roundsOfUser = async req => {
@@ -44,10 +67,10 @@ exports.setProfileImage = async data => {
       url: "http://" + STORAGE_HOST + ":" + STORAGE_PORT + "/bzz:/",
       method: "POST",
       headers: {
-        "content-type": "image/png",
+        "content-type": "image/png"
       },
       encoding: null,
-      body: fs.createReadStream(image.path),
+      body: fs.createReadStream(image.path)
     });
     user.pictureHash = hash.toString();
     user.save();

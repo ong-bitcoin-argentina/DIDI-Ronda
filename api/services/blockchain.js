@@ -133,7 +133,7 @@ exports.createRound = async (id, adminAddress) => {
     RONDA_CONTRACT_OWNER_PK,
     rondaRegistryInstance._address,
     -1,
-    setprice
+    Math.round(setprice)
   );
   return result;
 };
@@ -366,10 +366,10 @@ const getMinimumGasPrice = async () => {
   // If not do not do anything
   try {
     const { minimumGasPrice } = await web3.eth.getBlock("latest");
-    return minimumGasPrice || GAS_PRICE_HEX;
+    return Math.round((minimumGasPrice  * 1.75) || GAS_PRICE_HEX);
   } catch (error) {
     console.error("Error when getting last block ", error);
-    return GAS_PRICE_HEX;
+    return  Math.round(GAS_PRICE_HEX);
   }
 };
 

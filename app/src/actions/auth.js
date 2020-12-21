@@ -1,6 +1,6 @@
 import * as types from "./types";
 import * as UserService from "../services/api/user";
-import { setAuth, logOut } from "../utils/utils";
+import { setAuth, logOut, getAuth } from "../utils/utils";
 import NavigationService from "../services/navigation";
 
 export const createUser = (username, password, name, token, nick) => {
@@ -156,6 +156,25 @@ export const cleanForgot = () => {
   };
 };
 
+export const loginWithAidi = token => {
+  return async dispatch => {
+    dispatch(loginStart());
+    const session = await UserService.loginWithAidi(token);
+
+    if (!session.error) {
+      try {
+        await setAuth(session.data);
+        dispatch(loginSucceded());
+        NavigationService.navigate("LoadingAuth");
+      } catch (error) {
+        dispatch(loginFailed(error));
+      }
+    } else {
+      dispatch(loginFailed(login.error));
+    }
+  };
+};
+
 export const login = (username, password) => {
   return async dispatch => {
     dispatch(loginStart());
@@ -219,6 +238,24 @@ export const cleanPhone = () => {
   return async dispatch => {
     dispatch(phoneClean());
   };
+};
+
+export const forceSCRegister = async dispatch => {
+  dispatch({ type: types.START_FORCE_SC });
+  try {
+    const user = await getAuth();
+    const response = await UserService.retryRegister(user.username);
+    dispatch({ type: types.FINISH_FORCE_SC });
+    if (response && response.data) {
+      await setAuth({ ...user, ...response.data });
+      return response;
+    } else {
+      return { error: true };
+    }
+  } catch (error) {
+    dispatch({ type: types.FINISH_FORCE_SC });
+    return { error: true };
+  }
 };
 
 // Phone
