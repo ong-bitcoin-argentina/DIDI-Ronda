@@ -175,9 +175,9 @@ class RoundsList extends React.Component {
     const bodyText = "Para crear una ronda, hace click en\nel ";
     const boldBodyText = "círculo amarillo";
     const statuses = {
-      active: "Aún no tenés Rondas\nactivas",
-      starting: "Aún no tenés Rondas\nen curso",
-      completed: "Aún no tenés Rondas\nfinalizadas",
+      active: "Aún no tenés rondas\nactivas",
+      starting: "Aún no tenés rondas\nen curso",
+      completed: "Aún no tenés rondas\nfinalizadas",
     };
 
     return (
