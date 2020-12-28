@@ -553,6 +553,7 @@ exports.assignShiftNumber = async req => {
 
 exports.simulateFinish = async id => {
   const round = await round_manager.findById(id);
+  if (!round) throw new customError("round doesn't exists");
 
   const { recurrence, shifts, participants } = round;
 
@@ -574,6 +575,8 @@ exports.simulateFinish = async id => {
     });
   });
 
-  round.completed = true;
+  const lastShiftIndex = round.shifts.length - 1;
+  round.shifts[lastShiftIndex].status = "current";
+
   return await round_manager.save(round);
 };

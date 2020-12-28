@@ -7,7 +7,7 @@ const cryptoUtil = require("../utils/crypto");
 const walletUtil = require("../utils/wallet");
 const blockchain = require("../services/blockchain");
 const { SC_FEATURES } = require("../utils/other");
-const { logError } = require("../helpers/utils");
+const { logError, logSuccess } = require("../helpers/utils");
 
 const {
   WALLET_TARGET_BALANCE,
@@ -21,7 +21,7 @@ const emitRoundCredentialsWrapper = async round => {
     await credential_services.emitFinishedRoundParticipants(round);
   } catch (error) {
     logError(
-      `Job for round ${roundId} had a failure when try to emmit credentials`
+      `Job for round ${round._id.toString()} had a failure when try to emmit credentials`
     );
     console.log(error);
   }
@@ -54,7 +54,6 @@ const handleRoundNumberChange = async roundId => {
       );
       if (nextShiftIndex != -1) {
         // If we are in range, mark the next one as current
-
         round.shifts[nextShiftIndex].status = "current";
 
         console.log(
@@ -65,9 +64,9 @@ const handleRoundNumberChange = async roundId => {
       }
     }
     // Save changes to round
+    let updatedRound;
     try {
-      const updatedRound = await round_manager.save(round);
-      console.log(`Job for round ${roundId} ran successfuly`);
+      updatedRound = await round_manager.save(round);
       if (sendCompletedNotification)
         console.log(`Job for round ${roundId} will send ending notifications`);
 
@@ -78,11 +77,18 @@ const handleRoundNumberChange = async roundId => {
       console.error(error);
     }
 
-    if (sendCompletedNotification) {
-      // TODO: encolar participantes o emitir ronda
-      await completedRound(round);
+    if (sendCompletedNotification || updatedRound.completed) {
+      try {
+        await completedRound(round);
+      } catch (error) {
+        logError(
+          `Job for round ${roundId} had a failure when it's sending ending notifications`
+        );
+        console.log(error);
+      }
       emitRoundCredentialsWrapper(round);
     }
+    logSuccess(`Job for round ${roundId} ran successfuly`);
   }
 
   return true;
