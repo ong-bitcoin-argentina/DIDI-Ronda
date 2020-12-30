@@ -63,7 +63,7 @@ const RoundDetail = props => {
     if (!reduxRoundObject) {
       return (
         <View style={{ flex: 1, justifyContent: "center" }}>
-          <Text>Ronda no encontrada</Text>
+          <Text>ronda no encontrada</Text>
         </View>
       );
     }

@@ -101,7 +101,7 @@ const Login = props => {
   const renderAuthWarning = () => {
     const title = "¡Error de Autenticación!";
     const message =
-      "Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al ingresar en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };
@@ -109,7 +109,7 @@ const Login = props => {
   const renderErrorLoginWarning = () => {
     const title = "¡Error de inicio de sesión!";
     const message =
-      "Ha ocurrido un error al intentar iniciar sesión en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al intentar iniciar sesión en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };

@@ -16,7 +16,7 @@ const WarningPayExpirationCard = ({
 
   const onClosePress = () => setshouldShow(false);
 
-  const expirationBodyText = `Pronto vence tu aporte al número ${number} de la Ronda ${roundName}`;
+  const expirationBodyText = `Pronto vence tu aporte al número ${number} de la ronda ${roundName}`;
 
   const leftSection = (
     <View style={styles.iconContainer}>
