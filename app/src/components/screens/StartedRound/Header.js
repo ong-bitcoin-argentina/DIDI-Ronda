@@ -57,7 +57,7 @@ const Header = props => {
               <Text numberOfLines={1} style={styles.amount}>
                 ${amount}
               </Text>
-              <Text style={styles.dateSubtitle}>Ronda</Text>
+              <Text style={styles.dateSubtitle}>ronda</Text>
             </View>
           </View>
         </View>

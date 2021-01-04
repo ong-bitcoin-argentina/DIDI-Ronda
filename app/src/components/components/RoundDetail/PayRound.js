@@ -22,7 +22,7 @@ const PayRound = props => {
   useEffect(() => {}, []);
 
   // Variables
-  const title = `Todos los participantes ya hicieron su aporte al número ${number} de la Ronda.`;
+  const title = `Todos los participantes ya hicieron su aporte al número ${number} de la ronda.`;
 
   // Get only first participant (For now)
   const participantNavigate = currentShiftParticipants[0];
@@ -56,7 +56,7 @@ const PayRound = props => {
           negative={() => {
             setPopUp(false);
           }}
-          positiveTitle="Pagar Ronda"
+          positiveTitle="Pagar ronda"
           negativeTitle="Cerrar"
           icon={
             <Bookmark
@@ -66,15 +66,14 @@ const PayRound = props => {
               outline
               number={number}
             />
-          }
-        >
+          }>
           <Text style={styles.text}>¡Ya podés pagar a el número {number}!</Text>
         </RoundPopUp>
       )}
       {loading ? (
         <Spinner />
       ) : (
-        <CallToAction title="Pagar Ronda" pressHandler={() => setPopUp(true)} />
+        <CallToAction title="Pagar ronda" pressHandler={() => setPopUp(true)} />
       )}
     </View>
   );

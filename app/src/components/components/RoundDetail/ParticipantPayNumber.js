@@ -74,11 +74,11 @@ const ParticipantPayNumber = props => {
     title: `$${amountFormat(amount)}`,
     content: `¿Confirmás el aporte de $${amountFormat(
       amount
-    )} al ${number} de la Ronda ${roundName}?`,
+    )} al ${number} de la ronda ${roundName}?`,
   };
 
   const confirmPopUpParams = {
-    title: `Tu aporte número ${number} de la Ronda ${roundName} fue confirmado por "${adminName}"`,
+    title: `Tu aporte número ${number} de la ronda ${roundName} fue confirmado por "${adminName}"`,
     content: `¡Muchas Gracias!`,
   };
 

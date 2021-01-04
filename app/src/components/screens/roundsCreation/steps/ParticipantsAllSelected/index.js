@@ -25,7 +25,7 @@ const ParticipantsAllSelected = props => {
     clearData,
   } = props;
 
-  const title = `Ya elegiste a todos los\nparticipantes de tu Ronda`;
+  const title = `Ya elegiste a todos los\nparticipantes de tu ronda`;
 
   const onPressGo = () => {
     if (!pickTurnsManual) return navigation.navigate("RuffleParticipants");

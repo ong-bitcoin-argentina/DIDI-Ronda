@@ -43,7 +43,7 @@ const RequestNumberModal = props => {
   }, [requestNumbers]);
 
   // Variables
-  const title = `Ronda ${round.name}`;
+  const title = `ronda ${round.name}`;
 
   const numbers = round.shifts.map(shift => {
     const { number } = shift;
@@ -100,8 +100,7 @@ const RequestNumberModal = props => {
         }}
         positiveTitle="Eligir Número/s"
         negativeTitle="Rechazar"
-        notCloseAfterPositive
-      >
+        notCloseAfterPositive>
         <View style={styles.container}>
           <View style={styles.listContainer}>
             <FlatList

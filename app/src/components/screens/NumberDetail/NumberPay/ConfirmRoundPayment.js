@@ -30,8 +30,8 @@ const ConfirmRoundPayment = props => {
     setConfirmPopUp(false);
   };
 
-  const payWithoutWarning = `¿Confirmás que le pagarás la Ronda a ${participant.user.name} ${adminStr}?`;
-  const payWarning = `Algunos aportes no han sido registrados, si no se registran antes del pago, no se podran registrar despues\n¿Confirmás que le pagarás la Ronda a ${participant.user.name} ${adminStr} de todas maneras? `;
+  const payWithoutWarning = `¿Confirmás que le pagarás la ronda a ${participant.user.name} ${adminStr}?`;
+  const payWarning = `Algunos aportes no han sido registrados, si no se registran antes del pago, no se podran registrar despues\n¿Confirmás que le pagarás la ronda a ${participant.user.name} ${adminStr} de todas maneras? `;
 
   const iconName = allParticipantsPayedNumber ? "filter-tilt-shift" : "warning";
   const bodyText = allParticipantsPayedNumber ? payWithoutWarning : payWarning;
@@ -71,7 +71,7 @@ const ConfirmRoundPayment = props => {
         <Spinner />
       ) : (
         <CallToAction
-          title="Pagar Ronda"
+          title="Pagar ronda"
           pressHandler={() => setConfirmPopUp(true)}
         />
       )}

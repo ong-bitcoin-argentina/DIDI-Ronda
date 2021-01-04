@@ -82,8 +82,7 @@ const RoundDate = props => {
       style={{
         marginHorizontal: 10,
         height: 335,
-      }}
-    >
+      }}>
       <MonthCalendar
         onDayPress={onDayPress}
         selectedDate={selectedDate}
@@ -99,7 +98,7 @@ const RoundDate = props => {
   return (
     <ScreenContainer navigation={navigation} step={4}>
       <CreationTitle
-        title="¿Cuándo inicia la Ronda?"
+        title="¿Cuándo inicia la ronda?"
         iconType={screenIcon.type}
         iconName={screenIcon.name}
       />
@@ -109,8 +108,7 @@ const RoundDate = props => {
           flexDirection: "row",
           alignItems: "center",
           backgroundColor: colors.backgroundGray,
-        }}
-      >
+        }}>
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -145,15 +143,13 @@ const RoundDate = props => {
               borderRadius: 10,
               margin: 10,
             }}
-            onPress={toggleUpdateModal}
-          >
+            onPress={toggleUpdateModal}>
             <Text
               style={{
                 color: "white",
                 textAlign: "center",
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               Terminar Edicion
             </Text>
           </Button>

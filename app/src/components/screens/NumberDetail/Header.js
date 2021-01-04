@@ -50,7 +50,7 @@ export default Header = props => {
               <Text numberOfLines={1} style={styles.amount}>
                 ${props.amount}
               </Text>
-              <Text style={styles.dateSubtitle}>Ronda</Text>
+              <Text style={styles.dateSubtitle}>ronda</Text>
             </View>
           </View>
         </View>

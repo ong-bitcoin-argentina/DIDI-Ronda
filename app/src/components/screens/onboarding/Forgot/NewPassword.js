@@ -82,13 +82,12 @@ const NewPassword = props => {
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
+          <Text style={styles.title}>La ronda</Text>
           <Text
             style={[
               styles.subtitle,
               { width: 350, textAlign: "center", marginBottom: 30 },
-            ]}
-          >
+            ]}>
             Ingresa tu nueva contraseña
           </Text>
           <Sae
@@ -129,8 +128,7 @@ const NewPassword = props => {
             style={[
               styles.button,
               { width: 200, flexDirection: "row", justifyContent: "center" },
-            ]}
-          >
+            ]}>
             <Text style={{ color: "black", textAlign: "center" }}>Enviar</Text>
           </Button>
         </View>

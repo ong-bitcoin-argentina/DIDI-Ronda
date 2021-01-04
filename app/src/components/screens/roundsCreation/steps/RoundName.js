@@ -19,7 +19,7 @@ const RoundName = props => {
   return (
     <ScreenContainer step={0}>
       <CreationTitle
-        title={`¿Cómo se va a\n llamar la Ronda?`}
+        title={`¿Cómo se va a\n llamar la ronda?`}
         iconName={screenIcon.name}
         iconType={screenIcon.type}
       />
