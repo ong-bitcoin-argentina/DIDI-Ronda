@@ -87,7 +87,6 @@ const Phone = props => {
               selectedValue={country}
               onValueChange={i => setCountry(i)}>
               <Picker.Item label="Argentina" value="AR" />
-              <Picker.Item label="Uruguay" value="UY" />
             </Picker>
           </Item>
           <Sae

@@ -31,7 +31,7 @@ const ParticipantNumberItem = props => {
   const handleOpacityPress = () => {
     if (!openList && scrollableRef && scrollableRef.current) {
       setopenList(!openList);
-      const scrollIndex = number - 1 >= 0 ? number - 1 : 0;
+      const scrollIndex = number >= 1 ? number - 1 : 0;
       if (number !== maxNumber)
         scrollableRef.current.scrollToIndex({
           index: scrollIndex,
