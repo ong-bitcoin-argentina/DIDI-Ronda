@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, Text } from "react-native";
 import { Item, Input, Icon } from "native-base";
 import colors from "../../../../components/colors";
 
@@ -35,6 +35,13 @@ const SearchInput = props => {
         name="search"
         style={{ color: colors.secondary }}
       />
+      {val.trim() ? (
+        <TouchableOpacity
+          style={styles.resetButtonContainer}
+          onPress={() => onChangeText("")}>
+          <Text style={styles.resetText}>x</Text>
+        </TouchableOpacity>
+      ) : null}
       <Input
         ref={inputRef}
         placeholderTextColor={colors.secondary}
@@ -58,6 +65,21 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     borderColor: colors.mainBlue,
     borderWidth: 3,
+  },
+  resetButtonContainer: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "grey",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  resetText: {
+    color: "white",
+    fontSize: 10,
+    paddingBottom: 2,
   },
 });
 
