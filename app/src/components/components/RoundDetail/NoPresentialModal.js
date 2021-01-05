@@ -45,8 +45,12 @@ const NoPresentialModal = ({
   onCancel,
   isLoading,
   adminName,
+  isRequestingPayment = true,
 }) => {
-  const text = `¿Querés pedirle a ${adminName} el cobro de tu número de Ronda?`;
+  const shouldAskPayment = isRequestingPayment
+    ? "el cobro de tu número"
+    : "que acepte el aporte al número";
+  const text = `¿Querés pedirle a ${adminName} ${shouldAskPayment} de ronda?`;
   const acceptText = "Aceptar";
   const cancelText = "Cancelar";
 
@@ -62,8 +66,7 @@ const NoPresentialModal = ({
                 flex: 0.3,
                 alignItems: "center",
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <Text style={styles.bodyText}>{text}</Text>
             </View>
             <View style={styles.buttonsContainer}>
@@ -75,8 +78,7 @@ const NoPresentialModal = ({
             <View style={styles.buttonsContainer}>
               <Button
                 style={{ ...styles.button, backgroundColor: "white" }}
-                onPress={onCancel}
-              >
+                onPress={onCancel}>
                 <Text style={{ ...styles.buttonText, color: colors.secondary }}>
                   {cancelText}
                 </Text>

@@ -89,24 +89,21 @@ const Register = props => {
             color: "white",
             fontSize: 15,
             maxWidth: "90%",
-          }}
-        >
+          }}>
           Tu cuenta se encuentra en proceso de registro. Cuando termine, te
           llegará una notificación y podrás iniciar sesión.
         </Text>
         <Button
           background={TouchableNativeFeedback.Ripple("lightgray", false)}
           onPress={returnToLoginAndClear}
-          style={[styles.button]}
-        >
+          style={[styles.button]}>
           <Text
             style={{
               textAlign: "center",
               color: "black",
               fontSize: 15,
               maxWidth: "90%",
-            }}
-          >
+            }}>
             Entendido
           </Text>
         </Button>
@@ -144,7 +141,7 @@ const Register = props => {
       {!loading && (
         <View style={styles.formContainer}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>La Ronda</Text>
+            <Text style={styles.title}>La ronda</Text>
             <Text style={styles.subtitle}>Registro</Text>
           </View>
           <Sae
@@ -226,8 +223,7 @@ const Register = props => {
           <Button
             background={TouchableNativeFeedback.Ripple("lightgray", false)}
             onPress={_onRegister}
-            style={styles.button}
-          >
+            style={styles.button}>
             <Text style={{ color: "black" }}>Registrate</Text>
           </Button>
 
@@ -236,8 +232,7 @@ const Register = props => {
             style={[
               styles.button,
               { backgroundColor: colors.mainBlue, marginTop: 10 },
-            ]}
-          >
+            ]}>
             <Text style={{ color: "white" }}>Volver al inicio de sesion</Text>
           </TouchableOpacity>
         </View>

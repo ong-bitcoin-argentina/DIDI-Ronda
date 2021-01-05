@@ -151,7 +151,7 @@ const SelectParticipantNumbers = props => {
               return (
                 <ParticipantNumberItem
                   name={item.name}
-                  scrollableRef={numbersListRef.current}
+                  scrollableRef={numbersListRef}
                   picture={item.picture}
                   maxNumber={assignedNumbersData.length}
                   onPressRemoveParticipantNumber={

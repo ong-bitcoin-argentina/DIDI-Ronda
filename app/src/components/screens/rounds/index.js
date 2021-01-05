@@ -30,7 +30,7 @@ const List = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
-      title: `Ronda`,
+      title: `Mis rondas`,
       headerStyle: { backgroundColor: "#417fd7", elevation: 0 },
       headerTitleStyle: styles.headerTitleStyle,
     }),
@@ -65,7 +65,7 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       headerTintColor: "white",
-      title: `Mis Rondas`,
+      title: `Mis rondas`,
       headerStyle: { backgroundColor: "#417fd7" },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: <BackButton navigation={navigation} />,
@@ -96,5 +96,5 @@ export default createSwitchNavigator(
   {
     backBehavior: "initialRoute",
     initialRouteName: "List",
-  },
+  }
 );

@@ -13,8 +13,6 @@ import { connect } from "react-redux";
 import { Icon } from "native-base";
 
 const NotificationsList = ({ old, recent, list, unreaded, onMarkAsViewed }) => {
-  // const [isAllViewed, setIsAllViewed] = useState(false);
-
   const renderEmpty = () => (
     <View style={styles.emptyView}>
       <Text style={styles.emptyDescription}>Aún no tenés notificaciones.</Text>
@@ -27,7 +25,7 @@ const NotificationsList = ({ old, recent, list, unreaded, onMarkAsViewed }) => {
 
   const isAllViewed = parseInt(unreaded) === 0;
   const renderSectionTitle = section => {
-    if (section.data.length > 0 && section.title === "Esta Semana") {
+    if (section.data.length > 0 && section.shouldShowMarkAsViewed) {
       return (
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{section.title}</Text>
@@ -55,8 +53,12 @@ const NotificationsList = ({ old, recent, list, unreaded, onMarkAsViewed }) => {
   ) : (
     <SectionList
       sections={[
-        { title: "Esta Semana", data: recent },
-        { title: "Anteriores", data: old },
+        { title: "Esta Semana", data: recent, shouldShowMarkAsViewed: true },
+        {
+          title: "Anteriores",
+          data: old,
+          shouldShowMarkAsViewed: recent.length === 0,
+        },
       ]}
       renderSectionHeader={({ section }) =>
         !!section.data.length && renderSectionTitle(section)

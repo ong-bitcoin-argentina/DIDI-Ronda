@@ -30,32 +30,25 @@ const ParticipantList = props => {
     };
   });
 
-  // Render
-  return (
-    <FlatList
-      data={populatedParticipants}
-      contentContainerStyle={styles.FlatList}
-      scrollEnabled={false}
-      renderItem={({ item, index }) => {
-        return (
-          <Number
-            name={item.name}
-            picture={item.picture}
-            active={item.active}
-            amountPerShift={amountPerShift}
-            shiftsQty={item.participant.shiftsQty}
-            currentNumber={currentNumber}
-            number={index + 1}
-            userPay={item.userPay}
-            onPress={() => {
-              navigateParticipant(item);
-            }}
-          />
-        );
+  const participantList = populatedParticipants.map((item, index) => (
+    <Number
+      key={`${index}-${item.id}`}
+      name={item.name}
+      picture={item.picture}
+      active={item.active}
+      amountPerShift={amountPerShift}
+      shiftsQty={item.participant.shiftsQty}
+      currentNumber={currentNumber}
+      number={index + 1}
+      userPay={item.userPay}
+      onPress={() => {
+        navigateParticipant(item);
       }}
-      keyExtractor={(data, i) => `${i}-${data.id}`}
     />
-  );
+  ));
+
+  // Render
+  return <>{participantList}</>;
 };
 
 const styles = StyleSheet.create({

@@ -16,7 +16,7 @@ const ExtraData = props => {
       <View style={styles.container}>
         <ValueWithIcon
           value={`$${amountFormat(roundAmount)}`}
-          subtitle="Monto Ronda"
+          subtitle="Monto ronda"
           icon="attach-money"
           iconType="MaterialIcons"
         />

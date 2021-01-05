@@ -46,7 +46,7 @@ const RoundTurns = props => {
         `Existen mas participantes seleccionados que números disponibles para asignar\n(${participantsQuantity} Participantes Seleccionados)`
       );
     if (finalTurns === 1)
-      return openErrorModal(`La Ronda debe tener 2 números o más`);
+      return openErrorModal(`La ronda debe tener 2 números o más`);
 
     props.setTurns(value);
     return navigation.navigate("RoundDate");
@@ -60,7 +60,7 @@ const RoundTurns = props => {
         title={
           noParticipantEdit
             ? "No se puede editar la\ncantidad de números"
-            : "¿Cuántos números tendrá la\nRonda?"
+            : "¿Cuántos números tendrá la\nronda?"
         }
         iconName={screenIcon.name}
         iconType={screenIcon.type}

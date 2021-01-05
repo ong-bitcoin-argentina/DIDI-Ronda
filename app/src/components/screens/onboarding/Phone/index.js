@@ -60,13 +60,12 @@ const Phone = props => {
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
+          <Text style={styles.title}>La ronda</Text>
           <Text
             style={[
               styles.subtitle,
               { width: 350, textAlign: "center", marginBottom: 30 },
-            ]}
-          >
+            ]}>
             Aun no ingresaste tu teléfono. Ingresa tu número de teléfono y el
             país
           </Text>
@@ -86,10 +85,8 @@ const Phone = props => {
               placeholderStyle={{ color: "white" }}
               placeholderIconColor="white"
               selectedValue={country}
-              onValueChange={i => setCountry(i)}
-            >
+              onValueChange={i => setCountry(i)}>
               <Picker.Item label="Argentina" value="AR" />
-              <Picker.Item label="Uruguay" value="UY" />
             </Picker>
           </Item>
           <Sae
@@ -112,8 +109,7 @@ const Phone = props => {
             style={[
               styles.button,
               { width: 200, flexDirection: "row", justifyContent: "center" },
-            ]}
-          >
+            ]}>
             <Text style={{ color: "black", textAlign: "center" }}>Enviar</Text>
           </Button>
         </View>

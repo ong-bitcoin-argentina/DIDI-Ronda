@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Config from "react-native-config";
+import analytics from "@react-native-firebase/analytics";
 import { connect } from "react-redux";
+import { AppInstalledChecker } from "react-native-check-app-install";
 import { Button, Spinner, Icon } from "native-base";
 import {
   View,
@@ -21,6 +22,7 @@ import {
   getToken,
   openAdiLogin,
   links,
+  openPlayStoreToUpdateAidi,
 } from "./../../../utils/appRouter";
 import Logo from "../../../assets/img/app-logo.svg";
 import LinkModal from "../../components/LinkModal";
@@ -34,6 +36,7 @@ const states = {
 const Login = props => {
   const [state, setState] = useState(states.initial);
   const [modalVisible, setModalVisible] = useState(false);
+  const [needUpdate, setNeedUpdate] = useState(false);
 
   const handleLogin = async link => {
     if (!link) return;
@@ -59,13 +62,24 @@ const Login = props => {
   const onLoginWithAidi = async () => {
     const canOpen = await Linking.canOpenURL(links.login.deepLink);
     if (!canOpen) {
+      const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
+        "com.aidi"
+      );
+      setNeedUpdate(isInstalled);
+
+      const name = isInstalled ? "ModalUpdateAidi" : "ModalInstallAidi";
+      analytics().logScreenView({
+        screen_class: name,
+        screen_name: name,
+      });
+
       return setModalVisible(true);
     }
     await openAdiLogin();
   };
 
   const openPlaystore = async () => {
-    await openAdiLogin();
+    needUpdate ? await openPlayStoreToUpdateAidi() : await openAdiLogin();
   };
 
   // const forgot = () => props.navigation.navigate('Forgot');
@@ -87,7 +101,7 @@ const Login = props => {
   const renderAuthWarning = () => {
     const title = "¡Error de Autenticación!";
     const message =
-      "Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al ingresar en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };
@@ -95,7 +109,7 @@ const Login = props => {
   const renderErrorLoginWarning = () => {
     const title = "¡Error de inicio de sesión!";
     const message =
-      "Ha ocurrido un error al intentar iniciar sesión en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al intentar iniciar sesión en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };
@@ -136,6 +150,7 @@ const Login = props => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         onConfirm={openPlaystore}
+        needUpdate={needUpdate}
       />
     </ImageBackground>
   );

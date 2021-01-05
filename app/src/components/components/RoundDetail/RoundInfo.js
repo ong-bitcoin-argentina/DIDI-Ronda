@@ -102,7 +102,11 @@ const RoundInfo = props => {
   const participantTotalPay = amountPerShift * participantNumbers.length;
 
   const enabledForPayRound =
-    round.start && allPaysCompleted && currentShift.status === "current";
+    round.start &&
+    allPaysCompleted &&
+    currentShift.status === "current" &&
+    !currentShift.isPayedToParticipant;
+
   const { number: myNumber } = round.shifts.find(
     s => s.participant[0] === userParticipant._id
   );
@@ -156,7 +160,9 @@ const RoundInfo = props => {
     if (!isNumberFromParticipant) return false;
     const limitDate = new Date(number.limitDate);
     const today = new Date();
+    const { isPayedToParticipant } = number;
     return (
+      !isPayedToParticipant &&
       round.start &&
       number.status === "current" &&
       allPaysCompleted &&

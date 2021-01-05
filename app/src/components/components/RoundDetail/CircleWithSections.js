@@ -44,7 +44,7 @@ const CircleOfNumbers = ({
         <Text style={{ ...styles.totalNumbers, color: colors.mainBlue }}>
           {currentNumber}
         </Text>
-        <Text style={styles.subtitleOfNumbers}>en Ronda</Text>
+        <Text style={styles.subtitleOfNumbers}>en ronda</Text>
       </View>
     );
   };
@@ -55,8 +55,7 @@ const CircleOfNumbers = ({
       rotation={0}
       fill={maxFill}
       backgroundColor={colors.darkishGray}
-      tintColor={colors.mainBlue}
-    >
+      tintColor={colors.mainBlue}>
       {() => renderInnerText()}
     </AnimatedCircularProgress>
   );

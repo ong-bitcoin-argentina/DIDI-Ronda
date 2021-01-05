@@ -99,15 +99,13 @@ const Admin = props => {
           marginTop: 10,
           marginHorizontal: 10,
           marginBottom: 25,
-        }}
-      >
+        }}>
         <BlueTile title={round.name} amount={round.amount} />
       </View>
 
       <CaptionInfo
         titleContainerStyle={{ marginHorizontal: 10 }}
-        title="Información"
-      >
+        title="Información">
         <View style={{ flexDirection: "row" }}>
           <View style={styles.shiftDetailContainer}>
             <CircleOfNumbers maxNumber={round.shifts.length} />
@@ -152,7 +150,7 @@ const Admin = props => {
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Spinner size={40} color={colors.mainBlue} />
             <Text style={{ textAlign: "center", fontSize: 13 }}>
-              Se esta procesando el inicio de la Ronda, te llegara una
+              Se esta procesando el inicio de la ronda, te llegara una
               notificacion cuando termine
             </Text>
           </View>
@@ -161,15 +159,13 @@ const Admin = props => {
           <>
             <Button
               onPress={() => buttonStartRound()}
-              style={[styles.button, { backgroundColor: colors.mainBlue }]}
-            >
-              <Text style={styles.buttonTextEnabled}>Comenzar Ronda</Text>
+              style={[styles.button, { backgroundColor: colors.mainBlue }]}>
+              <Text style={styles.buttonTextEnabled}>Comenzar ronda</Text>
             </Button>
             {!startable && (
               <Button
                 onPress={() => reSendInvite(round.id)}
-                style={[styles.button, { backgroundColor: colors.mainBlue }]}
-              >
+                style={[styles.button, { backgroundColor: colors.mainBlue }]}>
                 <Text style={styles.buttonTextEnabled}>
                   Reenviar invitaciones
                 </Text>
