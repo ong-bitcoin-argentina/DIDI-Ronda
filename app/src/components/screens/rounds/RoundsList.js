@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { Text, Spinner, Tab, Tabs, TabHeading, Icon } from "native-base";
 import { connect } from "react-redux";
 
@@ -15,6 +15,8 @@ import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
 import ConfirmModal from "../../components/ConfirmModal";
+
+const widthScreen = Dimensions.get("screen").width;
 
 class RoundsList extends React.Component {
   state = {
@@ -181,33 +183,21 @@ class RoundsList extends React.Component {
     };
 
     return (
-      <View
-        style={{ flex: 0.8, justifyContent: "center", alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
+      <View style={styles.noRoundsSectionContainer}>
+        <View style={styles.warningIconContainer}>
           <Icon
             type="MaterialCommunityIcons"
             name="alert"
-            style={{ color: colors.yellow, fontSize: 60 }}
+            style={styles.warningIcon}
           />
         </View>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
-          <Text
-            style={{
-              fontSize: 24,
-              lineHeight: 30,
-              fontWeight: "bold",
-              color: colors.mainBlue,
-              textAlign: "center",
-            }}>
-            {statuses[status]}
-          </Text>
+        <View style={styles.warningTitleContainer}>
+          <Text style={styles.warningTitle}>{statuses[status]}</Text>
         </View>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
+        <View style={styles.warningTextContainer}>
           <Text style={{ textAlign: "center" }}>
             {bodyText}
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-              {boldBodyText}
-            </Text>
+            <Text style={styles.warningBoldText}>{boldBodyText}</Text>
           </Text>
         </View>
       </View>
@@ -237,7 +227,7 @@ class RoundsList extends React.Component {
         key={t.key}
         heading={
           <TabHeading style={styles.roundsTabs}>
-            <Text>{t.title}</Text>
+            <Text style={styles.tabTitle}>{t.title}</Text>
           </TabHeading>
         }>
         {this.renderContent(roundsList, t.contentType)}
@@ -338,6 +328,39 @@ const styles = StyleSheet.create({
   },
   roundsTabs: {
     backgroundColor: colors.mainBlue,
+  },
+  tabTitle: {
+    fontSize: widthScreen < 360 ? 14 : 16,
+  },
+  warningIconContainer: {
+    flexDirection: "row",
+  },
+  warningTitleContainer: {
+    flexDirection: "row",
+    marginVertical: 15,
+  },
+  warningTextContainer: {
+    flexDirection: "row",
+  },
+  warningTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontWeight: "bold",
+    color: colors.mainBlue,
+    textAlign: "center",
+  },
+  warningIcon: {
+    color: colors.yellow,
+    fontSize: 60,
+  },
+  warningBoldText: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  noRoundsSectionContainer: {
+    flex: 0.8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
