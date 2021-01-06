@@ -97,29 +97,29 @@ export default class RoundPopUp extends Component {
         animationType="slide"
         isVisible={isModalVisible}
         backdropColor="rgba(0,0,0,0.5)">
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.innerContainer}>
-          {customContent ? (
-            customContent()
-          ) : (
-            <>
-              <View style={{ ...styles.titleContainer, ...titleStyle }}>
-                {icon && icon}
-                {value && <Text style={styles.value}>{value}</Text>}
-                <Text style={{ ...styles.title, ...titleTextStyle }}>
-                  {titleText}
-                </Text>
-              </View>
-              {children && (
-                <View style={styles.childrenContainer}>{children}</View>
-              )}
-              <View style={styles.buttonsContainer}>
-                {this.renderButtons()}
-              </View>
-            </>
-          )}
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.innerContainer}>
+            {customContent ? (
+              customContent()
+            ) : (
+              <>
+                <View style={{ ...styles.titleContainer, ...titleStyle }}>
+                  {icon && icon}
+                  {value && <Text style={styles.value}>{value}</Text>}
+                  <Text style={{ ...styles.title, ...titleTextStyle }}>
+                    {titleText}
+                  </Text>
+                </View>
+                {children && (
+                  <View style={styles.childrenContainer}>{children}</View>
+                )}
+                <View style={styles.buttonsContainer}>
+                  {this.renderButtons()}
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
       </Modal>
     );
   }
