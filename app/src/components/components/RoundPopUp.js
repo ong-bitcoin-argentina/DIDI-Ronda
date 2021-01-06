@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Button } from "native-base";
 import Modal from "react-native-modal";
 import colors from "./colors";
@@ -97,7 +97,9 @@ export default class RoundPopUp extends Component {
         animationType="slide"
         isVisible={isModalVisible}
         backdropColor="rgba(0,0,0,0.5)">
-        <View style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.innerContainer}>
           {customContent ? (
             customContent()
           ) : (
@@ -117,7 +119,7 @@ export default class RoundPopUp extends Component {
               </View>
             </>
           )}
-        </View>
+        </ScrollView>
       </Modal>
     );
   }
@@ -125,9 +127,8 @@ export default class RoundPopUp extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     borderRadius: 15,
-    paddingVertical: 25,
+    backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -136,6 +137,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.44,
     shadowRadius: 10.32,
     elevation: 16,
+  },
+  innerContainer: {
+    paddingVertical: 25,
   },
   titleContainer: {
     alignItems: "center",
