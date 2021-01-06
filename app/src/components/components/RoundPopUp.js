@@ -38,8 +38,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               accept();
               if (!notCloseAfterPositive) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.buttonText}>{acceptTitle || "OK"}</Text>
           </Button>
         )}
@@ -50,8 +49,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               positive();
               if (!notCloseAfterPositive) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.buttonText}>{positiveTitle || "Aceptar"}</Text>
           </Button>
         )}
@@ -61,8 +59,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               negative();
               if (!notCloseAfterNegative) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.negativeButtonText}>
               {negativeTitle || "Cancelar"}
             </Text>
@@ -99,8 +96,7 @@ export default class RoundPopUp extends Component {
         useNativeDriver
         animationType="slide"
         isVisible={isModalVisible}
-        backdropColor="rgba(0,0,0,0.5)"
-      >
+        backdropColor="rgba(0,0,0,0.5)">
         <View style={styles.container}>
           {customContent ? (
             customContent()
@@ -200,6 +196,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginVertical: 15,
+    paddingHorizontal: 25,
   },
   childrenContainer: {
     justifyContent: "space-around",
