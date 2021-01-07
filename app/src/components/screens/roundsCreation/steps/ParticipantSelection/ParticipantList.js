@@ -389,10 +389,10 @@ const styles = StyleSheet.create({
   },
   phantomButtonText: {
     fontSize: 11,
-    color: "#3198b5",
+    color: colors.mainBlue,
     fontStyle: "italic",
-    marginVertical: 10,
-    textDecorationLine: "underline",
+    fontWeight: "bold",
+    marginVertical: 15,
   },
   searchContainer: {
     flexDirection: "row-reverse",
