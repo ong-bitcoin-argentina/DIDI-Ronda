@@ -18,8 +18,7 @@ class RoundListItem extends Component {
           <Button
             danger
             style={styles.rightAcionButton}
-            onPress={() => this.deleteRound()}
-          >
+            onPress={() => this.deleteRound()}>
             <Icon
               style={styles.rightAcionIcon}
               type="FontAwesome"
@@ -127,6 +126,27 @@ class RoundListItem extends Component {
       return [];
     };
 
+    const getAssignedShifts = participantId => {
+      let assigned = [];
+      shifts.forEach(({ participant, number }) => {
+        participant.forEach(id => {
+          if (participantId === id.toString()) assigned.push(number);
+        });
+      });
+      return assigned.join(", ");
+    };
+
+    const getUserParticipantId = userId => {
+      const participant = participants.find(
+        participant => participant.user._id === userId
+      );
+
+      return participant._id;
+    };
+
+    const participantID = getUserParticipantId(auth.id);
+    const numbers = getAssignedShifts(participantID);
+
     const onTouchablePress = () =>
       detail({
         _id,
@@ -177,8 +197,7 @@ class RoundListItem extends Component {
                         position: "absolute",
                         top: -2,
                         right: -2,
-                      }}
-                    >
+                      }}>
                       <Icon
                         type="FontAwesome"
                         name={iconType}
@@ -203,8 +222,7 @@ class RoundListItem extends Component {
                         style={{
                           justifyContent: "center",
                           marginRight: 5,
-                        }}
-                      >
+                        }}>
                         <Icon
                           type="MaterialIcons"
                           name="person-outline"
@@ -216,8 +234,7 @@ class RoundListItem extends Component {
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
-                          }}
-                        >
+                          }}>
                           <Text style={styles.amount}>
                             {acceptedParticipantNumber} de {participants.length}
                           </Text>
@@ -230,14 +247,12 @@ class RoundListItem extends Component {
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
-                          }}
-                        >
+                          }}>
                           <Text
                             style={{
                               ...styles.confirmedText,
                               fontStyle: "normal",
-                            }}
-                          >
+                            }}>
                             Participantes
                           </Text>
                         </View>
@@ -261,8 +276,7 @@ class RoundListItem extends Component {
                 height: 60,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <View
                 style={[
                   styles.roundStatus,
@@ -278,8 +292,7 @@ class RoundListItem extends Component {
                     style={{
                       flexDirection: "row",
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     <Icon
                       style={styles.extraInfoIcons}
                       name="bookmark-outline"
@@ -293,10 +306,9 @@ class RoundListItem extends Component {
                       justifyContent: "center",
                       alignContent: "flex-end",
                       marginRight: "6%",
-                    }}
-                  >
+                    }}>
                     <Text style={styles.extraInfoTextData}>
-                      {currentShift ? currentShift.number : "-"}
+                      {currentShift ? currentShift.number : numbers}
                     </Text>
                   </View>
                 </View>
@@ -305,15 +317,13 @@ class RoundListItem extends Component {
                   style={{
                     flexDirection: "row",
                     marginTop: 5,
-                  }}
-                >
+                  }}>
                   <View style={styles.extraInfoLeftSpacing} />
                   <View
                     style={{
                       flexDirection: "row",
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     <Icon
                       style={styles.extraInfoIcons}
                       name="calendar-check"
@@ -328,11 +338,12 @@ class RoundListItem extends Component {
                       justifyContent: "center",
                       alignItems: "center",
                       marginRight: "6%",
-                    }}
-                  >
+                    }}>
                     <Text style={styles.extraInfoTextData}>
                       {currentShift && currentShift.limitDate
                         ? getFormattedDate(currentShift.limitDate)
+                        : customEndDate
+                        ? customEndDate
                         : "--/--/--"}
                     </Text>
                   </View>
