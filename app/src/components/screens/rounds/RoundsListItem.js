@@ -114,6 +114,7 @@ class RoundListItem extends Component {
     const customEndDate = dateFormatShort(endDate);
 
     const currentShift = shifts && shifts.find(s => s.status === "current");
+    const lastShift = shifts[shifts.length - 1];
 
     const acceptedParticipantNumber = participants.filter(p => p.acepted)
       .length;
@@ -342,9 +343,7 @@ class RoundListItem extends Component {
                     <Text style={styles.extraInfoTextData}>
                       {currentShift && currentShift.limitDate
                         ? getFormattedDate(currentShift.limitDate)
-                        : customEndDate
-                        ? customEndDate
-                        : "--/--/--"}
+                        : getFormattedDate(lastShift.limitDate)}
                     </Text>
                   </View>
                 </View>
