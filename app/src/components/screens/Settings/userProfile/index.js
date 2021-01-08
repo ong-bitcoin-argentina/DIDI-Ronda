@@ -214,7 +214,7 @@ export default createStackNavigator(
       screen: UserProfile,
       navigationOptions: ({ navigation }) => ({
         title: `Mi Perfil`,
-        headerStyle: { backgroundColor: "#417fd7" },
+        headerStyle: { backgroundColor: colors.mainBlue },
         headerTitleStyle: styles.headerTitleStyle,
         headerRight: <ConfigIcon navigation={navigation} />,
       }),
@@ -223,7 +223,7 @@ export default createStackNavigator(
       screen: Settings,
       navigationOptions: ({ navigation }) => ({
         title: `Configuración`,
-        headerStyle: { backgroundColor: "#417fd7" },
+        headerStyle: { backgroundColor: colors.mainBlue },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,
       }),
@@ -232,7 +232,7 @@ export default createStackNavigator(
       screen: AboutAidi,
       navigationOptions: ({ navigation }) => ({
         title: `Acerca de ai·di`,
-        headerStyle: { backgroundColor: "#417fd7" },
+        headerStyle: { backgroundColor: colors.mainBlue },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,
       }),
@@ -241,7 +241,7 @@ export default createStackNavigator(
       screen: AboutRonda,
       navigationOptions: ({ navigation }) => ({
         title: `Acerca de ronda`,
-        headerStyle: { backgroundColor: "#417fd7" },
+        headerStyle: { backgroundColor: colors.mainBlue },
         headerTitleStyle: styles.headerTitleStyle,
         headerLeft: <BackButton navigation={navigation} />,
       }),
