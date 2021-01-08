@@ -3,6 +3,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import HomeScreen from "../../screens/Home";
 import LogoCleaned from "../../../assets/img/logo-clean-white";
 import { View, Text, StyleSheet } from "react-native";
+import colors from "../colors";
 
 export default createStackNavigator({
   Home: {
@@ -11,7 +12,7 @@ export default createStackNavigator({
       const { params = {} } = navigation.state;
       return {
         headerStyle: {
-          backgroundColor: "#417fd7",
+          backgroundColor: colors.mainBlue,
           height: 76,
         },
         headerTitle: (

@@ -105,7 +105,7 @@ export default createStackNavigator({
     screen: NotificationsScreen,
     navigationOptions: () => ({
       title: `Notificaciones`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: {
         color: "white",
         width: "80%",
