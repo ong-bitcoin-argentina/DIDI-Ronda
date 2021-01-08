@@ -1,8 +1,8 @@
 export default {
   mainBlue: "#417fd7",
-  lightBlue: "#9fbeed",
+  lightBlue: "#ACC6EB",
   secondaryBlue: "#04c9e1",
-  darkBlue: "#2C5793",
+  darkBlue: "#205196",
   inactiveBlue: "#b3cbef",
   secondary: "#9c9c9c",
   gray: "#595959",
