@@ -55,7 +55,7 @@
     "react-native-swipeout": "^2.3.6",
     "react-native-textinput-effects": "^0.5.1",
     "react-native-vector-icons": "^6.6.0",
-    "react-native-wheel-of-fortune": "git+https://github.com/debrayperalta/react-native-wheel-of-fortune.git",
+    "react-native-wheel-of-fortune": "git+https://github.com/ong-bitcoin-argentina/react-native-wheel-of-fortune.git",
     "react-navigation": "^4.0.10",
     "react-navigation-header-buttons": "^3.0.4",
     "react-navigation-material-bottom-tabs": "^2.1.5",
