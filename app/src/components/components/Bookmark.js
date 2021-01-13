@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   // BOOKMARK
   bookmarkContainer: {
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
+    backgroundColor: colors.whiteSemiTransparent,
   },
   bookmarkIcon: {
     zIndex: 10,

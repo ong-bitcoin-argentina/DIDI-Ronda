@@ -66,7 +66,7 @@ const RuffleRoulette = props => {
 
   const Confetti = () => (
     <>
-      <View style={{ width: "100%", alignItems: "center", height: 375 }}>
+      <View style={styles.confettiView}>
         <Text style={styles.titleText}>Ganó</Text>
 
         <Bookmark outline number={number} />
@@ -76,7 +76,7 @@ const RuffleRoulette = props => {
               ? { uri: wheelWinner.thumbnailPath }
               : emptyAvatar
           }
-          style={{ height: 150, width: 150, borderRadius: 100, zIndex: -1 }}
+          style={styles.image}
         />
         <Text style={styles.textName}>{wheelWinner.name}</Text>
         <Button
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     textAlign: "center",
     zIndex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
+    backgroundColor: colors.whiteSemiTransparent,
   },
   playButton: {
     top: 20,
@@ -233,6 +233,17 @@ const styles = StyleSheet.create({
     bottom: -38,
     left: 35,
     position: "absolute",
+  },
+  image: {
+    height: 150,
+    width: 150,
+    borderRadius: 100,
+    zIndex: -1,
+  },
+  confettiView: {
+    width: "100%",
+    alignItems: "center",
+    height: 375,
   },
 });
 
