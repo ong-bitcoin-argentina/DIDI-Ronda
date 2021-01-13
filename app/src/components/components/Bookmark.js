@@ -18,7 +18,7 @@ const Bookmark = props => {
   const sizeProp = size || 1;
 
   const iconFontSize = sizeProp * 70;
-  const textLeft = sizeProp * 28;
+  const textLeft = number >= 10 ? sizeProp * 20 : sizeProp * 28;
   const textTop = sizeProp * 14;
   const textFontSize = sizeProp * 26;
   const outlineTextColor = color || colors.mainBlue;
@@ -48,7 +48,9 @@ const Bookmark = props => {
         style={[
           styles.bookmarkText,
           { color: outline ? outlineTextColor : "white" },
-          { left: outline ? textLeft : number >= 10 ? 10 : 16 },
+          {
+            left: outline ? textLeft : number >= 10 ? 10 : 16,
+          },
           { top: outline ? textTop : 7 },
           { fontSize: outline ? textFontSize : 16 },
           bold && { fontWeight: "bold" },
