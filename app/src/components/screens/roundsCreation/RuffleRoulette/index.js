@@ -89,14 +89,14 @@ const RuffleRoulette = props => {
           autoPlay
           loop={false}
           source={confettiAnimation}
-          style={styles.confettiView}
+          style={styles.confettiViewLeft}
         />
         <LottieView
           pointerEvents="none"
           autoPlay
           loop={false}
           source={confettiAnimation}
-          style={styles.confettiViewLeft}
+          style={styles.confettiViewRight}
         />
       </View>
     </>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     top: 20,
     zIndex: 10,
   },
-  confettiView: {
+  confettiViewLeft: {
     transform: [{ rotate: "52deg" }],
     zIndex: -10,
     width: "100%",
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     right: 65,
     position: "absolute",
   },
-  confettiViewLeft: {
+  confettiViewRight: {
     transform: [{ rotate: "-42deg" }],
     zIndex: -10,
     width: "100%",
