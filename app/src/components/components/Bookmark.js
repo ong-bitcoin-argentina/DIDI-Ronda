@@ -52,8 +52,7 @@ const Bookmark = props => {
           { top: outline ? textTop : 7 },
           { fontSize: outline ? textFontSize : 16 },
           bold && { fontWeight: "bold" },
-        ]}
-      >
+        ]}>
         {number}
       </Text>
     </View>
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
   // BOOKMARK
   bookmarkContainer: {
     justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.75)",
   },
   bookmarkIcon: {
     zIndex: 10,
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   bookmarkText: {
     position: "absolute",
     zIndex: 100,
+    fontWeight: "bold",
   },
   checkIcon: {
     color: colors.mainBlue,

@@ -76,7 +76,7 @@ const RuffleRoulette = props => {
               ? { uri: wheelWinner.thumbnailPath }
               : emptyAvatar
           }
-          style={{ height: 150, width: 150, borderRadius: 100 }}
+          style={{ height: 150, width: 150, borderRadius: 100, zIndex: -1 }}
         />
         <Text style={styles.textName}>{wheelWinner.name}</Text>
         <Button
@@ -84,14 +84,21 @@ const RuffleRoulette = props => {
           onPress={() => onFinish(number, wheelWinner)}>
           <Text style={styles.buttonText}>Ok</Text>
         </Button>
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiView}
+        />
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiViewLeft}
+        />
       </View>
-      <LottieView
-        pointerEvents="none"
-        autoPlay
-        loop={false}
-        source={confettiAnimation}
-        style={styles.confettiView}
-      />
     </>
   );
 
@@ -201,19 +208,30 @@ const styles = StyleSheet.create({
   textName: {
     marginVertical: 5,
     fontSize: 18,
+    fontWeight: "bold",
     color: colors.mainBlue,
     textAlign: "center",
+    zIndex: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.75)",
   },
   playButton: {
     top: 20,
     zIndex: 10,
   },
   confettiView: {
-    transform: [{ rotate: "65deg" }],
-    zIndex: 0,
+    transform: [{ rotate: "52deg" }],
+    zIndex: -10,
     width: "100%",
-    top: -30,
-    right: 22,
+    top: -20,
+    right: 65,
+    position: "absolute",
+  },
+  confettiViewLeft: {
+    transform: [{ rotate: "-42deg" }],
+    zIndex: -10,
+    width: "100%",
+    bottom: -38,
+    left: 35,
     position: "absolute",
   },
 });
