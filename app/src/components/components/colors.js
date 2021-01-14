@@ -29,4 +29,5 @@ export default {
   secondaryWhite: "#F2F2F2",
   whiteTransparent: "#ffffff40",
   alterRed: "#E03C7A",
+  whiteSemiTransparent: "rgba(255, 255, 255, 0.75)",
 };
