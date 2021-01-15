@@ -47,7 +47,10 @@ const ParticipantPayNumber = props => {
     }
 
     if (!loading && payRound.round === null && payRound.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al procesar el pago de la ronda. Intentalo nuevamente.",
+        true
+      );
       pay_round_clean();
     }
   }, [payRound]);
