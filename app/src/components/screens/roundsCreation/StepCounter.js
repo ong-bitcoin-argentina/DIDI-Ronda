@@ -10,8 +10,8 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
       name: "format-color-text",
     },
     {
-      type: "MaterialCommunityIcons",
-      name: "cash-usd",
+      type: "MaterialIcons",
+      name: "attach-money",
     },
     {
       type: "MaterialIcons",
@@ -22,8 +22,8 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
       name: "bookmark-border",
     },
     {
-      type: "MaterialCommunityIcons",
-      name: "calendar-check",
+      type: "MaterialIcons",
+      name: "event-available",
     },
     {
       type: "MaterialIcons",
@@ -66,8 +66,7 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
             paddingBottom: 10,
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Icon
             name={s.name}
             style={{ color: backgroundColorStep(i), fontSize: 18 }}

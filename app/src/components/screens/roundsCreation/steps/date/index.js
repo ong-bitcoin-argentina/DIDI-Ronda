@@ -25,8 +25,8 @@ import ErrorDateModal from "./ErrorDateModal";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const screenIcon = {
-  type: "MaterialCommunityIcons",
-  name: "calendar-check",
+  type: "MaterialIcons",
+  name: "event-available",
 };
 
 const today = new Date();

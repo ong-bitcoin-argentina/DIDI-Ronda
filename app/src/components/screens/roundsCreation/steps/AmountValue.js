@@ -7,8 +7,8 @@ import NextButton from "../../../components/NextButton";
 import CreationTitle from "../CreationTitle";
 
 const stepIcon = {
-  type: "MaterialCommunityIcons",
-  name: "cash-usd",
+  type: "MaterialIcons",
+  name: "attach-money",
 };
 
 const ManualValue = props => {

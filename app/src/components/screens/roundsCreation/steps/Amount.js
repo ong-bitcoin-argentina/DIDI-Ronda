@@ -6,8 +6,8 @@ import ScreenContainer from "../ScreenContainer";
 import CreationTitle from "../CreationTitle";
 
 const stepIcon = {
-  type: "MaterialCommunityIcons",
-  name: "cash-usd",
+  type: "MaterialIcons",
+  name: "attach-money",
 };
 
 const Amount = props => {
@@ -37,8 +37,7 @@ const Amount = props => {
                 setValue(value);
                 props.navigation.navigate("RoundFrequency");
               }}
-              style={styles.amountValueContainer}
-            >
+              style={styles.amountValueContainer}>
               <Text style={styles.amountValue}>${formatNumber(value)}</Text>
             </TouchableOpacity>
           </View>
@@ -52,8 +51,7 @@ const Amount = props => {
             ]}
             onPress={() => {
               props.navigation.navigate("AmountValue");
-            }}
-          >
+            }}>
             <Text style={styles.amountValue}>Otro</Text>
           </TouchableOpacity>
         </View>
