@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Dimensions } from "react-native";
-import { Input, Icon } from "native-base";
+import { Input, Icon, Toast } from "native-base";
 import { Text } from "native-base";
 import colors from "../../../components/colors";
 import ScreenContainer from "../ScreenContainer";
@@ -32,10 +32,10 @@ const RoundName = props => {
   const [showCustomAmount, setShowCustomAmount] = useState(false);
 
   const validateInput = text => {
-    if (text === "") return setAmount("");
+    if (text === "") return setCustomAmount("");
     const numberRegex = /^[0-9]*$/;
     const isValid = numberRegex.test(text);
-    if (isValid) return setAmount(text);
+    if (isValid) return setCustomAmount(text);
     return Toast.show({
       text: "Solo números aceptados",
       position: "top",
@@ -43,7 +43,7 @@ const RoundName = props => {
     });
   };
 
-  const valueIsValid = value && value !== "0";
+  const valueIsValid = customAmount && customAmount !== "0";
 
   return (
     <ScreenContainer navigation={navigation} step={0}>
@@ -174,7 +174,7 @@ const RoundName = props => {
             />
           </View>
         )}
-        {!!showCustomAmount && !!customAmount && (
+        {!!showCustomAmount && !!valueIsValid && (
           <NextButton
             callback={() => {
               setAmount(customAmount);
