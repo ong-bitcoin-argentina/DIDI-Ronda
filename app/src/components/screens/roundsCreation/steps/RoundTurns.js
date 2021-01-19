@@ -55,7 +55,7 @@ const RoundTurns = props => {
   const fontSizeInput = !value ? 16 : 25;
 
   return (
-    <ScreenContainer navigation={navigation} step={3}>
+    <ScreenContainer navigation={navigation} step={2}>
       <CreationTitle
         title={
           noParticipantEdit

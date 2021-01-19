@@ -96,7 +96,7 @@ const RoundDate = props => {
   };
 
   return (
-    <ScreenContainer navigation={navigation} step={4}>
+    <ScreenContainer navigation={navigation} step={3}>
       <CreationTitle
         title="¿Cuándo inicia la ronda?"
         iconType={screenIcon.type}

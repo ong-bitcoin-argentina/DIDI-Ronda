@@ -41,7 +41,7 @@ const RoundFrequency = props => {
   };
 
   return (
-    <ScreenContainer navigation={navigation} step={2}>
+    <ScreenContainer navigation={navigation} step={1}>
       <CreationTitle
         title={`¿Cada cuánto tiempo deberán\naportar el dinero?`}
         iconName={stepIcon.name}
@@ -55,8 +55,7 @@ const RoundFrequency = props => {
               style={{
                 width: "65%",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Text style={{ fontSize: 13 }}>Período</Text>
             </View>
             <View
@@ -65,14 +64,12 @@ const RoundFrequency = props => {
                 flexDirection: "row",
                 borderBottomColor: colors.secondary,
                 borderBottomWidth: 2,
-              }}
-            >
+              }}>
               <Picker
                 style={{ marginRight: 0 }}
                 textStyle={{ padding: 0 }}
                 selectedValue={frequency}
-                onValueChange={onValueChange}
-              >
+                onValueChange={onValueChange}>
                 {frequencyValues.map(f => (
                   <Picker.Item key={f.value} label={f.label} value={f.value} />
                 ))}

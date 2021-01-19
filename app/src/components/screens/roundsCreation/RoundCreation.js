@@ -21,22 +21,23 @@ import CloseButton from "./CloseButton";
 const mapStateToProps = state => {
   return {
     name: state.roundCreation.name,
-  };
-};
-
-const mapDispatchToPropsAmount = dispatch => {
-  return {
-    setAmount: amount => {
-      dispatch(actions.setAmount(amount));
-    },
-  };
-};
-
-const mapStateToPropsAmount = state => {
-  return {
     amount: state.roundCreation.amount,
   };
 };
+
+// const mapDispatchToPropsAmount = dispatch => {
+//   return {
+//     setAmount: amount => {
+//       dispatch(actions.setAmount(amount));
+//     },
+//   };
+// };
+
+// const mapStateToPropsAmount = state => {
+//   return {
+//     amount: state.roundCreation.amount,
+//   };
+// };
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -45,6 +46,9 @@ const mapDispatchToProps = dispatch => {
     },
     clearData: () => {
       dispatch(actions.clearStore());
+    },
+    setAmount: amount => {
+      dispatch(actions.setAmount(amount));
     },
   };
 };
@@ -113,20 +117,20 @@ const RoundCreationStack = createStackNavigator({
       ),
     }),
   },
-  Amount: {
-    screen: connect(
-      mapStateToPropsAmount,
-      mapDispatchToPropsAmount
-    )(Amount),
-    navigationOptions: defaultNavigationOptions,
-  },
-  AmountValue: {
-    screen: connect(
-      mapStateToPropsAmount,
-      mapDispatchToPropsAmount
-    )(AmountValue),
-    navigationOptions: defaultNavigationOptions,
-  },
+  // Amount: {
+  //   screen: connect(
+  //     mapStateToPropsAmount,
+  //     mapDispatchToPropsAmount
+  //   )(Amount),
+  //   navigationOptions: defaultNavigationOptions,
+  // },
+  // AmountValue: {
+  //   screen: connect(
+  //     mapStateToPropsAmount,
+  //     mapDispatchToPropsAmount
+  //   )(AmountValue),
+  //   navigationOptions: defaultNavigationOptions,
+  // },
   RoundFrequency: {
     screen: connect(
       mapStateToPropsFrequency,
