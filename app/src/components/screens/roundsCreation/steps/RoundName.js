@@ -100,13 +100,8 @@ const RoundName = props => {
 
   return (
     <ScreenContainer navigation={navigation} step={0}>
-      <ScrollView>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.backgroundGray }}>
         <View style={styles.titleContainer}>
-          {/* <Icon
-          name={screenIcon.name}
-          type={screenIcon.type}
-          style={{ color: colors.mainBlue, fontSize: 45 }}
-        /> */}
           <Text style={styles.title}>{`¿Cómo se va a llamar la ronda?`}</Text>
         </View>
         <View style={styles.container}>
@@ -126,11 +121,6 @@ const RoundName = props => {
           </View>
         </View>
         <View style={styles.titleContainer}>
-          {/* <Icon
-          type={turnsIcon.type}
-          name={turnsIcon.name}
-          style={{ color: colors.mainBlue, fontSize: 45 }}
-        /> */}
           <Text style={styles.title}>
             {noParticipantEdit
               ? "No se puede editar la\ncantidad de números"
@@ -156,17 +146,12 @@ const RoundName = props => {
           </View>
         </View>
         <View style={styles.titleContainer}>
-          {/* <Icon
-          name={stepIcon.name}
-          type={stepIcon.type}
-          style={{ color: colors.mainBlue, fontSize: 45 }}
-        /> */}
           <Text
             style={
               styles.title
             }>{`¿Cuánto dinero deberá aportar cada participante?`}</Text>
         </View>
-        <View style={{ ...styles.container, flex: 1 }}>
+        <View style={{ ...styles.container }}>
           <View style={styles.amountFullContainer}>
             {amounts.map(amount => {
               return (
@@ -226,11 +211,13 @@ const RoundName = props => {
             message={errorMessage}
             onOkPress={toggleErrorModal}
           />
-          {!!showCustomAmount && !!valueIsValid && (
-            <NextButton callback={onNextPress} />
-          )}
         </View>
       </ScrollView>
+      <View style={styles.nextButtonContainer}>
+        {!!showCustomAmount && !!valueIsValid && (
+          <NextButton callback={onNextPress} />
+        )}
+      </View>
     </ScreenContainer>
   );
 };
@@ -247,7 +234,7 @@ const styles = StyleSheet.create({
     alignContent: "stretch",
     justifyContent: "space-between",
     backgroundColor: colors.backgroundGray,
-    marginTop: 25,
+    marginTop: 15,
     marginHorizontal: 10,
   },
   iconContainer: {
@@ -310,6 +297,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     paddingBottom: 10,
+    paddingHorizontal: 15,
     backgroundColor: colors.backgroundGray,
   },
   input: {
@@ -319,9 +307,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    marginLeft: 25,
     fontWeight: "bold",
     fontSize: 18,
+  },
+  nextButtonContainer: {
+    position: "absolute",
+    width: "100%",
+    height: 50,
+    bottom: 0,
   },
 });
 
