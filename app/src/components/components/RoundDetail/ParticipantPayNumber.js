@@ -83,7 +83,7 @@ const ParticipantPayNumber = props => {
   };
 
   const qrPopUpParams = {
-    title: `Para confirmar tu aporte, escaneá el código QR que te muestra ${adminName} (admin)\nTambién podés optar por confirmar tu aporte de forma no presencial haciendo click en el botón que figura más abajo.`,
+    title: `Para confirmar tu aporte, escaneá el código QR del administrador de la Ronda.\nTambién podés confirmar tu aporte mediante la opción "cobro no presencial.\n¡Recibirás una notificación en tu celular cuando tu pago haya sido confirmado!`,
   };
 
   // Methods
