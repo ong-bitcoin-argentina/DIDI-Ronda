@@ -22,22 +22,11 @@ const mapStateToProps = state => {
   return {
     name: state.roundCreation.name,
     amount: state.roundCreation.amount,
+    turns: state.roundCreation.turns,
+    noParticipantEdit: state.roundCreation.noParticipantEdit,
+    participantsQuantity: state.roundCreation.participants.length,
   };
 };
-
-// const mapDispatchToPropsAmount = dispatch => {
-//   return {
-//     setAmount: amount => {
-//       dispatch(actions.setAmount(amount));
-//     },
-//   };
-// };
-
-// const mapStateToPropsAmount = state => {
-//   return {
-//     amount: state.roundCreation.amount,
-//   };
-// };
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -49,6 +38,9 @@ const mapDispatchToProps = dispatch => {
     },
     setAmount: amount => {
       dispatch(actions.setAmount(amount));
+    },
+    setTurns: turns => {
+      dispatch(actions.setTurns(turns));
     },
   };
 };
@@ -63,21 +55,6 @@ const mapDispatchToPropsFrequency = dispatch => {
   return {
     setFrequency: frequency => {
       dispatch(actions.setFrequency(frequency));
-    },
-  };
-};
-
-const mapStateToPropsTurns = ({ roundCreation }) => {
-  return {
-    turns: roundCreation.turns,
-    noParticipantEdit: roundCreation.noParticipantEdit,
-    participantsQuantity: roundCreation.participants.length,
-  };
-};
-const mapDispatchToPropsTurns = dispatch => {
-  return {
-    setTurns: turns => {
-      dispatch(actions.setTurns(turns));
     },
   };
 };
@@ -117,32 +94,11 @@ const RoundCreationStack = createStackNavigator({
       ),
     }),
   },
-  // Amount: {
-  //   screen: connect(
-  //     mapStateToPropsAmount,
-  //     mapDispatchToPropsAmount
-  //   )(Amount),
-  //   navigationOptions: defaultNavigationOptions,
-  // },
-  // AmountValue: {
-  //   screen: connect(
-  //     mapStateToPropsAmount,
-  //     mapDispatchToPropsAmount
-  //   )(AmountValue),
-  //   navigationOptions: defaultNavigationOptions,
-  // },
   RoundFrequency: {
     screen: connect(
       mapStateToPropsFrequency,
       mapDispatchToPropsFrequency
     )(RoundFrequency),
-    navigationOptions: defaultNavigationOptions,
-  },
-  RoundTurns: {
-    screen: connect(
-      mapStateToPropsTurns,
-      mapDispatchToPropsTurns
-    )(RoundTurns),
     navigationOptions: defaultNavigationOptions,
   },
   ParticipantSelection: {

@@ -31,7 +31,7 @@ const RuffleOrSelection = props => {
   };
 
   return (
-    <ScreenContainer navigation={navigation} step={4}>
+    <ScreenContainer navigation={navigation} step={3}>
       <CreationTitle
         title={title}
         iconName={screenIcon.name}

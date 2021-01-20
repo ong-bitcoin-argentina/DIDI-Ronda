@@ -5,7 +5,7 @@ import { Text } from "native-base";
 import colors from "../../../components/colors";
 import ScreenContainer from "../ScreenContainer";
 import NextButton from "../../../components/NextButton";
-import CreationTitle from "../CreationTitle";
+import GenericErroModal from "./GenericErrorModal";
 
 const widthScreen = Dimensions.get("screen").width;
 
@@ -19,23 +19,49 @@ const stepIcon = {
   name: "attach-money",
 };
 
+const turnsIcon = {
+  type: "MaterialIcons",
+  name: "bookmark-border",
+};
+
 const amounts = ["1000", "2000", "5000"];
 
 const formatNumber = num =>
   num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 
 const RoundName = props => {
-  const { name, setAmount } = props;
+  const {
+    name,
+    setAmount,
+    noParticipantEdit,
+    setTurns,
+    turns,
+    participantsQuantity,
+  } = props;
+
+  const initialTurns =
+    !Number.isNaN(parseInt(turns, 10)) && turns !== "0" ? turns : "";
+
   const { navigation } = props;
   const [value, setValue] = useState(name);
   const [customAmount, setCustomAmount] = useState();
   const [showCustomAmount, setShowCustomAmount] = useState(false);
+  const [turnsValue, setTurnsValue] = useState(initialTurns);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const validateInput = text => {
-    if (text === "") return setCustomAmount("");
+  const toggleErrorModal = () => setShowErrorModal(!showErrorModal);
+
+  const openErrorModal = message => {
+    setErrorMessage(message);
+    toggleErrorModal();
+  };
+
+  const validateInput = (text, setFunction) => {
+    if (text === "") return setFunction("");
     const numberRegex = /^[0-9]*$/;
     const isValid = numberRegex.test(text);
-    if (isValid) return setCustomAmount(text);
+    if (isValid) return setFunction(text);
     return Toast.show({
       text: "Solo números aceptados",
       position: "top",
@@ -43,7 +69,28 @@ const RoundName = props => {
     });
   };
 
-  const valueIsValid = customAmount && customAmount !== "0";
+  const onNextPress = () => {
+    const finalTurns = parseInt(turnsValue, 10);
+    if (finalTurns < participantsQuantity)
+      return openErrorModal(
+        `Existen mas participantes seleccionados que números disponibles para asignar\n(${participantsQuantity} Participantes Seleccionados)`
+      );
+    if (finalTurns === 1)
+      return openErrorModal(`La ronda debe tener 2 números o más`);
+
+    setAmount(customAmount);
+    setTurns(turnsValue);
+    return props.navigation.navigate("RoundFrequency");
+  };
+
+  const valueIsValid =
+    customAmount &&
+    customAmount !== "0" &&
+    (noParticipantEdit ||
+      (turnsValue && turnsValue !== "" && turnsValue !== "0"));
+
+  const isBubbleDisabled =
+    value.trim() === "" || turnsValue === "" || turnsValue === "0";
 
   return (
     <ScreenContainer navigation={navigation} step={0}>
@@ -96,6 +143,52 @@ const RoundName = props => {
           backgroundColor: colors.backgroundGray,
         }}>
         <Icon
+          type={turnsIcon.type}
+          name={turnsIcon.name}
+          style={{ color: colors.mainBlue, fontSize: 45 }}
+        />
+        <Text
+          style={{
+            marginLeft: 25,
+            fontWeight: "bold",
+            fontSize: 18,
+          }}>
+          {noParticipantEdit
+            ? "No se puede editar la\ncantidad de números"
+            : "¿Cuántos números tendrá la\nronda?"}
+        </Text>
+      </View>
+      <View style={styles.container}>
+        <View style={styles.iconContainer}>
+          <Icon
+            type={turnsIcon.type}
+            name={turnsIcon.name}
+            style={styles.icon}
+          />
+
+          <Input
+            style={{
+              borderBottomColor: colors.secondary,
+              borderBottomWidth: 2,
+              maxWidth: widthScreen * 0.6,
+            }}
+            disabled={noParticipantEdit}
+            keyboardType="number-pad"
+            value={turnsValue}
+            placeholder="Ingresá la cantidad acá"
+            onChangeText={text => validateInput(text, setTurnsValue)}
+          />
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignContent: "center",
+          justifyContent: "center",
+          paddingBottom: 10,
+          backgroundColor: colors.backgroundGray,
+        }}>
+        <Icon
           name={stepIcon.name}
           type={stepIcon.type}
           style={{ color: colors.mainBlue, fontSize: 45 }}
@@ -110,22 +203,14 @@ const RoundName = props => {
       <View style={{ ...styles.container, flex: 1 }}>
         <View style={styles.amountFullContainer}>
           {amounts.map(amount => {
-            const isDisabled = value.trim() === "";
             return (
               <View style={styles.amountContainer} key={amount}>
                 <TouchableOpacity
-                  onPress={
-                    !isDisabled
-                      ? () => {
-                          setAmount(amount);
-                          props.navigation.navigate("RoundFrequency");
-                        }
-                      : null
-                  }
-                  disabled={isDisabled}
+                  onPress={!isBubbleDisabled ? onNextPress : null}
+                  disabled={isBubbleDisabled}
                   style={{
                     ...styles.amountValueContainer,
-                    backgroundColor: isDisabled
+                    backgroundColor: isBubbleDisabled
                       ? colors.lightBlue
                       : colors.mainBlue,
                   }}>
@@ -141,8 +226,9 @@ const RoundName = props => {
             <TouchableOpacity
               style={{
                 ...styles.amountValueContainer,
-                backgroundColor:
-                  value.trim() === "" ? colors.darkishGray : colors.secondary,
+                backgroundColor: isBubbleDisabled
+                  ? colors.darkishGray
+                  : colors.secondary,
               }}
               onPress={() => {
                 setShowCustomAmount(true);
@@ -162,7 +248,7 @@ const RoundName = props => {
             <Input
               placeholder="0"
               value={customAmount}
-              onChangeText={text => validateInput(text)}
+              onChangeText={text => validateInput(text, setCustomAmount)}
               keyboardType="number-pad"
               style={{
                 borderBottomColor: colors.secondary,
@@ -174,13 +260,13 @@ const RoundName = props => {
             />
           </View>
         )}
+        <GenericErroModal
+          open={showErrorModal}
+          message={errorMessage}
+          onOkPress={toggleErrorModal}
+        />
         {!!showCustomAmount && !!valueIsValid && (
-          <NextButton
-            callback={() => {
-              setAmount(customAmount);
-              props.navigation.navigate("RoundFrequency");
-            }}
-          />
+          <NextButton callback={onNextPress} />
         )}
       </View>
     </ScreenContainer>

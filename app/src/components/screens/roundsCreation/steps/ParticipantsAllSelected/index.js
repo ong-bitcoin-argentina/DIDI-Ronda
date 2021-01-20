@@ -44,7 +44,7 @@ const ParticipantsAllSelected = props => {
     ? "Asignar y Sortear"
     : "Comenzar el sorteo";
   return (
-    <ScreenContainer navigation={navigation} step={6}>
+    <ScreenContainer navigation={navigation} step={4}>
       <CreationTitle
         title={title}
         iconName={screenIcon.name}

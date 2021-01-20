@@ -118,7 +118,7 @@ const SelectParticipantNumbers = props => {
   const allNumbersSelected =
     remainingParticipants && remainingParticipants.length === 0;
   return (
-    <ScreenContainer navigation={navigation} step={7}>
+    <ScreenContainer navigation={navigation} step={6}>
       <CreationTitle
         title={title}
         titleViewStyle={{ paddingBottom: 5 }}

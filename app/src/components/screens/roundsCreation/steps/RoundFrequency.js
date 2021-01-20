@@ -37,7 +37,7 @@ const RoundFrequency = props => {
 
   const navigateToNextStep = () => {
     props.setFrequency(frequency);
-    return props.navigation.navigate("RoundTurns");
+    return props.navigation.navigate("RoundDate");
   };
 
   return (

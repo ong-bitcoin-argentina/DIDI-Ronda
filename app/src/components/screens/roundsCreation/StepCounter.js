@@ -9,17 +9,9 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
       type: "MaterialIcons",
       name: "format-color-text",
     },
-    // {
-    //   type: "MaterialIcons",
-    //   name: "attach-money",
-    // },
     {
       type: "MaterialIcons",
       name: "access-alarm",
-    },
-    {
-      type: "MaterialIcons",
-      name: "bookmark-border",
     },
     {
       type: "MaterialIcons",
