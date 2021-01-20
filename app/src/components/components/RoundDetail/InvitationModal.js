@@ -68,7 +68,7 @@ const InvitationModal = props => {
       if (error && !invitation.round) {
         doInvitationClean();
         Toast.show({
-          text: "Hubo un error. Intentalo nuevamente.",
+          text: "Hubo un error al enviar la invitación. Intentalo nuevamente.",
           buttonText: "Okay",
         });
       }
@@ -95,8 +95,7 @@ const InvitationModal = props => {
               justifyContent: "center",
               alignItems: "center",
               flex: 0.5,
-            }}
-          >
+            }}>
             <Spinner size={75} color={colors.mainBlue} />
           </View>
         )}
@@ -126,8 +125,7 @@ const InvitationModal = props => {
                     flexDirection: "row",
                     alignItems: "center",
                     paddingLeft: 5,
-                  }}
-                >
+                  }}>
                   <Text style={styles.detailNameText}>{round.name}</Text>
                 </View>
                 <View
@@ -135,8 +133,7 @@ const InvitationModal = props => {
                     justifyContent: "flex-end",
                     alignSelf: "flex-end",
                     marginRight: 10,
-                  }}
-                >
+                  }}>
                   <View style={styles.dataRow}>
                     <Text style={styles.detailAmountText}>{`$ ${amount}`}</Text>
                   </View>
@@ -144,15 +141,13 @@ const InvitationModal = props => {
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: 10,
                         textAlign: "center",
                         alignSelf: "center",
-                      }}
-                    >
+                      }}>
                       (pozo)
                     </Text>
                   </View>
@@ -163,8 +158,7 @@ const InvitationModal = props => {
                   style={{
                     ...styles.itemInfoRow,
                     marginTop: 15,
-                  }}
-                >
+                  }}>
                   <View style={styles.rowCentered}>
                     <Icon
                       type="MaterialIcons"
@@ -182,8 +176,7 @@ const InvitationModal = props => {
                   style={{
                     ...styles.itemInfoRow,
                     marginVertical: 5,
-                  }}
-                >
+                  }}>
                   <View style={styles.rowCentered}>
                     <Icon
                       type="MaterialCommunityIcons"
@@ -231,8 +224,7 @@ const InvitationModal = props => {
 
               <Button
                 onPress={rejectInvitation}
-                style={{ ...styles.button, backgroundColor: colors.secondary }}
-              >
+                style={{ ...styles.button, backgroundColor: colors.secondary }}>
                 <Text style={styles.buttonText} uppercase={false}>
                   Rechazar Invitación
                 </Text>

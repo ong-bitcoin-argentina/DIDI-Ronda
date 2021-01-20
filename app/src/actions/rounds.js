@@ -52,7 +52,7 @@ export const startRound = id => {
       const roundModalMessage = `La ronda "${startedRound.data.name}" se está procesando. Cuando comience, todos los participantes recibirán una notificación.`;
       dispatch(openRoundDetailRootModal(roundModalMessage, "roundCheck"));
     } else {
-      let message = "Hubo un error. Intente nuevamente mas tarde";
+      let message = `Hubo un error al iniciar la ronda "${startedRound.data.name}". Intente nuevamente mas tarde`;
       if (startedRound.error && startedRound.error.response) {
         const { data } = startedRound.error.response;
         const { error } = data;

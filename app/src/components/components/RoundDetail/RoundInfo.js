@@ -185,7 +185,10 @@ const RoundInfo = props => {
 
   useEffect(() => {
     if (!chargeNumber.loading && chargeNumber.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al reasignar el número. Intentalo nuevamente.",
+        true
+      );
       chargeNumberClean();
     }
   }, [chargeNumber]);
