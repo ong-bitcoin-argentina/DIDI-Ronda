@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Input, Icon, Toast } from "native-base";
 import { Text } from "native-base";
 import colors from "../../../components/colors";
@@ -94,181 +100,137 @@ const RoundName = props => {
 
   return (
     <ScreenContainer navigation={navigation} step={0}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignContent: "center",
-          justifyContent: "center",
-          paddingBottom: 10,
-          backgroundColor: colors.backgroundGray,
-        }}>
-        <Icon
+      <ScrollView>
+        <View style={styles.titleContainer}>
+          {/* <Icon
           name={screenIcon.name}
           type={screenIcon.type}
           style={{ color: colors.mainBlue, fontSize: 45 }}
-        />
-        <Text
-          style={{
-            marginLeft: 25,
-            fontWeight: "bold",
-            fontSize: 18,
-          }}>{`¿Cómo se va\na llamar la ronda?`}</Text>
-      </View>
-      <View style={styles.container}>
-        <View style={styles.iconContainer}>
-          <Icon
-            type="MaterialIcons"
-            name="filter-tilt-shift"
-            style={styles.icon}
-          />
-
-          <Input
-            placeholder="Escribí el nombre acá"
-            style={{
-              borderBottomColor: colors.secondary,
-              borderBottomWidth: 2,
-              maxWidth: widthScreen * 0.6,
-            }}
-            value={value}
-            onChangeText={text => setValue(text)}
-          />
+        /> */}
+          <Text style={styles.title}>{`¿Cómo se va a llamar la ronda?`}</Text>
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignContent: "center",
-          justifyContent: "center",
-          paddingBottom: 10,
-          backgroundColor: colors.backgroundGray,
-        }}>
-        <Icon
+        <View style={styles.container}>
+          <View style={styles.iconContainer}>
+            <Icon
+              type="MaterialIcons"
+              name="filter-tilt-shift"
+              style={styles.icon}
+            />
+
+            <Input
+              placeholder="Escribí el nombre acá"
+              style={styles.input}
+              value={value}
+              onChangeText={text => setValue(text)}
+            />
+          </View>
+        </View>
+        <View style={styles.titleContainer}>
+          {/* <Icon
           type={turnsIcon.type}
           name={turnsIcon.name}
           style={{ color: colors.mainBlue, fontSize: 45 }}
-        />
-        <Text
-          style={{
-            marginLeft: 25,
-            fontWeight: "bold",
-            fontSize: 18,
-          }}>
-          {noParticipantEdit
-            ? "No se puede editar la\ncantidad de números"
-            : "¿Cuántos números tendrá la\nronda?"}
-        </Text>
-      </View>
-      <View style={styles.container}>
-        <View style={styles.iconContainer}>
-          <Icon
-            type={turnsIcon.type}
-            name={turnsIcon.name}
-            style={styles.icon}
-          />
-
-          <Input
-            style={{
-              borderBottomColor: colors.secondary,
-              borderBottomWidth: 2,
-              maxWidth: widthScreen * 0.6,
-            }}
-            disabled={noParticipantEdit}
-            keyboardType="number-pad"
-            value={turnsValue}
-            placeholder="Ingresá la cantidad acá"
-            onChangeText={text => validateInput(text, setTurnsValue)}
-          />
+        /> */}
+          <Text style={styles.title}>
+            {noParticipantEdit
+              ? "No se puede editar la\ncantidad de números"
+              : "¿Cuántos números tendrá la ronda?"}
+          </Text>
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignContent: "center",
-          justifyContent: "center",
-          paddingBottom: 10,
-          backgroundColor: colors.backgroundGray,
-        }}>
-        <Icon
+        <View style={styles.container}>
+          <View style={styles.iconContainer}>
+            <Icon
+              type={turnsIcon.type}
+              name={turnsIcon.name}
+              style={styles.icon}
+            />
+
+            <Input
+              style={styles.input}
+              disabled={noParticipantEdit}
+              keyboardType="number-pad"
+              value={turnsValue}
+              placeholder="Ingresá la cantidad acá"
+              onChangeText={text => validateInput(text, setTurnsValue)}
+            />
+          </View>
+        </View>
+        <View style={styles.titleContainer}>
+          {/* <Icon
           name={stepIcon.name}
           type={stepIcon.type}
           style={{ color: colors.mainBlue, fontSize: 45 }}
-        />
-        <Text
-          style={{
-            marginLeft: 25,
-            fontWeight: "bold",
-            fontSize: 18,
-          }}>{`¿Cuánto dinero deberá\naportar cada participante?`}</Text>
-      </View>
-      <View style={{ ...styles.container, flex: 1 }}>
-        <View style={styles.amountFullContainer}>
-          {amounts.map(amount => {
-            return (
-              <View style={styles.amountContainer} key={amount}>
-                <TouchableOpacity
-                  onPress={!isBubbleDisabled ? onNextPress : null}
-                  disabled={isBubbleDisabled}
-                  style={{
-                    ...styles.amountValueContainer,
-                    backgroundColor: isBubbleDisabled
-                      ? colors.lightBlue
-                      : colors.mainBlue,
-                  }}>
-                  <Text style={styles.amountValue}>
-                    ${formatNumber(amount)}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-
-          <View style={styles.amountContainer}>
-            <TouchableOpacity
-              style={{
-                ...styles.amountValueContainer,
-                backgroundColor: isBubbleDisabled
-                  ? colors.darkishGray
-                  : colors.secondary,
-              }}
-              onPress={() => {
-                setShowCustomAmount(true);
-              }}
-              disabled={!value}>
-              <Text style={styles.amountValue}>Otro</Text>
-            </TouchableOpacity>
-          </View>
+        /> */}
+          <Text
+            style={
+              styles.title
+            }>{`¿Cuánto dinero deberá aportar cada participante?`}</Text>
         </View>
-        {!!showCustomAmount && (
-          <View style={styles.iconContainer}>
-            <Icon
-              name={stepIcon.name}
-              type={stepIcon.type}
-              style={styles.icon}
-            />
-            <Input
-              placeholder="0"
-              value={customAmount}
-              onChangeText={text => validateInput(text, setCustomAmount)}
-              keyboardType="number-pad"
-              style={{
-                borderBottomColor: colors.secondary,
-                borderBottomWidth: 2,
-                maxWidth: widthScreen * 0.6,
-                paddingTop: 20,
-              }}
-              text
-            />
+        <View style={{ ...styles.container, flex: 1 }}>
+          <View style={styles.amountFullContainer}>
+            {amounts.map(amount => {
+              return (
+                <View style={styles.amountContainer} key={amount}>
+                  <TouchableOpacity
+                    onPress={!isBubbleDisabled ? onNextPress : null}
+                    disabled={isBubbleDisabled}
+                    style={{
+                      ...styles.amountValueContainer,
+                      backgroundColor: isBubbleDisabled
+                        ? colors.lightBlue
+                        : colors.mainBlue,
+                    }}>
+                    <Text style={styles.amountValue}>
+                      ${formatNumber(amount)}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+
+            <View style={styles.amountContainer}>
+              <TouchableOpacity
+                style={{
+                  ...styles.amountValueContainer,
+                  backgroundColor: isBubbleDisabled
+                    ? colors.darkishGray
+                    : colors.secondary,
+                }}
+                onPress={() => {
+                  setShowCustomAmount(true);
+                }}
+                disabled={!value}>
+                <Text style={styles.amountValue}>Otro</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-        <GenericErroModal
-          open={showErrorModal}
-          message={errorMessage}
-          onOkPress={toggleErrorModal}
-        />
-        {!!showCustomAmount && !!valueIsValid && (
-          <NextButton callback={onNextPress} />
-        )}
-      </View>
+          {!!showCustomAmount && (
+            <View style={styles.iconContainer}>
+              <Icon
+                name={stepIcon.name}
+                type={stepIcon.type}
+                style={styles.icon}
+              />
+              <Input
+                placeholder="0"
+                value={customAmount}
+                onChangeText={text => validateInput(text, setCustomAmount)}
+                keyboardType="number-pad"
+                style={styles.input}
+                text
+              />
+            </View>
+          )}
+          <GenericErroModal
+            open={showErrorModal}
+            message={errorMessage}
+            onOkPress={toggleErrorModal}
+          />
+          {!!showCustomAmount && !!valueIsValid && (
+            <NextButton callback={onNextPress} />
+          )}
+        </View>
+      </ScrollView>
     </ScreenContainer>
   );
 };
@@ -342,6 +304,24 @@ const styles = StyleSheet.create({
     marginRight: 35,
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
+    backgroundColor: colors.backgroundGray,
+  },
+  input: {
+    borderBottomColor: colors.secondary,
+    borderBottomWidth: 2,
+    maxWidth: widthScreen * 0.6,
+    marginTop: 10,
+  },
+  title: {
+    marginLeft: 25,
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

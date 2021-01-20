@@ -24,7 +24,7 @@ const ScreenContainer = props => {
 const styles = StyleSheet.create({
   screenContainer: {
     flexDirection: "column",
-    flex: 1,
+    flexGrow: 1,
   },
   titleContainer: {
     flex: 0.2,
