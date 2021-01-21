@@ -14,11 +14,11 @@ const GenericModal = ({ open, onOpen, onClose, children }) => {
     <Modal
       useNativeDriver
       animationType="slide"
-      onModalWillShow={onOpen && onOpen()}
-      onModalWillHide={onClose && onClose()}
+      onModalWillShow={() => onOpen && onOpen()}
+      onModalWillHide={() => onClose && onClose()}
+      onBackButtonPress={() => onClose && onClose()}
       isVisible={open}
-      backdropColor="rgba(0,0,0,0.5)"
-    >
+      backdropColor="rgba(0,0,0,0.5)">
       {children}
     </Modal>
   );

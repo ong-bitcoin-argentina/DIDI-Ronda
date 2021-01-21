@@ -45,6 +45,8 @@ const InvitationModal = props => {
       .date
   );
 
+  const invitationRequested = !(!invitation.loading && !invitation.round);
+
   const openPendingConfirmation = () => {
     openRootModal(
       "Tu pedido se está procesando. Te llegará una notificación cuando termine",
@@ -55,10 +57,19 @@ const InvitationModal = props => {
   // Mount
   useEffect(() => {
     const { isConfirmingTransaction, hasConfirmedTransaction } = participant;
-    if (isConfirmingTransaction && !hasConfirmedTransaction)
-      openPendingConfirmation();
-    if (!hasConfirmedTransaction && !isConfirmingTransaction && !round.start)
-      setshow(true);
+
+    const isPendingConfirmation =
+      isConfirmingTransaction && !hasConfirmedTransaction;
+
+    const mustShowInvitationModal =
+      !hasConfirmedTransaction &&
+      !isConfirmingTransaction &&
+      !round.start &&
+      !invitationRequested;
+
+    if (mustShowInvitationModal) setshow(true);
+
+    if (isPendingConfirmation) openPendingConfirmation();
   }, []);
 
   // Update invitation
@@ -85,9 +96,8 @@ const InvitationModal = props => {
     navigation.navigate("List");
   };
 
-  const notRequested = !invitation.loading && !invitation.round;
   return (
-    <GenericModal open={show}>
+    <GenericModal open={show} onClose={() => navigation.navigate("List")}>
       <View style={styles.container}>
         {invitation.loading && (
           <View
@@ -99,7 +109,7 @@ const InvitationModal = props => {
             <Spinner size={75} color={colors.mainBlue} />
           </View>
         )}
-        {notRequested && (
+        {!invitationRequested && (
           <>
             <View style={styles.titleContainer}>
               <Text style={styles.titleText}>{title}</Text>
