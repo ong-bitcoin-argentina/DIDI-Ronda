@@ -1,56 +1,45 @@
-import { Platform } from "react-native";
 import firebase from "@react-native-firebase/app";
-import '@react-native-firebase/messaging';
+import "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as UserService from "../api/user";
 import { setAuth, getAuth } from "../../utils/utils";
 
-const checkPermission = async () => {
-  // Android channel
-  // if (Platform.OS === "android") {
-  //   const channel = new firebase.notifications.Android.Channel(
-  //     "ronda",
-  //     "Ronda",
-  //     firebase.notifications.Android.Importance.Max
-  //   ).setDescription("La Ronda app");
-  //   await firebase.messaging().android.createChannel(channel);
-  // }
-
+const generateFirebaseAuth = async () => {
   const hasPermission = await firebase.messaging().hasPermission();
 
   if (hasPermission) {
-    const token = await getToken();
+    const token = await getFirebaseToken();
 
-    // Refresh token if is null
     refreshToken(token);
 
     // Set listener for token refresh
-    // TODO: Error handler
     firebase.messaging().onTokenRefresh(async newToken => {
-      refreshToken(newToken);
+      refreshToken(newToken, true);
     });
 
     return token;
   }
-  return requestPermission();
 };
 
-const refreshToken = async newToken => {
-  await UserService.updateToken(newToken);
+const refreshToken = async (newToken, refreshUser = false) => {
+  if (refreshUser) {
+    await UserService.updateToken(newToken);
+  }
   const auth = await getAuth();
   if (auth !== null) setAuth({ ...auth, token: newToken });
 };
 
-const requestPermission = async () => {
+const requestFirebasePermission = async () => {
   try {
     await firebase.messaging().requestPermission();
-    await checkPermission();
+    const token = await generateFirebaseAuth();
+    return token;
   } catch (error) {
     console.log("permission rejected");
   }
 };
 
-export const getToken = async () => {
+export const getFirebaseToken = async () => {
   let fcmToken = await AsyncStorage.getItem("fcmToken");
   if (!fcmToken) {
     fcmToken = await firebase.messaging().getToken();
@@ -61,4 +50,4 @@ export const getToken = async () => {
   return fcmToken;
 };
 
-export default checkPermission;
+export default requestFirebasePermission;
