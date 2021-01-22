@@ -26,6 +26,7 @@ import {
 } from "./../../../utils/appRouter";
 import Logo from "../../../assets/img/app-logo.svg";
 import LinkModal from "../../components/LinkModal";
+import requestFirebasePermission from "../../../services/notifications";
 
 const states = {
   initial: "initial",
@@ -42,7 +43,9 @@ const Login = props => {
     if (!link) return;
     if (loginSuccess(link)) {
       setState(states.success);
-      await loginWithAidi(getToken(link));
+      const token = getToken(link);
+      const firebaseToken = await requestFirebasePermission();
+      await loginWithAidi(token, firebaseToken);
     } else if (loginDenied(link)) {
       setState(states.denied);
     }
@@ -57,7 +60,8 @@ const Login = props => {
     };
   }, []);
 
-  const loginWithAidi = async token => await props.loginWithAidi(token);
+  const loginWithAidi = async (token, firebaseToken) =>
+    await props.loginWithAidi(token, firebaseToken);
 
   const onLoginWithAidi = async () => {
     const canOpen = await Linking.canOpenURL(links.login.deepLink);
@@ -135,9 +139,7 @@ const Login = props => {
           background={TouchableNativeFeedback.Ripple("lightgray", false)}
           onPress={onLoginWithAidi}
           style={styles.button}>
-          <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>
-            Conectate con ai·di
-          </Text>
+          <Text style={styles.buttonText}>Conectate con ai·di</Text>
         </Button>
         {state === states.denied
           ? renderAuthWarning()
@@ -186,6 +188,11 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
   },
   buttonTransparent: {
     marginTop: 30,
@@ -239,8 +246,8 @@ const mapDispatchToProps = dispatch => {
     login: (username, password) => {
       dispatch(actions.login(username, password));
     },
-    loginWithAidi: token => {
-      dispatch(actions.loginWithAidi(token));
+    loginWithAidi: (token, firebaseToken) => {
+      dispatch(actions.loginWithAidi(token, firebaseToken));
     },
   };
 };

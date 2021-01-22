@@ -2,9 +2,7 @@
 const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
-const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
-const { customError } = require("../helpers/errorHandler");
 const user_manager = require("../managers/user");
 
 /*
@@ -32,7 +30,7 @@ function createNickname(username) {
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
-    const { token } = req.body;
+    const { token, firebaseToken } = req.body;
     const user = await aidi_service.getUser(token);
     const { username, password, name, lastname, imageUrl } = user;
 
@@ -52,7 +50,7 @@ exports.loginWithAidi = async (req, res) => {
         password,
         name,
         lastname,
-        token,
+        firebaseToken,
         createNickname(username),
         imageUrl
       );

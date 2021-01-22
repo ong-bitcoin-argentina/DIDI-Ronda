@@ -156,10 +156,10 @@ export const cleanForgot = () => {
   };
 };
 
-export const loginWithAidi = token => {
+export const loginWithAidi = (token, firebaseToken) => {
   return async dispatch => {
     dispatch(loginStart());
-    const session = await UserService.loginWithAidi(token);
+    const session = await UserService.loginWithAidi(token, firebaseToken);
 
     if (!session.error) {
       try {
