@@ -38,6 +38,7 @@ const formatNumber = num =>
 const RoundName = props => {
   const {
     name,
+    setName,
     setAmount,
     noParticipantEdit,
     setTurns,
@@ -75,7 +76,7 @@ const RoundName = props => {
     });
   };
 
-  const onNextPress = () => {
+  const onNextPress = (saveCustomAmount = false) => {
     const finalTurns = parseInt(turnsValue, 10);
     if (finalTurns < participantsQuantity)
       return openErrorModal(
@@ -84,9 +85,17 @@ const RoundName = props => {
     if (finalTurns === 1)
       return openErrorModal(`La ronda debe tener 2 números o más`);
 
-    setAmount(customAmount);
+    if (saveCustomAmount) {
+      setAmount(customAmount);
+    }
+    setName(value);
     setTurns(turnsValue);
     return props.navigation.navigate("RoundFrequency");
+  };
+
+  const onSelectBubble = amount => {
+    setAmount(amount);
+    onNextPress();
   };
 
   const valueIsValid =
@@ -157,7 +166,9 @@ const RoundName = props => {
               return (
                 <View style={styles.amountContainer} key={amount}>
                   <TouchableOpacity
-                    onPress={!isBubbleDisabled ? onNextPress : null}
+                    onPress={
+                      !isBubbleDisabled ? () => onSelectBubble(amount) : null
+                    }
                     disabled={isBubbleDisabled}
                     style={{
                       ...styles.amountValueContainer,
@@ -215,7 +226,7 @@ const RoundName = props => {
       </ScrollView>
       <View style={styles.nextButtonContainer}>
         {!!showCustomAmount && !!valueIsValid && (
-          <NextButton callback={onNextPress} />
+          <NextButton callback={() => onNextPress(true)} />
         )}
       </View>
     </ScreenContainer>
