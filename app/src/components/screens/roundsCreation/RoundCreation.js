@@ -5,14 +5,10 @@ import { connect } from "react-redux";
 import colors from "../../components/colors";
 import * as actions from "../../../actions/roundCreation";
 import RoundName from "./steps/RoundName";
-import Amount from "./steps/Amount";
-import AmountValue from "./steps/AmountValue";
 import RoundFrequency from "./steps/RoundFrequency";
 import ParticipantSelection from "./steps/ParticipantSelection";
-import RoundDate from "./steps/date";
 import Finish from "./steps/FinishStep";
 import RuffleOrSelection from "./steps/RuffleOrSelection";
-import RoundTurns from "./steps/RoundTurns";
 import ParticipantsAllSelected from "./steps/ParticipantsAllSelected";
 import RuffleParticipants from "./steps/RuffleParticipants";
 import SelectParticipantNumbers from "./steps/SelectParticipantNumbers";
@@ -119,10 +115,6 @@ const RoundCreationStack = createStackNavigator({
   },
   SelectParticipantNumbers: {
     screen: SelectParticipantNumbers,
-    navigationOptions: defaultNavigationOptions,
-  },
-  RoundDate: {
-    screen: RoundDate,
     navigationOptions: defaultNavigationOptions,
   },
   Finish: {

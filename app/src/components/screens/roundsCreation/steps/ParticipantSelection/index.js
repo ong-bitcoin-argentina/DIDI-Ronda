@@ -66,7 +66,7 @@ const ParticipantSelection = props => {
     : "Todos los participantes seleccionados!";
 
   return (
-    <ScreenContainer navigation={navigation} step={5}>
+    <ScreenContainer navigation={navigation} step={4}>
       <CreationTitle
         title={title}
         titleViewStyle={{ paddingBottom: 10 }}

@@ -15,10 +15,6 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
     },
     {
       type: "MaterialIcons",
-      name: "event-available",
-    },
-    {
-      type: "MaterialIcons",
       name: "settings",
     },
     {

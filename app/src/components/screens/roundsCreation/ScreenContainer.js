@@ -13,7 +13,7 @@ const ScreenContainer = props => {
       <View style={styles.screenContainer}>
         <StepCounter
           navigation={navigation}
-          totalSteps={5}
+          totalSteps={4}
           currentStep={step + 1}
         />
         {children}
