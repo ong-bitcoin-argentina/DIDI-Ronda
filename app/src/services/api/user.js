@@ -103,7 +103,8 @@ export const createRound = async (
   frequency,
   roundName,
   participants,
-  date
+  date,
+  participantsVisible
 ) => {
   const participantsObj = {};
   participants.forEach(contact => {
@@ -134,9 +135,10 @@ export const createRound = async (
   const { date: paymentDate } = getPaymentDate(date, frequency, 1);
   try {
     const data = await apiCall("post", "/user/round", {
+      shifts,
+      participantsVisible,
       name: roundName,
       amount: parseInt(amount, 10),
-      shifts,
       recurrence: frequency,
       limitDate: date,
       startDate: date,

@@ -384,6 +384,17 @@ const RoundInfo = props => {
         </CaptionInfo>
       )}
 
+      {!userAdmin && round.participantsVisible && (
+        <CaptionInfo title="Participantes confirmados">
+          <View style={styles.participantsContainer}>
+            <ParticipantHList
+              participants={round.participants.filter(item => item.acepted)}
+              detail
+            />
+          </View>
+        </CaptionInfo>
+      )}
+
       {userAdmin && (
         <CaptionInfo
           title={`Estado #${currentNumber}`}

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View } from "react-native";
 import { Text } from "native-base";
 
 import ListItem from "./ListItem";
