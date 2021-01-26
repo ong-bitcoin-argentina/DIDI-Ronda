@@ -32,7 +32,8 @@ const {
   roundStartAdminProcessing,
   startedRound,
   schedulePayRemember,
-  registerUserProcessing
+  registerUserProcessing,
+  scheduleLastDayBeforeExpirationRemember
 } = require("../helpers/notifications/notifications");
 const { logError } = require("../helpers/utils");
 
@@ -265,6 +266,7 @@ exports.startRound = async params => {
   // Schedule pays notifications
   try {
     schedulePayRemember(round);
+    scheduleLastDayBeforeExpirationRemember(round);
     createNumberChangeRoundJob(round);
   } catch (error) {
     logError("Error on job scheduling");
