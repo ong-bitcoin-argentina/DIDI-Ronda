@@ -382,6 +382,25 @@ exports.schedulePayRemember = round => {
   }
 };
 
+// SCHEDULES LAST DAY BEFORE EXPIRATION NOTIFICATION
+exports.scheduleLastDayBeforeExpirationRemember = round => {
+  // Only if recurrence is not daily
+  if (round.recurrence !== "d") {
+    // Create task schedule for all shifts
+    round.shifts.forEach(async shift => {
+      const aDayBeforeLimit = moment(shift.limitDate).subtract(1, "days");
+
+      // Create task
+      return jobs.createPayRememberJob(
+        aDayBeforeLimit,
+        round._id,
+        shift.number,
+        true
+      );
+    });
+  }
+};
+
 exports.participantSwappedInRound = async (round, participant) => {
   // Get admin
   const { admin, name: roundName } = round;
