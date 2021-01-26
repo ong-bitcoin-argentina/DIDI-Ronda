@@ -52,6 +52,9 @@ export const setPaymentDate = date => {
 export const setPickTurnsManual = pickTurnsManual => dispatch =>
   dispatch({ type: types.PICK_TURNS_MANUAL, data: { pickTurnsManual } });
 
+export const setParticipantsVisible = data => dispatch =>
+  dispatch({ type: types.PARTICIPANTS_VISIBLE, data });
+
 export const setNewAssignedNumber = (number, data) => dispatch =>
   dispatch({
     type: types.NEW_NUMBER_ASSIGNED,
@@ -164,8 +167,8 @@ export const createRound = () => {
       frequency,
       assignedNumbers,
       date,
-      turns,
       roundIndex,
+      participantsVisible,
     } = getState().roundCreation;
     const numbersQuantity = assignedNumbers.length;
     const createdRound = await UserService.createRound(
@@ -174,7 +177,7 @@ export const createRound = () => {
       name,
       assignedNumbers,
       date,
-      turns
+      participantsVisible
     );
 
     if (!createdRound.error) {

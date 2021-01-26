@@ -47,7 +47,8 @@ exports.create = async req => {
     firstPaymentDate,
     username,
     shifts,
-    participants
+    participants,
+    participantsVisible
   } = req.body;
   console.log("creating round", name, username);
   // Check at least 1 participant
@@ -74,7 +75,8 @@ exports.create = async req => {
     startDate,
     limitDate,
     firstPaymentDate,
-    admin
+    admin,
+    participantsVisible
   );
 
   // Control shiftsQty vs shifts (participants can take 1/2 shift)

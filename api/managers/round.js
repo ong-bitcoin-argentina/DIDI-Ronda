@@ -39,8 +39,7 @@ exports.createModel = async (
   limitDate,
   firstPaymentDate,
   admin,
-  participants = [],
-  shifts = []
+  participantsVisible = false
 ) => {
   return new Round({
     name: name,
@@ -50,7 +49,8 @@ exports.createModel = async (
     limitDate: limitDate,
     firstPaymentDate: firstPaymentDate,
     admin: admin,
-    participants: participants,
-    shifts: shifts
+    participants: [],
+    shifts: [],
+    participantsVisible
   });
 };
