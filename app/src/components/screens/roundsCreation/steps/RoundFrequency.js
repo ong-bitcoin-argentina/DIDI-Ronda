@@ -94,11 +94,7 @@ const RoundFrequency = props => {
   LocaleConfig.defaultLocale = "es";
 
   const renderItem = ({ item }) => (
-    <View
-      style={{
-        marginHorizontal: 10,
-        height: 335,
-      }}>
+    <View style={styles.item}>
       <MonthCalendar
         onDayPress={onDayPress}
         selectedDate={selectedDate}
@@ -137,20 +133,10 @@ const RoundFrequency = props => {
               style={styles.icon}
             />
             <View style={{ width: "100%" }}>
-              <View
-                style={{
-                  width: "65%",
-                  flexDirection: "row",
-                }}>
+              <View style={styles.periodContainer}>
                 <Text style={{ fontSize: 13 }}>Período</Text>
               </View>
-              <View
-                style={{
-                  width: "65%",
-                  flexDirection: "row",
-                  borderBottomColor: colors.secondary,
-                  borderBottomWidth: 2,
-                }}>
+              <View style={styles.frequencyContainer}>
                 <Picker
                   style={{ marginRight: 0 }}
                   textStyle={{ padding: 0 }}
@@ -181,10 +167,7 @@ const RoundFrequency = props => {
               length: 335,
               offset: index * 335,
             })}
-            style={{
-              width: "90%",
-              marginLeft: SCREEN_WIDTH / 10,
-            }}
+            style={styles.flatList}
             keyExtractor={item => item}
             data={sixMonths}
             renderItem={renderItem}
@@ -197,24 +180,8 @@ const RoundFrequency = props => {
       </ScrollView>
       {noParticipantEdit && (
         <View style={{ backgroundColor: colors.backgroundGray }}>
-          <Button
-            style={{
-              alignSelf: "flex-end",
-              width: "40%",
-              justifyContent: "center",
-              backgroundColor: colors.mainBlue,
-              borderRadius: 10,
-              margin: 10,
-            }}
-            onPress={toggleUpdateModal}>
-            <Text
-              style={{
-                color: "white",
-                textAlign: "center",
-                fontWeight: "bold",
-              }}>
-              Terminar Edicion
-            </Text>
+          <Button style={styles.participantButton} onPress={toggleUpdateModal}>
+            <Text style={styles.participantButtonText}>Terminar Edicion</Text>
           </Button>
         </View>
       )}
@@ -262,6 +229,37 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 18,
+  },
+  item: {
+    marginHorizontal: 10,
+    height: 335,
+  },
+  frequencyContainer: {
+    width: "65%",
+    flexDirection: "row",
+    borderBottomColor: colors.secondary,
+    borderBottomWidth: 2,
+  },
+  periodContainer: {
+    width: "65%",
+    flexDirection: "row",
+  },
+  participantButton: {
+    alignSelf: "flex-end",
+    width: "40%",
+    justifyContent: "center",
+    backgroundColor: colors.mainBlue,
+    borderRadius: 10,
+    margin: 10,
+  },
+  participantButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  flatList: {
+    width: "90%",
+    marginLeft: SCREEN_WIDTH / 10,
   },
 });
 
