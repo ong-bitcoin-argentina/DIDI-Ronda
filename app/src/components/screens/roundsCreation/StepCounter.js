@@ -49,6 +49,7 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
           style={{
             ...styles.iconContainer,
             borderBottomColor: backgroundColorStep(i),
+            width: widthStep,
           }}>
           <Icon
             name={s.name}
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   iconContainer: {
-    width: widthStep,
     marginHorizontal: 2,
     borderBottomWidth: 5,
     paddingBottom: 10,
