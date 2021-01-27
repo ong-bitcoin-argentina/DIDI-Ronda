@@ -31,7 +31,7 @@ exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
     const { token, firebaseToken } = req.body;
-    const user = await aidi_service.getUser(token);
+    const user = await aidi_service.getOrValidateUser(token);
     const { username, password, name, lastname, imageUrl } = user;
 
     try {
