@@ -15,6 +15,8 @@ import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
 import ConfirmModal from "../../components/ConfirmModal";
+import { getRoundsCreationFail } from "../../../services/asyncStorage/index";
+import RoundsListItemFail from "./RoundsListItemFail";
 
 const widthScreen = Dimensions.get("screen").width;
 
@@ -26,16 +28,19 @@ class RoundsList extends React.Component {
     loading: true,
     showSCModal: false,
     confirmAlert: null,
+    failedRounds: null,
   };
 
   async componentDidMount() {
+    const failed = await getRoundsCreationFail();
+    console.log(failed);
     // Load rounds if = 0
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
     await this.updateAuth();
     this.handleSCWarning();
-    this.setState({ loading: false });
+    this.setState({ loading: false, failedRounds: failed });
   }
 
   onDeleteStoredRound = async roundIndex => {
@@ -87,7 +92,12 @@ class RoundsList extends React.Component {
   };
 
   filterRounds = (roundsData, currentStatus) => {
-    return roundsData.filter(r => {
+    let output = [];
+    if (currentStatus === "starting") {
+      output = this.state.failedRounds;
+    }
+
+    const data = roundsData.filter(r => {
       // Active tab
       if (currentStatus === "active")
         return (
@@ -103,6 +113,8 @@ class RoundsList extends React.Component {
         return !r.shifts.find(s => ["pending", "current"].includes(s.status));
       return false;
     });
+
+    return output ? output.concat(data) : data;
   };
 
   manageStoredRoundPress = roundIndex => {
@@ -159,15 +171,20 @@ class RoundsList extends React.Component {
     return (
       <FlatList
         data={roundsToRender}
-        renderItem={({ item }) => (
-          <RoundListItem
-            detail={this.roundItemPress}
-            onDeleteStoredRound={this.onDeleteStoredRound}
-            {...item}
-            auth={auth}
-            pending
-          />
-        )}
+        renderItem={({ item, index }) =>
+          item.start !== undefined ? (
+            <RoundListItem
+              detail={this.roundItemPress}
+              onDeleteStoredRound={this.onDeleteStoredRound}
+              {...item}
+              auth={auth}
+              pending
+            />
+          ) : (
+            <RoundsListItemFail {...item} />
+          )
+        }
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.flatListContent}
       />
     );

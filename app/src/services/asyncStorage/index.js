@@ -69,3 +69,21 @@ export const deleteRoundFromStorage = async index => {
   await deleteItem(`Ronda-${index}`);
   return true;
 };
+
+export const getRoundsCreationFail = async () => {
+  return await getItem("roundsCreationFail");
+};
+
+export const saveCreateRoundFails = async round => {
+  console.log("saveCreateRoundFails");
+  let arrData = await getItem("roundsCreationFail");
+
+  if (arrData) {
+    arrData.push(round);
+  } else {
+    arrData = [round];
+  }
+
+  console.log("DATA: ", arrData);
+  await saveItem("roundsCreationFail", arrData);
+};

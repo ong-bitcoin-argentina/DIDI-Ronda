@@ -5,10 +5,18 @@ import { Text, Spinner, Icon, Button } from "native-base";
 import colors from "../../../../components/colors";
 import { createRound } from "../../../../../actions/roundCreation";
 import ModalCreated from "./modalCreated";
+import { saveCreateRoundFails } from "../../../../../services/asyncStorage/index";
 
 const Finish = props => {
   const [openModal, setopenModal] = useState(true);
-  const { createNewRound, loading, error, createdRound, navigation } = props;
+  const {
+    createNewRound,
+    loading,
+    error,
+    createdRound,
+    navigation,
+    roundInProcess,
+  } = props;
 
   useEffect(() => {
     createNewRound();
@@ -20,12 +28,12 @@ const Finish = props => {
   };
 
   const goToRoundName = () => {
-    navigation.navigate("RoundName");
+    saveCreateRoundFails(roundInProcess);
+    navigation.navigate("List");
+    // navigation.navigate("RoundName");
   };
 
-  if (loading || (!loading && !createdRound))
-    return <Spinner color={colors.mainBlue} style={styles.spinner} />;
-
+  console.log("Finish ERROR", error);
   if (error)
     return (
       <View style={styles.container}>
@@ -44,6 +52,9 @@ const Finish = props => {
         </View>
       </View>
     );
+
+  if (loading || (!loading && !createdRound))
+    return <Spinner color={colors.mainBlue} style={styles.spinner} />;
 
   return (
     <ModalCreated
@@ -88,6 +99,7 @@ const mapStateToProps = state => {
     loading: state.roundCreation.request.loading,
     error: state.roundCreation.request.error,
     createdRound: state.roundCreation.request.createdRound,
+    roundInProcess: state.roundCreation,
   };
 };
 
