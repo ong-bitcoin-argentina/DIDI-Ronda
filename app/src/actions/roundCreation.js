@@ -171,6 +171,7 @@ export const createRound = () => {
       participantsVisible,
     } = getState().roundCreation;
     const numbersQuantity = assignedNumbers.length;
+
     const createdRound = await UserService.createRound(
       amount * numbersQuantity,
       frequency,
