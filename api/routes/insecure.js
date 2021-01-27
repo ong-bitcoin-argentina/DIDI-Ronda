@@ -11,6 +11,7 @@ const user_controller = require("../controllers/user");
 // get round by id (this helps to get virtual fields)
 router.get("/round/:roundId", [], validation, round_controller.byId);
 
+// get rounds of user by username
 router.get("/rounds", [username], validation, user_controller.roundsOfUser);
 
 // finish round with simulated fields
@@ -21,11 +22,7 @@ router.post(
   round_controller.simulateFinish
 );
 
-router.get(
-  "/user/did/:did",
-  [],
-  validation,
-  user_controller.byDID
-)
+// get user by did
+router.get("/user/did/:did", [], validation, user_controller.byDID);
 
 module.exports = router;
