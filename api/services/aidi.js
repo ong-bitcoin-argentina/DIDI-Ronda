@@ -1,6 +1,7 @@
 const didJWT = require("did-jwt");
 const JWT = require("../helpers/jwt");
 const request = require("request-promise-native");
+const { DIDI_SERVER, DID, PRIVATE_KEY } = process.env;
 
 async function formatAidiResponse(user) {
   const username = user.mail;
@@ -17,7 +18,6 @@ async function formatAidiResponse(user) {
 }
 
 async function createJWTForAidi() {
-  const { DID, PRIVATE_KEY } = process.env;
   const signer = didJWT.SimpleSigner(PRIVATE_KEY);
   return await didJWT.createJWT(
     { name: "Ronda" },
@@ -25,24 +25,28 @@ async function createJWTForAidi() {
   );
 }
 
-// For auth with aidi app
-exports.getOrValidateUser = async token => {
-  const { DIDI_SERVER } = process.env;
+async function getOptions(body) {
   const AIDI_JWT = await createJWTForAidi();
+  return {
+    headers: {
+      Authorization: `${AIDI_JWT}`,
+      origin: "Ronda"
+    },
+    json: true,
+    body
+  };
+}
+
+// For auth with aidi app
+exports.getOrValidateUser = async userJWT => {
+  const options = await getOptions({ userJWT });
   try {
     const response = await request({
       url: `${DIDI_SERVER}/userApp/validateUser`,
       method: "POST",
-      headers: {
-        Authorization: `${AIDI_JWT}`,
-        origin: "Ronda"
-      },
-      json: true,
-      body: {
-        userJWT: token
-      }
+      ...options
     });
-    if (!response.data) throw new customError("Usuario invalido");
+    if (!response.data) throw new customError("Usuario inválido");
     return await formatAidiResponse(response.data);
   } catch (e) {
     console.log("No se pudo validar el usuario con aidi");
@@ -52,17 +56,11 @@ exports.getOrValidateUser = async token => {
 
 // For get updated profile
 exports.getProfile = async userDid => {
-  const { DIDI_SERVER } = process.env;
-  const AIDI_JWT = await createJWTForAidi();
+  const options = await getOptions();
   const response = await request({
     url: `${DIDI_SERVER}/user/${userDid}`,
     method: "GET",
-    headers: {
-      Authorization: `${AIDI_JWT}`,
-      origin: "Ronda"
-    },
-    json: true,
-    body: {}
+    ...options
   });
   return await formatAidiResponse(response.data);
 };

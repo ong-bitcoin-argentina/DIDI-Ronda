@@ -14,17 +14,15 @@ const generateFirebaseAuth = async () => {
 
     // Set listener for token refresh
     firebase.messaging().onTokenRefresh(async newToken => {
-      refreshToken(newToken, true);
+      refreshToken(newToken);
     });
 
     return token;
   }
 };
 
-const refreshToken = async (newToken, refreshUser = false) => {
-  if (refreshUser) {
-    await UserService.updateToken(newToken);
-  }
+const refreshToken = async newToken => {
+  await UserService.updateToken(newToken);
   const auth = await getAuth();
   if (auth !== null) setAuth({ ...auth, token: newToken });
 };
