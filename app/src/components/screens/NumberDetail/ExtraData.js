@@ -19,8 +19,7 @@ export default ExtraData = props => {
           position: "absolute",
           top: -20,
           left: SCREEEN_WIDTH * 0.5 - 50,
-        }}
-      ></Arrow>
+        }}></Arrow>
       <View style={styles.dataColumn}>
         <View style={styles.dataRow}>
           <View style={styles.icon}>
@@ -94,13 +93,11 @@ export default ExtraData = props => {
                   backgroundColor: Colors.yellowStatus,
                   justifyContent: "center",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <Icon
                   type={"FontAwesome"}
                   name={"exclamation"}
-                  style={{ color: "black", fontSize: 18 }}
-                ></Icon>
+                  style={{ color: "black", fontSize: 18 }}></Icon>
               </View>
             )}
           </View>
@@ -254,29 +251,5 @@ const styles = StyleSheet.create({
   state: {
     color: Colors.lightBlue,
     fontStyle: "italic",
-  },
-  roundInfo: {
-    flexDirection: "column",
-    height: 100,
-    marginBottom: 8,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  roundInfoDates: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  roundInfoDate: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "35%",
-  },
-  date: { fontSize: 12, fontWeight: "bold" },
-  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
-  roundState: {
-    flexDirection: "column",
-    justifyContent: "center",
-    paddingRight: 20,
   },
 });

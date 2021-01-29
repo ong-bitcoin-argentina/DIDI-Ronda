@@ -15,11 +15,6 @@ import GenericErroModal from "./GenericErrorModal";
 
 const widthScreen = Dimensions.get("screen").width;
 
-const screenIcon = {
-  type: "MaterialIcons",
-  name: "format-color-text",
-};
-
 const stepIcon = {
   type: "MaterialIcons",
   name: "attach-money",
@@ -277,7 +272,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
   },
-  iconContainer: { flexDirection: "row", alignItems: "center" },
   otherTextInput: {
     fontSize: 26,
     width: "100%",

@@ -1,7 +1,6 @@
 import colors from "../../components/colors";
 import RoundCheck from "../../../assets/img/round-check";
 import Round from "../../../assets/img/round";
-import Credential from "../../../assets/img/credential";
 
 export const cards = ({ activeRounds, finishedRounds }) => [
   {

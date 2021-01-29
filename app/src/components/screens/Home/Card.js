@@ -65,13 +65,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginRight: 8,
   },
-  quantity: {
-    fontSize: 26,
-    color: "white",
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginRight: 8,
-  },
 });
 
 export default Card;

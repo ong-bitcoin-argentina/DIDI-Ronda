@@ -224,28 +224,4 @@ const styles = StyleSheet.create({
     color: Colors.lightBlue,
     fontStyle: "italic",
   },
-  roundInfo: {
-    flexDirection: "column",
-    height: 100,
-    marginBottom: 8,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  roundInfoDates: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  roundInfoDate: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "35%",
-  },
-  date: { fontSize: 12, fontWeight: "400" },
-  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
-  roundState: {
-    flexDirection: "column",
-    justifyContent: "center",
-    paddingRight: 20,
-  },
 });

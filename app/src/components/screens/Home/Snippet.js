@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import colors from "../../components/colors";
-import { Button, Icon } from "native-base";
+import { Button } from "native-base";
 
 const FONT_SCALE = PixelRatio.getFontScale();
 const SCREEN_WIDTH = Dimensions.get("window").width;

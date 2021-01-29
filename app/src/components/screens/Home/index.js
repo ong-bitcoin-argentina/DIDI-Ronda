@@ -34,7 +34,7 @@ class Home extends React.Component {
   };
 
   async componentDidMount() {
-    const user = await this.updateUser();
+    await this.updateUser();
     await this.getRoundData();
     await this.props.getNotifications();
   }
