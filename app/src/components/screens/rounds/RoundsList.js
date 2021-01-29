@@ -182,11 +182,12 @@ class RoundsList extends React.Component {
 
     if (this.state.loading) return <Spinner />;
     // We have to append the list of rounds to Edit first.
+
     return (
       <FlatList
         data={roundsToRender}
         renderItem={({ item, index }) =>
-          !!item.start ? (
+          item.hasOwnProperty("start") ? (
             <RoundListItem
               detail={this.roundItemPress}
               onDeleteStoredRound={this.onDeleteStoredRound}
