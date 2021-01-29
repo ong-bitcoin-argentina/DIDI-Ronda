@@ -38,7 +38,7 @@ exports.updateByUsername = async (req, res) => {
   } catch (err) {
     return err.name === "customError"
       ? generic(res, err.message)
-      : generic(res, "");
+      : generic(res, err.message);
   }
 };
 
