@@ -1,11 +1,12 @@
 import React from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
-import { Text, Spinner, Tab, Tabs, TabHeading, Icon } from "native-base";
+import { Text, Spinner, Tab, Tabs, TabHeading, Icon, Toast } from "native-base";
 import { connect } from "react-redux";
-
+import ConfirmCreateRoundFailed from "./ConfirmCreateRoundFailed";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import RoundListItem from "./RoundsListItem";
 import * as roundsActions from "../../../actions/rounds";
+import * as roundsCreation from "../../../actions/roundCreation";
 import * as notificationsActions from "../../../actions/notifications";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
@@ -15,8 +16,13 @@ import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
 import ConfirmModal from "../../components/ConfirmModal";
-import { getRoundsCreationFail } from "../../../services/asyncStorage/index";
+import {
+  getRoundsCreationFail,
+  deleteRoundFailByIndex,
+} from "../../../services/asyncStorage/index";
 import RoundsListItemFail from "./RoundsListItemFail";
+import { getDiffOfDaysToToday } from "../../../utils/dates";
+import ChangeDateRoundFailed from "./ChangeDateRoundFailed";
 
 const widthScreen = Dimensions.get("screen").width;
 
@@ -29,11 +35,14 @@ class RoundsList extends React.Component {
     showSCModal: false,
     confirmAlert: null,
     failedRounds: null,
+    showConfirmRF: false,
+    roundFailedSelected: null,
+    showChangeDate: false,
+    indexRoundFailed: null,
   };
 
   async componentDidMount() {
     const failed = await getRoundsCreationFail();
-    console.log(failed);
     // Load rounds if = 0
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
@@ -94,7 +103,11 @@ class RoundsList extends React.Component {
   filterRounds = (roundsData, currentStatus) => {
     let output = [];
     if (currentStatus === "starting") {
-      output = this.state.failedRounds;
+      output =
+        this.state.failedRounds &&
+        this.state.failedRounds.map((round, index) => {
+          return { ...round, indexRound: index };
+        });
     }
 
     const data = roundsData.filter(r => {
@@ -181,7 +194,11 @@ class RoundsList extends React.Component {
               pending
             />
           ) : (
-            <RoundsListItemFail {...item} />
+            <RoundsListItemFail
+              round={item}
+              onClick={this.onSelectRoundFailToCreateAgain}
+              handleOnDelete={this.processOnDeleteFiledRound}
+            />
           )
         }
         keyExtractor={(item, index) => index.toString()}
@@ -259,9 +276,107 @@ class RoundsList extends React.Component {
     this.setState({ loading: false });
   };
 
+  onCancelCreationRoundFail = () => {
+    this.setState({
+      showConfirmRF: false,
+      roundFailedSelected: null,
+    });
+  };
+
+  onCancelChangeDateRoundFail = () => {
+    this.setState({
+      showChangeDate: false,
+      roundFailedSelected: null,
+    });
+  };
+
+  onConfirmCreationRoundFail = () => {
+    // Check if date selected is > today
+    const dateSelected = new Date(this.state.roundFailedSelected.date);
+
+    if (getDiffOfDaysToToday(dateSelected) < 1) {
+      // User has to select new date
+      this.setState({
+        showConfirmRF: false,
+        showChangeDate: true,
+      });
+    } else {
+      this.setState({
+        showConfirmRF: false,
+      });
+    }
+  };
+
+  onConfirmChangeDateRoundFail = date => {
+    // update round info
+    const updatedRound = { ...this.state.roundFailedSelected, date };
+    this.setState({
+      indexRoundFailed: updatedRound.indexRound,
+    });
+    // send to server
+    this.props.createRoundByFailedRound(updatedRound);
+
+    // update state
+    this.setState({
+      showChangeDate: false,
+      roundFailedSelected: null,
+    });
+  };
+
+  onSelectRoundFailToCreateAgain = roundData => {
+    this.setState({
+      showConfirmRF: true,
+      roundFailedSelected: roundData,
+    });
+  };
+
+  processRoundCreationByFailed = async () => {
+    await deleteRoundFailByIndex(this.state.indexRoundFailed);
+    const failed = await getRoundsCreationFail();
+    this.setState({
+      failedRounds: failed,
+      indexRoundFailed: null,
+      loading: false,
+    });
+    this.props.clearData();
+  };
+
+  processOnDeleteFiledRound = async () => {
+    this.setState({
+      loading: true,
+    });
+    const failed = await getRoundsCreationFail();
+    this.setState({
+      failedRounds: failed,
+      loading: false,
+    });
+  };
+
   render() {
     const { navigation, clearData, activePage } = this.props;
     const { roundEditData, openWarningEditModal, showSCModal } = this.state;
+
+    if (this.state.indexRoundFailed && this.props.roundRequest.error) {
+      this.setState({
+        indexRoundFailed: null,
+      });
+      clearData();
+      Toast.show({
+        text: "Hubo un problema al intentar crear la ronda, intente mas tarde",
+        position: "top",
+        type: "danger",
+      });
+    }
+
+    if (
+      this.state.indexRoundFailed !== null &&
+      this.props.roundRequest.createdRound
+    ) {
+      this.setState({
+        loading: true,
+      });
+      this.processRoundCreationByFailed();
+    }
 
     return (
       <View style={styles.container}>
@@ -295,6 +410,16 @@ class RoundsList extends React.Component {
         {this.state.confirmAlert && (
           <ConfirmModal {...this.state.confirmAlert} />
         )}
+        <ConfirmCreateRoundFailed
+          open={this.state.showConfirmRF}
+          onCancel={this.onCancelCreationRoundFail}
+          onContinue={this.onConfirmCreationRoundFail}
+        />
+        <ChangeDateRoundFailed
+          open={this.state.showChangeDate}
+          onCancel={this.onCancelChangeDateRoundFail}
+          onContinue={this.onConfirmChangeDateRoundFail}
+        />
       </View>
     );
   }
@@ -308,6 +433,7 @@ const mapStateToPropsList = state => {
     haveFailedRegisterNotification: state.notifications.list.some(
       item => item.code === notificationsCodes.errorSC
     ),
+    roundRequest: state.roundCreation.request,
   };
 };
 
@@ -320,6 +446,8 @@ const mapDispatchToPropsList = dispatch => ({
   editRound: round => dispatch(setEditRoundData(round)),
   saveRouteOptions: options => dispatch(setRouteOptions(options)),
   getNotifications: () => notificationsActions.getNotifications(dispatch),
+  createRoundByFailedRound: async round =>
+    dispatch(roundsCreation.createRoundByFailedRound(round)),
 });
 
 const styles = StyleSheet.create({

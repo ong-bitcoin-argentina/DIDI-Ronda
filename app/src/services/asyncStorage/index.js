@@ -75,7 +75,6 @@ export const getRoundsCreationFail = async () => {
 };
 
 export const saveCreateRoundFails = async round => {
-  console.log("saveCreateRoundFails");
   let arrData = await getItem("roundsCreationFail");
 
   if (arrData) {
@@ -84,6 +83,13 @@ export const saveCreateRoundFails = async round => {
     arrData = [round];
   }
 
-  console.log("DATA: ", arrData);
+  await saveItem("roundsCreationFail", arrData);
+};
+
+export const deleteRoundFailByIndex = async index => {
+  let arrData = await getItem("roundsCreationFail");
+
+  arrData.splice(index, 1);
+
   await saveItem("roundsCreationFail", arrData);
 };

@@ -224,3 +224,13 @@ const createRoundFail = error => ({
   type: types.CREATEROUND_REQUEST_FAILED,
   payload: { error },
 });
+
+export const createRoundByFailedRound = round => {
+  return dispatch => {
+    dispatch({
+      type: types.SET_ROUND_FAILED_DATA,
+      data: round,
+    });
+    dispatch(createRound());
+  };
+};

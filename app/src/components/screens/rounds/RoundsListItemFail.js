@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Swipeout from "react-native-swipeout";
-import { Icon, Button, Spinner } from "native-base";
+import { Icon, Button, Spinner, Toast } from "native-base";
 import colors from "../../components/colors";
 import { amountFormat } from "../../../utils/utils";
+import { deleteRoundFailByIndex } from "../../../services/asyncStorage/index";
 
 const RoundsListItemFail = props => {
   const swipeButton = [
@@ -13,7 +14,7 @@ const RoundsListItemFail = props => {
           <Button
             danger
             style={styles.rightAcionButton}
-            onPress={() => console.log("ELIMINAR ROUND FAIL")}>
+            onPress={proccessDeleteFailRound}>
             <Icon
               style={styles.rightAcionIcon}
               type="FontAwesome"
@@ -35,21 +36,31 @@ const RoundsListItemFail = props => {
     },
   ];
 
-  const { amount, assignedNumbers, name } = props;
+  const { amount, assignedNumbers, name } = props.round;
+  const [loading, setLoading] = useState(false);
 
   const swipeOutOptions = () => {
-    // if (deleteRoundRequest.loading) return this.swipeButtonSpinner;
+    if (loading) return this.swipeButtonSpinner;
     return swipeButton;
   };
 
-  const onPresRoundFailCell = () => {};
+  const proccessDeleteFailRound = async () => {
+    setLoading(true);
+    await deleteRoundFailByIndex(props.round.indexRound);
+    setLoading(false);
+    props.handleOnDelete();
+    Toast.show({
+      text: "Eliminada con éxito",
+      buttonText: "Okay",
+    });
+  };
 
   return (
     <View style={styles.rightActionContainer}>
       <Swipeout backgroundColor="transparent" right={swipeOutOptions()}>
         <TouchableOpacity
           style={styles.container}
-          onPress={onPresRoundFailCell}>
+          onPress={() => props.onClick(props.round)}>
           <View style={styles.roundStatus} />
           <View style={styles.roundData}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>

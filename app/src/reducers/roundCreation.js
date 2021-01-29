@@ -104,6 +104,11 @@ function creation(state = defaultState, action) {
         ...state,
         ...action.data.round,
       };
+    case "SET_ROUND_FAILED_DATA":
+      return {
+        ...state,
+        ...action.data,
+      };
     default:
       return state;
   }
