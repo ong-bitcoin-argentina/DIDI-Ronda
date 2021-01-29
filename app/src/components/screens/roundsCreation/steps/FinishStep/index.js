@@ -23,7 +23,7 @@ const Finish = props => {
     navigation.navigate("RoundName");
   };
 
-  if (loading || (!loading && !createdRound))
+  if (loading || !createdRound)
     return <Spinner color={colors.mainBlue} style={styles.spinner} />;
 
   if (error)
