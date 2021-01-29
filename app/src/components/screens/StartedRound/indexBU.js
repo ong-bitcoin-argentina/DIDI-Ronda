@@ -137,8 +137,7 @@ const StartedRound = props => {
             flexDirection: "row",
             justifyContent: "space-between",
             paddingHorizontal: 20,
-          }}
-        >
+          }}>
           <Text style={styles.listTitle}>Número</Text>
           <Text style={[styles.listTitle, { textAlign: "left", width: 140 }]}>
             Cobra
@@ -363,32 +362,6 @@ const styles = StyleSheet.create({
   state: {
     color: Colors.lightBlue,
     fontStyle: "italic",
-  },
-  roundInfo: {
-    flexDirection: "column",
-    height: 100,
-    marginBottom: 8,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  roundInfoDates: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: "5%",
-  },
-  roundInfoDate: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "35%",
-  },
-  date: { fontSize: 12, fontWeight: "400" },
-  dateSubtitle: { fontSize: 11, color: Colors.secondary },
-  smallIcon: { color: Colors.mainBlue, fontSize: 22, marginRight: 10 },
-  roundState: {
-    flexDirection: "column",
-    justifyContent: "center",
-    paddingRight: 20,
   },
 });
 

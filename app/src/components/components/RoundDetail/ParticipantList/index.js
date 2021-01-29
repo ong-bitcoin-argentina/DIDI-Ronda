@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { StyleSheet, FlatList } from "react-native";
 import Number from "./Number";
 
 const ParticipantList = props => {
@@ -50,11 +49,5 @@ const ParticipantList = props => {
   // Render
   return <>{participantList}</>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default ParticipantList;
