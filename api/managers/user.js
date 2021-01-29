@@ -31,7 +31,7 @@ exports.fullByUsername = async username => {
 exports.updateProfile = async (user, profile) => {
   user.name = profile.name;
   user.lastname = profile.lastname;
-  user.phone = profile.phoneNumber;
+  user.phone = profile.phone;
   user.username = profile.mail;
   user.imageUrl = profile.imageUrl;
   await user.save();
