@@ -15,15 +15,10 @@ import NextButton from "../../../components/NextButton";
 import { LocaleConfig } from "react-native-calendars";
 import { addMonths, isAfter } from "date-fns";
 import MonthCalendar from "../../../components/MonthCalendar";
-import {
-  monthNames,
-  dayNamesShort,
-  monthNamesShort,
-  dayNames,
-} from "../../../../utils/localization";
 import ErrorDateModal from "./date/ErrorDateModal";
 import UpdateModal from "./date/UpdateModal";
 import * as actions from "../../../../actions/roundCreation";
+import { LOCALE_CONFIG } from "../../../../utils/constants";
 
 const stepIcon = {
   type: "MaterialIcons",
@@ -80,17 +75,12 @@ const RoundFrequency = props => {
 
   const today = new Date();
   const sixMonths = [];
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 7; i++) {
     const dateToAdd = addMonths(today, i);
     sixMonths.push(dateToAdd.toISOString());
   }
 
-  LocaleConfig.locales.es = {
-    monthNames,
-    monthNamesShort,
-    dayNames,
-    dayNamesShort,
-  };
+  LocaleConfig.locales.es = LOCALE_CONFIG;
   LocaleConfig.defaultLocale = "es";
 
   const renderItem = ({ item }) => (
