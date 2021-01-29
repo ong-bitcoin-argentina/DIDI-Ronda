@@ -29,7 +29,8 @@ router.post(
   user_controller.getNotifications
 );
 
-router.post(
+// Mark notifications as viewed
+router.patch(
   "/notifications/markAsViewed",
   [username],
   validation,

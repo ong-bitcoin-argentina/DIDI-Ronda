@@ -129,6 +129,7 @@ class RoundListItem extends Component {
 
     const getAssignedShifts = participantId => {
       let assigned = [];
+      if (!participantID) return null;
       shifts.forEach(({ participant, number }) => {
         participant.forEach(id => {
           if (participantId === id.toString()) assigned.push(number);
@@ -142,7 +143,7 @@ class RoundListItem extends Component {
         participant => participant.user._id === userId
       );
 
-      return participant._id;
+      return participant?._id;
     };
 
     const participantID = getUserParticipantId(auth.id);

@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image } from "react-native";
 import { Button } from "native-base";
 import WheelOfFortune from "react-native-wheel-of-fortune";
 import LottieView from "lottie-react-native";
-
+import { ruffleRouletteColors } from "../../../../utils/constants";
 import Bookmark from "../../../components/Bookmark";
 import CircleArrows from "../../../../assets/img/circle-arrows.svg";
 import RoundPopUp from "../../../components/RoundPopUp";
@@ -136,7 +136,7 @@ const RuffleRoulette = props => {
                     style={styles.playButton}
                   />
                 )}
-                colors={["#73A4D0", "#4C7CBE"]}
+                colors={ruffleRouletteColors}
                 winner={winner}
                 innerRadius={70}
                 duration={3000}

@@ -1,3 +1,5 @@
+import * as types from "../actions/types";
+
 const defaultState = {
   name: "",
   amount: 0,
@@ -6,6 +8,7 @@ const defaultState = {
   participants: [],
   assignedNumbers: [],
   pickTurnsManual: false,
+  participantsVisible: false,
   completedParticipantsSection: false,
   date: "",
   confirmationDate: "",
@@ -19,44 +22,49 @@ const defaultState = {
 
 function creation(state = defaultState, action) {
   switch (action.type) {
-    case "CREATION_NEXT_STEP":
+    case types.CREATION_NEXT_STEP:
       return {
         ...state,
         step: action.data.step,
       };
-    case "CREATION_NAME":
+    case types.CREATION_NAME:
       return {
         ...state,
         name: action.data.name,
       };
-    case "CREATION_AMOUNT":
+    case types.CREATION_AMOUNT:
       return {
         ...state,
         amount: action.data.amount,
       };
-    case "CREATION_FREQUENCY":
+    case types.CREATION_FREQUENCY:
       return {
         ...state,
         frequency: action.data.frequency,
       };
-    case "CREATION_DATE":
+    case types.CREATION_DATE:
       return {
         ...state,
         date: action.data.date,
       };
-    case "PICK_TURNS_MANUAL":
+    case types.PICK_TURNS_MANUAL:
       return {
         ...state,
         pickTurnsManual: action.data.pickTurnsManual,
       };
-    case "NEW_NUMBER_ASSIGNED": {
+    case types.PARTICIPANTS_VISIBLE:
+      return {
+        ...state,
+        participantsVisible: action.data,
+      };
+    case types.NEW_NUMBER_ASSIGNED: {
       const { userData } = action.data;
       return {
         ...state,
         assignedNumbers: [...state.assignedNumbers, userData],
       };
     }
-    case "REMOVE_ASSIGNED_NUMBER": {
+    case types.REMOVE_ASSIGNED_NUMBER: {
       const { number } = action.data;
       const newAssignedNumbers = state.assignedNumbers.filter(
         e => e.number !== number
@@ -66,40 +74,40 @@ function creation(state = defaultState, action) {
         assignedNumbers: newAssignedNumbers,
       };
     }
-    case "CREATION_TURNS":
+    case types.CREATION_TURNS:
       return {
         ...state,
         turns: action.data.turns,
       };
-    case "COMPLETED_PARTICIPANTS_SECTION":
+    case types.COMPLETED_PARTICIPANTS_SECTION:
       return {
         ...state,
         completedParticipantsSection: true,
       };
-    case "LOGOUT":
-    case "CLEAR_STORE":
+    case types.LOGOUT:
+    case types.CLEAR_STORE:
       return defaultState;
-    case "CREATION_PARTICIPANTS":
+    case types.CREATION_PARTICIPANTS:
       return {
         ...state,
         participants: action.data.participants,
       };
-    case "CREATEROUND_REQUEST_START":
+    case types.CREATEROUND_REQUEST_START:
       return {
         ...state,
         request: { loading: true },
       };
-    case "CREATEROUND_REQUEST_SUCCEEDED":
+    case types.CREATEROUND_REQUEST_SUCCEEDED:
       return {
         ...state,
         request: { loading: false, error: null, createdRound: action.payload },
       };
-    case "CREATEROUND_REQUEST_FAILED":
+    case types.CREATEROUND_REQUEST_FAILED:
       return {
         ...state,
         request: { loading: false, error: action.payload, createdRound: null },
       };
-    case "START_EDITING_ROUND":
+    case types.START_EDITING_ROUND:
       return {
         ...state,
         ...action.data.round,

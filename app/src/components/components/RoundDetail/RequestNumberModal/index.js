@@ -37,7 +37,7 @@ const RequestNumberModal = props => {
 
   useEffect(() => {
     if (requestNumbers.error) {
-      Alert.alert("Hubo un error. Intente nuevamente.");
+      Alert.alert("Hubo un error al solicitar el número. Intente nuevamente.");
       request_numbers_clean();
     }
   }, [requestNumbers]);

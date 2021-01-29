@@ -185,7 +185,10 @@ const RoundInfo = props => {
 
   useEffect(() => {
     if (!chargeNumber.loading && chargeNumber.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al reasignar el número. Intentalo nuevamente.",
+        true
+      );
       chargeNumberClean();
     }
   }, [chargeNumber]);
@@ -377,6 +380,17 @@ const RoundInfo = props => {
         <CaptionInfo title="Administrador">
           <View style={styles.participantsContainer}>
             <ParticipantHList participants={[roundAdminParticipant]} detail />
+          </View>
+        </CaptionInfo>
+      )}
+
+      {!userAdmin && round.participantsVisible && (
+        <CaptionInfo title="Participantes confirmados">
+          <View style={styles.participantsContainer}>
+            <ParticipantHList
+              participants={round.participants.filter(item => item.acepted)}
+              detail
+            />
           </View>
         </CaptionInfo>
       )}

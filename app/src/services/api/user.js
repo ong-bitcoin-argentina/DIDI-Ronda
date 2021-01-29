@@ -1,6 +1,5 @@
 import apiCall from "./helper";
 import { getPaymentDate } from "../../utils/dates";
-import { getAuth } from "../../utils/utils";
 
 // Login
 export const login = async (username, password) => {
@@ -15,12 +14,11 @@ export const login = async (username, password) => {
 };
 
 // loginWithAidi
-export const loginWithAidi = async token => {
-  console.log("sending request.... loginWithAidi");
-  console.log(token);
+export const loginWithAidi = async (token, firebaseToken) => {
   try {
     return await apiCall("post", "/login/aidi", {
       token,
+      firebaseToken,
     });
   } catch (error) {
     console.log("error loginWithAidi", error);
@@ -106,6 +104,7 @@ export const createRound = async (
   roundName,
   participants,
   date,
+  participantsVisible
 ) => {
   const participantsObj = {};
   participants.forEach(contact => {
@@ -136,9 +135,10 @@ export const createRound = async (
   const { date: paymentDate } = getPaymentDate(date, frequency, 1);
   try {
     const data = await apiCall("post", "/user/round", {
+      shifts,
+      participantsVisible,
       name: roundName,
       amount: parseInt(amount, 10),
-      shifts,
       recurrence: frequency,
       limitDate: date,
       startDate: date,

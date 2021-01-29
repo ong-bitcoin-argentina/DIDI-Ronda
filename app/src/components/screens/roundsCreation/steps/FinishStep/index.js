@@ -51,7 +51,7 @@ const Finish = props => {
       </View>
     );
 
-  if (loading || (!loading && !createdRound))
+  if (loading || !createdRound)
     return <Spinner color={colors.mainBlue} style={styles.spinner} />;
 
   return (

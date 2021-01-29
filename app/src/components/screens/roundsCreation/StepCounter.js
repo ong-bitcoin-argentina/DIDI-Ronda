@@ -47,13 +47,9 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
           // eslint-disable-next-line react/no-array-index-key
           key={i}
           style={{
-            width: widthStep,
-            marginHorizontal: 2,
+            ...styles.iconContainer,
             borderBottomColor: backgroundColorStep(i),
-            borderBottomWidth: 5,
-            paddingBottom: 10,
-            justifyContent: "center",
-            alignItems: "center",
+            width: widthStep,
           }}>
           <Icon
             name={s.name}
@@ -82,6 +78,13 @@ const styles = StyleSheet.create({
   },
   stepCounterOff: {
     backgroundColor: colors.secondary,
+  },
+  iconContainer: {
+    marginHorizontal: 2,
+    borderBottomWidth: 5,
+    paddingBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

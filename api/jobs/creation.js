@@ -13,14 +13,19 @@ const agenda = new Agenda({
 
 exports.agenda = agenda;
 
-exports.createPayRememberJob = (taskDate, roundId, number) => {
+exports.createPayRememberJob = (
+  taskDate,
+  roundId,
+  number,
+  isLastDay = false
+) => {
   const scheduleDate = config.scheduleNotificationsTime(
     taskDate.year(),
     taskDate.month(),
     taskDate.date()
   );
   console.log(`Creating task for ${scheduleDate}...`);
-  const notificationData = { roundId, number };
+  const notificationData = { roundId, number, isLastDay };
   agenda.schedule(
     scheduleDate,
     types.NOTIFICATIONS_PAYS_REMEMBER,

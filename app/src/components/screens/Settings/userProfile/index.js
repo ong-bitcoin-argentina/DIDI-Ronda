@@ -7,7 +7,7 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import { Icon, Fab } from "native-base";
+import { Icon } from "native-base";
 import { createStackNavigator } from "react-navigation-stack";
 import Avatar from "../../../components/Avatar";
 import Divider from "../../../components/Divider";
@@ -29,13 +29,6 @@ const emptyUser = {
   nick: "",
   username: "",
   phone: "",
-};
-
-const imgPickerOptions = {
-  width: 400,
-  height: 400,
-  includeBase64: true,
-  cropping: true,
 };
 
 const UserProfile = props => {
@@ -143,7 +136,6 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   row: {
-    backgroundColor: "white",
     flexDirection: "row",
     backgroundColor: "transparent",
     paddingTop: 12,
