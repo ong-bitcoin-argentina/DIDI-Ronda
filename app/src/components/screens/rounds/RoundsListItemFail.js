@@ -30,7 +30,7 @@ const RoundsListItemFail = props => {
     {
       component: (
         <View style={styles.rightAction}>
-          <Spinner color="red" />
+          <Spinner color={colors.red} />
         </View>
       ),
     },
@@ -63,24 +63,13 @@ const RoundsListItemFail = props => {
           onPress={() => props.onClick(props.round)}>
           <View style={styles.roundStatus} />
           <View style={styles.roundData}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.rowCenterContainer}>
               <View style={styles.icon}>
-                <View
-                  style={{
-                    backgroundColor: "red",
-                    height: 14,
-                    width: 14,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 7,
-                    position: "absolute",
-                    top: -2,
-                    right: -2,
-                  }}>
+                <View style={styles.iconContainer}>
                   <Icon
                     type="FontAwesome"
-                    name={"retweet"}
-                    style={{ color: "white", fontSize: 10 }}
+                    name="retweet"
+                    style={styles.redoIcon}
                   />
                 </View>
                 <Icon
@@ -93,24 +82,16 @@ const RoundsListItemFail = props => {
                 <Text numberOfLines={1} style={styles.roundName}>
                   {name}
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      marginRight: 5,
-                    }}>
+                <View style={styles.rowCenterContainer}>
+                  <View style={styles.personIconContainer}>
                     <Icon
                       type="MaterialIcons"
                       name="person-outline"
-                      style={{ color: "white", fontSize: 25 }}
+                      style={styles.personIcon}
                     />
                   </View>
                   <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}>
+                    <View style={styles.rowCenterContainer}>
                       <Text
                         style={{
                           ...styles.confirmedText,
@@ -155,7 +136,7 @@ const styles = StyleSheet.create({
   roundStatus: {
     height: "100%",
     width: 5,
-    backgroundColor: "red",
+    backgroundColor: colors.red,
   },
   roundData: {
     width: "95%",
@@ -213,6 +194,33 @@ const styles = StyleSheet.create({
   },
   rightAcionIcon: {
     color: "white",
+  },
+  iconContainer: {
+    backgroundColor: colors.red,
+    height: 14,
+    width: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 7,
+    position: "absolute",
+    top: -2,
+    right: -2,
+  },
+  rowCenterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  personIconContainer: {
+    justifyContent: "center",
+    marginRight: 5,
+  },
+  personIcon: {
+    color: colors.white,
+    fontSize: 25,
+  },
+  redoIcon: {
+    color: colors.white,
+    fontSize: 10,
   },
 });
 

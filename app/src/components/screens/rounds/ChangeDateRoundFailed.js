@@ -6,13 +6,8 @@ import colors from "../../components/colors";
 import MonthCalendar from "../../components/MonthCalendar";
 import { addMonths, isAfter } from "date-fns";
 import { LocaleConfig } from "react-native-calendars";
-import {
-  monthNames,
-  dayNamesShort,
-  monthNamesShort,
-  dayNames,
-} from "../../../utils/localization";
 import ErrorDateModal from "../roundsCreation/steps/date/ErrorDateModal";
+import { LOCALE_CONFIG } from "../../../utils/constants";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -25,17 +20,12 @@ const ConfirmCreateRoundFailed = props => {
 
   const today = new Date();
   const sixMonths = [];
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 7; i++) {
     const dateToAdd = addMonths(today, i);
     sixMonths.push(dateToAdd.toISOString());
   }
 
-  LocaleConfig.locales.es = {
-    monthNames,
-    monthNamesShort,
-    dayNames,
-    dayNamesShort,
-  };
+  LocaleConfig.locales.es = LOCALE_CONFIG;
   LocaleConfig.defaultLocale = "es";
 
   const onDayPress = d => {
@@ -48,11 +38,7 @@ const ConfirmCreateRoundFailed = props => {
 
   const renderItem = ({ item }) => {
     return (
-      <View
-        style={{
-          marginHorizontal: 10,
-          height: 335,
-        }}>
+      <View style={styles.item}>
         <MonthCalendar
           onDayPress={onDayPress}
           selectedDate={selectedDate}
@@ -161,6 +147,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.backgroundGray,
     height: 310,
+  },
+  item: {
+    marginHorizontal: 10,
+    height: 335,
   },
 });
 

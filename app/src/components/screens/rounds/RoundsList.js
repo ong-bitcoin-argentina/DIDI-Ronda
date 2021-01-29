@@ -105,9 +105,10 @@ class RoundsList extends React.Component {
     if (currentStatus === "starting") {
       output =
         this.state.failedRounds &&
-        this.state.failedRounds.map((round, index) => {
-          return { ...round, indexRound: index };
-        });
+        this.state.failedRounds.map((round, index) => ({
+          ...round,
+          indexRound: index,
+        }));
     }
 
     const data = roundsData.filter(r => {
@@ -185,7 +186,7 @@ class RoundsList extends React.Component {
       <FlatList
         data={roundsToRender}
         renderItem={({ item, index }) =>
-          item.start !== undefined ? (
+          !!item.start ? (
             <RoundListItem
               detail={this.roundItemPress}
               onDeleteStoredRound={this.onDeleteStoredRound}

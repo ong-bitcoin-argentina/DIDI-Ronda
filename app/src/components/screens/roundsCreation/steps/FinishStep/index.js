@@ -30,10 +30,8 @@ const Finish = props => {
   const goToRoundName = () => {
     saveCreateRoundFails(roundInProcess);
     navigation.navigate("List");
-    // navigation.navigate("RoundName");
   };
 
-  console.log("Finish ERROR", error);
   if (error)
     return (
       <View style={styles.container}>
