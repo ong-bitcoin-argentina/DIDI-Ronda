@@ -135,6 +135,8 @@ exports.updateToken = async req => {
   const user = await user_manager.byUsername(username);
   if (user === null) throw new customError("User do not exists");
 
+  // TODO: search newToken and clean if exists to avoid send wrong notifications to multiple accounts logged on same device
+
   // If token is new, change it
   if (user.token !== newToken) {
     user.token = newToken;
