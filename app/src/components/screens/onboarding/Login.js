@@ -64,11 +64,11 @@ const Login = props => {
     await props.loginWithAidi(token, firebaseToken);
 
   const onLoginWithAidi = async () => {
-    const canOpen = await Linking.canOpenURL(links.login.deepLink);
-    if (!canOpen) {
+    Linking.openURL(links.login.deepLink).catch(async () => {
       const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
         "com.aidi"
       );
+
       setNeedUpdate(isInstalled);
 
       const name = isInstalled ? "ModalUpdateAidi" : "ModalInstallAidi";
@@ -78,8 +78,7 @@ const Login = props => {
       });
 
       return setModalVisible(true);
-    }
-    await openAdiLogin();
+    });
   };
 
   const openPlaystore = async () => {

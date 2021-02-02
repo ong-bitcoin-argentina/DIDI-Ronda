@@ -45,6 +45,7 @@ exports.loginWithAidi = async (req, res) => {
     }
 
     try {
+      // TODO: search firebaseToken and clean if exists to avoid send wrong notifications to multiple accounts logged on same device
       const data = await guest_services.register(
         username,
         password,
