@@ -11,6 +11,7 @@ import { isActive, isFinished } from "../../../utils/roundsHelper";
 import * as roundsActions from "../../../actions/rounds";
 import Snippet from "./Snippet";
 import { notificationsCodes } from "../../../utils/constants";
+import * as notificationsActions from "../../../actions/notifications";
 
 class Home extends React.Component {
   constructor(props) {
@@ -33,8 +34,9 @@ class Home extends React.Component {
   };
 
   async componentDidMount() {
-    const user = await this.updateUser();
+    await this.updateUser();
     await this.getRoundData();
+    await this.props.getNotifications();
   }
 
   async getRoundData() {
@@ -47,7 +49,7 @@ class Home extends React.Component {
     const user = await getAuth();
     this.setState({ user });
     this.props.navigation.setParams({
-      title: `${user.name} ${user.lastname}`,
+      title: user.lastname ? `${user.name} ${user.lastname}` : user.name,
     });
     return user;
   }
@@ -117,5 +119,6 @@ export default connect(
   dispatch => ({
     navigateToRoundsPage: page => toRoundListPage(dispatch, page),
     loadRounds: () => dispatch(roundsActions.loadRounds()),
+    getNotifications: () => notificationsActions.getNotifications(dispatch),
   })
 )(Home);

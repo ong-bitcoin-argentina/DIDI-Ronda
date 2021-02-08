@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image } from "react-native";
 import { Button } from "native-base";
 import WheelOfFortune from "react-native-wheel-of-fortune";
 import LottieView from "lottie-react-native";
-
+import { ruffleRouletteColors } from "../../../../utils/constants";
 import Bookmark from "../../../components/Bookmark";
 import CircleArrows from "../../../../assets/img/circle-arrows.svg";
 import RoundPopUp from "../../../components/RoundPopUp";
@@ -66,7 +66,7 @@ const RuffleRoulette = props => {
 
   const Confetti = () => (
     <>
-      <View style={{ width: "100%", alignItems: "center", height: 375 }}>
+      <View style={styles.confettiView}>
         <Text style={styles.titleText}>Ganó</Text>
 
         <Bookmark outline number={number} />
@@ -76,7 +76,7 @@ const RuffleRoulette = props => {
               ? { uri: wheelWinner.thumbnailPath }
               : emptyAvatar
           }
-          style={{ height: 150, width: 150, borderRadius: 100 }}
+          style={styles.image}
         />
         <Text style={styles.textName}>{wheelWinner.name}</Text>
         <Button
@@ -84,14 +84,21 @@ const RuffleRoulette = props => {
           onPress={() => onFinish(number, wheelWinner)}>
           <Text style={styles.buttonText}>Ok</Text>
         </Button>
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiViewLeft}
+        />
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiViewRight}
+        />
       </View>
-      <LottieView
-        pointerEvents="none"
-        autoPlay
-        loop={false}
-        source={confettiAnimation}
-        style={styles.confettiView}
-      />
     </>
   );
 
@@ -129,7 +136,7 @@ const RuffleRoulette = props => {
                     style={styles.playButton}
                   />
                 )}
-                colors={["#73A4D0", "#4C7CBE"]}
+                colors={ruffleRouletteColors}
                 winner={winner}
                 innerRadius={70}
                 duration={3000}
@@ -201,20 +208,42 @@ const styles = StyleSheet.create({
   textName: {
     marginVertical: 5,
     fontSize: 18,
+    fontWeight: "bold",
     color: colors.mainBlue,
     textAlign: "center",
+    zIndex: 1,
+    backgroundColor: colors.whiteSemiTransparent,
   },
   playButton: {
     top: 20,
     zIndex: 10,
   },
-  confettiView: {
-    transform: [{ rotate: "65deg" }],
-    zIndex: 0,
+  confettiViewLeft: {
+    transform: [{ rotate: "52deg" }],
+    zIndex: -10,
     width: "100%",
-    top: -30,
-    right: 22,
+    top: -20,
+    right: 65,
     position: "absolute",
+  },
+  confettiViewRight: {
+    transform: [{ rotate: "-42deg" }],
+    zIndex: -10,
+    width: "100%",
+    bottom: -38,
+    left: 35,
+    position: "absolute",
+  },
+  image: {
+    height: 150,
+    width: 150,
+    borderRadius: 100,
+    zIndex: -1,
+  },
+  confettiView: {
+    width: "100%",
+    alignItems: "center",
+    height: 375,
   },
 });
 

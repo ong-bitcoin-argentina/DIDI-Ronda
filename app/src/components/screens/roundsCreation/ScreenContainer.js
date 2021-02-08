@@ -9,12 +9,11 @@ const ScreenContainer = props => {
     <KeyboardAvoidingView
       style={styles.screenContainer}
       behavior="padding"
-      enabled
-    >
+      enabled>
       <View style={styles.screenContainer}>
         <StepCounter
           navigation={navigation}
-          totalSteps={7}
+          totalSteps={4}
           currentStep={step + 1}
         />
         {children}
@@ -25,7 +24,7 @@ const ScreenContainer = props => {
 const styles = StyleSheet.create({
   screenContainer: {
     flexDirection: "column",
-    flex: 1,
+    flexGrow: 1,
   },
   titleContainer: {
     flex: 0.2,

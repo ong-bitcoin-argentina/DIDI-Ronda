@@ -135,7 +135,7 @@ const RuffleParticipants = props => {
         )}
         {!remainingParticipants.length && (
           <Button style={styles.button} onPress={onCreatePress}>
-            <Text style={styles.buttonText}>Finalizar y Crear Ronda</Text>
+            <Text style={styles.buttonText}>Finalizar y Crear ronda</Text>
           </Button>
         )}
         {!!assignedNumbersData.length && (

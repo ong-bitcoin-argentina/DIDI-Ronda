@@ -32,7 +32,8 @@ const {
   roundStartAdminProcessing,
   startedRound,
   schedulePayRemember,
-  registerUserProcessing
+  registerUserProcessing,
+  scheduleLastDayBeforeExpirationRemember
 } = require("../helpers/notifications/notifications");
 const { logError } = require("../helpers/utils");
 
@@ -265,6 +266,7 @@ exports.startRound = async params => {
   // Schedule pays notifications
   try {
     schedulePayRemember(round);
+    scheduleLastDayBeforeExpirationRemember(round);
     createNumberChangeRoundJob(round);
   } catch (error) {
     logError("Error on job scheduling");
@@ -298,6 +300,22 @@ const sendVerificationToken = async (username, token) => {
   return token;
 };
 
+const normalizeRegisterResponse = (user, jwtToken) => {
+  return {
+    user: user,
+    appUser: {
+      id: user._id,
+      name: user.name,
+      nick: user.nick,
+      lastname: user.lastname,
+      username: user.username,
+      phone: user.phone,
+      emailVerified: true,
+      jwtToken
+    }
+  };
+};
+
 exports.registerAidiUser = async params => {
   try {
     const {
@@ -314,41 +332,40 @@ exports.registerAidiUser = async params => {
 
     const phone = SMS.normalizePhone(params.phone);
 
-    const { address, privateKey } = await walletUtil.createWallet();
+    const existingUser = await user_manager.byPhone(phone);
+    const verifyToken = tokens.generate();
+    const extraFields = { verified: true, sc: false, verifyToken };
 
+    if (existingUser) {
+      const user = await user_manager.convertToVerified(
+        existingUser,
+        params,
+        extraFields
+      );
+      return normalizeRegisterResponse(user, jwtToken);
+    }
+
+    const { address, privateKey } = await walletUtil.createWallet();
     const encryptedAddress = crypto.cipher(address);
     const encryptedPK = crypto.cipher(privateKey);
-    const verifyToken = tokens.generate();
     const user = await user_manager.saveUser(
       username,
       password,
       name,
       lastname,
       token,
-      verifyToken,
+      extraFields.verifyToken,
       nick,
       imageUrl,
       encryptedAddress,
       encryptedPK
     );
-    user.verified = true;
+    user.verified = extraFields.verified;
     user.phone = phone;
-    user.sc = false;
+    user.sc = extraFields.sc;
     user.did = did;
     user.save();
-    return {
-      user: user,
-      appUser: {
-        id: user._id,
-        name: user.name,
-        nick: user.nick,
-        lastname: user.lastname,
-        username: user.username,
-        emailVerified: true,
-        phone: user.phone,
-        jwtToken: jwtToken
-      }
-    };
+    return normalizeRegisterResponse(user, jwtToken);
   } catch (error) {
     console.log("registerAidiUser error", error);
     return error;
@@ -359,7 +376,7 @@ exports.enableSCToUser = async user => {
   console.log("enableSCToUser");
   let addedBalance = false;
   let subDomainCreated = false;
-  const { nick, walletAddress, token, username, verifyToken } = user;
+  const { nick, walletAddress, token, username } = user;
 
   const address = crypto.decipher(walletAddress);
 

@@ -12,13 +12,12 @@ const Success = props => {
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
+          <Text style={styles.title}>La ronda</Text>
           <Text
             style={[
               styles.subtitle,
               { width: 350, textAlign: "center", marginBottom: 30 },
-            ]}
-          >
+            ]}>
             {text}
           </Text>
         </View>

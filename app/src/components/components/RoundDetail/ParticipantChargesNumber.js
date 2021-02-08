@@ -34,7 +34,10 @@ const ParticipantChargesNumber = props => {
   // chargeNumber listener
   useEffect(() => {
     if (!loading && chargeNumber.round === null && chargeNumber.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al reasignar el número. Intentalo nuevamente.",
+        true
+      );
       charge_number_clean();
     }
   }, [chargeNumber]);
@@ -127,8 +130,7 @@ const ParticipantChargesNumber = props => {
           positiveTitle="Cobro no presencial"
           positive={openNoPresentialPayment}
           negative={() => setQrPopUp(false)}
-          negativeTitle="Cancelar"
-        >
+          negativeTitle="Cancelar">
           <View style={styles.cameraContainer}>
             <QRCodeScanner
               onRead={qrSuccess}

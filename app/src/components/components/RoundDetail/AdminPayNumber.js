@@ -30,7 +30,7 @@ const AdminPayNumber = props => {
   //   Variables
   const title = `¿Confirmás el aporte de $${amountFormat(
     amount
-  )} a la Ronda ${roundName}?`;
+  )} a la ronda ${roundName}?`;
 
   // Methods
   const payNumber = () => {

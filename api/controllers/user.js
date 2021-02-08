@@ -36,6 +36,7 @@ exports.updateByUsername = async (req, res) => {
     const user = await user_services.updateByUsername(req, res);
     res.status(200).jsonp(user);
   } catch (err) {
+    console.log(err);
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");

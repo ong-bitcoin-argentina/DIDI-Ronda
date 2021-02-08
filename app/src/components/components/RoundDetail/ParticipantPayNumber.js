@@ -12,6 +12,8 @@ import colors from "../colors";
 import { amountFormat } from "../../../utils/utils";
 import MoneyWithCheck from "../icons/MoneyWithCheck";
 
+import NoPresentialModal from "./NoPresentialModal";
+
 const ParticipantPayNumber = props => {
   // Props
   const {
@@ -27,12 +29,15 @@ const ParticipantPayNumber = props => {
     participantPayRound,
     alertModal,
     adminName,
+    reqAdminAcceptPayment,
   } = props;
 
   // Hooks
   const [popUp, setPopUp] = useState(false);
   const [confirmPopUp, setConfirmPopUp] = useState(false);
   const [qrPopUp, setQrPopUp] = useState(false);
+  const [openNoPresential, setopenNoPresential] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
 
   // payRound listener
   useEffect(() => {
@@ -42,26 +47,46 @@ const ParticipantPayNumber = props => {
     }
 
     if (!loading && payRound.round === null && payRound.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al procesar el pago de la ronda. Intentalo nuevamente.",
+        true
+      );
       pay_round_clean();
     }
   }, [payRound]);
+
+  const openNoPresentialPayment = () => {
+    setQrPopUp(false);
+    setopenNoPresential(true);
+  };
+
+  const closeNoPresentialPayment = () => {
+    setQrPopUp(true);
+    setopenNoPresential(false);
+  };
+
+  const requestAddPaymentadmin = async () => {
+    setisLoading(true);
+    await reqAdminAcceptPayment(roundId, participantId);
+    setisLoading(false);
+    setopenNoPresential(false);
+  };
 
   //   Variables
   const popUpParams = {
     title: `$${amountFormat(amount)}`,
     content: `¿Confirmás el aporte de $${amountFormat(
-      amount,
-    )} al ${number} de la Ronda ${roundName}?`,
+      amount
+    )} al ${number} de la ronda ${roundName}?`,
   };
 
   const confirmPopUpParams = {
-    title: `Tu aporte número ${number} de la Ronda ${roundName} fue confirmado por "${adminName}"`,
+    title: `Tu aporte número ${number} de la ronda ${roundName} fue confirmado por "${adminName}"`,
     content: `¡Muchas Gracias!`,
   };
 
   const qrPopUpParams = {
-    title: `Para confirmar tu aporte, escaneá el código QR que te muestra ${adminName} (admin)`,
+    title: `Para confirmar tu aporte, escaneá el código QR del administrador de la Ronda.\nTambién podés confirmar tu aporte mediante la opción "cobro no presencial.\n¡Recibirás una notificación en tu celular cuando tu pago haya sido confirmado!`,
   };
 
   // Methods
@@ -79,7 +104,7 @@ const ParticipantPayNumber = props => {
               "Queremos usar tu cámara para escanear el código, pero necesitamos permisos.",
             buttonNegative: "Cancelar",
             buttonPositive: "OK",
-          },
+          }
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -159,6 +184,8 @@ const ParticipantPayNumber = props => {
           titleText={qrPopUpParams.title}
           negative={() => setQrPopUp(false)}
           negativeTitle="Cancelar"
+          positiveTitle="Aporte no presencial"
+          positive={openNoPresentialPayment}
           titleTextStyle={{ fontSize: 15, marginVertical: 5 }}>
           <View style={styles.cameraContainer}>
             <QRCodeScanner
@@ -169,15 +196,16 @@ const ParticipantPayNumber = props => {
               cameraStyle={styles.cameraStyle}
             />
           </View>
-          <View style={styles.extraInfoContainer}>
-            <Text style={styles.extraInfoText}>
-              O pedile a {adminName} (administrador/a) que confirme tu aporte
-              desde su app ai·di.
-            </Text>
-          </View>
         </RoundPopUp>
       )}
-
+      <NoPresentialModal
+        adminName={adminName}
+        open={openNoPresential}
+        isLoading={isLoading}
+        isRequestingPayment={false}
+        onAccept={requestAddPaymentadmin}
+        onCancel={closeNoPresentialPayment}
+      />
       {loading ? (
         <Spinner />
       ) : (
@@ -243,10 +271,14 @@ const mapDispatchToProps = dispatch => {
     pay_round_clean: () => {
       dispatch(roundsActions.payRoundClean());
     },
+    reqAdminAcceptPayment: (roundId, participantId) =>
+      dispatch(
+        roundsActions.requestAdminToAcceptPayment(roundId, participantId)
+      ),
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ParticipantPayNumber);

@@ -45,7 +45,7 @@ class NumberDetail extends Component {
       ? `¿Confirmás que le pagarás la ronda a ${participantsText}?`
       : `¿Confirmás el aporte de $${amountFormat(
           amount / round.shifts.length
-        )} a la Ronda ${roundName}?`;
+        )} a la ronda ${roundName}?`;
 
     const positiveFunction = () => {
       const { pay_round, close_round } = this.props;
@@ -88,8 +88,7 @@ class NumberDetail extends Component {
           />
         }
         positive={positiveFunction}
-        negative={() => {}}
-      >
+        negative={() => {}}>
         <View style={styles.popUpChild}>{adminPaid && <Avatar />}</View>
       </RoundPopUp>
     );
@@ -171,8 +170,7 @@ class NumberDetail extends Component {
             backgroundColor:
               shift.status === "completed" ? Colors.secondary : Colors.mainBlue,
           },
-        ]}
-      >
+        ]}>
         <Text style={styles.ctaButtonText}>{ctaButtonText()}</Text>
       </Button>
     );
@@ -189,8 +187,7 @@ class NumberDetail extends Component {
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           {this._renderPopUp(
             adminPaid,
             roundData.amount,
@@ -251,8 +248,7 @@ class NumberDetail extends Component {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: Colors.backgroundGray,
-            }}
-          >
+            }}>
             <View
               style={{
                 borderTopColor: Colors.mainBlue,
@@ -261,15 +257,13 @@ class NumberDetail extends Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 20,
-              }}
-            >
+              }}>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   paddingVertical: 30,
-                }}
-              >
+                }}>
                 <Icon
                   style={{ color: Colors.mainBlue, fontSize: 24 }}
                   type="MaterialIcons"
@@ -281,8 +275,7 @@ class NumberDetail extends Component {
                     fontWeight: "bold",
                     color: Colors.gray,
                     width: "50%",
-                  }}
-                >
+                  }}>
                   Dinero Recolectado
                 </Text>
               </View>

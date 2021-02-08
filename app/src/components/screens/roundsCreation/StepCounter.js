@@ -10,20 +10,8 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
       name: "format-color-text",
     },
     {
-      type: "MaterialCommunityIcons",
-      name: "cash-usd",
-    },
-    {
       type: "MaterialIcons",
       name: "access-alarm",
-    },
-    {
-      type: "MaterialIcons",
-      name: "bookmark-border",
-    },
-    {
-      type: "MaterialCommunityIcons",
-      name: "calendar-check",
     },
     {
       type: "MaterialIcons",
@@ -59,15 +47,10 @@ const StepCounter = ({ currentStep, totalSteps, navigation }) => {
           // eslint-disable-next-line react/no-array-index-key
           key={i}
           style={{
-            width: widthStep,
-            marginHorizontal: 2,
+            ...styles.iconContainer,
             borderBottomColor: backgroundColorStep(i),
-            borderBottomWidth: 5,
-            paddingBottom: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+            width: widthStep,
+          }}>
           <Icon
             name={s.name}
             style={{ color: backgroundColorStep(i), fontSize: 18 }}
@@ -95,6 +78,13 @@ const styles = StyleSheet.create({
   },
   stepCounterOff: {
     backgroundColor: colors.secondary,
+  },
+  iconContainer: {
+    marginHorizontal: 2,
+    borderBottomWidth: 5,
+    paddingBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

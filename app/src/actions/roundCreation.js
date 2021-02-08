@@ -52,6 +52,9 @@ export const setPaymentDate = date => {
 export const setPickTurnsManual = pickTurnsManual => dispatch =>
   dispatch({ type: types.PICK_TURNS_MANUAL, data: { pickTurnsManual } });
 
+export const setParticipantsVisible = data => dispatch =>
+  dispatch({ type: types.PARTICIPANTS_VISIBLE, data });
+
 export const setNewAssignedNumber = (number, data) => dispatch =>
   dispatch({
     type: types.NEW_NUMBER_ASSIGNED,
@@ -72,6 +75,7 @@ export const saveCreationForLater = cb => async (dispatch, getState) => {
   const dataToSave = { ...roundCreation, isEditing: true };
   await saveRoundToStorage(dataToSave);
   if (cb) return cb();
+  return null;
 };
 
 export const setEditRoundData = round => async dispatch => {
@@ -93,12 +97,12 @@ export const editFromRoundDetail = id => async (dispatch, getState) => {
   if (!round.isConfirmed)
     return dispatch(
       openRoundDetailRootModal(
-        "No se pueden editar Rondas que se estan confirmando"
+        "No se pueden editar rondas que se estan confirmando"
       )
     );
   if (round.start)
     return dispatch(
-      openRoundDetailRootModal("No se pueden editar Rondas ya iniciadas")
+      openRoundDetailRootModal("No se pueden editar rondas ya iniciadas")
     );
   const turns = String(round.shifts.length);
   const date = round.startDate.split("T")[0];
@@ -125,17 +129,19 @@ export const deleteFromRoundDetail = id => async (dispatch, getState) => {
     return dispatch(openRoundDetailRootModal("Opcion inhabilitada"));
   if (round.start)
     return dispatch(
-      openRoundDetailRootModal("No se pueden eliminar Rondas ya iniciadas")
+      openRoundDetailRootModal("No se pueden eliminar rondas ya iniciadas")
     );
+  return null;
 };
 
 export const editRoundRequest = () => async (dispatch, getState) => {
   const { roundCreation } = getState();
-  const { name, amount, frequency, date, id } = roundCreation;
+  const { name, amount, frequency, date, id, shifts } = roundCreation;
+  const numbersQuantity = shifts.length;
   const updateBody = {
     name,
     id,
-    amount: parseInt(amount, 10),
+    amount: parseInt(amount, 10) * numbersQuantity,
     recurrence: frequency,
     startDate: new Date(date).toISOString(),
   };
@@ -161,17 +167,18 @@ export const createRound = () => {
       frequency,
       assignedNumbers,
       date,
-      turns,
       roundIndex,
+      participantsVisible,
     } = getState().roundCreation;
+    const numbersQuantity = assignedNumbers.length;
 
     const createdRound = await UserService.createRound(
-      amount,
+      amount * numbersQuantity,
       frequency,
       name,
       assignedNumbers,
       date,
-      turns
+      participantsVisible
     );
 
     if (!createdRound.error) {
@@ -220,3 +227,13 @@ const createRoundFail = error => ({
   type: types.CREATEROUND_REQUEST_FAILED,
   payload: { error },
 });
+
+export const createRoundByFailedRound = round => {
+  return dispatch => {
+    dispatch({
+      type: types.SET_ROUND_FAILED_DATA,
+      data: round,
+    });
+    dispatch(createRound());
+  };
+};

@@ -11,7 +11,10 @@ const {
   createNotification,
   INTENTS
 } = require("../helpers/notifications/config");
-const { shiftAboutToEnd } = require("../helpers/notifications/messages");
+const {
+  shiftAboutToEnd,
+  lastDayBeforeExpiration
+} = require("../helpers/notifications/messages");
 
 const { customError } = require("../helpers/errorHandler");
 
@@ -29,7 +32,7 @@ const {
 
 // Define jobs
 agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
-  const { roundId, number } = job.attrs.data;
+  const { roundId, number, isLastDay } = job.attrs.data;
 
   // Refresh round data
   const updatedRound = await round_manager.findById(roundId);
@@ -54,32 +57,37 @@ agenda.define(types.NOTIFICATIONS_PAYS_REMEMBER, async job => {
       .map(p => p.user.token)
       .filter(t => t);
 
-    // Get admin name
-    const adminName = updatedRound.admin.name;
+    if (notPaidTokens.length) {
+      // Get admin name
+      const adminName = updatedRound.admin.name;
 
-    // Get end date
-    const endDate = shift.limitDate;
-    const notificationData = {
-      action: JSON.stringify({
-        routeName: "RoundDetail",
-        params: { _id: updatedRound._id },
-        intent: INTENTS.REMEMBER_PAYMENT,
-        roundName: updatedRound.name,
-        shiftNumber: shift.number.toString(),
-        limitDate: shift.limitDate
-      })
-    };
+      // Get end date
+      const endDate = shift.limitDate;
+      const notificationData = {
+        action: JSON.stringify({
+          routeName: "RoundDetail",
+          params: { _id: updatedRound._id },
+          intent: INTENTS.REMEMBER_PAYMENT,
+          roundName: updatedRound.name,
+          shiftNumber: shift.number.toString(),
+          limitDate: shift.limitDate
+        })
+      };
 
-    console.log(`Send scheduled notification payment remember`);
+      const message = isLastDay
+        ? lastDayBeforeExpiration(updatedRound.name, shift.number)
+        : shiftAboutToEnd(daysLeft, number, adminName, endDate);
 
-    const notificationResult = await createNotification(
-      notPaidTokens,
-      "La ronda",
-      shiftAboutToEnd(daysLeft, number, adminName, endDate),
-      notificationData
-    );
+      console.log("Send scheduled pay remember notifcation", { isLastDay });
+      const notificationResult = await createNotification(
+        notPaidTokens,
+        "ronda",
+        message,
+        notificationData
+      );
 
-    return notificationResult;
+      return notificationResult;
+    }
   }
 });
 

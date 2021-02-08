@@ -72,7 +72,8 @@ const NumberPay = props => {
   shift.pays.forEach(p => {
     usersThatPaidShiftMap[p.participant] = p.participant;
   });
-  const allParticipantsPaid = round.participants.length === Object.keys(usersThatPaidShiftMap).length;
+  const allParticipantsPaid =
+    round.participants.length === Object.keys(usersThatPaidShiftMap).length;
   const participantPaid =
     shift.pays.filter(p => {
       return p.participant === fullParticipant.id;
@@ -89,8 +90,13 @@ const NumberPay = props => {
   const shiftCompleted = currentShift.status === "completed";
   const nextShift = round.shifts.find(s => s.number === number + 1);
   const nextShiftParticipants = nextShift && nextShift.participant;
+  const currentShiftIsParticipants = currentShift.participant.includes(
+    fullParticipant.id
+  );
+  const isCurrentShiftPayed = currentShift.isPayedToParticipant;
   const enabledForPayRound =
-    currentShift.participant.includes(fullParticipant.id) &&
+    currentShiftIsParticipants &&
+    !isCurrentShiftPayed &&
     currentShift.status === "current";
 
   // Methods
@@ -119,15 +125,13 @@ const NumberPay = props => {
       <UserData participant={fullParticipant}>
         <Tabs
           tabBarUnderlineStyle={styles.tabHeaderBorder}
-          initialPage={initialTab}
-        >
+          initialPage={initialTab}>
           <Tab
             heading={
               <TabHeading style={styles.tabHeader}>
                 <Text style={styles.tabHeaderText}>APORTES</Text>
               </TabHeading>
-            }
-          >
+            }>
             <Content>
               <View style={styles.paysContainer}>
                 <View style={styles.actionContainer}>
@@ -142,7 +146,8 @@ const NumberPay = props => {
                     <QRCode value={qrCode} size={150} />
                     {!shiftCompleted &&
                       !loading &&
-                      !isReceivingOrMakingPayment && (
+                      !isReceivingOrMakingPayment &&
+                      !isCurrentShiftPayed && (
                         <Button
                           onPress={openPayNumberPopUp}
                           disabled={participantPaid}
@@ -152,8 +157,7 @@ const NumberPay = props => {
                               ? colors.inactiveBlue
                               : colors.mainBlue,
                           }}
-                          uppercase={false}
-                        >
+                          uppercase={false}>
                           <Text uppercase={false} style={styles.textButton}>
                             {participantPaid
                               ? "Aporte ya hecho"
@@ -182,7 +186,22 @@ const NumberPay = props => {
                           number={number}
                         />
                       )}
-
+                    {!loading &&
+                      isCurrentShiftPayed &&
+                      currentShiftIsParticipants && (
+                        <View style={{ alignItems: "center" }}>
+                          <Button
+                            disabled
+                            style={{
+                              ...styles.payButton,
+                              backgroundColor: participantPaid
+                                ? colors.inactiveBlue
+                                : colors.mainBlue,
+                            }}>
+                            <Text uppercase={false}>Número ya pagado</Text>
+                          </Button>
+                        </View>
+                      )}
                     {isReceivingOrMakingPayment && (
                       <View>
                         <Spinner size={40} color={colors.mainBlue} />
@@ -200,8 +219,7 @@ const NumberPay = props => {
                 <TabHeading style={styles.emptyHeader}>
                   <Text style={styles.tabHeaderText}>ASIGNAR #</Text>
                 </TabHeading>
-              }
-            >
+              }>
               <Content>
                 <ReasignNumber
                   participantName={fullParticipant.user.name}
@@ -226,8 +244,7 @@ const NumberPay = props => {
                 <TabHeading style={styles.emptyHeader}>
                   <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
                 </TabHeading>
-              }
-            >
+              }>
               <Content>
                 <View style={{ marginVertical: 15, flex: 1 }}>
                   <Text style={{ textAlign: "center", fontWeight: "bold" }}>

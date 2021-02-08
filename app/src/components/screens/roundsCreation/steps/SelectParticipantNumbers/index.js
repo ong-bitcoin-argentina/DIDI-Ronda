@@ -118,7 +118,7 @@ const SelectParticipantNumbers = props => {
   const allNumbersSelected =
     remainingParticipants && remainingParticipants.length === 0;
   return (
-    <ScreenContainer navigation={navigation} step={8}>
+    <ScreenContainer navigation={navigation} step={5}>
       <CreationTitle
         title={title}
         titleViewStyle={{ paddingBottom: 5 }}
@@ -151,7 +151,7 @@ const SelectParticipantNumbers = props => {
               return (
                 <ParticipantNumberItem
                   name={item.name}
-                  scrollableRef={numbersListRef.current}
+                  scrollableRef={numbersListRef}
                   picture={item.picture}
                   maxNumber={assignedNumbersData.length}
                   onPressRemoveParticipantNumber={

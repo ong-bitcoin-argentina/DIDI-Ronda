@@ -1,6 +1,8 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { View, Text } from "native-base";
+
+const SCREEN_WIDTH = Dimensions.get("screen").width;
 
 const TutorialCard = props => {
   const { item, height } = props;
@@ -25,9 +27,8 @@ const TutorialCard = props => {
 };
 const styles = StyleSheet.create({
   title: {
-    fontSize: 21,
-    marginTop: 35,
-    marginBottom: 20,
+    fontSize: SCREEN_WIDTH < 360 ? 20 : 21,
+    marginBottom: 10,
   },
   text: {
     color: "rgba(0,0,0,0.7)",
@@ -38,10 +39,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    flex: 1,
+    width: SCREEN_WIDTH * 0.6,
   },
   body: {
-    flex: 0.6,
     justifyContent: "center",
     alignItems: "center",
   },

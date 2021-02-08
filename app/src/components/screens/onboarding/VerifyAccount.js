@@ -18,13 +18,12 @@ const VerifyAccount = props => {
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.formContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>La Ronda</Text>
+          <Text style={styles.title}>La ronda</Text>
           <Text
             style={[
               styles.subtitle,
               { width: 350, textAlign: "center", marginBottom: 30 },
-            ]}
-          >
+            ]}>
             {title}
           </Text>
           <Sae
@@ -48,8 +47,7 @@ const VerifyAccount = props => {
             style={[
               styles.button,
               { width: 200, flexDirection: "row", justifyContent: "center" },
-            ]}
-          >
+            ]}>
             <Text style={{ color: "black", textAlign: "center" }}>
               Verificar
             </Text>
@@ -64,8 +62,7 @@ const VerifyAccount = props => {
                 flexDirection: "row",
                 justifyContent: "center",
               },
-            ]}
-          >
+            ]}>
             <Text style={{ color: "white", textAlign: "center" }}>Volver</Text>
           </TouchableOpacity>
         </View>

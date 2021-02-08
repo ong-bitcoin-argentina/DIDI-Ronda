@@ -25,6 +25,12 @@ exports.shiftAboutToEnd = (daysLeft, shiftNumber, adminName, endDate) => {
   return `Atención: Quedan ${daysLeft} días para pagar el número ${shiftNumber} al participante ${adminName}. El plazo de pago se vence el ${endDate}.`;
 };
 
+// Payment - Warning
+// only in jobs
+exports.lastDayBeforeExpiration = (roundName, number) => {
+  return `Atención: El plazo para el aporte al número ${number} de la ronda ${roundName} vence mañana.`;
+};
+
 // Participant - Request
 // code: 'shift-requested'
 exports.shiftRequested = (participantName, shiftNumber) => {

@@ -6,8 +6,6 @@ const http = require("http");
 http.createServer(app);
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const blacklistedPasswordsJSON = require("./utils/blacklistedPasswords.json");
-const blacklistedPasswordManager = require("./managers/blacklisted_password");
 const { version } = require("./package.json");
 const helmet = require("helmet");
 

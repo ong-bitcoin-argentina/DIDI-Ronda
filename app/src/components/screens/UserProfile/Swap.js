@@ -72,7 +72,7 @@ const Swap = props => {
             message: "Queremos usar tus contactos, pero necesitamos permisos.",
             buttonNegative: "Cancelar",
             buttonPositive: "OK",
-          },
+          }
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -345,10 +345,10 @@ const Swap = props => {
               <Text
                 style={{
                   fontSize: 11,
-                  color: "#3198b5",
+                  color: colors.mainBlue,
                   fontStyle: "italic",
-                  marginVertical: 10,
-                  textDecorationLine: "underline",
+                  fontWeight: "bold",
+                  marginVertical: 15,
                 }}>
                 ¿Querés agregar a alguien que participará sin app ai·di?
               </Text>
@@ -402,5 +402,5 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Swap);

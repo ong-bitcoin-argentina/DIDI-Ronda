@@ -25,7 +25,7 @@ const ParticipantsAllSelected = props => {
     clearData,
   } = props;
 
-  const title = `Ya elegiste a todos los\nparticipantes de tu Ronda`;
+  const title = `Ya elegiste a todos los\nparticipantes de tu ronda`;
 
   const onPressGo = () => {
     if (!pickTurnsManual) return navigation.navigate("RuffleParticipants");
@@ -44,7 +44,7 @@ const ParticipantsAllSelected = props => {
     ? "Asignar y Sortear"
     : "Comenzar el sorteo";
   return (
-    <ScreenContainer navigation={navigation} step={7}>
+    <ScreenContainer navigation={navigation} step={3}>
       <CreationTitle
         title={title}
         iconName={screenIcon.name}

@@ -90,6 +90,12 @@ exports.saveUnverified = async (phone, name, walletAddress, walletPk) => {
     .catch(err => ({ error: err }));
 };
 
+exports.convertToVerified = async (user, params, extraFields) => {
+  Object.assign(user, params, extraFields);
+  await user.save();
+  return user;
+};
+
 exports.saveUser = async (
   username,
   password,

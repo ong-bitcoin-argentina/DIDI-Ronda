@@ -100,10 +100,9 @@ const emitStartedRoundParticipants = async round => {
 const emitPendingCredentials = async () => {
   const credentialsPending = await credentials_pending_manager.findAll();
   const count = credentialsPending.length;
-  console.log(`${count} credenciales pendientes de emisión.`);
-  if (!count) {
-    return `No hay credenciales pendientes de emisión.`;
-  }
+
+  if (!count) return [];
+
   const requests = credentialsPending.map(item =>
     emit({
       pendingJwt: item.jwt,

@@ -102,7 +102,11 @@ const RoundInfo = props => {
   const participantTotalPay = amountPerShift * participantNumbers.length;
 
   const enabledForPayRound =
-    round.start && allPaysCompleted && currentShift.status === "current";
+    round.start &&
+    allPaysCompleted &&
+    currentShift.status === "current" &&
+    !currentShift.isPayedToParticipant;
+
   const { number: myNumber } = round.shifts.find(
     s => s.participant[0] === userParticipant._id
   );
@@ -156,7 +160,9 @@ const RoundInfo = props => {
     if (!isNumberFromParticipant) return false;
     const limitDate = new Date(number.limitDate);
     const today = new Date();
+    const { isPayedToParticipant } = number;
     return (
+      !isPayedToParticipant &&
       round.start &&
       number.status === "current" &&
       allPaysCompleted &&
@@ -179,7 +185,10 @@ const RoundInfo = props => {
 
   useEffect(() => {
     if (!chargeNumber.loading && chargeNumber.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al reasignar el número. Intentalo nuevamente.",
+        true
+      );
       chargeNumberClean();
     }
   }, [chargeNumber]);
@@ -371,6 +380,17 @@ const RoundInfo = props => {
         <CaptionInfo title="Administrador">
           <View style={styles.participantsContainer}>
             <ParticipantHList participants={[roundAdminParticipant]} detail />
+          </View>
+        </CaptionInfo>
+      )}
+
+      {!userAdmin && round.participantsVisible && (
+        <CaptionInfo title="Participantes confirmados">
+          <View style={styles.participantsContainer}>
+            <ParticipantHList
+              participants={round.participants.filter(item => item.acepted)}
+              detail
+            />
           </View>
         </CaptionInfo>
       )}
