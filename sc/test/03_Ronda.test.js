@@ -220,4 +220,78 @@ contract('Ronda', ([owner, admin, other, ...participants]) => {
       'The participant state must be pending',
     );
   });
+
+  it('Participant accepts invitation by admin', async () => {
+    const participant = participants[0];
+    await ronda.addParticipant(participant, { from: admin });
+
+    await ronda.acceptInvitationByAdmin(participant, { from: admin });
+
+    const {
+      0: participantAddress, 1: acceptedMoment, 2: state, 3: number, 4: madeBy, 5: exists,
+    } = await ronda.getParticipant(participant, { from: admin });
+
+    assert.equal(participantAddress, participant);
+    assert.notEqual(acceptedMoment, 0);
+    assert.equal(state, ACCEPTED);
+    assert.equal(number, 0);
+    assert.equal(madeBy, admin);
+    assert.equal(exists, true);
+  });
+
+  it('Participant should exist before accept by admin', async () => {
+    const participant = participants[0];
+    await expectRevert(
+      ronda.acceptInvitationByAdmin(participant, { from: admin }),
+      'The participant doesn\'t exists',
+    );
+  });
+
+  it('Participant should not accept by admin more than one time', async () => {
+    const participant = participants[0];
+    await ronda.addParticipant(participant, { from: admin });
+
+    await ronda.acceptInvitationByAdmin(participant, { from: admin });
+    await expectRevert(
+      ronda.acceptInvitationByAdmin(participant, { from: admin }),
+      'The participant state must be pending',
+    );
+  });
+
+  it('Participant reject invitation by admin', async () => {
+    const participant = participants[0];
+    await ronda.addParticipant(participant, { from: admin });
+
+    await ronda.rejectInvitationByAdmin(participant, { from: admin });
+
+    const {
+      0: participantAddress, 1: acceptedMoment, 2: state, 3: number, 4: madeBy, 5: exists,
+    } = await ronda.getParticipant(participant, { from: admin });
+
+    assert.equal(participantAddress, participant);
+    assert.notEqual(acceptedMoment, 0);
+    assert.equal(state, REJECTED);
+    assert.equal(number, 0);
+    assert.equal(madeBy, admin);
+    assert.equal(exists, true);
+  });
+
+  it('Participant should exist before reject by admin', async () => {
+    const participant = participants[0];
+    await expectRevert(
+      ronda.rejectInvitationByAdmin(participant, { from: admin }),
+      'The participant doesn\'t exists',
+    );
+  });
+
+  it('Participant should not reject by admin more than one time', async () => {
+    const participant = participants[0];
+    await ronda.addParticipant(participant, { from: admin });
+
+    await ronda.rejectInvitationByAdmin(participant, { from: admin });
+    await expectRevert(
+      ronda.rejectInvitationByAdmin(participant, { from: admin }),
+      'The participant state must be pending',
+    );
+  });
 });
