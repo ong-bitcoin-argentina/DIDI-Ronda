@@ -158,7 +158,7 @@ const walletRefill = async () => {
             try {
               const user = await userManager.byId(userId);
               if (user) {
-                user.lastBalance = WALLET_TARGET_BALANCE;
+                user.lastBalance = await web3.eth.getBalance(address);
                 await user.save();
                 return { success: true, user: user._id };
               }

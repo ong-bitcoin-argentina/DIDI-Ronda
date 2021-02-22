@@ -436,13 +436,15 @@ exports.sendManyBalanceTx = async (from, fromPk, addresses, amount) => {
       const gasPrice = await getMinimumGasPrice();
       counter += 1;
       if (counter > maxTransactions + 1) break;
+      const value = amount - await web3.eth.getBalance(addr);
+      if (value <= 0) continue;
       console.log("Processing filling of nonce: ", nonce);
       const txToSign = {
         nonce,
         from,
         to: addr,
         gas: "21000",
-        value: amount,
+        value,
         gasPrice,
         chainId: CHAIN_ID,
       };
