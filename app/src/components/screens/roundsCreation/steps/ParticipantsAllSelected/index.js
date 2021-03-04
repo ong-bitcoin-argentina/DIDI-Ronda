@@ -50,6 +50,10 @@ const ParticipantsAllSelected = props => {
         iconName={screenIcon.name}
         iconType={screenIcon.type}
       />
+      <Text style={styles.text}>
+        <Text style={styles.bold}>Importante:</Text> los participantes podrán
+        ver que fueron asignados por sorteo.
+      </Text>
       <SelectedList renderDetail={false} participants={participants} />
       <View style={styles.container}>
         <Button onPress={onPressGo} style={styles.button}>
@@ -81,6 +85,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 25,
+  },
+  text: {
+    fontSize: 16,
+    color: colors.gray,
+    textAlign: "center",
+    backgroundColor: colors.backgroundGray,
+    paddingBottom: 16,
+  },
+  bold: {
+    fontWeight: "bold",
   },
   buttonText: {
     color: "white",

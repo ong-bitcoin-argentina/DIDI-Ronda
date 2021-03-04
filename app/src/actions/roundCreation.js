@@ -31,6 +31,11 @@ export const setFrequency = frequency => {
 export const setTurns = turns => dispatch =>
   dispatch({ type: types.CREATION_TURNS, data: { turns } });
 
+export const setTurnAssignmentMode = (number, mode) => dispatch => {
+  const index = parseInt(number) - 1;
+  dispatch({ type: types.TURN_ASSIGNMENT_MODE, data: { mode, index } });
+};
+
 export const setDate = date => {
   return dispatch => {
     dispatch({ type: types.CREATION_DATE, data: { date } });
@@ -169,6 +174,7 @@ export const createRound = () => {
       date,
       roundIndex,
       participantsVisible,
+      turns,
     } = getState().roundCreation;
     const numbersQuantity = assignedNumbers.length;
 
@@ -178,7 +184,8 @@ export const createRound = () => {
       name,
       assignedNumbers,
       date,
-      participantsVisible
+      participantsVisible,
+      turns
     );
 
     if (!createdRound.error) {

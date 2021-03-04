@@ -15,10 +15,24 @@ const confettiAnimation = require("../../../../assets/animations/confetti.json")
 const RuffleRoulette = props => {
   // Props
   const [wasSpinned, setwasSpinned] = useState(false);
-  const { number, participants, onFinish } = props;
+  const {
+    number,
+    participants,
+    onFinish,
+    predefinedWinner,
+    autoplay,
+    visible,
+    showNumber,
+  } = props;
   // Hooks
   const [wheelWinner, setWheelWinner] = useState(null);
+  const [winnerName, setWinnerName] = useState(null);
   const [disableRoulette, setDisableRoulette] = useState(false);
+
+  const getName = ({ name }, isAdmin) => {
+    const baseName = name.split(" ")[0];
+    return isAdmin ? `${baseName} (Yo)` : baseName;
+  };
 
   //   Variables
   const candidates = participants.map(p => p);
@@ -28,11 +42,13 @@ const RuffleRoulette = props => {
         uri: p.thumbnailPath,
         index,
       };
-    if (p.admin) return `${p.name.split(" ")[0]} (Yo)`;
-    return p.name.split(" ")[0];
+    if (p.user) return getName(p.user, p.admin);
+    else return getName(p, p.admin);
   });
 
-  const winner = Math.floor(Math.random() * candidates.length) + 1;
+  const winner = Number.isInteger(predefinedWinner)
+    ? predefinedWinner
+    : Math.floor(Math.random() * candidates.length) + 1;
 
   const winnerParticipant = wheelWinner !== null && candidates[wheelWinner];
 
@@ -48,9 +64,21 @@ const RuffleRoulette = props => {
     }
   }, []);
 
+  useEffect(() => {
+    if (autoplay && visible) positiveAction();
+  }, [visible]);
+
   // Methods
-  const winnerCallback = value => {
-    setWheelWinner(candidates[value]);
+  const winnerCallback = (value, param) => {
+    const winnerIndex = Number.isInteger(predefinedWinner)
+      ? predefinedWinner
+      : value;
+    const hasWinned = candidates[winnerIndex];
+    setWheelWinner(hasWinned);
+    const winnerFinalName = hasWinned.user
+      ? `${hasWinned.user.name} ${hasWinned.user.lastname}`
+      : hasWinned.name;
+    setWinnerName(winnerFinalName);
 
     setDisableRoulette(false);
   };
@@ -58,7 +86,7 @@ const RuffleRoulette = props => {
   const positiveAction = () => {
     // eslint-disable-next-line no-underscore-dangle
     if (!wasSpinned) {
-      this.wheelRef._onPress();
+      this.wheelRef?._onPress();
       setDisableRoulette(true);
       setwasSpinned(true);
     }
@@ -69,7 +97,7 @@ const RuffleRoulette = props => {
       <View style={styles.confettiView}>
         <Text style={styles.titleText}>Ganó</Text>
 
-        <Bookmark outline number={number} />
+        <Bookmark outline number={number} showNumber={showNumber} />
         <Image
           source={
             wheelWinner.thumbnailPath
@@ -78,7 +106,7 @@ const RuffleRoulette = props => {
           }
           style={styles.image}
         />
-        <Text style={styles.textName}>{wheelWinner.name}</Text>
+        <Text style={styles.textName}>{winnerName}</Text>
         <Button
           style={styles.button}
           onPress={() => onFinish(number, wheelWinner)}>
@@ -105,13 +133,11 @@ const RuffleRoulette = props => {
   return (
     <>
       <RoundPopUp
-        onRef={ref => {
-          this.popUpRef = ref;
-        }}
+        onRef={ref => ({})}
         customContent={wheelWinner !== null ? Confetti : null}
         visible
         titleText={popUpTitle}
-        icon={<Bookmark outline number={number} />}
+        icon={<Bookmark outline number={number} showNumber={showNumber} />}
         positive={() => positiveAction()}
         positiveTitle={winnerParticipant ? "Ok" : "Girar Ruleta"}
         disablePositive={disableRoulette}
@@ -142,7 +168,7 @@ const RuffleRoulette = props => {
                 duration={3000}
                 size={300}
                 backgroundColor="#fff"
-                getWinner={(v, i) => winnerCallback(i)}
+                getWinner={(v, i) => winnerCallback(i, v)}
               />
             </View>
           )}

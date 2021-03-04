@@ -20,6 +20,13 @@ exports.normalRecurrenceValues = {
   m: "Mensual"
 };
 
+exports.assignmentsModes = {
+  lottery: "lottery",
+  manual: "manual"
+};
+
+exports.assignmentsModesKeys = Object.values(this.assignmentsModes);
+
 // Schedule times
 exports.scheduleNotificationsTime = (year, month, day) =>
   new Date(year, month, day, 17, 0, 0);

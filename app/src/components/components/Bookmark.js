@@ -13,6 +13,7 @@ const Bookmark = props => {
     bold,
     check,
     bookmarkStyle = {},
+    showNumber = true,
   } = props;
 
   const sizeProp = size || 1;
@@ -44,19 +45,21 @@ const Bookmark = props => {
           },
         ]}
       />
-      <Text
-        style={[
-          styles.bookmarkText,
-          { color: outline ? outlineTextColor : "white" },
-          {
-            left: outline ? textLeft : number >= 10 ? 10 : 16,
-          },
-          { top: outline ? textTop : 7 },
-          { fontSize: outline ? textFontSize : 16 },
-          bold && { fontWeight: "bold" },
-        ]}>
-        {number}
-      </Text>
+      {showNumber && (
+        <Text
+          style={[
+            styles.bookmarkText,
+            { color: outline ? outlineTextColor : "white" },
+            {
+              left: outline ? textLeft : number >= 10 ? 10 : 16,
+            },
+            { top: outline ? textTop : 7 },
+            { fontSize: outline ? textFontSize : 16 },
+            bold && { fontWeight: "bold" },
+          ]}>
+          {number}
+        </Text>
+      )}
     </View>
   );
 };

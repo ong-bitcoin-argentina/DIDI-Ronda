@@ -71,8 +71,7 @@ const DrawModal = props => {
       accept={winnerParticipant ? () => acceptPopUp() : null}
       positiveTitle={winnerParticipant ? "Ok" : "Girar Ruleta"}
       disablePositive={disableRoulette}
-      notCloseAfterPositive={!winnerParticipant}
-    >
+      notCloseAfterPositive={!winnerParticipant}>
       <View style={{ flexDirection: "column", width: "100%" }}>
         <View style={{ height: 300 }}>
           <WheelOfFortune

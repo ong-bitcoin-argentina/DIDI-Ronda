@@ -16,6 +16,16 @@ export const LOCALE_CONFIG = {
   dayNamesShort,
 };
 
+export const ASSIGNMENT_MODES = {
+  lottery: "lottery",
+  manual: "manual",
+};
+
+export const ASSIGNMENT_MODES_NORMALIZED = {
+  [ASSIGNMENT_MODES.lottery]: "Sorteo",
+  [ASSIGNMENT_MODES.manual]: "Administrador",
+};
+
 export const ruffleRouletteColors = [
   "#417FD7",
   "#69A7FE",
