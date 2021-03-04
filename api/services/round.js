@@ -199,8 +199,8 @@ exports.create = async req => {
       });
   });
   // Create shifts
-  const shifts_populated = Array.apply(null, Array(shifts)).map((n, idx) => {
-    const number = idx + 1;
+  const shifts_populated = shifts.map((shift, index) => {
+    const number = index + 1;
 
     const findParticipant = participantsNumber
       .filter(e => e.number === number)
@@ -216,7 +216,8 @@ exports.create = async req => {
       number: number,
       participant: findParticipant,
       pays: [],
-      limitDate: shiftLimitDate
+      limitDate: shiftLimitDate,
+      assignmentMode: shift.assignmentMode
     };
   });
 

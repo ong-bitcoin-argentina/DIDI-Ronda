@@ -104,7 +104,8 @@ export const createRound = async (
   roundName,
   participants,
   date,
-  participantsVisible
+  participantsVisible,
+  shifts
 ) => {
   const participantsObj = {};
   participants.forEach(contact => {
@@ -128,10 +129,6 @@ export const createRound = async (
     participantsObj[phone] = res;
   });
   const participantsList = Object.values(participantsObj);
-  let shifts = 0;
-  participantsList.forEach(p => {
-    shifts += p.shiftsQty;
-  });
   const { date: paymentDate } = getPaymentDate(date, frequency, 1);
   try {
     const data = await apiCall("post", "/user/round", {

@@ -28,7 +28,7 @@ const ParticipantSelection = props => {
     pickTurnsManual,
   } = props;
   const { navigation, assignNumber } = props;
-  const participantsQty = parseInt(turns, 10);
+  const participantsQty = parseInt(turns.length, 10);
   const missingParticipantQty = participantsQty - participants.length;
   const handleNext = () => {
     if (pickTurnsManual) return goToCompletedSelection();

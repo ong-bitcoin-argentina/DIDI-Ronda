@@ -107,9 +107,11 @@ const RoundInfo = props => {
     currentShift.status === "current" &&
     !currentShift.isPayedToParticipant;
 
-  const { number: myNumber } = round.shifts.find(
+  const myShift = round.shifts.find(
     s => s.participant[0] === userParticipant._id
   );
+  const myNumber = myShift?.number;
+
   const myNumberPaymentDate = getFormattedDate(
     getPaymentDate(round.startDate, round.recurrence, myNumber).date
   );
@@ -203,6 +205,7 @@ const RoundInfo = props => {
       />
       <BlueTile
         title={round.name}
+        round={round}
         amount={amountFormat(round.amount)}
         number={myNumber}
         completedCollection={allPaysCompleted}

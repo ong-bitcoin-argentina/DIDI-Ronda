@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Text, Icon, Toast, Button, Spinner } from "native-base";
 import { connect } from "react-redux";
 import * as roundsActions from "../../../actions/rounds";
@@ -12,6 +12,11 @@ import Avatar from "../Avatar";
 import IconInfo from "../IconInfo";
 import { getPaymentDate, getFormattedDate } from "../../../utils/dates";
 import { openRoundDetailRootModal } from "../../../actions/roundDetailRootModal";
+import {
+  ASSIGNMENT_MODES,
+  ASSIGNMENT_MODES_NORMALIZED,
+} from "../../../utils/constants";
+import BaseDrawModal from "./BaseDrawModal";
 
 const InvitationModal = props => {
   // Props
@@ -26,7 +31,11 @@ const InvitationModal = props => {
     openRootModal,
     participant,
   } = props;
+  const [showDraw, setShowDraw] = useState(false);
   const [show, setshow] = useState(false);
+
+  const toggleDrawModal = () => setShowDraw(!showDraw);
+
   const admin = round.participants.find(p => p.user.id === round.admin);
 
   const adminPicture = admin && admin.user.picture;
@@ -39,6 +48,10 @@ const InvitationModal = props => {
   const participantNumber = round.shifts.filter(shift =>
     shift.participant.includes(userParticipant._id)
   )[0];
+  const assignmentMode = participantNumber?.assignmentMode;
+  const normalizedMode = ASSIGNMENT_MODES_NORMALIZED[assignmentMode];
+  const isLottery = assignmentMode === ASSIGNMENT_MODES.lottery;
+  const lotteryExtraText = isLottery ? " (Ver)" : null;
 
   const participantNumberPayDate = getFormattedDate(
     getPaymentDate(round.startDate, round.recurrence, participantNumber.number)
@@ -98,72 +111,75 @@ const InvitationModal = props => {
 
   return (
     <GenericModal open={show} onClose={() => navigation.navigate("List")}>
-      <View style={styles.container}>
-        {invitation.loading && (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 0.5,
-            }}>
-            <Spinner size={75} color={colors.mainBlue} />
-          </View>
-        )}
-        {!invitationRequested && (
-          <>
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>{title}</Text>
+      <ScrollView>
+        <View style={styles.container}>
+          {invitation.loading && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 6,
+                marginVertical: 60,
+              }}>
+              <Spinner size={75} color={colors.mainBlue} />
             </View>
-            <View style={styles.avatarContainer}>
-              <Avatar path={adminPicture} size={100} />
-              <Text style={styles.textName}>{adminName}</Text>
-              <Text style={styles.textPhone}>{adminPhone}</Text>
-            </View>
+          )}
+          {!invitationRequested && (
+            <>
+              <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>{title}</Text>
+              </View>
+              <View style={styles.avatarContainer}>
+                <Avatar path={adminPicture} size={100} />
+                <Text style={styles.textName}>{adminName}</Text>
+                <Text style={styles.textPhone}>{adminPhone}</Text>
+              </View>
 
-            <View style={styles.detailContainer}>
-              <View style={styles.iconContainer}>
-                <View style={styles.iconCircle}>
-                  <Icon
-                    type="MaterialIcons"
-                    name="filter-tilt-shift"
-                    style={{ color: "white" }}
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingLeft: 5,
-                  }}>
-                  <Text style={styles.detailNameText}>{round.name}</Text>
-                </View>
-                <View
-                  style={{
-                    justifyContent: "flex-end",
-                    alignSelf: "flex-end",
-                    marginRight: 10,
-                  }}>
-                  <View style={styles.dataRow}>
-                    <Text style={styles.detailAmountText}>{`$ ${amount}`}</Text>
+              <View style={styles.detailContainer}>
+                <View style={styles.iconContainer}>
+                  <View style={styles.iconCircle}>
+                    <Icon
+                      type="MaterialIcons"
+                      name="filter-tilt-shift"
+                      style={{ color: "white" }}
+                    />
                   </View>
                   <View
                     style={{
+                      flex: 1,
                       flexDirection: "row",
-                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingLeft: 5,
                     }}>
-                    <Text
+                    <Text style={styles.detailNameText}>{round.name}</Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "flex-end",
+                      alignSelf: "flex-end",
+                      marginRight: 10,
+                    }}>
+                    <View style={styles.dataRow}>
+                      <Text
+                        style={styles.detailAmountText}>{`$ ${amount}`}</Text>
+                    </View>
+                    <View
                       style={{
-                        fontSize: 10,
-                        textAlign: "center",
-                        alignSelf: "center",
+                        flexDirection: "row",
+                        justifyContent: "center",
                       }}>
-                      (pozo)
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          textAlign: "center",
+                          alignSelf: "center",
+                        }}>
+                        (pozo)
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-              <View>
+
                 <View
                   style={{
                     ...styles.itemInfoRow,
@@ -171,78 +187,99 @@ const InvitationModal = props => {
                   }}>
                   <View style={styles.rowCentered}>
                     <Icon
-                      type="MaterialIcons"
-                      name="bookmark-border"
+                      type="MaterialCommunityIcons"
+                      name="cogs"
                       style={styles.detailBookmarkIcon}
                     />
-                    <Text style={styles.dataDetailText}>Mi/s Número/s</Text>
+                    <Text style={styles.dataDetailText}>Asignado por:</Text>
                   </View>
+
                   <Text style={styles.detailAmountText}>
-                    {participantNumber.number}
+                    {!isLottery || !round.participantsVisible ? (
+                      normalizedMode
+                    ) : (
+                      <TouchableOpacity onPress={toggleDrawModal}>
+                        <Text style={styles.lotteryModeButton}>
+                          {`${normalizedMode}${lotteryExtraText}`}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    ...styles.itemInfoRow,
-                    marginVertical: 5,
-                  }}>
-                  <View style={styles.rowCentered}>
-                    <Icon
-                      type="MaterialCommunityIcons"
-                      name="cash-usd"
-                      style={styles.detailBookmarkIcon}
-                    />
-                    <Text style={styles.dataDetailText}>
-                      Fecha de Cobro{" "}
-                      <Text style={{ ...styles.dataDetailText, fontSize: 10 }}>
-                        (primer número)
+                <View style={{ marginVertical: 20 }}>
+                  <View style={styles.itemInfoRow}>
+                    <View style={styles.rowCentered}>
+                      <Icon
+                        type="MaterialCommunityIcons"
+                        name="cash-usd"
+                        style={styles.detailBookmarkIcon}
+                      />
+                      <Text style={styles.dataDetailText}>
+                        Fecha de Cobro{" "}
+                        <Text
+                          style={{ ...styles.dataDetailText, fontSize: 10 }}>
+                          (primer número)
+                        </Text>
                       </Text>
+                    </View>
+                    <Text style={styles.detailAmountText}>
+                      {participantNumberPayDate}
                     </Text>
                   </View>
+                </View>
 
-                  <Text style={styles.detailAmountText}>
-                    {participantNumberPayDate}
+                <View style={styles.datesAndPeriodContainer}>
+                  <View>
+                    <IconInfo
+                      icon="calendar-range"
+                      title={startDate}
+                      subtitle="Inicio"
+                      titleStyle={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                  <View>
+                    <IconInfo
+                      icon="alarm"
+                      title={roundFrequencyArray[round.recurrence]}
+                      subtitle="Período"
+                      titleStyle={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.buttonsContainer}>
+                <Button onPress={acceptInvitation} style={styles.button}>
+                  <Text style={styles.buttonText} uppercase={false}>
+                    Aceptar Invitación
                   </Text>
-                </View>
-              </View>
-              <View style={styles.datesAndPeriodContainer}>
-                <View>
-                  <IconInfo
-                    icon="calendar-range"
-                    title={startDate}
-                    subtitle="Inicio"
-                    titleStyle={{ fontWeight: "bold" }}
-                  />
-                </View>
-                <View>
-                  <IconInfo
-                    icon="alarm"
-                    title={roundFrequencyArray[round.recurrence]}
-                    subtitle="Período"
-                    titleStyle={{ fontWeight: "bold" }}
-                  />
-                </View>
-              </View>
-            </View>
-            <View style={styles.buttonsContainer}>
-              <Button onPress={acceptInvitation} style={styles.button}>
-                <Text style={styles.buttonText} uppercase={false}>
-                  Aceptar Invitación
-                </Text>
-              </Button>
+                </Button>
 
-              <Button
-                onPress={rejectInvitation}
-                style={{ ...styles.button, backgroundColor: colors.secondary }}>
-                <Text style={styles.buttonText} uppercase={false}>
-                  Rechazar Invitación
-                </Text>
-              </Button>
-            </View>
-          </>
-        )}
-      </View>
+                <Button
+                  onPress={rejectInvitation}
+                  style={{
+                    ...styles.button,
+                    backgroundColor: colors.secondary,
+                  }}>
+                  <Text style={styles.buttonText} uppercase={false}>
+                    Rechazar Invitación
+                  </Text>
+                </Button>
+              </View>
+            </>
+          )}
+        </View>
+      </ScrollView>
+
+      <BaseDrawModal
+        winner={participantNumber.number - 1}
+        round={round}
+        number={participantNumber.number}
+        visible={showDraw}
+        onFinish={toggleDrawModal}
+        showNumber={false}
+      />
     </GenericModal>
   );
 };
@@ -253,6 +290,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     borderRadius: 10,
     backgroundColor: "white",
+    paddingTop: 20,
+  },
+  lotteryModeButton: {
+    color: colors.mainBlue,
+    textDecorationLine: "underline",
   },
   titleContainer: {
     flexDirection: "row",
@@ -264,6 +306,8 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 15,
+    paddingHorizontal: 14,
   },
   avatarContainer: {
     alignItems: "center",
@@ -320,6 +364,7 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 16,
   },
   buttonText: {
     fontWeight: "bold",
@@ -337,6 +382,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     paddingHorizontal: 10,
+    paddingTop: 30,
+    paddingBottom: 14,
     justifyContent: "space-evenly",
     alignItems: "center",
   },
@@ -346,6 +393,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     flex: 1,
+    paddingTop: 15,
   },
   dataRow: {
     flexDirection: "row",

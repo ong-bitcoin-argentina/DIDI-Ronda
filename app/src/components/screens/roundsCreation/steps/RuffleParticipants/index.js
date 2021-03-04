@@ -61,7 +61,7 @@ const RuffleParticipants = props => {
   } = props;
   // First we checked the already assigned participants
   const assignedNumbersData = getAssigned(assignedNumbers);
-  const currentNumber = getCurrentNumber(assignedNumbersData, turns);
+  const currentNumber = getCurrentNumber(assignedNumbersData, turns.length);
 
   const remainingParticipants = getRemainingParticipants(
     participants,

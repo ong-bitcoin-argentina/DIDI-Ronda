@@ -1,10 +1,15 @@
 import * as types from "../actions/types";
+import { ASSIGNMENT_MODES } from "../utils/constants";
 
 const defaultState = {
   name: "",
   amount: 0,
   frequency: "m",
-  turns: "0",
+  turns: [
+    {
+      assignmentMode: null,
+    },
+  ],
   participants: [],
   assignedNumbers: [],
   pickTurnsManual: false,
@@ -74,11 +79,26 @@ function creation(state = defaultState, action) {
         assignedNumbers: newAssignedNumbers,
       };
     }
-    case types.CREATION_TURNS:
+    case types.CREATION_TURNS: {
+      const turnsAsInt = parseInt(action.data.turns);
+      const turnsArray = Array.from(Array(turnsAsInt).keys());
+      const parsedTurns = turnsArray.map(_ => ({
+        assignmentMode: ASSIGNMENT_MODES.lottery,
+      }));
       return {
         ...state,
-        turns: action.data.turns,
+        turns: parsedTurns,
       };
+    }
+    case types.TURN_ASSIGNMENT_MODE: {
+      const { mode, index } = action.data;
+      let updatedTurns = state.turns;
+      updatedTurns[index].assignmentMode = mode;
+      return {
+        ...state,
+        turns: updatedTurns,
+      };
+    }
     case types.COMPLETED_PARTICIPANTS_SECTION:
       return {
         ...state,

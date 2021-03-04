@@ -13,6 +13,7 @@ import ParticipantsAllSelected from "./steps/ParticipantsAllSelected";
 import RuffleParticipants from "./steps/RuffleParticipants";
 import SelectParticipantNumbers from "./steps/SelectParticipantNumbers";
 import CloseButton from "./CloseButton";
+import { ASSIGNMENT_MODES } from "../../../utils/constants";
 
 const mapStateToProps = state => {
   return {
@@ -37,6 +38,9 @@ const mapDispatchToProps = dispatch => {
     },
     setTurns: turns => {
       dispatch(actions.setTurns(turns));
+    },
+    setTurnAssignmentMode: (index, mode = ASSIGNMENT_MODES.manual) => {
+      dispatch(actions.setTurnAssignmentMode(index, mode));
     },
   };
 };
@@ -114,7 +118,10 @@ const RoundCreationStack = createStackNavigator({
     navigationOptions: defaultNavigationOptions,
   },
   SelectParticipantNumbers: {
-    screen: SelectParticipantNumbers,
+    screen: connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(SelectParticipantNumbers),
     navigationOptions: defaultNavigationOptions,
   },
   Finish: {
