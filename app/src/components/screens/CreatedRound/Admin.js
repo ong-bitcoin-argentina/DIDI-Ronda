@@ -100,7 +100,7 @@ const Admin = props => {
           marginHorizontal: 10,
           marginBottom: 25,
         }}>
-        <BlueTile title={round.name} amount={round.amount} />
+        <BlueTile title={round.name} amount={round.amount} round={round} />
       </View>
 
       <CaptionInfo

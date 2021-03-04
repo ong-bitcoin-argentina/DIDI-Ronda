@@ -140,7 +140,7 @@ class RoundListItem extends Component {
 
     const getUserParticipantId = userId => {
       const participant = participants.find(
-        participant => participant.user._id === userId
+        participant => participant?.user?._id === userId
       );
 
       return participant?._id;
