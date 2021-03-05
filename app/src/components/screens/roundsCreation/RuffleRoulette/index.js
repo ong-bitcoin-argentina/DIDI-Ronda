@@ -100,7 +100,7 @@ const RuffleRoulette = props => {
         <Bookmark outline number={number} showNumber={showNumber} />
         <Image
           source={
-            wheelWinner.thumbnailPath
+            wheelWinner?.thumbnailPath
               ? { uri: wheelWinner.thumbnailPath }
               : emptyAvatar
           }

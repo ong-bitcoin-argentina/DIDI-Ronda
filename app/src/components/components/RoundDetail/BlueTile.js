@@ -30,6 +30,9 @@ const BlueTile = props => {
   const normalizedMode = ASSIGNMENT_MODES_NORMALIZED[assignmentMode];
   const isLottery = assignmentMode === ASSIGNMENT_MODES.lottery;
   const lotteryExtraText = isLottery ? " (Ver)" : null;
+  const winnerIndex = round.participants.findIndex(
+    ({ _id }) => myShift.participant[0] === _id
+  );
 
   return (
     <View style={styles.container}>
@@ -143,7 +146,7 @@ const BlueTile = props => {
       )}
 
       <BaseDrawModal
-        winner={number - 1}
+        winner={winnerIndex}
         round={round}
         number={number}
         visible={showDraw}

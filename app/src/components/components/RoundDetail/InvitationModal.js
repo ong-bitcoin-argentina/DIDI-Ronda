@@ -52,6 +52,9 @@ const InvitationModal = props => {
   const normalizedMode = ASSIGNMENT_MODES_NORMALIZED[assignmentMode];
   const isLottery = assignmentMode === ASSIGNMENT_MODES.lottery;
   const lotteryExtraText = isLottery ? " (Ver)" : null;
+  const winnerIndex = round.participants.findIndex(
+    ({ _id }) => participantNumber.participant[0] === _id
+  );
 
   const participantNumberPayDate = getFormattedDate(
     getPaymentDate(round.startDate, round.recurrence, participantNumber.number)
@@ -273,7 +276,7 @@ const InvitationModal = props => {
       </ScrollView>
 
       <BaseDrawModal
-        winner={participantNumber.number - 1}
+        winner={winnerIndex}
         round={round}
         number={participantNumber.number}
         visible={showDraw}
