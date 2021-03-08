@@ -103,12 +103,10 @@ class RoundsList extends React.Component {
   filterRounds = (roundsData, currentStatus) => {
     let output = [];
     if (currentStatus === "starting") {
-      output =
-        this.state.failedRounds &&
-        this.state.failedRounds.map((round, index) => ({
-          ...round,
-          indexRound: index,
-        }));
+      output = this.state.failedRounds?.map((round, indexRound) => ({
+        ...round,
+        indexRound,
+      }));
     }
 
     const data = roundsData.filter(r => {

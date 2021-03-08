@@ -31,7 +31,7 @@ const BlueTile = props => {
   const isLottery = assignmentMode === ASSIGNMENT_MODES.lottery;
   const lotteryExtraText = isLottery ? " (Ver)" : null;
   const winnerIndex = round.participants.findIndex(
-    ({ _id }) => myShift.participant[0] === _id
+    ({ _id }) => myShift?.participant[0] === _id
   );
 
   return (
@@ -110,7 +110,7 @@ const BlueTile = props => {
         <TileRow
           label="Asignado por"
           value={
-            !isLottery && !round.participantsVisible ? (
+            !isLottery || !round.participantsVisible ? (
               normalizedMode
             ) : (
               <TouchableOpacity onPress={toggleDrawModal}>

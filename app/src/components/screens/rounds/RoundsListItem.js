@@ -106,7 +106,7 @@ class RoundListItem extends Component {
       isConfirmed,
     } = this.props;
 
-    const isAdmin = isEditing || auth.id === admin;
+    const isAdmin = isEditing || auth?.id === admin;
 
     const paymentsQty = shifts.length;
 
