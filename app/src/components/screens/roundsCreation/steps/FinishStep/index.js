@@ -27,8 +27,8 @@ const Finish = props => {
     navigation.navigate("List");
   };
 
-  const goToRoundName = () => {
-    saveCreateRoundFails(roundInProcess);
+  const goToRoundName = async () => {
+    await saveCreateRoundFails(roundInProcess);
     navigation.navigate("List");
   };
 
