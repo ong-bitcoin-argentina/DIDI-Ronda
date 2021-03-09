@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Dimensions, FlatList } from "react-native";
-import { Button } from "native-base";
+import { Button, Spinner } from "native-base";
 import GenericModal from "../../components/GenericModal";
 import colors from "../../components/colors";
 import MonthCalendar from "../../components/MonthCalendar";
@@ -9,10 +9,8 @@ import { LocaleConfig } from "react-native-calendars";
 import ErrorDateModal from "../roundsCreation/steps/date/ErrorDateModal";
 import { LOCALE_CONFIG } from "../../../utils/constants";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const ConfirmCreateRoundFailed = props => {
-  const { open, onCancel, onContinue } = props;
+const ChangeDateRoundFailed = props => {
+  const { open, onCancel, onContinue, loading } = props;
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [showErrorDateModal, setShowErrorDateModal] = useState(false);
@@ -88,7 +86,13 @@ const ConfirmCreateRoundFailed = props => {
                   : colors.mainBlue,
               },
             ]}>
-            <Text style={styles.buttonText}>Seleccionar</Text>
+            <Text style={styles.buttonText}>
+              {loading ? (
+                <Spinner size="large" color={colors.white} />
+              ) : (
+                "Seleccionar"
+              )}
+            </Text>
           </Button>
           <Button
             onPress={() => {
@@ -154,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfirmCreateRoundFailed;
+export default ChangeDateRoundFailed;

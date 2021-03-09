@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Button } from "native-base";
+import { Button, Spinner } from "native-base";
 import GenericModal from "../../components/GenericModal";
 import colors from "../../components/colors";
 
 const ConfirmCreateRoundFailed = props => {
-  const { open, onCancel, onContinue } = props;
+  const { open, onCancel, onContinue, loading } = props;
   return (
     <GenericModal open={open}>
       <View style={styles.container}>
@@ -15,7 +15,13 @@ const ConfirmCreateRoundFailed = props => {
           </Text>
         </View>
         <Button onPress={onContinue} style={[styles.button, { marginTop: 25 }]}>
-          <Text style={styles.buttonText}>Continuar</Text>
+          <Text style={styles.buttonText}>
+            {loading ? (
+              <Spinner size="large" color={colors.white} />
+            ) : (
+              "Continuar"
+            )}
+          </Text>
         </Button>
         <Button onPress={onCancel} style={[styles.button, { marginTop: 10 }]}>
           <Text style={styles.buttonText}>Cancelar</Text>

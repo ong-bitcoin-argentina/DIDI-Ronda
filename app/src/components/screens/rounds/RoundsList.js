@@ -38,7 +38,12 @@ class RoundsList extends React.Component {
     showConfirmRF: false,
     roundFailedSelected: null,
     showChangeDate: false,
-    indexRoundFailed: null,
+  };
+
+  static navigationOptions = {
+    tabBarOptions: {
+      showLabel: true,
+    },
   };
 
   async componentDidMount() {
@@ -155,12 +160,6 @@ class RoundsList extends React.Component {
     const { navigation } = this.props;
     if (params.isEditing) return this.manageStoredRoundPress(params.roundIndex);
     return navigation.navigate("RoundDetail", params);
-  };
-
-  static navigationOptions = {
-    tabBarOptions: {
-      showLabel: true,
-    },
   };
 
   renderContent = (rounds, status) => {
@@ -290,37 +289,50 @@ class RoundsList extends React.Component {
     });
   };
 
-  onConfirmCreationRoundFail = () => {
+  onConfirmCreationRoundFail = async () => {
     // Check if date selected is > today
     const dateSelected = new Date(this.state.roundFailedSelected.date);
 
     if (getDiffOfDaysToToday(dateSelected) < 1) {
-      // User has to select new date
-      this.setState({
-        showConfirmRF: false,
-        showChangeDate: true,
-      });
+      this.setState({ showConfirmRF: false, showChangeDate: true });
     } else {
-      this.setState({
-        showConfirmRF: false,
-      });
+      this.setState(
+        { loading: true },
+        async () =>
+          await this.doCreateRoundByFailedOne(this.state.roundFailedSelected)
+      );
     }
   };
 
-  onConfirmChangeDateRoundFail = date => {
-    // update round info
+  onConfirmChangeDateRoundFail = async date => {
     const updatedRound = { ...this.state.roundFailedSelected, date };
-    this.setState({
-      indexRoundFailed: updatedRound.indexRound,
-    });
-    // send to server
-    this.props.createRoundByFailedRound(updatedRound);
+    this.setState({ loading: true });
+    await this.doCreateRoundByFailedOne(updatedRound);
+  };
 
-    // update state
-    this.setState({
-      showChangeDate: false,
-      roundFailedSelected: null,
-    });
+  doCreateRoundByFailedOne = async updatedRound => {
+    try {
+      const { indexRound } = updatedRound;
+      await this.props.createRoundByFailedRound(updatedRound);
+      const failedRounds = await deleteRoundFailByIndex(indexRound);
+      this.setState({
+        failedRounds,
+        roundFailedSelected: null,
+      });
+    } catch (error) {
+      Toast.show({
+        text: "Hubo un problema al intentar crear la ronda, intente mas tarde",
+        position: "top",
+        type: "danger",
+      });
+    } finally {
+      this.props.clearData();
+      this.setState({
+        loading: false,
+        showChangeDate: false,
+        showConfirmRF: false,
+      });
+    }
   };
 
   onSelectRoundFailToCreateAgain = roundData => {
@@ -328,17 +340,6 @@ class RoundsList extends React.Component {
       showConfirmRF: true,
       roundFailedSelected: roundData,
     });
-  };
-
-  processRoundCreationByFailed = async () => {
-    await deleteRoundFailByIndex(this.state.indexRoundFailed);
-    const failed = await getRoundsCreationFail();
-    this.setState({
-      failedRounds: failed,
-      indexRoundFailed: null,
-      loading: false,
-    });
-    this.props.clearData();
   };
 
   processOnDeleteFiledRound = async () => {
@@ -355,28 +356,6 @@ class RoundsList extends React.Component {
   render() {
     const { navigation, clearData, activePage } = this.props;
     const { roundEditData, openWarningEditModal, showSCModal } = this.state;
-
-    if (this.state.indexRoundFailed && this.props.roundRequest.error) {
-      this.setState({
-        indexRoundFailed: null,
-      });
-      clearData();
-      Toast.show({
-        text: "Hubo un problema al intentar crear la ronda, intente mas tarde",
-        position: "top",
-        type: "danger",
-      });
-    }
-
-    if (
-      this.state.indexRoundFailed !== null &&
-      this.props.roundRequest.createdRound
-    ) {
-      this.setState({
-        loading: true,
-      });
-      this.processRoundCreationByFailed();
-    }
 
     return (
       <View style={styles.container}>
@@ -411,11 +390,13 @@ class RoundsList extends React.Component {
           <ConfirmModal {...this.state.confirmAlert} />
         )}
         <ConfirmCreateRoundFailed
+          loading={this.state.loading}
           open={this.state.showConfirmRF}
           onCancel={this.onCancelCreationRoundFail}
           onContinue={this.onConfirmCreationRoundFail}
         />
         <ChangeDateRoundFailed
+          loading={this.state.loading}
           open={this.state.showChangeDate}
           onCancel={this.onCancelChangeDateRoundFail}
           onContinue={this.onConfirmChangeDateRoundFail}
