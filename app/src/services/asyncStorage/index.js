@@ -92,4 +92,5 @@ export const deleteRoundFailByIndex = async index => {
   arrData.splice(index, 1);
 
   await saveItem("roundsCreationFail", arrData);
+  return arrData;
 };
