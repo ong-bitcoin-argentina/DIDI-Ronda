@@ -219,6 +219,7 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-base:16.1.0"
