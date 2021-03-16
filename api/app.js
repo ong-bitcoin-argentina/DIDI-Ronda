@@ -1,3 +1,5 @@
+require("dotenv").config();
+require('./services/logger');
 const express = require("express");
 // Array flat polyfill for Node 10
 require("array-flat-polyfill");
@@ -8,9 +10,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { version } = require("./package.json");
 const helmet = require("helmet");
-
-// CONFIGS
-require("dotenv").config();
 
 // Agenda
 const { agendaStart, permanentJob } = require("./jobs");
