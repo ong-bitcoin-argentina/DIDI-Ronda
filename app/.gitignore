@@ -59,6 +59,7 @@ buck-out/
 # Pods
 ios/Pods/
 
+.env*
 .env.staging
 .env.uat
 .env.production
