@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import {
   View,
   Text,
   Tab,
   Tabs,
   TabHeading,
-  Content,
   Container,
 } from "native-base";
 import colors from "../../components/colors";
@@ -57,9 +56,9 @@ class UserProfile extends Component {
                   <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
                 </TabHeading>
               }>
-              <Content>
+              <ScrollView>
                 <Swap {...this.props} participant={participant} />
-              </Content>
+              </ScrollView>
             </Tab>
           </Tabs>
         </View>

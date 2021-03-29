@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Text,
   Tab,
@@ -10,7 +10,6 @@ import {
   Toast,
   Spinner,
   Container,
-  Content,
 } from "native-base";
 import QRCode from "react-native-qrcode-svg";
 import UserData from "../../UserProfile/UserProfileComponent";
@@ -132,7 +131,7 @@ const NumberPay = props => {
                 <Text style={styles.tabHeaderText}>APORTES</Text>
               </TabHeading>
             }>
-            <Content>
+            <ScrollView>
               <View style={styles.paysContainer}>
                 <View style={styles.actionContainer}>
                   <PaymentsList
@@ -211,7 +210,7 @@ const NumberPay = props => {
                   </View>
                 </View>
               </View>
-            </Content>
+            </ScrollView>
           </Tab>
           {!allShiftsCompleted && (
             <Tab
@@ -220,7 +219,7 @@ const NumberPay = props => {
                   <Text style={styles.tabHeaderText}>ASIGNAR #</Text>
                 </TabHeading>
               }>
-              <Content>
+              <ScrollView>
                 <ReasignNumber
                   participantName={fullParticipant.user.name}
                   participantPicture={fullParticipant.user.image}
@@ -234,7 +233,7 @@ const NumberPay = props => {
                   roundFrequency={round.recurrence}
                   roundStartDate={round.startDate}
                 />
-              </Content>
+              </ScrollView>
             </Tab>
           )}
           {!allShiftsCompleted && (
@@ -245,7 +244,7 @@ const NumberPay = props => {
                   <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
                 </TabHeading>
               }>
-              <Content>
+              <ScrollView>
                 <View style={{ marginVertical: 15, flex: 1 }}>
                   <Text style={{ textAlign: "center", fontWeight: "bold" }}>
                     Elige el participante que reemplazará a{" "}
@@ -253,7 +252,7 @@ const NumberPay = props => {
                   </Text>
                 </View>
                 <Swap {...props} participant={fullParticipant} />
-              </Content>
+              </ScrollView>
             </Tab>
           )}
         </Tabs>
