@@ -24,9 +24,8 @@ exports.byId = async req => {
 };
 
 exports.acceptRound = async req => {
-  const { roundId } = req.params;
+  const { roundId, participantId } = req.params;
   const { username } = req.body;
-  const { participantId } = req.middlewareData;
 
   // Find participant
   const participant = await participant_manager.findById(participantId);
