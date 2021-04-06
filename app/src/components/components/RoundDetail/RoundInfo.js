@@ -218,7 +218,6 @@ const RoundInfo = props => {
           <View style={styles.paymentSectionOuterContainer}>
             <View style={styles.paymentSectionInnerContainer}>
               <View style={{ justifyContent: "center" }}>
-                <Spinner size={40} color={colors.mainBlue} />
                 <Text style={{ fontSize: 13, textAlign: "center" }}>
                   Hay un pago en proceso. Te llegará una notificación cuando se
                   complete.

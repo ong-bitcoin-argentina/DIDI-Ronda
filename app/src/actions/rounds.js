@@ -165,6 +165,7 @@ export const payRound = (
       dispatch(payRoundFailed(payedRound.error));
     }
 
+    dispatch(endRoundLoad());
     dispatch(loadRounds());
   };
 };
@@ -525,6 +526,11 @@ const deleteRoundFail = error => ({
 // Load round start
 const startRoundLoad = () => ({
   type: types.START_ROUND_LOAD,
+});
+
+// Stop loading round
+const endRoundLoad = () => ({
+  type: types.STOP_ROUND_DETAIL_LOADING,
 });
 
 // Pay round clean

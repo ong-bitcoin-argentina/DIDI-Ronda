@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { View, StyleSheet, ScrollView } from "react-native";
 import {
@@ -34,12 +34,17 @@ const NumberPay = props => {
     reasignNumberRequest,
   } = props;
 
+  const [isPaying, setIsPaying] = useState(false);
+
   const roundId = navigation.getParam("roundId", null);
 
   useEffect(() => {
-    const { refreshRoundData } = props;
-    refreshRoundData(roundId);
+    refreshRound();
   }, []);
+
+  const refreshRound = async () => {
+    await props.refreshRoundData(roundId);
+  };
 
   // Check if requestRounds list exist (prevent crash)
   if (requestRounds.list.length === 0) {
@@ -100,6 +105,7 @@ const NumberPay = props => {
 
   // Methods
   const pay = async () => {
+    setIsPaying(true);
     const participantId = fullParticipant.id;
 
     if (participantId) {
@@ -146,10 +152,13 @@ const NumberPay = props => {
                     {!shiftCompleted &&
                       !loading &&
                       !isReceivingOrMakingPayment &&
-                      !isCurrentShiftPayed && (
+                      !isCurrentShiftPayed &&
+                      !isPaying && (
                         <Button
                           onPress={openPayNumberPopUp}
-                          disabled={participantPaid}
+                          disabled={
+                            participantPaid || isReceivingOrMakingPayment
+                          }
                           style={{
                             ...styles.payButton,
                             backgroundColor: participantPaid
@@ -175,7 +184,9 @@ const NumberPay = props => {
 
                     {!loading &&
                       enabledForPayRound &&
-                      !isReceivingOrMakingPayment && (
+                      !isReceivingOrMakingPayment &&
+                      !participantPaid &&
+                      !isPaying && (
                         <ConfirmRoundPayment
                           loading={loading}
                           allParticipantsPayedNumber={allParticipantsPaid}
@@ -201,9 +212,8 @@ const NumberPay = props => {
                           </Button>
                         </View>
                       )}
-                    {isReceivingOrMakingPayment && (
-                      <View>
-                        <Spinner size={40} color={colors.mainBlue} />
+                    {(isReceivingOrMakingPayment || isPaying) && (
+                      <View style={{ marginTop: 20 }}>
                         <Text>Un pago se esta procesando</Text>
                       </View>
                     )}
