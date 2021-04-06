@@ -14,7 +14,7 @@ export default class RoundPopUp extends Component {
   }
 
   componentWillUnmount() {
-    const { onRef } = this.props;
+    const { onRef } = this?.props;
     if (onRef) onRef(undefined);
   }
 
