@@ -7,6 +7,7 @@ import colors from "../../components/colors";
 import { connect } from "react-redux";
 import * as notificationsActions from "../../../actions/notifications";
 import { markAsViewed } from "../../../services/api/notification";
+import { resetNotificationCount } from "../../../services/notifications/pushNotifications";
 
 class Notifications extends React.Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class Notifications extends React.Component {
   onMarkAsViewed = async () => {
     await markAsViewed();
     await this.getNotifications();
+    resetNotificationCount();
   };
 
   render() {
@@ -103,7 +105,7 @@ export default createStackNavigator({
     screen: NotificationsScreen,
     navigationOptions: () => ({
       title: `Notificaciones`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: {
         color: "white",
         width: "80%",

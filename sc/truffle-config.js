@@ -17,12 +17,13 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
+require('dotenv').config();
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 const PrivateKeyProvider = require("truffle-privatekey-provider");
 
@@ -51,6 +52,12 @@ module.exports = {
       port: 4444, // Standard Ethereum port (default: none)
       network_id: 33, // Any network (default: none)
     },
+    developmentMnemonic: {
+      // provider: () => new HDWalletProvider(mnemonic, 'http://localhost:8545'),
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 8545, // Standard Ethereum port (default: none)
+      network_id: '*', // Any network (default: none)
+    },
 
     rskregtest: {
       provider: () =>
@@ -60,19 +67,31 @@ module.exports = {
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
-
+    rskregtestMnemonic: {
+      provider: () => new HDWalletProvider(mnemonic, 'http://localhost:4444'),
+      network_id: 33, // Ropsten's id
+      gas: 6800000, //
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
     rsktestnet: {
       provider: () =>
         new PrivateKeyProvider(
           "C87509A1C067BBDE78BEB793E6FA76530B6382A4C0241E5E4A9EC0A0F44DC0D3",
-          `https://public-node.testnet.rsk.co`
+          process.env.RSK_PROVIDER_URI
         ),
       network_id: 31, // Ropsten's id
       gas: 6800000, //
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
-
+    rsktestnetMnemonic: {
+      provider: () => new HDWalletProvider(mnemonic, process.env.RSK_PROVIDER_URI),
+      network_id: 31, // Ropsten's id
+      gas: 6800000, //
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

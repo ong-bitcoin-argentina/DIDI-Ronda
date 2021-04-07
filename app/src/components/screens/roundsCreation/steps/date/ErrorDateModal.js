@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 
 const ErrorDateModal = ({ open, onOkPress }) => {
   const message =
-    "Tenés que seleccionar una fecha de inicio de Ronda posterior al día de hoy.";
+    "Tenés que seleccionar una fecha de inicio de ronda posterior al día de hoy.";
 
   return (
     <GenericModal open={open}>

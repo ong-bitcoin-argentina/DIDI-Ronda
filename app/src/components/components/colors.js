@@ -1,8 +1,8 @@
 export default {
   mainBlue: "#417fd7",
-  lightBlue: "#9fbeed",
+  lightBlue: "#ACC6EB",
   secondaryBlue: "#04c9e1",
-  darkBlue: "#2C5793",
+  darkBlue: "#205196",
   inactiveBlue: "#b3cbef",
   secondary: "#9c9c9c",
   gray: "#595959",
@@ -27,6 +27,8 @@ export default {
   white: "#FFFFFF",
   black: "#000",
   secondaryWhite: "#F2F2F2",
+  transparent: "transparent",
   whiteTransparent: "#ffffff40",
   alterRed: "#E03C7A",
+  whiteSemiTransparent: "rgba(255, 255, 255, 0.75)",
 };

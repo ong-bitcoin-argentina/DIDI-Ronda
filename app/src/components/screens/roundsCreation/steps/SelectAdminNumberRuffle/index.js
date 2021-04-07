@@ -152,9 +152,8 @@ const SelectAdminNumberRuffle = ({
                       inlineLabel
                       placeholder="Elige un número"
                       selectedValue={selectedNumber}
-                      onValueChange={onPickNumber}
-                    >
-                      {renderPickerItems(parseInt(turns, 10))}
+                      onValueChange={onPickNumber}>
+                      {renderPickerItems(parseInt(turns.length, 10))}
                     </Picker>
                   </View>
                 </View>

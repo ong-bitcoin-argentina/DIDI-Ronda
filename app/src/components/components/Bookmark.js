@@ -13,12 +13,13 @@ const Bookmark = props => {
     bold,
     check,
     bookmarkStyle = {},
+    showNumber = true,
   } = props;
 
   const sizeProp = size || 1;
 
   const iconFontSize = sizeProp * 70;
-  const textLeft = sizeProp * 28;
+  const textLeft = number >= 10 ? sizeProp * 20 : sizeProp * 28;
   const textTop = sizeProp * 14;
   const textFontSize = sizeProp * 26;
   const outlineTextColor = color || colors.mainBlue;
@@ -44,18 +45,21 @@ const Bookmark = props => {
           },
         ]}
       />
-      <Text
-        style={[
-          styles.bookmarkText,
-          { color: outline ? outlineTextColor : "white" },
-          { left: outline ? textLeft : number >= 10 ? 10 : 16 },
-          { top: outline ? textTop : 7 },
-          { fontSize: outline ? textFontSize : 16 },
-          bold && { fontWeight: "bold" },
-        ]}
-      >
-        {number}
-      </Text>
+      {showNumber && (
+        <Text
+          style={[
+            styles.bookmarkText,
+            { color: outline ? outlineTextColor : "white" },
+            {
+              left: outline ? textLeft : number >= 10 ? 10 : 16,
+            },
+            { top: outline ? textTop : 7 },
+            { fontSize: outline ? textFontSize : 16 },
+            bold && { fontWeight: "bold" },
+          ]}>
+          {number}
+        </Text>
+      )}
     </View>
   );
 };
@@ -64,6 +68,7 @@ const styles = StyleSheet.create({
   // BOOKMARK
   bookmarkContainer: {
     justifyContent: "center",
+    backgroundColor: colors.whiteSemiTransparent,
   },
   bookmarkIcon: {
     zIndex: 10,
@@ -74,6 +79,7 @@ const styles = StyleSheet.create({
   bookmarkText: {
     position: "absolute",
     zIndex: 100,
+    fontWeight: "bold",
   },
   checkIcon: {
     color: colors.mainBlue,

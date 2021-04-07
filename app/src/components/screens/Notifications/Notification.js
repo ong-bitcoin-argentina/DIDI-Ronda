@@ -6,17 +6,38 @@ import moment from "moment";
 import { getIcon, getColor } from "./config";
 import store from "../../../store/store";
 import { redirectUserToContext } from "../../../services/notifications/pushNotifications";
+import { connect } from "react-redux";
+import * as roundsActions from "../../../actions/rounds";
 
-const NotificationDetail = ({ notification }) => {
+const NotificationDetail = props => {
+  const { notification, requestRounds, loadRounds } = props;
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const { code, body, date, viewedAt, action } = notification;
 
   const ago = moment(date).fromNow(true);
 
+  const checkIfGoToExistingRonda = () => {
+    if (action.routeName === "RoundDetail") {
+      for (let i = 0; i < requestRounds.list.length; i++) {
+        const round = requestRounds.list[i];
+        if (round._id === action.params._id) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return true;
+  };
+
   const onPressNotification = async () => {
     setIsRedirecting(true);
-    await redirectUserToContext(action.routeName, action.params, null, store);
+    if (requestRounds.list.length === 0) await loadRounds();
+    if (checkIfGoToExistingRonda()) {
+      await redirectUserToContext(action, store);
+    }
     setIsRedirecting(false);
   };
 
@@ -119,4 +140,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationDetail;
+const mapStateToPropsList = state => ({
+  requestRounds: state.rounds.requestRounds,
+});
+
+const mapDispatchToPropsList = dispatch => ({
+  loadRounds: () => dispatch(roundsActions.loadRounds()),
+});
+
+export default connect(
+  mapStateToPropsList,
+  mapDispatchToPropsList
+)(NotificationDetail);

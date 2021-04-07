@@ -22,7 +22,7 @@ const topOffset = getInset("top");
 const cards = [
   {
     title: "Empezá tu ronda",
-    text: "Invitá a las personas que quieras a qué se sumen a tu ronda.",
+    text: "Invitá a las personas que quieras a que se sumen a tu ronda.",
     image: tutorial1,
     placeholder: false,
   },

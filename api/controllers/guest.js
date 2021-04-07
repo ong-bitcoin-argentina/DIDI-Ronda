@@ -2,9 +2,7 @@
 const guest_services = require("../services/guest");
 const postResBackground = require("../services/postRes");
 const { generic } = require("../helpers/errorHandler");
-const { createNotification } = require("../helpers/notifications/config");
 const aidi_service = require("../services/aidi");
-const { customError } = require("../helpers/errorHandler");
 const user_manager = require("../managers/user");
 
 /*
@@ -32,8 +30,8 @@ function createNickname(username) {
 exports.loginWithAidi = async (req, res) => {
   console.log("running loginWithAidi.....");
   try {
-    const { token } = req.body;
-    const user = await aidi_service.getUser(token);
+    const { token, firebaseToken } = req.body;
+    const user = await aidi_service.getOrValidateUser(token);
     const { username, password, name, lastname, imageUrl } = user;
 
     try {
@@ -47,12 +45,13 @@ exports.loginWithAidi = async (req, res) => {
     }
 
     try {
+      // TODO: search firebaseToken and clean if exists to avoid send wrong notifications to multiple accounts logged on same device
       const data = await guest_services.register(
         username,
         password,
         name,
         lastname,
-        token,
+        firebaseToken,
         createNickname(username),
         imageUrl
       );

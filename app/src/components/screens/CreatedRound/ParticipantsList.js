@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View } from "react-native";
 import { Text } from "native-base";
 
 import ListItem from "./ListItem";
@@ -18,6 +18,17 @@ const ParticipantsList = props => {
     navigation.navigate("UserProfile", { participant });
   };
 
+  const participantsToRender = participants.map((item, index) => (
+    <ListItem
+      key={index}
+      participant={item}
+      number={index + 1}
+      shouldRenderNumber
+      payday={getPayDay(index)}
+      handleNavigation={handleNavigation}
+    />
+  ));
+
   return (
     <>
       <View
@@ -28,26 +39,13 @@ const ParticipantsList = props => {
           flexDirection: "row",
           paddingBottom: 3,
           borderBottomWidth: 1,
-        }}
-      >
+        }}>
         <Text style={{ fontSize: 12, fontWeight: "bold" }}>
           Participantes Confirmados
         </Text>
       </View>
       <ParticipantListTitles />
-      <FlatList
-        data={participants}
-        renderItem={({ item, index }) => (
-          <ListItem
-            participant={item}
-            number={index + 1}
-            shouldRenderNumber
-            payday={getPayDay(index)}
-            handleNavigation={handleNavigation}
-          />
-        )}
-        keyExtractor={(item, index) => String(item._id + index)}
-      />
+      {participantsToRender}
     </>
   );
 };

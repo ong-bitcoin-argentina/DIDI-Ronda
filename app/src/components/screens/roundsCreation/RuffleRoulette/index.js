@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image } from "react-native";
 import { Button } from "native-base";
 import WheelOfFortune from "react-native-wheel-of-fortune";
 import LottieView from "lottie-react-native";
-
+import { ruffleRouletteColors } from "../../../../utils/constants";
 import Bookmark from "../../../components/Bookmark";
 import CircleArrows from "../../../../assets/img/circle-arrows.svg";
 import RoundPopUp from "../../../components/RoundPopUp";
@@ -15,10 +15,24 @@ const confettiAnimation = require("../../../../assets/animations/confetti.json")
 const RuffleRoulette = props => {
   // Props
   const [wasSpinned, setwasSpinned] = useState(false);
-  const { number, participants, onFinish } = props;
+  const {
+    number,
+    participants,
+    onFinish,
+    predefinedWinner,
+    autoplay,
+    visible,
+    showNumber,
+  } = props;
   // Hooks
   const [wheelWinner, setWheelWinner] = useState(null);
+  const [winnerName, setWinnerName] = useState(null);
   const [disableRoulette, setDisableRoulette] = useState(false);
+
+  const getName = ({ name }, isAdmin) => {
+    const baseName = name.split(" ")[0];
+    return isAdmin ? `${baseName} (Yo)` : baseName;
+  };
 
   //   Variables
   const candidates = participants.map(p => p);
@@ -28,11 +42,13 @@ const RuffleRoulette = props => {
         uri: p.thumbnailPath,
         index,
       };
-    if (p.admin) return `${p.name.split(" ")[0]} (Yo)`;
-    return p.name.split(" ")[0];
+    if (p.user) return getName(p.user, p.admin);
+    else return getName(p, p.admin);
   });
 
-  const winner = Math.floor(Math.random() * candidates.length) + 1;
+  const winner = Number.isInteger(predefinedWinner)
+    ? predefinedWinner
+    : Math.floor(Math.random() * candidates.length) + 1;
 
   const winnerParticipant = wheelWinner !== null && candidates[wheelWinner];
 
@@ -48,9 +64,21 @@ const RuffleRoulette = props => {
     }
   }, []);
 
+  useEffect(() => {
+    if (autoplay && visible) positiveAction();
+  }, [visible]);
+
   // Methods
-  const winnerCallback = value => {
-    setWheelWinner(candidates[value]);
+  const winnerCallback = (value, param) => {
+    const winnerIndex = Number.isInteger(predefinedWinner)
+      ? predefinedWinner
+      : value;
+    const hasWinned = candidates[winnerIndex];
+    setWheelWinner(hasWinned);
+    const winnerFinalName = hasWinned.user
+      ? `${hasWinned.user.name} ${hasWinned.user.lastname}`
+      : hasWinned.name;
+    setWinnerName(winnerFinalName);
 
     setDisableRoulette(false);
   };
@@ -58,7 +86,7 @@ const RuffleRoulette = props => {
   const positiveAction = () => {
     // eslint-disable-next-line no-underscore-dangle
     if (!wasSpinned) {
-      this.wheelRef._onPress();
+      this.wheelRef?._onPress();
       setDisableRoulette(true);
       setwasSpinned(true);
     }
@@ -66,45 +94,50 @@ const RuffleRoulette = props => {
 
   const Confetti = () => (
     <>
-      <View style={{ width: "100%", alignItems: "center", height: 375 }}>
+      <View style={styles.confettiView}>
         <Text style={styles.titleText}>Ganó</Text>
 
-        <Bookmark outline number={number} />
+        <Bookmark outline number={number} showNumber={showNumber} />
         <Image
           source={
-            wheelWinner.thumbnailPath
+            wheelWinner?.thumbnailPath
               ? { uri: wheelWinner.thumbnailPath }
               : emptyAvatar
           }
-          style={{ height: 150, width: 150, borderRadius: 100 }}
+          style={styles.image}
         />
-        <Text style={styles.textName}>{wheelWinner.name}</Text>
+        <Text style={styles.textName}>{winnerName}</Text>
         <Button
           style={styles.button}
           onPress={() => onFinish(number, wheelWinner)}>
           <Text style={styles.buttonText}>Ok</Text>
         </Button>
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiViewLeft}
+        />
+        <LottieView
+          pointerEvents="none"
+          autoPlay
+          loop={false}
+          source={confettiAnimation}
+          style={styles.confettiViewRight}
+        />
       </View>
-      <LottieView
-        pointerEvents="none"
-        autoPlay
-        loop={false}
-        source={confettiAnimation}
-        style={styles.confettiView}
-      />
     </>
   );
 
   return (
     <>
       <RoundPopUp
-        onRef={ref => {
-          this.popUpRef = ref;
-        }}
+        onRef={ref => ({})}
         customContent={wheelWinner !== null ? Confetti : null}
         visible
         titleText={popUpTitle}
-        icon={<Bookmark outline number={number} />}
+        icon={<Bookmark outline number={number} showNumber={showNumber} />}
         positive={() => positiveAction()}
         positiveTitle={winnerParticipant ? "Ok" : "Girar Ruleta"}
         disablePositive={disableRoulette}
@@ -129,13 +162,13 @@ const RuffleRoulette = props => {
                     style={styles.playButton}
                   />
                 )}
-                colors={["#73A4D0", "#4C7CBE"]}
+                colors={ruffleRouletteColors}
                 winner={winner}
                 innerRadius={70}
                 duration={3000}
                 size={300}
                 backgroundColor="#fff"
-                getWinner={(v, i) => winnerCallback(i)}
+                getWinner={(v, i) => winnerCallback(i, v)}
               />
             </View>
           )}
@@ -201,20 +234,42 @@ const styles = StyleSheet.create({
   textName: {
     marginVertical: 5,
     fontSize: 18,
+    fontWeight: "bold",
     color: colors.mainBlue,
     textAlign: "center",
+    zIndex: 1,
+    backgroundColor: colors.whiteSemiTransparent,
   },
   playButton: {
     top: 20,
     zIndex: 10,
   },
-  confettiView: {
-    transform: [{ rotate: "65deg" }],
-    zIndex: 0,
+  confettiViewLeft: {
+    transform: [{ rotate: "52deg" }],
+    zIndex: -10,
     width: "100%",
-    top: -30,
-    right: 22,
+    top: -20,
+    right: 65,
     position: "absolute",
+  },
+  confettiViewRight: {
+    transform: [{ rotate: "-42deg" }],
+    zIndex: -10,
+    width: "100%",
+    bottom: -38,
+    left: 35,
+    position: "absolute",
+  },
+  image: {
+    height: 150,
+    width: 150,
+    borderRadius: 100,
+    zIndex: -1,
+  },
+  confettiView: {
+    width: "100%",
+    alignItems: "center",
+    height: 375,
   },
 });
 

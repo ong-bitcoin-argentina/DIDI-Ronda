@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { View, Spinner } from "native-base";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
-import checkPermission from "../../../services/notifications";
+import requestPermission from "../../../services/notifications";
 
 const LoadingAuth = props => {
   const getAuthFromStorage = async () => {
@@ -11,7 +11,7 @@ const LoadingAuth = props => {
 
     if (auth) {
       // Check notification permissions and update token if need
-      await checkPermission();
+      await requestPermission();
 
       if (auth.emailVerified === false) {
         return props.navigation.navigate("VerifyEmail", {

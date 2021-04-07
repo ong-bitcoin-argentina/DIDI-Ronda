@@ -1,0 +1,4 @@
+.secret
+bin/
+node_modules/
+.env

@@ -155,13 +155,13 @@ android {
         dev {
             resValue "string", "build_config_package", "com.aidironda2"
         }
-        staging {
+        next {
             resValue "string", "build_config_package", "com.aidironda2"
         }
-        uat {
+        beta {
             resValue "string", "build_config_package", "com.aidironda2"
         }
-        prod {
+        alpha {
             resValue "string", "build_config_package", "com.aidironda2"
         }
     }
@@ -219,11 +219,14 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.android.gms:play-services-base:16.1.0"
-    
+
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
     if (enableHermes) {
       def hermesPath = "../../node_modules/hermesvm/android/";

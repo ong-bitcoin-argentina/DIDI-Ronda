@@ -30,8 +30,8 @@ const List = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
-      title: `Ronda`,
-      headerStyle: { backgroundColor: "#417fd7", elevation: 0 },
+      title: `Mis rondas`,
+      headerStyle: { backgroundColor: colors.mainBlue, elevation: 0 },
       headerTitleStyle: styles.headerTitleStyle,
     }),
   },
@@ -42,7 +42,7 @@ const List = createStackNavigator({
       headerBackStyle: styles.colorWhite,
       title: `Número`,
       headerTintColor: "white",
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: <SessionDropdown />,
     }),
@@ -54,7 +54,7 @@ const List = createStackNavigator({
       headerBackStyle: styles.colorWhite,
       title: `Pagar`,
       headerTintColor: "white",
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: styles.headerTitleStyle,
       headerRight: <SessionDropdown />,
     }),
@@ -65,8 +65,8 @@ const List = createStackNavigator({
       headerBackTitle: null,
       headerBackStyle: styles.colorWhite,
       headerTintColor: "white",
-      title: `Mis Rondas`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      title: `Mis rondas`,
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: <BackButton navigation={navigation} />,
       headerRight: HeaderRightMenu(navigation),
@@ -76,7 +76,7 @@ const List = createStackNavigator({
     screen: UserProfile,
     navigationOptions: ({ navigation }) => ({
       title: `Participante`,
-      headerStyle: { backgroundColor: "#417fd7" },
+      headerStyle: { backgroundColor: colors.mainBlue },
       headerTitleStyle: styles.headerTitleStyle,
       headerLeft: <BackButton navigation={navigation} />,
     }),
@@ -96,5 +96,5 @@ export default createSwitchNavigator(
   {
     backBehavior: "initialRoute",
     initialRouteName: "List",
-  },
+  }
 );

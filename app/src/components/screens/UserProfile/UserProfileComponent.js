@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.mainBlue,
-    backgroundColor: "#417FD7",
   },
   avatarContainer: {
     flexDirection: "column",

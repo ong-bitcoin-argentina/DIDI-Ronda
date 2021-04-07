@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Button } from "native-base";
 import Modal from "react-native-modal";
 import colors from "./colors";
@@ -14,7 +14,7 @@ export default class RoundPopUp extends Component {
   }
 
   componentWillUnmount() {
-    const { onRef } = this.props;
+    const { onRef } = this?.props;
     if (onRef) onRef(undefined);
   }
 
@@ -38,8 +38,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               accept();
               if (!notCloseAfterPositive) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.buttonText}>{acceptTitle || "OK"}</Text>
           </Button>
         )}
@@ -50,8 +49,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               positive();
               if (!notCloseAfterPositive) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.buttonText}>{positiveTitle || "Aceptar"}</Text>
           </Button>
         )}
@@ -61,8 +59,7 @@ export default class RoundPopUp extends Component {
             onPress={() => {
               negative();
               if (!notCloseAfterNegative) this.closePopUp();
-            }}
-          >
+            }}>
             <Text style={styles.negativeButtonText}>
               {negativeTitle || "Cancelar"}
             </Text>
@@ -99,28 +96,29 @@ export default class RoundPopUp extends Component {
         useNativeDriver
         animationType="slide"
         isVisible={isModalVisible}
-        backdropColor="rgba(0,0,0,0.5)"
-      >
+        backdropColor="rgba(0,0,0,0.5)">
         <View style={styles.container}>
-          {customContent ? (
-            customContent()
-          ) : (
-            <>
-              <View style={{ ...styles.titleContainer, ...titleStyle }}>
-                {icon && icon}
-                {value && <Text style={styles.value}>{value}</Text>}
-                <Text style={{ ...styles.title, ...titleTextStyle }}>
-                  {titleText}
-                </Text>
-              </View>
-              {children && (
-                <View style={styles.childrenContainer}>{children}</View>
-              )}
-              <View style={styles.buttonsContainer}>
-                {this.renderButtons()}
-              </View>
-            </>
-          )}
+          <ScrollView contentContainerStyle={styles.innerContainer}>
+            {customContent ? (
+              customContent()
+            ) : (
+              <>
+                <View style={{ ...styles.titleContainer, ...titleStyle }}>
+                  {icon && icon}
+                  {value && <Text style={styles.value}>{value}</Text>}
+                  <Text style={{ ...styles.title, ...titleTextStyle }}>
+                    {titleText}
+                  </Text>
+                </View>
+                {children && (
+                  <View style={styles.childrenContainer}>{children}</View>
+                )}
+                <View style={styles.buttonsContainer}>
+                  {this.renderButtons()}
+                </View>
+              </>
+            )}
+          </ScrollView>
         </View>
       </Modal>
     );
@@ -129,9 +127,8 @@ export default class RoundPopUp extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     borderRadius: 15,
-    paddingVertical: 25,
+    backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -140,6 +137,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.44,
     shadowRadius: 10.32,
     elevation: 16,
+  },
+  innerContainer: {
+    paddingVertical: 25,
   },
   titleContainer: {
     alignItems: "center",
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginVertical: 15,
+    paddingHorizontal: 25,
   },
   childrenContainer: {
     justifyContent: "space-around",

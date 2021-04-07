@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 });
 
 const ModalCreated = ({ open, roundName, onPressOK }) => {
-  const titleText = `La Ronda "${roundName}" se está creando, esto demorará unos minutos.\nTodas las personas que participan serán notificadas cuando esté lista.`;
+  const titleText = `La ronda "${roundName}" se está creando, esto demorará unos minutos.\nTodas las personas que participan serán notificadas cuando esté lista.`;
   const bodyText = `Hasta llegar a la fecha de inicio, la\nronda permanecera en la seccion "Por iniciar"`;
 
   return (

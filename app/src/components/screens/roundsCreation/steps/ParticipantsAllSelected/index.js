@@ -25,7 +25,7 @@ const ParticipantsAllSelected = props => {
     clearData,
   } = props;
 
-  const title = `Ya elegiste a todos los\nparticipantes de tu Ronda`;
+  const title = `Ya elegiste a todos los\nparticipantes de tu ronda`;
 
   const onPressGo = () => {
     if (!pickTurnsManual) return navigation.navigate("RuffleParticipants");
@@ -44,12 +44,16 @@ const ParticipantsAllSelected = props => {
     ? "Asignar y Sortear"
     : "Comenzar el sorteo";
   return (
-    <ScreenContainer navigation={navigation} step={7}>
+    <ScreenContainer navigation={navigation} step={3}>
       <CreationTitle
         title={title}
         iconName={screenIcon.name}
         iconType={screenIcon.type}
       />
+      <Text style={styles.text}>
+        <Text style={styles.bold}>Importante:</Text> los participantes podrán
+        ver que fueron asignados por sorteo.
+      </Text>
       <SelectedList renderDetail={false} participants={participants} />
       <View style={styles.container}>
         <Button onPress={onPressGo} style={styles.button}>
@@ -81,6 +85,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 25,
+  },
+  text: {
+    fontSize: 16,
+    color: colors.gray,
+    textAlign: "center",
+    backgroundColor: colors.backgroundGray,
+    paddingBottom: 16,
+  },
+  bold: {
+    fontWeight: "bold",
   },
   buttonText: {
     color: "white",

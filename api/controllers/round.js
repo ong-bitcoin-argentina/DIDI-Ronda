@@ -224,6 +224,7 @@ exports.simulateFinish = async (req, res) => {
       ? res.status(200).jsonp({ error: result.error })
       : res.status(200).jsonp(result);
   } catch (err) {
+    console.log(err);
     return err.name === "customError"
       ? generic(res, err.message)
       : generic(res, "");

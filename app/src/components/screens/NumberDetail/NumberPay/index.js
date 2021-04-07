@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Text,
   Tab,
@@ -10,7 +10,6 @@ import {
   Toast,
   Spinner,
   Container,
-  Content,
 } from "native-base";
 import QRCode from "react-native-qrcode-svg";
 import UserData from "../../UserProfile/UserProfileComponent";
@@ -35,12 +34,17 @@ const NumberPay = props => {
     reasignNumberRequest,
   } = props;
 
+  const [isPaying, setIsPaying] = useState(false);
+
   const roundId = navigation.getParam("roundId", null);
 
   useEffect(() => {
-    const { refreshRoundData } = props;
-    refreshRoundData(roundId);
+    refreshRound();
   }, []);
+
+  const refreshRound = async () => {
+    await props.refreshRoundData(roundId);
+  };
 
   // Check if requestRounds list exist (prevent crash)
   if (requestRounds.list.length === 0) {
@@ -72,7 +76,8 @@ const NumberPay = props => {
   shift.pays.forEach(p => {
     usersThatPaidShiftMap[p.participant] = p.participant;
   });
-  const allParticipantsPaid = round.participants.length === Object.keys(usersThatPaidShiftMap).length;
+  const allParticipantsPaid =
+    round.participants.length === Object.keys(usersThatPaidShiftMap).length;
   const participantPaid =
     shift.pays.filter(p => {
       return p.participant === fullParticipant.id;
@@ -89,12 +94,18 @@ const NumberPay = props => {
   const shiftCompleted = currentShift.status === "completed";
   const nextShift = round.shifts.find(s => s.number === number + 1);
   const nextShiftParticipants = nextShift && nextShift.participant;
+  const currentShiftIsParticipants = currentShift.participant.includes(
+    fullParticipant.id
+  );
+  const isCurrentShiftPayed = currentShift.isPayedToParticipant;
   const enabledForPayRound =
-    currentShift.participant.includes(fullParticipant.id) &&
+    currentShiftIsParticipants &&
+    !isCurrentShiftPayed &&
     currentShift.status === "current";
 
   // Methods
   const pay = async () => {
+    setIsPaying(true);
     const participantId = fullParticipant.id;
 
     if (participantId) {
@@ -119,16 +130,14 @@ const NumberPay = props => {
       <UserData participant={fullParticipant}>
         <Tabs
           tabBarUnderlineStyle={styles.tabHeaderBorder}
-          initialPage={initialTab}
-        >
+          initialPage={initialTab}>
           <Tab
             heading={
               <TabHeading style={styles.tabHeader}>
                 <Text style={styles.tabHeaderText}>APORTES</Text>
               </TabHeading>
-            }
-          >
-            <Content>
+            }>
+            <ScrollView>
               <View style={styles.paysContainer}>
                 <View style={styles.actionContainer}>
                   <PaymentsList
@@ -142,18 +151,21 @@ const NumberPay = props => {
                     <QRCode value={qrCode} size={150} />
                     {!shiftCompleted &&
                       !loading &&
-                      !isReceivingOrMakingPayment && (
+                      !isReceivingOrMakingPayment &&
+                      !isCurrentShiftPayed &&
+                      !isPaying && (
                         <Button
                           onPress={openPayNumberPopUp}
-                          disabled={participantPaid}
+                          disabled={
+                            participantPaid || isReceivingOrMakingPayment
+                          }
                           style={{
                             ...styles.payButton,
                             backgroundColor: participantPaid
                               ? colors.inactiveBlue
                               : colors.mainBlue,
                           }}
-                          uppercase={false}
-                        >
+                          uppercase={false}>
                           <Text uppercase={false} style={styles.textButton}>
                             {participantPaid
                               ? "Aporte ya hecho"
@@ -172,7 +184,9 @@ const NumberPay = props => {
 
                     {!loading &&
                       enabledForPayRound &&
-                      !isReceivingOrMakingPayment && (
+                      !isReceivingOrMakingPayment &&
+                      !participantPaid &&
+                      !isPaying && (
                         <ConfirmRoundPayment
                           loading={loading}
                           allParticipantsPayedNumber={allParticipantsPaid}
@@ -182,17 +196,31 @@ const NumberPay = props => {
                           number={number}
                         />
                       )}
-
-                    {isReceivingOrMakingPayment && (
-                      <View>
-                        <Spinner size={40} color={colors.mainBlue} />
+                    {!loading &&
+                      isCurrentShiftPayed &&
+                      currentShiftIsParticipants && (
+                        <View style={{ alignItems: "center" }}>
+                          <Button
+                            disabled
+                            style={{
+                              ...styles.payButton,
+                              backgroundColor: participantPaid
+                                ? colors.inactiveBlue
+                                : colors.mainBlue,
+                            }}>
+                            <Text uppercase={false}>Número ya pagado</Text>
+                          </Button>
+                        </View>
+                      )}
+                    {(isReceivingOrMakingPayment || isPaying) && (
+                      <View style={{ marginTop: 20 }}>
                         <Text>Un pago se esta procesando</Text>
                       </View>
                     )}
                   </View>
                 </View>
               </View>
-            </Content>
+            </ScrollView>
           </Tab>
           {!allShiftsCompleted && (
             <Tab
@@ -200,9 +228,8 @@ const NumberPay = props => {
                 <TabHeading style={styles.emptyHeader}>
                   <Text style={styles.tabHeaderText}>ASIGNAR #</Text>
                 </TabHeading>
-              }
-            >
-              <Content>
+              }>
+              <ScrollView>
                 <ReasignNumber
                   participantName={fullParticipant.user.name}
                   participantPicture={fullParticipant.user.image}
@@ -216,7 +243,7 @@ const NumberPay = props => {
                   roundFrequency={round.recurrence}
                   roundStartDate={round.startDate}
                 />
-              </Content>
+              </ScrollView>
             </Tab>
           )}
           {!allShiftsCompleted && (
@@ -226,9 +253,8 @@ const NumberPay = props => {
                 <TabHeading style={styles.emptyHeader}>
                   <Text style={styles.tabHeaderText}>REEMPLAZAR</Text>
                 </TabHeading>
-              }
-            >
-              <Content>
+              }>
+              <ScrollView>
                 <View style={{ marginVertical: 15, flex: 1 }}>
                   <Text style={{ textAlign: "center", fontWeight: "bold" }}>
                     Elige el participante que reemplazará a{" "}
@@ -236,7 +262,7 @@ const NumberPay = props => {
                   </Text>
                 </View>
                 <Swap {...props} participant={fullParticipant} />
-              </Content>
+              </ScrollView>
             </Tab>
           )}
         </Tabs>

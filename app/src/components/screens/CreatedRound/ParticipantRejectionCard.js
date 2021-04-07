@@ -21,7 +21,7 @@ const ParticipantRejectionCard = ({
 
   const handleOnReplacePress = () => replaceParticipant(participant);
 
-  const expirationBodyText = `${participantName} rechazó tu invitación a la Ronda.`;
+  const expirationBodyText = `${participantName} rechazó tu invitación a la ronda.`;
 
   const leftSection = (
     <View style={styles.iconContainer}>
@@ -45,12 +45,10 @@ const ParticipantRejectionCard = ({
             style={{
               flex: 0.1,
               flexDirection: "row",
-            }}
-          >
+            }}>
             <TouchableOpacity
               style={{ height: 30, justifyContent: "center" }}
-              onPress={handleOnReplacePress}
-            >
+              onPress={handleOnReplacePress}>
               <Text style={styles.replaceText}>
                 Reemplazar a {participantName} &gt;
               </Text>

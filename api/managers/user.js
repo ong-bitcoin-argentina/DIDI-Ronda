@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 exports.byUsername = async username => {
   return await User.findOne({
-    username: username
+    username: { $eq: username }
   })
     .then(user => user)
     .catch(err => ({ error: `${username}: ${err}` }));
@@ -20,7 +20,7 @@ exports.byDID = async did => {
 
 exports.fullByUsername = async username => {
   return await User.findOne({
-    username: username
+    username: { $eq: username }
   })
     .select("+password")
     .exec()
@@ -71,7 +71,7 @@ exports.byNick = async nick => {
 
 exports.byPhone = async phone => {
   return await User.findOne({
-    phone: phone
+    phone: { $eq: phone }
   })
     .then(user => user)
     .catch(err => ({ error: err }));

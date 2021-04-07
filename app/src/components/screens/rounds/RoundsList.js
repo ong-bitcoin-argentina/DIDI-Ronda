@@ -1,11 +1,12 @@
 import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Text, Spinner, Tab, Tabs, TabHeading, Icon } from "native-base";
+import { View, StyleSheet, FlatList, Dimensions } from "react-native";
+import { Text, Spinner, Tab, Tabs, TabHeading, Icon, Toast } from "native-base";
 import { connect } from "react-redux";
-
+import ConfirmCreateRoundFailed from "./ConfirmCreateRoundFailed";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import RoundListItem from "./RoundsListItem";
 import * as roundsActions from "../../../actions/rounds";
+import * as roundsCreation from "../../../actions/roundCreation";
 import * as notificationsActions from "../../../actions/notifications";
 import colors from "../../components/colors";
 import { getAuth } from "../../../utils/utils";
@@ -15,6 +16,15 @@ import { setRouteOptions } from "../../../actions/routeOptions";
 import WarningSCModal from "../../components/WarningSCModal";
 import { notificationsCodes } from "../../../utils/constants";
 import ConfirmModal from "../../components/ConfirmModal";
+import {
+  getRoundsCreationFail,
+  deleteRoundFailByIndex,
+} from "../../../services/asyncStorage/index";
+import RoundsListItemFail from "./RoundsListItemFail";
+import { getDiffOfDaysToToday } from "../../../utils/dates";
+import ChangeDateRoundFailed from "./ChangeDateRoundFailed";
+
+const widthScreen = Dimensions.get("screen").width;
 
 class RoundsList extends React.Component {
   state = {
@@ -24,16 +34,27 @@ class RoundsList extends React.Component {
     loading: true,
     showSCModal: false,
     confirmAlert: null,
+    failedRounds: null,
+    showConfirmRF: false,
+    roundFailedSelected: null,
+    showChangeDate: false,
+  };
+
+  static navigationOptions = {
+    tabBarOptions: {
+      showLabel: true,
+    },
   };
 
   async componentDidMount() {
+    const failed = await getRoundsCreationFail();
     // Load rounds if = 0
     const { requestRounds, loadRounds, getAllStoredRounds } = this.props;
     if (requestRounds.list.length === 0) await loadRounds();
     await getAllStoredRounds();
     await this.updateAuth();
     this.handleSCWarning();
-    this.setState({ loading: false });
+    this.setState({ loading: false, failedRounds: failed });
   }
 
   onDeleteStoredRound = async roundIndex => {
@@ -85,7 +106,15 @@ class RoundsList extends React.Component {
   };
 
   filterRounds = (roundsData, currentStatus) => {
-    return roundsData.filter(r => {
+    let output = [];
+    if (currentStatus === "starting") {
+      output = this.state.failedRounds?.map((round, indexRound) => ({
+        ...round,
+        indexRound,
+      }));
+    }
+
+    const data = roundsData.filter(r => {
       // Active tab
       if (currentStatus === "active")
         return (
@@ -101,6 +130,8 @@ class RoundsList extends React.Component {
         return !r.shifts.find(s => ["pending", "current"].includes(s.status));
       return false;
     });
+
+    return output ? output.concat(data) : data;
   };
 
   manageStoredRoundPress = roundIndex => {
@@ -131,12 +162,6 @@ class RoundsList extends React.Component {
     return navigation.navigate("RoundDetail", params);
   };
 
-  static navigationOptions = {
-    tabBarOptions: {
-      showLabel: true,
-    },
-  };
-
   renderContent = (rounds, status) => {
     const { auth } = this.state;
 
@@ -154,60 +179,58 @@ class RoundsList extends React.Component {
 
     if (this.state.loading) return <Spinner />;
     // We have to append the list of rounds to Edit first.
+
     return (
       <FlatList
         data={roundsToRender}
-        renderItem={({ item }) => (
-          <RoundListItem
-            detail={this.roundItemPress}
-            onDeleteStoredRound={this.onDeleteStoredRound}
-            {...item}
-            auth={auth}
-            pending
-          />
-        )}
+        renderItem={({ item, index }) =>
+          item.hasOwnProperty("start") ? (
+            <RoundListItem
+              detail={this.roundItemPress}
+              onDeleteStoredRound={this.onDeleteStoredRound}
+              {...item}
+              auth={auth}
+              pending
+            />
+          ) : (
+            <RoundsListItemFail
+              round={item}
+              onClick={this.onSelectRoundFailToCreateAgain}
+              handleOnDelete={this.processOnDeleteFiledRound}
+            />
+          )
+        }
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.flatListContent}
       />
     );
   };
 
   renderNoRoundsSection = status => {
-    const bodyText = "Para crear una ronda, hace click en\nel ";
+    const bodyText = "Para crear una ronda, apretá en\nel ";
     const boldBodyText = "círculo amarillo";
     const statuses = {
-      active: "Aún no tenés Rondas\nactivas",
-      starting: "Aún no tenés Rondas\nen curso",
-      completed: "Aún no tenés Rondas\nfinalizadas",
+      active: "Aún no tenés rondas\nactivas",
+      starting: "Aún no tenés rondas\nen curso",
+      completed: "Aún no tenés rondas\nfinalizadas",
     };
 
     return (
-      <View
-        style={{ flex: 0.8, justifyContent: "center", alignItems: "center" }}>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
+      <View style={styles.noRoundsSectionContainer}>
+        <View style={styles.warningIconContainer}>
           <Icon
             type="MaterialCommunityIcons"
             name="alert"
-            style={{ color: colors.yellow, fontSize: 60 }}
+            style={styles.warningIcon}
           />
         </View>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
-          <Text
-            style={{
-              fontSize: 24,
-              lineHeight: 30,
-              fontWeight: "bold",
-              color: colors.mainBlue,
-              textAlign: "center",
-            }}>
-            {statuses[status]}
-          </Text>
+        <View style={styles.warningTitleContainer}>
+          <Text style={styles.warningTitle}>{statuses[status]}</Text>
         </View>
-        <View style={{ flexDirection: "row", flex: 0.15 }}>
+        <View style={styles.warningTextContainer}>
           <Text style={{ textAlign: "center" }}>
             {bodyText}
-            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-              {boldBodyText}
-            </Text>
+            <Text style={styles.warningBoldText}>{boldBodyText}</Text>
           </Text>
         </View>
       </View>
@@ -237,7 +260,7 @@ class RoundsList extends React.Component {
         key={t.key}
         heading={
           <TabHeading style={styles.roundsTabs}>
-            <Text>{t.title}</Text>
+            <Text style={styles.tabTitle}>{t.title}</Text>
           </TabHeading>
         }>
         {this.renderContent(roundsList, t.contentType)}
@@ -250,6 +273,84 @@ class RoundsList extends React.Component {
     this.setState({ loading: true });
     await this.props.loadRounds(event);
     this.setState({ loading: false });
+  };
+
+  onCancelCreationRoundFail = () => {
+    this.setState({
+      showConfirmRF: false,
+      roundFailedSelected: null,
+    });
+  };
+
+  onCancelChangeDateRoundFail = () => {
+    this.setState({
+      showChangeDate: false,
+      roundFailedSelected: null,
+    });
+  };
+
+  onConfirmCreationRoundFail = async () => {
+    // Check if date selected is > today
+    const dateSelected = new Date(this.state.roundFailedSelected.date);
+
+    if (getDiffOfDaysToToday(dateSelected) < 1) {
+      this.setState({ showConfirmRF: false, showChangeDate: true });
+    } else {
+      this.setState(
+        { loading: true },
+        async () =>
+          await this.doCreateRoundByFailedOne(this.state.roundFailedSelected)
+      );
+    }
+  };
+
+  onConfirmChangeDateRoundFail = async date => {
+    const updatedRound = { ...this.state.roundFailedSelected, date };
+    this.setState({ loading: true });
+    await this.doCreateRoundByFailedOne(updatedRound);
+  };
+
+  doCreateRoundByFailedOne = async updatedRound => {
+    try {
+      const { indexRound } = updatedRound;
+      await this.props.createRoundByFailedRound(updatedRound);
+      const failedRounds = await deleteRoundFailByIndex(indexRound);
+      this.setState({
+        failedRounds,
+        roundFailedSelected: null,
+      });
+    } catch (error) {
+      Toast.show({
+        text: "Hubo un problema al intentar crear la ronda, intente mas tarde",
+        position: "top",
+        type: "danger",
+      });
+    } finally {
+      this.props.clearData();
+      this.setState({
+        loading: false,
+        showChangeDate: false,
+        showConfirmRF: false,
+      });
+    }
+  };
+
+  onSelectRoundFailToCreateAgain = roundData => {
+    this.setState({
+      showConfirmRF: true,
+      roundFailedSelected: roundData,
+    });
+  };
+
+  processOnDeleteFiledRound = async () => {
+    this.setState({
+      loading: true,
+    });
+    const failed = await getRoundsCreationFail();
+    this.setState({
+      failedRounds: failed,
+      loading: false,
+    });
   };
 
   render() {
@@ -288,6 +389,18 @@ class RoundsList extends React.Component {
         {this.state.confirmAlert && (
           <ConfirmModal {...this.state.confirmAlert} />
         )}
+        <ConfirmCreateRoundFailed
+          loading={this.state.loading}
+          open={this.state.showConfirmRF}
+          onCancel={this.onCancelCreationRoundFail}
+          onContinue={this.onConfirmCreationRoundFail}
+        />
+        <ChangeDateRoundFailed
+          loading={this.state.loading}
+          open={this.state.showChangeDate}
+          onCancel={this.onCancelChangeDateRoundFail}
+          onContinue={this.onConfirmChangeDateRoundFail}
+        />
       </View>
     );
   }
@@ -301,6 +414,7 @@ const mapStateToPropsList = state => {
     haveFailedRegisterNotification: state.notifications.list.some(
       item => item.code === notificationsCodes.errorSC
     ),
+    roundRequest: state.roundCreation.request,
   };
 };
 
@@ -313,6 +427,8 @@ const mapDispatchToPropsList = dispatch => ({
   editRound: round => dispatch(setEditRoundData(round)),
   saveRouteOptions: options => dispatch(setRouteOptions(options)),
   getNotifications: () => notificationsActions.getNotifications(dispatch),
+  createRoundByFailedRound: async round =>
+    dispatch(roundsCreation.createRoundByFailedRound(round)),
 });
 
 const styles = StyleSheet.create({
@@ -338,6 +454,39 @@ const styles = StyleSheet.create({
   },
   roundsTabs: {
     backgroundColor: colors.mainBlue,
+  },
+  tabTitle: {
+    fontSize: widthScreen < 360 ? 14 : 16,
+  },
+  warningIconContainer: {
+    flexDirection: "row",
+  },
+  warningTitleContainer: {
+    flexDirection: "row",
+    marginVertical: 15,
+  },
+  warningTextContainer: {
+    flexDirection: "row",
+  },
+  warningTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontWeight: "bold",
+    color: colors.mainBlue,
+    textAlign: "center",
+  },
+  warningIcon: {
+    color: colors.yellow,
+    fontSize: 60,
+  },
+  warningBoldText: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  noRoundsSectionContainer: {
+    flex: 0.8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

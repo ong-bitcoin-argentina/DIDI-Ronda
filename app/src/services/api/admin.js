@@ -24,20 +24,6 @@ export const reSendInvite = async id => {
   }
 };
 
-export const closeRound = async (roundId, number, nextParticipants) => {
-  try {
-    return await apiCall(
-      "post",
-      `/admin/round/${roundId}/number/${number}/complete`,
-      {
-        nextParticipants,
-      }
-    );
-  } catch (error) {
-    return { error };
-  }
-};
-
 export const swapParticipant = async (idParticipant, newUser, roundId) => {
   try {
     return await apiCall(

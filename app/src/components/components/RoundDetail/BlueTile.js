@@ -1,18 +1,38 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Icon } from "native-base";
 import colors from "../colors";
 import CheckWithCircle from "../icons/CheckWithCircle";
+import TileRow from "./TileRow";
+import BaseDrawModal from "./BaseDrawModal";
+import {
+  ASSIGNMENT_MODES,
+  ASSIGNMENT_MODES_NORMALIZED,
+} from "../../../utils/constants";
 
 const BlueTile = props => {
   const {
     title,
     amount,
+    round,
     number,
     paymentDate,
     collectedMoney,
     completedCollection,
   } = props;
+
+  const [showDraw, setShowDraw] = useState(false);
+
+  const toggleDrawModal = () => setShowDraw(!showDraw);
+
+  const myShift = round.shifts.find(item => item.number === number);
+  const assignmentMode = myShift?.assignmentMode;
+  const normalizedMode = ASSIGNMENT_MODES_NORMALIZED[assignmentMode];
+  const isLottery = assignmentMode === ASSIGNMENT_MODES.lottery;
+  const lotteryExtraText = isLottery ? " (Ver)" : null;
+  const winnerIndex = round.participants.findIndex(
+    ({ _id }) => myShift?.participant[0] === _id
+  );
 
   return (
     <View style={styles.container}>
@@ -33,8 +53,7 @@ const BlueTile = props => {
             ...styles.infoColumn,
             flexDirection: "row",
             justifyContent: "flex-end",
-          }}
-        >
+          }}>
           <Icon style={styles.icon} type="MaterialIcons" name="attach-money" />
           <Text style={[styles.text, styles.amountText]}>{amount}</Text>
         </View>
@@ -58,8 +77,7 @@ const BlueTile = props => {
               ...styles.infoColumn,
               flexDirection: "row",
               justifyContent: "flex-end",
-            }}
-          >
+            }}>
             <Icon
               style={{ ...styles.icon, fontSize: 20 }}
               type="MaterialIcons"
@@ -74,8 +92,7 @@ const BlueTile = props => {
                   flexDirection: "row",
                   alignContent: "center",
                   marginLeft: 10,
-                }}
-              >
+                }}>
                 <CheckWithCircle />
               </View>
             )}
@@ -83,23 +100,28 @@ const BlueTile = props => {
         </View>
       )}
       {number && !collectedMoney && (
-        <View style={styles.rowContainer}>
-          <View style={styles.iconColumn}>
-            <Icon
-              style={styles.lightIcon}
-              type="MaterialCommunityIcons"
-              name="bookmark-outline"
-            />
-          </View>
-          <View style={styles.titleColumn}>
-            <Text style={[styles.text, styles.descLightText]}>
-              Número asignado
-            </Text>
-          </View>
-          <View style={styles.infoColumn}>
-            <Text style={[styles.text, styles.descLightText]}>{number}</Text>
-          </View>
-        </View>
+        <TileRow
+          label="Número asignado"
+          value={number}
+          icon="bookmark-outline"
+        />
+      )}
+      {!!normalizedMode && (
+        <TileRow
+          label="Asignado por"
+          value={
+            !isLottery || !round.participantsVisible ? (
+              normalizedMode
+            ) : (
+              <TouchableOpacity onPress={toggleDrawModal}>
+                <Text style={styles.lotteryModeButton}>
+                  {`${normalizedMode}${lotteryExtraText}`}
+                </Text>
+              </TouchableOpacity>
+            )
+          }
+          icon="cogs"
+        />
       )}
       {paymentDate && !collectedMoney && (
         <View style={styles.rowContainer}>
@@ -122,6 +144,14 @@ const BlueTile = props => {
           </View>
         </View>
       )}
+
+      <BaseDrawModal
+        winner={winnerIndex}
+        round={round}
+        number={number}
+        visible={showDraw}
+        onFinish={toggleDrawModal}
+      />
     </View>
   );
 };
@@ -151,6 +181,10 @@ const styles = StyleSheet.create({
   infoColumn: {
     flex: 0.4,
     alignItems: "flex-end",
+  },
+  lotteryModeButton: {
+    color: "white",
+    textDecorationLine: "underline",
   },
   lightIcon: {
     color: "white",

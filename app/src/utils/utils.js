@@ -91,6 +91,7 @@ export const getToken = async () => {
 export const logOut = async () => {
   try {
     await AsyncStorage.removeItem("auth");
+    await AsyncStorage.removeItem("fcmToken");
     store.dispatch({ type: "LOGOUT" });
     NavigationService.navigate("Login");
     return true;

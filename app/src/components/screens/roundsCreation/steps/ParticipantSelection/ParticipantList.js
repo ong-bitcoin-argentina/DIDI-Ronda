@@ -60,7 +60,7 @@ class ParticipantList extends Component {
           this.addAdminParticipant();
         }
         this.checkPermissions();
-      },
+      }
     );
   }
 
@@ -167,7 +167,7 @@ class ParticipantList extends Component {
     };
 
     const exists = participants.find(
-      p => p.phantom && p.phone === phantomNumber,
+      p => p.phantom && p.phone === phantomNumber
     );
 
     const { phantomsToAppend } = { ...this.state };
@@ -225,7 +225,7 @@ class ParticipantList extends Component {
 
     if (!admin && takenShifts >= totalShifts) {
       this.openModal(
-        "¡Alcanzaste el número máximo de participantes de esta Ronda!",
+        "¡Alcanzaste el número máximo de participantes de esta ronda!"
       );
     } else {
       const contactPhoneNumber = contact.phantom
@@ -253,7 +253,7 @@ class ParticipantList extends Component {
           this.openModal(
             "Si algún participante quiere tener 2 o más números, debés elegirlo la misma cantidad de veces.",
             null,
-            <PeopleWithExclamation />,
+            <PeopleWithExclamation />
           );
           this.setState({ openedDoubleNumberNotice: true });
         }
@@ -282,7 +282,7 @@ class ParticipantList extends Component {
     }
 
     const found = data.find(p =>
-      p.phantom ? true : p.phone === contact.phone,
+      p.phantom ? true : p.phone === contact.phone
     );
 
     if (found && !found.admin) {
@@ -389,10 +389,10 @@ const styles = StyleSheet.create({
   },
   phantomButtonText: {
     fontSize: 11,
-    color: "#3198b5",
+    color: colors.mainBlue,
     fontStyle: "italic",
-    marginVertical: 10,
-    textDecorationLine: "underline",
+    fontWeight: "bold",
+    marginVertical: 15,
   },
   searchContainer: {
     flexDirection: "row-reverse",

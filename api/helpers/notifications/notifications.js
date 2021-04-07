@@ -82,31 +82,31 @@ exports.inviteRound = async round => {
 };
 
 exports.completedRound = async round => {
-  // Remove admin
-  const participants = round.participants.filter(p => p.user !== round.admin);
-
   // Get tokens
-  const tokens = participants.map(p => p.user.token).filter(t => t);
-
-  const endDate = moment().format("DD/MM/YYYY");
-
-  // Create data for redirect
-  const data = {
-    action: JSON.stringify({
-      routeName: "RoundDetail",
-      params: { _id: round._id }
-    })
-  };
+  const tokens = round.participants.map(p => p.user.token).filter(t => t);
 
   // Send notifications
-  const notifications = await createAndPersistNotification(
-    tokens,
-    "round-completed",
-    roundCompleted(round.name, endDate),
-    data
-  );
+  if (tokens.length) {
+    const endDate = moment().format("DD/MM/YYYY");
 
-  return notifications;
+    // Create data for redirect
+    const data = {
+      action: JSON.stringify({
+        routeName: "RoundDetail",
+        params: { _id: round._id }
+      })
+    };
+
+    const notifications = await createAndPersistNotification(
+      tokens,
+      "round-completed",
+      roundCompleted(round.name, endDate),
+      data
+    );
+
+    return notifications;
+  }
+  return;
 };
 
 exports.startedRound = async round => {
@@ -377,6 +377,25 @@ exports.schedulePayRemember = round => {
         notificationDate,
         round._id,
         shift.number
+      );
+    });
+  }
+};
+
+// SCHEDULES LAST DAY BEFORE EXPIRATION NOTIFICATION
+exports.scheduleLastDayBeforeExpirationRemember = round => {
+  // Only if recurrence is not daily
+  if (round.recurrence !== "d") {
+    // Create task schedule for all shifts
+    round.shifts.forEach(async shift => {
+      const aDayBeforeLimit = moment(shift.limitDate).subtract(1, "days");
+
+      // Create task
+      return jobs.createPayRememberJob(
+        aDayBeforeLimit,
+        round._id,
+        shift.number,
+        true
       );
     });
   }

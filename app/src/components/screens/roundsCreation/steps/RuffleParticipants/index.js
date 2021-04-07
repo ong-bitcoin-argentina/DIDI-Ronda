@@ -61,7 +61,7 @@ const RuffleParticipants = props => {
   } = props;
   // First we checked the already assigned participants
   const assignedNumbersData = getAssigned(assignedNumbers);
-  const currentNumber = getCurrentNumber(assignedNumbersData, turns);
+  const currentNumber = getCurrentNumber(assignedNumbersData, turns.length);
 
   const remainingParticipants = getRemainingParticipants(
     participants,
@@ -135,7 +135,7 @@ const RuffleParticipants = props => {
         )}
         {!remainingParticipants.length && (
           <Button style={styles.button} onPress={onCreatePress}>
-            <Text style={styles.buttonText}>Finalizar y Crear Ronda</Text>
+            <Text style={styles.buttonText}>Finalizar y Crear ronda</Text>
           </Button>
         )}
         {!!assignedNumbersData.length && (

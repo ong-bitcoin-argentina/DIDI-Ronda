@@ -16,6 +16,7 @@ import {
 } from "../../../../../actions/roundCreation";
 import NumberListTitle from "./numberListTitle";
 import PreRuffleModal from "./PreRuffleModal";
+import { ASSIGNMENT_MODES } from "../../../../../utils/constants";
 
 const screenIcon = {
   type: "MaterialIcons",
@@ -60,6 +61,7 @@ const SelectParticipantNumbers = props => {
     turns,
     frequency,
     date,
+    setTurnAssignmentMode,
     setNewAssignedNumber: addAssignedNumber,
     removeNumber,
     saveRoundForLater,
@@ -76,7 +78,7 @@ const SelectParticipantNumbers = props => {
   }, []);
 
   // First we checked the already assigned participants
-  const assignedNumbersData = getAssigned(assignedNumbers, turns, date);
+  const assignedNumbersData = getAssigned(assignedNumbers, turns.length, date);
 
   const remainingParticipants = getRemainingParticipants(
     participants,
@@ -95,10 +97,12 @@ const SelectParticipantNumbers = props => {
       number,
     };
 
+    setTurnAssignmentMode(number, ASSIGNMENT_MODES.manual);
     addAssignedNumber(number, numberToAdd);
   };
 
   const onPressRemoveParticipantNumber = number => {
+    setTurnAssignmentMode(number, ASSIGNMENT_MODES.lottery);
     removeNumber(number);
   };
 
@@ -118,7 +122,7 @@ const SelectParticipantNumbers = props => {
   const allNumbersSelected =
     remainingParticipants && remainingParticipants.length === 0;
   return (
-    <ScreenContainer navigation={navigation} step={8}>
+    <ScreenContainer navigation={navigation} step={5}>
       <CreationTitle
         title={title}
         titleViewStyle={{ paddingBottom: 5 }}
@@ -127,6 +131,10 @@ const SelectParticipantNumbers = props => {
         iconName={screenIcon.name}
         iconType={screenIcon.type}
       />
+      <Text style={styles.text}>
+        <Text style={styles.bold}>Importante:</Text> Los participantes podrán
+        ver como fueron asignados.
+      </Text>
       <SelectedList
         avatarSize={30}
         renderDetail={false}
@@ -151,7 +159,7 @@ const SelectParticipantNumbers = props => {
               return (
                 <ParticipantNumberItem
                   name={item.name}
-                  scrollableRef={numbersListRef.current}
+                  scrollableRef={numbersListRef}
                   picture={item.picture}
                   maxNumber={assignedNumbersData.length}
                   onPressRemoveParticipantNumber={
@@ -197,11 +205,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundGray,
     flex: 1,
   },
-  title: {
+  text: {
     fontSize: 16,
-    fontWeight: "bold",
     color: colors.gray,
     textAlign: "center",
+    backgroundColor: colors.backgroundGray,
+  },
+  bold: {
+    fontWeight: "bold",
   },
   button: {
     width: "80%",

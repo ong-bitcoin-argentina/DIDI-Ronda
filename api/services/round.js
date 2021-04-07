@@ -47,7 +47,8 @@ exports.create = async req => {
     firstPaymentDate,
     username,
     shifts,
-    participants
+    participants,
+    participantsVisible
   } = req.body;
   console.log("creating round", name, username);
   // Check at least 1 participant
@@ -74,7 +75,8 @@ exports.create = async req => {
     startDate,
     limitDate,
     firstPaymentDate,
-    admin
+    admin,
+    participantsVisible
   );
 
   // Control shiftsQty vs shifts (participants can take 1/2 shift)
@@ -197,8 +199,8 @@ exports.create = async req => {
       });
   });
   // Create shifts
-  const shifts_populated = Array.apply(null, Array(shifts)).map((n, idx) => {
-    const number = idx + 1;
+  const shifts_populated = shifts.map((shift, index) => {
+    const number = index + 1;
 
     const findParticipant = participantsNumber
       .filter(e => e.number === number)
@@ -214,7 +216,8 @@ exports.create = async req => {
       number: number,
       participant: findParticipant,
       pays: [],
-      limitDate: shiftLimitDate
+      limitDate: shiftLimitDate,
+      assignmentMode: shift.assignmentMode
     };
   });
 
@@ -553,6 +556,7 @@ exports.assignShiftNumber = async req => {
 
 exports.simulateFinish = async id => {
   const round = await round_manager.findById(id);
+  if (!round) throw new customError("round doesn't exists");
 
   const { recurrence, shifts, participants } = round;
 
@@ -574,6 +578,8 @@ exports.simulateFinish = async id => {
     });
   });
 
-  round.completed = true;
+  const lastShiftIndex = round.shifts.length - 1;
+  round.shifts[lastShiftIndex].status = "current";
+
   return await round_manager.save(round);
 };

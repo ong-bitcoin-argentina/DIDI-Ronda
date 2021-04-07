@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const recurrenceKeys = Object.keys(config.recurrenceConfig);
-const { normalRecurrenceValues } = config;
+const { normalRecurrenceValues, assignmentsModesKeys } = config;
 
 const roundSchema = new Schema(
   {
@@ -20,6 +20,7 @@ const roundSchema = new Schema(
     participants: [{ type: ObjectId, ref: "Participant" }],
     isConfirmed: { type: Boolean, default: false },
     isBeingStarted: { type: Boolean, default: false },
+    participantsVisible: { type: Boolean, default: false },
     createdAt: { type: Date, default: new Date() },
     shifts: {
       type: [
@@ -41,6 +42,11 @@ const roundSchema = new Schema(
           limitDate: { type: Date, required: true },
           isPayedToParticipant: { type: Boolean, default: false },
           isBeingPayed: { type: Boolean, default: false },
+          assignmentMode: {
+            type: String,
+            enum: assignmentsModesKeys,
+            required: true
+          },
           status: {
             type: String,
             required: true,

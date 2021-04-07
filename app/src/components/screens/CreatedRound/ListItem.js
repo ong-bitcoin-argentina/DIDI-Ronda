@@ -94,8 +94,7 @@ const ListItem = props => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => handleNavigation(participant)}
-      >
+        onPress={() => handleNavigation(participant)}>
         {shouldRenderNumber && (
           <View>
             <Bookmark number={number} />

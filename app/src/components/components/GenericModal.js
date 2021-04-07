@@ -9,16 +9,22 @@ import Modal from "react-native-modal";
  *
  *
  */
-const GenericModal = ({ open, onOpen, onClose, children }) => {
+const GenericModal = ({
+  open,
+  onOpen,
+  onClose,
+  backdropColor = "rgba(0,0,0,.4)",
+  children,
+}) => {
   return (
     <Modal
       useNativeDriver
       animationType="slide"
-      onModalWillShow={onOpen && onOpen()}
-      onModalWillHide={onClose && onClose()}
+      onModalWillShow={() => onOpen && onOpen()}
+      onModalWillHide={() => onClose && onClose()}
+      onBackButtonPress={() => onClose && onClose()}
       isVisible={open}
-      backdropColor="rgba(0,0,0,0.5)"
-    >
+      backdropColor={backdropColor}>
       {children}
     </Modal>
   );

@@ -78,11 +78,40 @@ export const chargeNumber = async (roundId, participantId, number) => {
   }
 };
 
+export const adminPaysNumberToUser = async (roundId, participantId, number) => {
+  try {
+    return await apiCall(
+      "post",
+      `/admin/round/${roundId}/number/${number}/payNumberToParticipant`,
+      {
+        participantId,
+      }
+    );
+  } catch (error) {
+    return { error };
+  }
+};
+
 export const requestPayment = async (roundId, participantId) => {
   try {
     return await apiCall(
       "post",
       `/participant/round/${roundId}/participant/${participantId}/requestPayment`,
+      {
+        participantId,
+        roundId,
+      }
+    );
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const requestAdminAcceptPayment = async (roundId, participantId) => {
+  try {
+    return await apiCall(
+      "post",
+      `/participant/round/${roundId}/participant/${participantId}/requestAdminAcceptPayment`,
       {
         participantId,
         roundId,

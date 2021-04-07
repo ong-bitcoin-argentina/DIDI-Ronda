@@ -15,7 +15,6 @@ const Component = props => {
     picture,
     name,
     amountPerShift,
-    shiftsQty,
     userPay,
     active,
     number,
@@ -32,8 +31,7 @@ const Component = props => {
         ...styles.itemContainer,
         borderWidth: active ? 2 : 0,
         borderColor: colors.mainBlue,
-      }}
-    >
+      }}>
       <View style={styles.participantContainer}>
         <View style={styles.bookmarkContainer}>
           <Bookmark
@@ -58,9 +56,7 @@ const Component = props => {
           <View style={styles.iconStatusContainer}>
             {userPay ? <MoneyIcon /> : <ExclamationIcon />}
             <Text style={styles.statusText}>
-              {userPay
-                ? `$ ${amountFormat(amountPerShift * shiftsQty)}`
-                : "Pendiente"}
+              {userPay ? `$ ${amountFormat(amountPerShift)}` : "Pendiente"}
             </Text>
           </View>
         </View>

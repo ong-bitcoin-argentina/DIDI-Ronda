@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Config from "react-native-config";
+import analytics from "@react-native-firebase/analytics";
 import { connect } from "react-redux";
+import { AppInstalledChecker } from "react-native-check-app-install";
 import { Button, Spinner, Icon } from "native-base";
 import {
   View,
@@ -21,9 +22,11 @@ import {
   getToken,
   openAdiLogin,
   links,
+  openPlayStoreToUpdateAidi,
 } from "./../../../utils/appRouter";
 import Logo from "../../../assets/img/app-logo.svg";
 import LinkModal from "../../components/LinkModal";
+import requestFirebasePermission from "../../../services/notifications";
 
 const states = {
   initial: "initial",
@@ -34,12 +37,15 @@ const states = {
 const Login = props => {
   const [state, setState] = useState(states.initial);
   const [modalVisible, setModalVisible] = useState(false);
+  const [needUpdate, setNeedUpdate] = useState(false);
 
   const handleLogin = async link => {
     if (!link) return;
     if (loginSuccess(link)) {
       setState(states.success);
-      await loginWithAidi(getToken(link));
+      const token = getToken(link);
+      const firebaseToken = await requestFirebasePermission();
+      await loginWithAidi(token, firebaseToken);
     } else if (loginDenied(link)) {
       setState(states.denied);
     }
@@ -54,18 +60,29 @@ const Login = props => {
     };
   }, []);
 
-  const loginWithAidi = async token => await props.loginWithAidi(token);
+  const loginWithAidi = async (token, firebaseToken) =>
+    await props.loginWithAidi(token, firebaseToken);
 
   const onLoginWithAidi = async () => {
-    const canOpen = await Linking.canOpenURL(links.login.deepLink);
-    if (!canOpen) {
+    Linking.openURL(links.login.deepLink).catch(async () => {
+      const isInstalled = await AppInstalledChecker.isAppInstalledAndroid(
+        "com.aidi"
+      );
+
+      setNeedUpdate(isInstalled);
+
+      const name = isInstalled ? "ModalUpdateAidi" : "ModalInstallAidi";
+      analytics().logScreenView({
+        screen_class: name,
+        screen_name: name,
+      });
+
       return setModalVisible(true);
-    }
-    await openAdiLogin();
+    });
   };
 
   const openPlaystore = async () => {
-    await openAdiLogin();
+    needUpdate ? await openPlayStoreToUpdateAidi() : await openAdiLogin();
   };
 
   // const forgot = () => props.navigation.navigate('Forgot');
@@ -87,7 +104,7 @@ const Login = props => {
   const renderAuthWarning = () => {
     const title = "¡Error de Autenticación!";
     const message =
-      "Ha ocurrido un error al ingresar en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al ingresar en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };
@@ -95,7 +112,7 @@ const Login = props => {
   const renderErrorLoginWarning = () => {
     const title = "¡Error de inicio de sesión!";
     const message =
-      "Ha ocurrido un error al intentar iniciar sesión en Ronda con tu cuenta de ai·di.";
+      "Ha ocurrido un error al intentar iniciar sesión en ronda con tu cuenta de ai·di.";
 
     return renderWarning(title, message);
   };
@@ -121,9 +138,7 @@ const Login = props => {
           background={TouchableNativeFeedback.Ripple("lightgray", false)}
           onPress={onLoginWithAidi}
           style={styles.button}>
-          <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>
-            Conectate con ai·di
-          </Text>
+          <Text style={styles.buttonText}>Conectate con ai·di</Text>
         </Button>
         {state === states.denied
           ? renderAuthWarning()
@@ -136,6 +151,7 @@ const Login = props => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         onConfirm={openPlaystore}
+        needUpdate={needUpdate}
       />
     </ImageBackground>
   );
@@ -171,6 +187,11 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
   },
   buttonTransparent: {
     marginTop: 30,
@@ -224,8 +245,8 @@ const mapDispatchToProps = dispatch => {
     login: (username, password) => {
       dispatch(actions.login(username, password));
     },
-    loginWithAidi: token => {
-      dispatch(actions.loginWithAidi(token));
+    loginWithAidi: (token, firebaseToken) => {
+      dispatch(actions.loginWithAidi(token, firebaseToken));
     },
   };
 };

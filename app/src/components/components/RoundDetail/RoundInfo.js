@@ -102,10 +102,16 @@ const RoundInfo = props => {
   const participantTotalPay = amountPerShift * participantNumbers.length;
 
   const enabledForPayRound =
-    round.start && allPaysCompleted && currentShift.status === "current";
-  const { number: myNumber } = round.shifts.find(
+    round.start &&
+    allPaysCompleted &&
+    currentShift.status === "current" &&
+    !currentShift.isPayedToParticipant;
+
+  const myShift = round.shifts.find(
     s => s.participant[0] === userParticipant._id
   );
+  const myNumber = myShift?.number;
+
   const myNumberPaymentDate = getFormattedDate(
     getPaymentDate(round.startDate, round.recurrence, myNumber).date
   );
@@ -156,7 +162,9 @@ const RoundInfo = props => {
     if (!isNumberFromParticipant) return false;
     const limitDate = new Date(number.limitDate);
     const today = new Date();
+    const { isPayedToParticipant } = number;
     return (
+      !isPayedToParticipant &&
       round.start &&
       number.status === "current" &&
       allPaysCompleted &&
@@ -179,7 +187,10 @@ const RoundInfo = props => {
 
   useEffect(() => {
     if (!chargeNumber.loading && chargeNumber.error) {
-      alertModal("Hubo un error. Intentalo nuevamente.", true);
+      alertModal(
+        "Hubo un error al reasignar el número. Intentalo nuevamente.",
+        true
+      );
       chargeNumberClean();
     }
   }, [chargeNumber]);
@@ -194,6 +205,7 @@ const RoundInfo = props => {
       />
       <BlueTile
         title={round.name}
+        round={round}
         amount={amountFormat(round.amount)}
         number={myNumber}
         completedCollection={allPaysCompleted}
@@ -206,7 +218,6 @@ const RoundInfo = props => {
           <View style={styles.paymentSectionOuterContainer}>
             <View style={styles.paymentSectionInnerContainer}>
               <View style={{ justifyContent: "center" }}>
-                <Spinner size={40} color={colors.mainBlue} />
                 <Text style={{ fontSize: 13, textAlign: "center" }}>
                   Hay un pago en proceso. Te llegará una notificación cuando se
                   complete.
@@ -371,6 +382,17 @@ const RoundInfo = props => {
         <CaptionInfo title="Administrador">
           <View style={styles.participantsContainer}>
             <ParticipantHList participants={[roundAdminParticipant]} detail />
+          </View>
+        </CaptionInfo>
+      )}
+
+      {!userAdmin && round.participantsVisible && (
+        <CaptionInfo title="Participantes confirmados">
+          <View style={styles.participantsContainer}>
+            <ParticipantHList
+              participants={round.participants.filter(item => item.acepted)}
+              detail
+            />
           </View>
         </CaptionInfo>
       )}
