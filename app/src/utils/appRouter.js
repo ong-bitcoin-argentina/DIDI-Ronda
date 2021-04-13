@@ -1,14 +1,15 @@
 import { Linking } from "react-native";
 import dynamicLinks from "@react-native-firebase/dynamic-links";
+import Config from "react-native-config";
 
 export const links = {
   login: {
     deepLink: "aidi://login",
-    dynamicLink: "https://nextdidi.page.link/TG78",
+    dynamicLink: `${Config.URL_LOGIN}`,
   },
   credentials: {
     deepLink: `aidi://credentials/ronda`,
-    dynamicLink: "https://nextdidi.page.link/XktS",
+    dynamicLink: `${Config.URL_CREDENTIALS}`,
   },
   playstore: "https://play.google.com/apps/internaltest/4699395559909911910",
   urlPlaystore: "https://play.google.com/store/apps/details?id=com.aidi",
