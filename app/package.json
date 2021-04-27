@@ -5,15 +5,15 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "build": "cd android && ENVFILE=.env.alpha && ./gradlew assembleAlphaRelease",
+    "build": "cd android && ENVFILE=.env.alpha ./gradlew assembleAlphaRelease",
 		"windows:build": "cd android && set ENVFILE=.env.alpha && gradlew assembleAlphaRelease",
     "android": "ENVFILE=.env.next react-native run-android --variant=DevDebug",
     "build:dev": "cd android && ./gradlew assembleDevRelease",
     "bundle-dev": "cd android && ./gradlew bundleDevRelease",
     "build:next": "cd android && ENVFILE=.env.next ./gradlew assembleNextRelease",
     "windows:build:next": "cd android && set ENVFILE=.env.next && gradlew assembleNextRelease",
-    "build:beta": "cd android && ENVFILE=.env.beta ./gradlew assembleBetaRelease",
-    "windows:build:beta": "cd android && set ENVFILE=.env.beta && gradlew assembleBetaRelease",
+    "build:qa": "cd android && ENVFILE=.env.qa ./gradlew assembleQaRelease",
+    "windows:build:qa": "cd android && set ENVFILE=.env.qa && gradlew assembleQaRelease",
     "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
