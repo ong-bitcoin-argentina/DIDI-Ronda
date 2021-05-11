@@ -185,7 +185,7 @@ const NumberPay = props => {
                     {!loading &&
                       enabledForPayRound &&
                       !isReceivingOrMakingPayment &&
-                      !participantPaid &&
+                      participantPaid &&
                       !isPaying && (
                         <ConfirmRoundPayment
                           loading={loading}
