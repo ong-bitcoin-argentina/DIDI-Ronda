@@ -381,6 +381,8 @@ const makeTransaction = async (
   exTc = -1,
   setprice
 ) => {
+  const isSyncingResponse = await web3.eth.isSyncing()
+  if (!isSyncingResponse) throw new Error('Node still syncing');
   // TODO: Hay que parametrizar todo esto
   const transactionCount = await web3.eth.getTransactionCount(ownerAddress);
   const gasPrice = await getMinimumGasPrice();
@@ -427,6 +429,12 @@ exports.getTransactionCount = async address => {
 
 exports.sendManyBalanceTx = async (from, fromPk, addresses, amount) => {
   const results = [];
+
+  const isSyncingResponse = await web3.eth.isSyncing()
+  if (!isSyncingResponse) {
+    results.push({ error: 'Node still syncing', success: false });
+    return results;
+  }
   // Failsafe to bail out of infinite errors
   const maxTransactions = addresses.length;
   let counter = 0;
@@ -460,7 +468,7 @@ exports.sendManyBalanceTx = async (from, fromPk, addresses, amount) => {
         throw new Error("Missed timing!");
       }
     } catch (error) {
-      results.push[{ error, success: false }];
+      results.push({ error, success: false });
     }
   }
 
