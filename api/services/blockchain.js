@@ -381,8 +381,14 @@ const makeTransaction = async (
   exTc = -1,
   setprice
 ) => {
-  const isSyncingResponse = await web3.eth.isSyncing()
-  if (!isSyncingResponse) throw new Error('Node still syncing');
+  try {
+    const isSyncingResponse = await web3.eth.isSyncing();
+    if (!!isSyncingResponse) throw new Error('Node syncing');
+  } catch (e) {
+    if(e.message.includes("403 Method Not Allowed")) throw new Error('Node syncing');
+    throw e;
+  }
+  
   // TODO: Hay que parametrizar todo esto
   const transactionCount = await web3.eth.getTransactionCount(ownerAddress);
   const gasPrice = await getMinimumGasPrice();
