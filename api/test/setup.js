@@ -8,11 +8,9 @@ require("../models/round");
 const User = mongoose.model("User");
 
 require("dotenv").config();
-const { MONGO_SERVER, MONGO_DATABASE } = process.env;
+const { MONGO_URI } = process.env;
 
-const MONGO_TEST_DATABASE = `${MONGO_DATABASE}_test`;
-
-process.env.MONGO_DATABASE = MONGO_TEST_DATABASE;
+const MONGO_URI_TEST = `${MONGO_URI}_test`;
 
 // beforeEach( async done => {
 beforeAll(async done => {
@@ -59,7 +57,7 @@ beforeAll(async done => {
   };
 
   mongoose.disconnect();
-  mongoose.connect(`${MONGO_SERVER}/${MONGO_TEST_DATABASE}`, async err => {
+  mongoose.connect(MONGO_URI_TEST, async err => {
     if (err) {
       throw err;
     }

@@ -3,8 +3,8 @@ const Agenda = require("agenda");
 const types = require("./types");
 const config = require("../helpers/config");
 
-const { MONGO_SERVER, MONGO_DATABASE } = process.env;
-const mongoConnectionString = `${MONGO_SERVER}/${MONGO_DATABASE}`;
+const { MONGO_URI } = process.env;
+const mongoConnectionString = `${MONGO_URI}`;
 
 const agenda = new Agenda({
   db: { address: mongoConnectionString },
