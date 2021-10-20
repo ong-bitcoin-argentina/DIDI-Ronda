@@ -15,6 +15,7 @@ const helmet = require("helmet");
 const { agendaStart, permanentJob } = require("./jobs");
 
 const { PORT, MONGO_URI, ENVIROMENT } = process.env;
+console.log(`MONGO_URI: ${MONGO_URI}`);
 
 // parse application/json
 app.use(bodyParser.json());
@@ -73,9 +74,7 @@ app.use("*", function notFoundRoute(req, res) {
 
 /*** SERVER ****/
 mongoose.set("useCreateIndex", true);
-mongoose.connect(
-  `${MONGO_URI}`,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+mongoose.connect(MONGO_URI,  { useNewUrlParser: true, useUnifiedTopology: true },
   err => {
     if (err) {
       console.log("ERROR: connecting to Database. " + err);
