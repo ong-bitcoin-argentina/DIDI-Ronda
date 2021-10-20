@@ -74,22 +74,22 @@ app.use("*", function notFoundRoute(req, res) {
 
 /*** SERVER ****/
 mongoose.set("useCreateIndex", true);
-mongoose.connect(MONGO_URI,  { useNewUrlParser: true, useUnifiedTopology: true },
-  err => {
-    if (err) {
-      console.log("ERROR: connecting to Database. " + err);
-    }
+mongoose.connect(MONGO_URI,  { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
     app.listen(PORT, () => {
       console.log(`------ LA RONDA API ------`);
       console.log(`-   version ${version}   -`);
-      console.log(`-   ENV: ${ENVIROMENT}   - `);
-      console.log(`-------------------------- `);
-      console.log(`Node server running on http://localhost:${PORT}`);
+      console.log(`-   ENV: ${ENVIROMENT}   -`);
+      console.log(`--------------------------`);
+      console.log(`Node server running on port ${PORT}`);
       agendaStart();
       permanentJob();
     });
-  }
-);
+  })
+  .catch((err) => {
+    console.log("ERROR: connecting to Database. " + err);
+  });
+
 /*** ./SERVER ****/
 
 /*** EXPORT FOR TESTING PURPOSE ****/
