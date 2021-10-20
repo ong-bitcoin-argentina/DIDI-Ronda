@@ -79,20 +79,23 @@ mongoose.connect(MONGO_URI,  {
   useUnifiedTopology: true,
   useCreateIndex: true,
 })
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`------ LA RONDA API ------`);
-      console.log(`-   version ${version}   -`);
-      console.log(`-   ENV: ${ENVIROMENT}   -`);
-      console.log(`--------------------------`);
-      console.log(`Node server running on port ${PORT}`);
-      agendaStart();
-      permanentJob();
-    });
-  })
-  .catch((err) => {
-    console.log("ERROR: connecting to Database. " + err);
-  });
+  .then(
+    () => { 
+      app.listen(PORT, () => {
+        console.log(`------ LA RONDA API ------`);
+        console.log(`-   version ${version}   -`);
+        console.log(`-   ENV: ${ENVIROMENT}   -`);
+        console.log(`--------------------------`);
+        console.log(`Node server running on port ${PORT}`);
+        agendaStart();
+        permanentJob();
+      });
+     },
+    (err) => {
+      console.log("ERROR: connecting to Database.");
+      console.log(err);
+    },
+  );
 
 /*** ./SERVER ****/
 
