@@ -73,8 +73,12 @@ app.use("*", function notFoundRoute(req, res) {
 /*** ./ROUTES ****/
 
 /*** SERVER ****/
-mongoose.set("useCreateIndex", true);
-mongoose.connect(MONGO_URI,  { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI,  { 
+  useNewUrlParser: true,
+  useFindAndModify: false, 
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+})
   .then(() => {
     app.listen(PORT, () => {
       console.log(`------ LA RONDA API ------`);
