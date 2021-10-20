@@ -14,7 +14,7 @@ const helmet = require("helmet");
 // Agenda
 const { agendaStart, permanentJob } = require("./jobs");
 
-const { PORT, MONGO_SERVER, MONGO_DATABASE, ENVIROMENT } = process.env;
+const { PORT, MONGO_URI, ENVIROMENT } = process.env;
 
 // parse application/json
 app.use(bodyParser.json());
@@ -74,7 +74,7 @@ app.use("*", function notFoundRoute(req, res) {
 /*** SERVER ****/
 mongoose.set("useCreateIndex", true);
 mongoose.connect(
-  `${MONGO_SERVER}/${MONGO_DATABASE}`,
+  `${MONGO_URI}`,
   { useNewUrlParser: true, useUnifiedTopology: true },
   err => {
     if (err) {
