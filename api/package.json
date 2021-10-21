@@ -7,7 +7,8 @@
     "test": "jest --detectOpenHandles --forceExit",
     "dev": "nodemon app.js",
     "debug": "nodemon --inspect app.js",
-    "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write '**/*.js'"
+    "prettier": "prettier --print-width 80 --end-of-line lf --trailing-comma es5 --write '**/*.js'",
+    "lint": "npx eslint app.js controllers/ helpers/ jobs/ managers/ middleware/ routes/ services/ test/ utils/"
   },
   "author": "",
   "license": "ISC",

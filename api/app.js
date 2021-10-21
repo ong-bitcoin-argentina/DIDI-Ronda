@@ -29,7 +29,8 @@ app.use(helmet());
 const appMiddleware = require("./middleware/app");
 
 // Log request on develop
-ENVIROMENT === "dev" && app.use("/", appMiddleware.log);
+const isDevEnvironment = ENVIROMENT === "qa" || ENVIROMENT === "next";
+if (isDevEnvironment) app.use("/", appMiddleware.log);
 
 // Basic auth to all api calls
 app.use("/", appMiddleware.auth);
