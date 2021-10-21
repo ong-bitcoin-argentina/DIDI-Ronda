@@ -14,7 +14,7 @@ const helmet = require("helmet");
 // Agenda
 const { agendaStart, permanentJob } = require("./jobs");
 
-const { PORT, MONGO_URI, ENVIROMENT } = process.env;
+const { PORT, MONGO_URI, ENVIRONMENT } = process.env;
 console.log(`MONGO_URI: ${MONGO_URI}`);
 
 // parse application/json
@@ -29,7 +29,7 @@ app.use(helmet());
 const appMiddleware = require("./middleware/app");
 
 // Log request on develop
-const isDevEnvironment = ENVIROMENT === "qa" || ENVIROMENT === "next";
+const isDevEnvironment = ENVIRONMENT === "qa" || ENVIRONMENT === "next";
 if (isDevEnvironment) app.use("/", appMiddleware.log);
 
 // Basic auth to all api calls
@@ -85,7 +85,7 @@ mongoose.connect(MONGO_URI,  {
       app.listen(PORT, () => {
         console.log(`------ LA RONDA API ------`);
         console.log(`-   version ${version}   -`);
-        console.log(`-   ENV: ${ENVIROMENT}   -`);
+        console.log(`-   ENV: ${ENVIRONMENT}  -`);
         console.log(`--------------------------`);
         console.log(`Node server running on port ${PORT}`);
         agendaStart();
