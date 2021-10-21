@@ -19,6 +19,11 @@
  */
 require('dotenv').config();
 
+require('ts-node').register({
+  files: true,
+});
+
+
 const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
@@ -37,7 +42,7 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  plugins: ['solidity-coverage'],
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
