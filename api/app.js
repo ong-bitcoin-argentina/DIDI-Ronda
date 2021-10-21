@@ -8,13 +8,12 @@ const http = require("http");
 http.createServer(app);
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const { version } = require("./package.json");
 const helmet = require("helmet");
 
 // Agenda
 const { agendaStart, permanentJob } = require("./jobs");
 
-const { PORT, MONGO_URI, ENVIRONMENT } = process.env;
+const { PORT, MONGO_URI, ENVIRONMENT, VERSION } = process.env;
 console.log(`MONGO_URI: ${MONGO_URI}`);
 
 // parse application/json
@@ -84,7 +83,7 @@ mongoose.connect(MONGO_URI,  {
     () => { 
       app.listen(PORT, () => {
         console.log(`------ LA RONDA API ------`);
-        console.log(`-   version ${version}   -`);
+        console.log(`-   version ${VERSION}   -`);
         console.log(`-   ENV: ${ENVIRONMENT}  -`);
         console.log(`--------------------------`);
         console.log(`Node server running on port ${PORT}`);
