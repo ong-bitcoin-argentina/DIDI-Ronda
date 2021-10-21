@@ -22,8 +22,8 @@ const auth = (req, res, next) => {
 };
 
 const insecure = (req, res, next) => {
-  const { ENVIROMENT } = process.env;
-  if (!ENVIROMENT || ENVIROMENT.toLowerCase().includes("prod")) {
+  const { ENVIRONMENT } = process.env;
+  if (!ENVIRONMENT || ENVIRONMENT.toLowerCase().includes("prod")) {
     return errorHandler.unauthorized(res, "Endpoint not available");
   } else {
     next();
