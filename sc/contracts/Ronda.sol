@@ -120,6 +120,12 @@ contract Ronda {
         address indexed _newParticipant
     );
 
+    // When an admin is changed
+    event AdminChanged(
+        address indexed oldAdmin,
+        address indexed newAdmin
+    );
+
     // When a payment is deleted
     event DeletedPayment(uint256 indexed number, uint256 indexed timeMade);
 
@@ -564,6 +570,8 @@ contract Ronda {
         @dev Only the admin may call this function see {onlyAdmin}
      */
     function changeAdmin(address _newAdmin) external onlyAdmin rondaIsActive {
+        address _oldAdmin = admin;
         admin = _newAdmin;
+        emit AdminChanged(_oldAdmin, _newAdmin);
     }
 }

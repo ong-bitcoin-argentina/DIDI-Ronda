@@ -18,7 +18,7 @@ contract RondasRegistry is Ownable {
     event NewRonda(address indexed _admin, string _id);
 
     // Event to trigger when a ronda is finished
-    event FinishedRonda(string indexed _id, uint256 indexed _finishedTime);
+    event FinishedRonda(string _id, uint256 indexed _finishedTime);
 
 
     /**
