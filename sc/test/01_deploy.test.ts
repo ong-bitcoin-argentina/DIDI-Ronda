@@ -1,3 +1,4 @@
+import { RondasRegistryContract, RondasRegistryInstance } from './../types/truffle-contracts/RondasRegistry.d';
 /* eslint-env node, mocha */
 const RondasRegistry = artifacts.require('RondasRegistry');
 
@@ -6,7 +7,7 @@ require('chai')
   .should();
 
 contract('RondasRegistry', () => {
-  let rondasRegistry;
+  let rondasRegistry: RondasRegistryInstance;
 
   before(async () => {
     rondasRegistry = await RondasRegistry.deployed();
@@ -15,7 +16,7 @@ contract('RondasRegistry', () => {
   it('Deploys RondasRegistry successfully', async () => {
     const { address } = rondasRegistry;
     assert.notEqual(address, '');
-    assert.notEqual(address, 0x0);
+    assert.notEqual(address, "0x0");
     assert.notEqual(address, null);
     assert.notEqual(address, undefined);
   });
